@@ -1,3 +1,7 @@
+좋습니다. **블로그 주소까지 반영한 완성형 `index.html`**로 새로 작성했습니다.
+기존 `index.html` 내용을 **전부 지우고 아래 코드 전체를 그대로 붙여넣으면 됩니다.**
+
+```html
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -6,24 +10,9 @@
 
 <title>현재두 법무사 사무소 | 인천 상속등기·상속포기·한정승인·법인등기</title>
 
-<meta name="description" content="인천 현재두 법무사 사무소. 상속등기, 상속포기, 한정승인, 법인등기, 부동산등기, 증여등기 등 다양한 등기 업무를 상담합니다.">
+<meta name="description" content="인천 현재두 법무사 사무소. 상속등기, 상속포기, 한정승인, 특별한정승인, 법인등기, 부동산등기, 증여등기 상담">
 
 <style>
-/* =========================
-   VARIABLES & RESET
-========================= */
-:root {
-    --bg-color: #1a1a1a; /* 전체 배경 (다크) */
-    --section-bg-color: #222222; /* 섹션 배경 (약간 밝은 다크) */
-    --text-main: #e0e0e0; /* 주요 텍스트 */
-    --text-sub: #a0a0a0; /* 보조 텍스트 */
-    --point-color: #4a90e2; /* 포인트 컬러 (신뢰의 블루) */
-    --border-color: #333333; /* 테두리 */
-    
-    /* 폰트 설정 */
-    --font-main: -apple-system, BlinkMacSystemFont, "Noto Sans KR", "Pretendard", "Segoe UI", sans-serif;
-}
-
 * {
     box-sizing: border-box;
 }
@@ -34,10 +23,16 @@ html {
 
 body {
     margin: 0;
-    font-family: var(--font-main);
-    color: var(--text-main);
-    background: var(--bg-color);
-    line-height: 1.8; /* 가독성을 위해 행간 조정 */
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Noto Sans KR",
+        "Pretendard",
+        "Segoe UI",
+        sans-serif;
+    color: #222;
+    background: #fff;
+    line-height: 1.7;
 }
 
 a {
@@ -45,496 +40,559 @@ a {
     color: inherit;
 }
 
-ul, ol {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-
-/* =========================
-   COMMON ELEMENTS
-========================= */
-
 .container {
-    max-width: 1100px;
+    width: 100%;
+    max-width: 1180px;
     margin: 0 auto;
     padding: 0 24px;
 }
 
-.section {
-    padding: 120px 0;
-}
-
-.btn {
-    display: inline-block;
-    padding: 16px 32px;
-    border-radius: 6px;
-    font-size: 16px;
-    font-weight: 700;
-    transition: 0.3s ease;
-    cursor: pointer;
-}
-
-.btn-dark {
-    background: var(--point-color);
-    color: #fff;
-    border: none;
-}
-
-.btn-dark:hover {
-    background: #357abd;
-}
-
-/* =========================
-   HEADER
-========================= */
+/* HEADER */
 
 .header {
-    border-bottom: 1px solid var(--border-color);
-    background: rgba(26, 26, 26, 0.98); /* 배경색과 맞춘 헤더 */
     position: sticky;
     top: 0;
-    z-index: 100;
-    backdrop-filter: blur(5px); /* 배경 흐림 효과 */
+    z-index: 1000;
+    background: rgba(255,255,255,.97);
+    border-bottom: 1px solid #eee;
+    backdrop-filter: blur(10px);
 }
 
 .header-inner {
+    height: 72px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 18px 0;
 }
 
 .logo {
-    font-size: 22px;
-    font-weight: 900; /* 더 굵게 */
-    letter-spacing: -0.5px;
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: -1px;
 }
 
-.logo span {
+.logo-sub {
     display: block;
-    font-size: 14px;
-    color: var(--text-sub);
+    font-size: 11px;
+    color: #888;
     font-weight: 500;
-    margin-top: 0px;
 }
 
 .nav {
     display: flex;
-    gap: 32px;
-    font-size: 15px;
-    color: var(--text-main);
+    gap: 30px;
+    font-size: 14px;
+    font-weight: 600;
 }
 
-.nav a {
-    position: relative;
-    padding-bottom: 4px;
+.nav a:hover {
+    color: #2457a6;
 }
 
-.nav a::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: 0;
-    left: 0;
-    background-color: var(--point-color);
-    transition: width 0.3s;
-}
-
-.nav a:hover::after {
-    width: 100%;
-}
-
-/* =========================
-   HERO
-========================= */
+/* HERO */
 
 .hero {
-    background: var(--section-bg-color);
-    padding: 160px 0 140px;
+    background: #f5f7fa;
+    padding: 105px 0 95px;
+}
+
+.hero-content {
+    max-width: 900px;
 }
 
 .hero-label {
-    font-size: 14px;
+    color: #2457a6;
+    font-size: 13px;
     font-weight: 800;
-    letter-spacing: 2px;
-    color: var(--point-color);
-    margin-bottom: 24px;
-    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 18px;
 }
 
 .hero h1 {
-    font-size: clamp(40px, 6vw, 68px); /* 더 크게 */
-    line-height: 1.2;
+    font-size: clamp(38px, 5.5vw, 65px);
+    line-height: 1.22;
     letter-spacing: -4px;
-    margin: 0 0 30px;
+    margin: 0 0 25px;
     font-weight: 900;
 }
 
-.hero h1 strong {
-    font-weight: 900;
-    color: var(--point-color);
+.hero h1 span {
+    color: #2457a6;
 }
 
-.hero-text {
-    font-size: 20px;
-    color: var(--text-sub);
-    max-width: 720px;
-    margin-bottom: 48px;
-}
-
-.hero-phone {
-    margin-top: 40px;
-    font-size: 20px;
-    font-weight: 800;
-}
-
-.hero-phone a {
-    color: var(--point-color);
-    text-decoration: underline;
-    text-underline-offset: 6px;
+.hero-description {
+    max-width: 700px;
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 35px;
 }
 
 .hero-buttons {
     display: flex;
-    gap: 16px;
+    gap: 12px;
     flex-wrap: wrap;
 }
 
-/* =========================
-   SECTION TITLE
-========================= */
-
-.section-title {
-    margin-bottom: 60px;
-    text-align: center;
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 50px;
+    padding: 0 25px;
+    border-radius: 5px;
+    font-size: 15px;
+    font-weight: 700;
 }
 
-.section-title small {
-    display: block;
-    font-size: 14px;
-    color: var(--point-color);
+.btn-primary {
+    background: #2457a6;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: #194681;
+}
+
+.btn-secondary {
+    background: #fff;
+    border: 1px solid #ddd;
+}
+
+.btn-secondary:hover {
+    background: #f5f5f5;
+}
+
+.hero-phone {
+    margin-top: 28px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.hero-phone a {
+    color: #2457a6;
+}
+
+/* QUICK MENU */
+
+.quick-section {
+    margin-top: -35px;
+    position: relative;
+}
+
+.quick-menu {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.07);
+    overflow: hidden;
+}
+
+.quick-item {
+    padding: 27px 20px;
+    text-align: center;
+    border-right: 1px solid #eee;
+    transition: .2s;
+}
+
+.quick-item:last-child {
+    border-right: 0;
+}
+
+.quick-item:hover {
+    background: #f7f9fc;
+}
+
+.quick-number {
+    color: #2457a6;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.quick-item h3 {
+    margin: 7px 0 2px;
+    font-size: 17px;
+}
+
+.quick-item p {
+    margin: 0;
+    font-size: 12px;
+    color: #888;
+}
+
+/* SECTION */
+
+.section {
+    padding: 100px 0;
+}
+
+.section-header {
+    margin-bottom: 45px;
+}
+
+.section-label {
+    color: #2457a6;
+    font-size: 12px;
     font-weight: 800;
     letter-spacing: 1.5px;
-    margin-bottom: 12px;
-    text-transform: uppercase;
 }
 
-.section-title h2 {
-    font-size: 42px;
+.section-title {
+    font-size: 36px;
     letter-spacing: -2px;
-    margin: 0;
+    margin: 8px 0 10px;
     font-weight: 900;
 }
 
-.section-title p {
-    color: var(--text-sub);
-    margin-top: 16px;
-    font-size: 18px;
+.section-description {
+    color: #777;
+    margin: 0;
 }
 
-/* =========================
-   SERVICES
-========================= */
+/* INHERITANCE */
 
-.services-grid {
+.inheritance-box {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+    align-items: center;
+}
+
+.inheritance-text h2 {
+    font-size: 38px;
+    line-height: 1.35;
+    letter-spacing: -2px;
+    margin: 10px 0 20px;
+}
+
+.inheritance-text p {
+    color: #666;
+}
+
+.problem-list {
+    border: 1px solid #e5e5e5;
+    border-radius: 7px;
+    overflow: hidden;
+}
+
+.problem-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 19px 22px;
+    border-bottom: 1px solid #eee;
+    font-size: 15px;
+}
+
+.problem-item:last-child {
+    border-bottom: 0;
+}
+
+.problem-item span {
+    color: #2457a6;
+    font-weight: 800;
+}
+
+/* PROCESS */
+
+.process {
+    background: #f5f7fa;
+}
+
+.process-grid {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 15px;
+}
+
+.process-card {
+    background: #fff;
+    padding: 30px 22px;
+    border: 1px solid #e8e8e8;
+    border-radius: 6px;
+}
+
+.process-number {
+    color: #2457a6;
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.process-card h3 {
+    margin: 12px 0 7px;
+    font-size: 19px;
+}
+
+.process-card p {
+    margin: 0;
+    color: #777;
+    font-size: 14px;
+}
+
+/* SERVICES */
+
+.services {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 18px;
 }
 
 .service-card {
-    background: var(--section-bg-color);
-    padding: 40px;
-    border-radius: 8px;
-    transition: 0.3s ease;
-    border: 1px solid var(--border-color);
-    /* 미묘한 그림자 추가 */
-    box-shadow: 0 4px 6px rgba(0,0,0,0.2); 
+    border: 1px solid #e5e5e5;
+    padding: 32px;
+    border-radius: 6px;
+    transition: .2s;
 }
 
 .service-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--point-color); /* 호버시 테두리 컬러 변경 */
+    border-color: #2457a6;
+    transform: translateY(-3px);
 }
 
 .service-number {
-    font-size: 15px;
-    color: var(--point-color);
+    color: #2457a6;
+    font-size: 13px;
     font-weight: 800;
 }
 
 .service-card h3 {
-    font-size: 24px;
-    margin: 20px 0 12px;
-    font-weight: 800;
+    font-size: 21px;
+    margin: 13px 0 9px;
 }
 
 .service-card p {
-    color: var(--text-sub);
-    font-size: 15px;
     margin: 0;
+    color: #777;
+    font-size: 14px;
 }
 
-/* =========================
-   INHERITANCE
-========================= */
+/* CORPORATE */
 
-.inheritance {
-    background: var(--section-bg-color);
-    padding-bottom: 0px; /* 하단 패딩 제거로 자연스런 연결 */
+.corporate {
+    background: #f5f7fa;
 }
 
-.inheritance-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    align-items: center;
-}
-
-.inheritance h2 {
-    font-size: 40px;
-    line-height: 1.4;
-    letter-spacing: -2.5px;
-    margin: 0 0 24px;
-    font-weight: 900;
-}
-
-.inheritance p {
-    color: var(--text-sub);
-    font-size: 18px;
-}
-
-.issue-list {
-    background: var(--bg-color);
-    border-radius: 8px;
-    overflow: hidden; /* 둥근 모서리 적용 */
-    border: 1px solid var(--border-color);
-}
-
-.issue-list div {
-    padding: 20px 24px;
-    border-bottom: 1px solid var(--border-color);
-    font-size: 16px;
-    color: var(--text-main);
-}
-
-.issue-list div:last-child {
-    border-bottom: 0;
-}
-
-/* =========================
-   CORPORATE
-========================= */
-
-.corporate-section {
-    padding-top: 160px;
-}
-
-.corporate-box {
-    border-top: 2px solid var(--point-color);
-    border-bottom: 1px solid var(--border-color);
+.corporate-list {
+    border-top: 2px solid #222;
 }
 
 .corporate-item {
     display: flex;
     justify-content: space-between;
-    padding: 28px 16px;
-    border-bottom: 1px solid var(--border-color);
-    transition: 0.2s;
+    padding: 22px 10px;
+    border-bottom: 1px solid #ddd;
 }
 
-.corporate-item:hover {
-    background-color: rgba(255,255,255,0.03);
+.corporate-item strong {
+    font-size: 16px;
 }
 
-.corporate-item:last-child {
-    border-bottom: 0;
-}
-
-.corporate-item span:first-child {
-    font-weight: 800;
-    color: var(--text-main);
-}
-
-.corporate-item span:last-child {
-    color: var(--text-sub);
-}
-
-/* =========================
-   CONTACT INFO
-========================= */
-
-.info-section {
-    background: var(--point-color); /* 배경을 포인트 컬러로 */
-    color: #fff;
-}
-
-.info-inner {
-    text-align: center;
-}
-
-.info-section h2 {
-    font-size: 42px;
-    margin: 0 0 16px;
-    letter-spacing: -1.5px;
-    font-weight: 900;
-}
-
-.info-section .info-description {
-    color: rgba(255, 255, 255, 0.8);
-    margin-bottom: 32px;
-    font-size: 18px;
-}
-
-.contact-phone {
-    font-size: 36px;
-    font-weight: 900;
-    margin: 24px 0;
-}
-
-.contact-phone a {
-    color: #fff;
-}
-
-.contact-address {
-    color: rgba(255, 255, 255, 0.8);
-    margin-bottom: 36px;
-    line-height: 1.8;
-}
-
-.info-section .btn {
-    background: #fff;
-    color: var(--point-color);
-}
-.info-section .btn:hover {
-    background: #f0f0f0;
-}
-
-
-/* =========================
-   FOOTER
-========================= */
-
-footer {
-    background: #121212;
-    color: var(--text-sub);
-    padding: 48px 24px;
+.corporate-item span {
+    color: #777;
     font-size: 14px;
 }
 
-.footer-inner {
-    max-width: 1100px;
-    margin: 0 auto;
+/* BLOG */
+
+.info-box {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.info-card {
+    border: 1px solid #e5e5e5;
+    border-radius: 7px;
+    padding: 35px;
+}
+
+.info-card h3 {
+    margin: 0 0 12px;
+    font-size: 22px;
+}
+
+.info-card p {
+    color: #777;
+    font-size: 14px;
+}
+
+.blog-link {
+    color: #2457a6;
+    font-weight: 800;
+}
+
+/* CONTACT */
+
+.contact {
+    background: #2457a6;
+    color: #fff;
+    text-align: center;
+}
+
+.contact h2 {
+    font-size: 38px;
+    letter-spacing: -2px;
+    margin: 0 0 12px;
+}
+
+.contact-description {
+    color: rgba(255,255,255,.8);
+}
+
+.phone {
+    font-size: 38px;
+    font-weight: 900;
+    margin: 25px 0;
+}
+
+.contact-address {
+    color: rgba(255,255,255,.8);
+    margin-bottom: 30px;
+}
+
+.contact .btn {
+    background: #fff;
+    color: #2457a6;
+}
+
+/* FOOTER */
+
+.footer {
+    background: #151515;
+    color: #999;
+    padding: 40px 0;
+    font-size: 13px;
 }
 
 .footer-title {
     color: #fff;
     font-size: 16px;
     font-weight: 800;
-    margin-bottom: 16px;
+    margin-bottom: 10px;
 }
 
 .footer-line {
-    margin-bottom: 6px;
+    margin-bottom: 5px;
 }
 
-/* =========================
-   MOBILE
-========================= */
+/* MOBILE CALL */
 
-@media (max-width: 768px) {
+.mobile-call {
+    display: none;
+}
+
+/* MOBILE */
+
+@media(max-width:768px) {
 
     .container {
         padding: 0 20px;
     }
 
-    .section {
-        padding: 80px 0;
-    }
-
     .header-inner {
-        padding: 15px 0;
+        height: 64px;
     }
 
     .nav {
-        display: none; /* 모바일 메뉴 구현 필요시 변경 */
-    }
-
-    .logo {
-        font-size: 20px;
+        display: none;
     }
 
     .hero {
-        padding: 120px 0 100px;
+        padding: 75px 0 85px;
     }
 
     .hero h1 {
-        font-size: 44px;
+        font-size: 42px;
         letter-spacing: -2.5px;
     }
 
-    .hero-text {
-        font-size: 18px;
-        margin-bottom: 36px;
+    .hero-description {
+        font-size: 16px;
     }
 
-    .hero-phone {
-        font-size: 18px;
+    .quick-section {
+        margin-top: 0;
+        padding-top: 15px;
+    }
+
+    .quick-menu {
+        grid-template-columns: repeat(2,1fr);
+        box-shadow: none;
+    }
+
+    .quick-item:nth-child(2) {
+        border-right: 0;
+    }
+
+    .quick-item:nth-child(1),
+    .quick-item:nth-child(2) {
+        border-bottom: 1px solid #eee;
+    }
+
+    .section {
+        padding: 75px 0;
     }
 
     .section-title {
-        margin-bottom: 40px;
+        font-size: 30px;
     }
 
-    .section-title h2 {
-        font-size: 32px;
-    }
-
-    .services-grid {
+    .inheritance-box {
         grid-template-columns: 1fr;
-        gap: 16px;
+        gap: 35px;
     }
 
-    .service-card {
-        padding: 30px;
+    .inheritance-text h2 {
+        font-size: 31px;
     }
 
-    .inheritance-grid {
+    .process-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .services {
         grid-template-columns: 1fr;
-        gap: 40px;
     }
 
-    .inheritance h2 {
-        font-size: 34px;
-    }
-    
-    .inheritance-inner {
-         padding: 90px 24px; /* 모바일에서 inheritance 패딩 복구 */
-    }
-
-    .corporate-section {
-        padding-top: 80px;
+    .info-box {
+        grid-template-columns: 1fr;
     }
 
     .corporate-item {
         display: block;
-        padding: 20px 5px;
     }
 
-    .corporate-item span:last-child {
+    .corporate-item span {
         display: block;
-        margin-top: 8px;
-        font-size: 15px;
+        margin-top: 5px;
     }
 
-    .info-section h2 {
-        font-size: 34px;
+    .contact h2 {
+        font-size: 31px;
     }
 
-    .contact-phone {
+    .phone {
         font-size: 30px;
+    }
+
+    .mobile-call {
+        display: block;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 2000;
+        background: #2457a6;
+        color: #fff;
+        text-align: center;
+        padding: 14px;
+        font-weight: 800;
+        box-shadow: 0 -3px 15px rgba(0,0,0,.15);
+    }
+
+    body {
+        padding-bottom: 55px;
     }
 }
 </style>
@@ -545,3 +603,568 @@ footer {
 <!-- HEADER -->
 
 <header class="header">
+
+<div class="container header-inner">
+
+<a href="#" class="logo">
+현재두 법무사 사무소
+<span class="logo-sub">인천 법무사</span>
+</a>
+
+<nav class="nav">
+<a href="#inheritance">상속</a>
+<a href="#services">주요업무</a>
+<a href="#corporate">법인등기</a>
+<a href="#info">법률정보</a>
+<a href="#contact">상담안내</a>
+</nav>
+
+</div>
+
+</header>
+
+
+<!-- HERO -->
+
+<section class="hero">
+
+<div class="container">
+
+<div class="hero-content">
+
+<div class="hero-label">
+INCHON · JUDICIAL SCRIVENER
+</div>
+
+<h1>
+상속·등기,<br>
+<span>복잡한 문제를 쉽게</span><br>
+해결하세요.
+</h1>
+
+<p class="hero-description">
+상속등기부터 상속포기·한정승인,
+부동산등기, 증여등기, 법인등기까지
+상황에 맞는 절차를 확인하고 안내합니다.
+</p>
+
+<div class="hero-buttons">
+
+<a href="#inheritance" class="btn btn-primary">
+상속 문제 알아보기
+</a>
+
+<a href="tel:0324251500" class="btn btn-secondary">
+032-425-1500
+</a>
+
+</div>
+
+<div class="hero-phone">
+인천 현재두 법무사 사무소
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- QUICK MENU -->
+
+<section class="quick-section">
+
+<div class="container">
+
+<div class="quick-menu">
+
+<a href="#inheritance" class="quick-item">
+<div class="quick-number">01</div>
+<h3>상속등기</h3>
+<p>상속재산 부동산 이전</p>
+</a>
+
+<a href="#inheritance" class="quick-item">
+<div class="quick-number">02</div>
+<h3>상속포기·한정승인</h3>
+<p>상속채무 해결</p>
+</a>
+
+<a href="#corporate" class="quick-item">
+<div class="quick-number">03</div>
+<h3>법인등기</h3>
+<p>회사 변경등기</p>
+</a>
+
+<a href="#services" class="quick-item">
+<div class="quick-number">04</div>
+<h3>부동산등기</h3>
+<p>매매·증여·재산분할</p>
+</a>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- INHERITANCE -->
+
+<section class="section" id="inheritance">
+
+<div class="container">
+
+<div class="inheritance-box">
+
+<div class="inheritance-text">
+
+<div class="section-label">
+INHERITANCE
+</div>
+
+<h2>
+상속은<br>
+먼저 상황을<br>
+확인해야 합니다.
+</h2>
+
+<p>
+상속인이 여러 명이거나 연락이 되지 않는 경우,
+상속채무가 있는 경우에는 단순히 부동산만
+상속등기하는 것으로 해결되지 않을 수 있습니다.
+</p>
+
+<a href="tel:0324251500" class="btn btn-primary">
+상속 상담하기
+</a>
+
+</div>
+
+
+<div class="problem-list">
+
+<div class="problem-item">
+상속인 중 연락두절자가 있습니다.
+<span>→</span>
+</div>
+
+<div class="problem-item">
+상속인간 협의가 되지 않습니다.
+<span>→</span>
+</div>
+
+<div class="problem-item">
+상속받을 재산보다 빚이 많습니다.
+<span>→</span>
+</div>
+
+<div class="problem-item">
+이복형제·이부형제가 있습니다.
+<span>→</span>
+</div>
+
+<div class="problem-item">
+대습상속인이 있습니다.
+<span>→</span>
+</div>
+
+<div class="problem-item">
+상속재산을 어떻게 나눌지 모르겠습니다.
+<span>→</span>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- PROCESS -->
+
+<section class="section process">
+
+<div class="container">
+
+<div class="section-header">
+
+<div class="section-label">
+PROCESS
+</div>
+
+<h2 class="section-title">
+처음부터 절차를 확인하세요.
+</h2>
+
+<p class="section-description">
+현재 상황을 확인한 후 필요한 절차를 안내합니다.
+</p>
+
+</div>
+
+
+<div class="process-grid">
+
+<div class="process-card">
+<div class="process-number">STEP 01</div>
+<h3>상황 확인</h3>
+<p>
+상속인과 재산·채무 등
+현재 상황을 확인합니다.
+</p>
+</div>
+
+<div class="process-card">
+<div class="process-number">STEP 02</div>
+<h3>절차 검토</h3>
+<p>
+상속등기, 상속포기,
+한정승인 등 필요한 절차를 검토합니다.
+</p>
+</div>
+
+<div class="process-card">
+<div class="process-number">STEP 03</div>
+<h3>서류 준비</h3>
+<p>
+업무에 필요한 서류와
+준비사항을 안내합니다.
+</p>
+</div>
+
+<div class="process-card">
+<div class="process-number">STEP 04</div>
+<h3>절차 진행</h3>
+<p>
+확인된 절차에 따라
+등기 또는 법원 업무를 진행합니다.
+</p>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- SERVICES -->
+
+<section class="section" id="services">
+
+<div class="container">
+
+<div class="section-header">
+
+<div class="section-label">
+SERVICES
+</div>
+
+<h2 class="section-title">
+주요 업무
+</h2>
+
+<p class="section-description">
+상속·부동산·법인 관련 업무를 상담합니다.
+</p>
+
+</div>
+
+
+<div class="services">
+
+<div class="service-card">
+<div class="service-number">01</div>
+<h3>상속등기</h3>
+<p>
+상속으로 인한 부동산 소유권이전,
+협의분할에 의한 상속등기 등을 안내합니다.
+</p>
+</div>
+
+<div class="service-card">
+<div class="service-number">02</div>
+<h3>상속포기·한정승인</h3>
+<p>
+상속채무가 많은 경우 상속포기,
+한정승인, 특별한정승인 절차를 검토합니다.
+</p>
+</div>
+
+<div class="service-card">
+<div class="service-number">03</div>
+<h3>부동산등기</h3>
+<p>
+매매·증여·재산분할 등에 따른
+부동산 소유권이전등기를 안내합니다.
+</p>
+</div>
+
+<div class="service-card">
+<div class="service-number">04</div>
+<h3>법인설립·법인등기</h3>
+<p>
+법인설립부터 대표이사·임원변경,
+본점이전, 자본금증자 등을 진행합니다.
+</p>
+</div>
+
+<div class="service-card">
+<div class="service-number">05</div>
+<h3>증여등기</h3>
+<p>
+부동산 증여에 따른 소유권이전등기와
+관련 절차를 안내합니다.
+</p>
+</div>
+
+<div class="service-card">
+<div class="service-number">06</div>
+<h3>재산분할</h3>
+<p>
+협의이혼 등에 따른 부동산
+재산분할과 이전등기를 안내합니다.
+</p>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- CORPORATE -->
+
+<section class="section corporate" id="corporate">
+
+<div class="container">
+
+<div class="section-header">
+
+<div class="section-label">
+CORPORATE REGISTRATION
+</div>
+
+<h2 class="section-title">
+법인등기
+</h2>
+
+<p class="section-description">
+회사 변경사항에 따른 법인등기 절차를 안내합니다.
+</p>
+
+</div>
+
+
+<div class="corporate-list">
+
+<div class="corporate-item">
+<strong>법인설립</strong>
+<span>주식회사·유한회사 설립</span>
+</div>
+
+<div class="corporate-item">
+<strong>대표이사·임원변경</strong>
+<span>취임·중임·사임·해임 등</span>
+</div>
+
+<div class="corporate-item">
+<strong>본점주소 이전</strong>
+<span>관내·관외 본점이전</span>
+</div>
+
+<div class="corporate-item">
+<strong>자본금증자</strong>
+<span>유상증자·가수금 증자 등</span>
+</div>
+
+<div class="corporate-item">
+<strong>상호·목적 변경</strong>
+<span>정관 및 등기사항 변경</span>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- BLOG -->
+
+<section class="section" id="info">
+
+<div class="container">
+
+<div class="section-header">
+
+<div class="section-label">
+LEGAL INFORMATION
+</div>
+
+<h2 class="section-title">
+법률정보
+</h2>
+
+<p class="section-description">
+상속과 법인등기에 관한 자세한 내용을 네이버 블로그에서 확인하세요.
+</p>
+
+</div>
+
+
+<div class="info-box">
+
+<div class="info-card">
+
+<h3>상속 관련 정보</h3>
+
+<p>
+상속등기, 상속포기, 한정승인,
+특별한정승인, 상속재산분할,
+연락두절 상속인 등 다양한 정보를 확인할 수 있습니다.
+</p>
+
+<a
+href="https://blog.naver.com/hjd21"
+target="_blank"
+rel="noopener noreferrer"
+class="blog-link">
+네이버 블로그에서 상속정보 보기 →
+</a>
+
+</div>
+
+
+<div class="info-card">
+
+<h3>법인등기 관련 정보</h3>
+
+<p>
+법인설립, 대표이사 변경,
+임원변경, 본점이전, 자본금증자,
+상호·목적변경 등의 정보를 확인할 수 있습니다.
+</p>
+
+<a
+href="https://blog.naver.com/hjd21"
+target="_blank"
+rel="noopener noreferrer"
+class="blog-link">
+네이버 블로그에서 법인정보 보기 →
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- CONTACT -->
+
+<section class="section contact" id="contact">
+
+<div class="container">
+
+<h2>
+궁금한 점이 있다면<br>
+상담해보세요.
+</h2>
+
+<p class="contact-description">
+현재두 법무사 사무소
+</p>
+
+<div class="phone">
+<a href="tel:0324251500">
+032-425-1500
+</a>
+</div>
+
+<div class="contact-address">
+인천광역시 미추홀구 경원대로 873,<br>
+201호(주안동, 인성빌딩)
+</div>
+
+<a href="tel:0324251500" class="btn">
+전화 상담하기
+</a>
+
+</div>
+
+</section>
+
+
+<!-- FOOTER -->
+
+<footer class="footer">
+
+<div class="container">
+
+<div class="footer-title">
+현재두 법무사 사무소
+</div>
+
+<div class="footer-line">
+주소 : 인천광역시 미추홀구 경원대로 873,
+201호(주안동, 인성빌딩)
+</div>
+
+<div class="footer-line">
+전화 : 032-425-1500
+</div>
+
+<div class="footer-line">
+네이버 블로그 :
+<a href="https://blog.naver.com/hjd21"
+target="_blank"
+rel="noopener noreferrer">
+blog.naver.com/hjd21
+</a>
+</div>
+
+<div class="footer-line">
+Copyright © 2026 현재두 법무사 사무소.
+All rights reserved.
+</div>
+
+</div>
+
+</footer>
+
+
+<!-- MOBILE FIXED CALL -->
+
+<a href="tel:0324251500" class="mobile-call">
+전화 상담 032-425-1500
+</a>
+
+
+</body>
+</html>
+```
+
+### 이제 GitHub에서
+
+`deunggiro` 저장소 → **`index.html`** → 연필 모양 **Edit** → 기존 내용 전부 삭제 → 위 코드 전체 붙여넣기 → **Commit changes** 하면 됩니다.
+
+그리고 **CNAME은 건드리지 마세요.**
+
+현재 설정된
+
+```text
+www.deunggiro.kr
+```
+
+연결은 그대로 두면 됩니다.
+
+이 버전에서는 **네이버 블로그 `hjd21`도 이미 연결되어 있습니다.**
+[현재두 법무사 사무소 네이버 블로그](https://blog.naver.com/hjd21?utm_source=chatgpt.com)
