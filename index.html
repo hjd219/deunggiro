@@ -4,593 +4,650 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>현재두 법무사 사무소 | 인천 상속등기·상속포기·한정승인·법인등기</title>
+<title>현재두 법무사 사무소 | 인천 상속등기·법인등기·취득세 계산기</title>
 
-<meta name="description" content="인천 현재두 법무사 사무소. 상속등기, 상속포기, 한정승인, 특별한정승인, 법인등기, 부동산등기, 증여등기 상담">
+<meta name="description"
+content="인천 현재두 법무사 사무소. 상속등기, 상속포기, 한정승인, 법인설립, 법인변경등기, 부동산등기, 증여등기 및 취득세·법인등기 비용 계산기">
+
+<meta name="keywords"
+content="인천법무사, 인천상속등기, 인천법인등기, 상속포기, 한정승인, 법인설립, 대표이사변경, 본점이전, 취득세계산기, 법인등기비용계산기">
 
 <style>
-* {
-    box-sizing: border-box;
+
+*{
+    box-sizing:border-box;
 }
 
-html {
-    scroll-behavior: smooth;
+html{
+    scroll-behavior:smooth;
 }
 
-body {
-    margin: 0;
+body{
+    margin:0;
     font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Noto Sans KR",
-        "Pretendard",
-        "Segoe UI",
-        sans-serif;
-    color: #222;
-    background: #fff;
-    line-height: 1.7;
+    -apple-system,
+    BlinkMacSystemFont,
+    "Noto Sans KR",
+    "Malgun Gothic",
+    sans-serif;
+    color:#222;
+    background:#f6f7f9;
+    line-height:1.7;
 }
 
-a {
-    text-decoration: none;
-    color: inherit;
+a{
+    text-decoration:none;
+    color:inherit;
 }
 
-.container {
-    width: 100%;
-    max-width: 1180px;
-    margin: 0 auto;
-    padding: 0 24px;
+.container{
+    width:100%;
+    max-width:1180px;
+    margin:auto;
+    padding:0 22px;
 }
 
 /* HEADER */
 
-.header {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background: rgba(255,255,255,.97);
-    border-bottom: 1px solid #eee;
-    backdrop-filter: blur(10px);
+.header{
+    position:sticky;
+    top:0;
+    z-index:1000;
+    background:rgba(255,255,255,.97);
+    border-bottom:1px solid #e8e8e8;
+    backdrop-filter:blur(10px);
 }
 
-.header-inner {
-    height: 72px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.header-inner{
+    height:72px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
 }
 
-.logo {
-    font-size: 20px;
-    font-weight: 900;
-    letter-spacing: -1px;
+.logo{
+    font-size:20px;
+    font-weight:900;
+    letter-spacing:-1px;
 }
 
-.logo-sub {
-    display: block;
-    font-size: 11px;
-    color: #888;
-    font-weight: 500;
+.logo small{
+    display:block;
+    font-size:11px;
+    color:#777;
+    font-weight:500;
 }
 
-.nav {
-    display: flex;
-    gap: 30px;
-    font-size: 14px;
-    font-weight: 600;
+.nav{
+    display:flex;
+    gap:25px;
+    font-size:14px;
+    font-weight:700;
 }
 
-.nav a:hover {
-    color: #2457a6;
+.nav a:hover{
+    color:#2457a6;
 }
 
 /* HERO */
 
-.hero {
-    background: #f5f7fa;
-    padding: 105px 0 95px;
+.hero{
+    background:
+    linear-gradient(135deg,#f2f5f9,#ffffff);
+    padding:100px 0 90px;
 }
 
-.hero-content {
-    max-width: 900px;
+.hero-label{
+    color:#2457a6;
+    font-size:13px;
+    font-weight:800;
+    letter-spacing:2px;
+    margin-bottom:18px;
 }
 
-.hero-label {
-    color: #2457a6;
-    font-size: 13px;
-    font-weight: 800;
-    letter-spacing: 1.5px;
-    margin-bottom: 18px;
+.hero h1{
+    margin:0;
+    font-size:clamp(40px,6vw,70px);
+    line-height:1.2;
+    letter-spacing:-4px;
+    font-weight:900;
 }
 
-.hero h1 {
-    font-size: clamp(38px, 5.5vw, 65px);
-    line-height: 1.22;
-    letter-spacing: -4px;
-    margin: 0 0 25px;
-    font-weight: 900;
+.hero h1 span{
+    color:#2457a6;
 }
 
-.hero h1 span {
-    color: #2457a6;
+.hero p{
+    max-width:720px;
+    margin:25px 0 32px;
+    font-size:18px;
+    color:#666;
 }
 
-.hero-description {
-    max-width: 700px;
-    font-size: 18px;
-    color: #666;
-    margin-bottom: 35px;
+.buttons{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
 }
 
-.hero-buttons {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
+.btn{
+    display:inline-flex;
+    justify-content:center;
+    align-items:center;
+    min-height:50px;
+    padding:0 24px;
+    border-radius:6px;
+    font-weight:800;
 }
 
-.btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 50px;
-    padding: 0 25px;
-    border-radius: 5px;
-    font-size: 15px;
-    font-weight: 700;
+.btn-primary{
+    background:#2457a6;
+    color:#fff;
 }
 
-.btn-primary {
-    background: #2457a6;
-    color: #fff;
+.btn-dark{
+    background:#222;
+    color:#fff;
 }
 
-.btn-primary:hover {
-    background: #194681;
+.btn-white{
+    background:#fff;
+    color:#2457a6;
 }
 
-.btn-secondary {
-    background: #fff;
-    border: 1px solid #ddd;
+.btn-border{
+    background:#fff;
+    border:1px solid #ddd;
 }
 
-.btn-secondary:hover {
-    background: #f5f5f5;
+/* QUICK */
+
+.quick{
+    margin-top:-35px;
+    position:relative;
 }
 
-.hero-phone {
-    margin-top: 28px;
-    font-size: 16px;
-    font-weight: 700;
+.quick-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    background:#fff;
+    border:1px solid #e3e3e3;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 10px 35px rgba(0,0,0,.07);
 }
 
-.hero-phone a {
-    color: #2457a6;
+.quick-item{
+    padding:27px 15px;
+    text-align:center;
+    border-right:1px solid #eee;
 }
 
-/* QUICK MENU */
-
-.quick-section {
-    margin-top: -35px;
-    position: relative;
+.quick-item:last-child{
+    border-right:0;
 }
 
-.quick-menu {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    background: #fff;
-    border: 1px solid #e5e5e5;
-    border-radius: 8px;
-    box-shadow: 0 10px 30px rgba(0,0,0,.07);
-    overflow: hidden;
+.quick-item:hover{
+    background:#f7f9fc;
 }
 
-.quick-item {
-    padding: 27px 20px;
-    text-align: center;
-    border-right: 1px solid #eee;
-    transition: .2s;
+.quick-item strong{
+    color:#2457a6;
+    font-size:12px;
 }
 
-.quick-item:last-child {
-    border-right: 0;
+.quick-item h3{
+    margin:5px 0;
+    font-size:17px;
 }
 
-.quick-item:hover {
-    background: #f7f9fc;
-}
-
-.quick-number {
-    color: #2457a6;
-    font-size: 12px;
-    font-weight: 800;
-}
-
-.quick-item h3 {
-    margin: 7px 0 2px;
-    font-size: 17px;
-}
-
-.quick-item p {
-    margin: 0;
-    font-size: 12px;
-    color: #888;
+.quick-item p{
+    margin:0;
+    font-size:12px;
+    color:#888;
 }
 
 /* SECTION */
 
-.section {
-    padding: 100px 0;
+.section{
+    padding:90px 0;
 }
 
-.section-header {
-    margin-bottom: 45px;
+.section.gray{
+    background:#f0f2f5;
 }
 
-.section-label {
-    color: #2457a6;
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 1.5px;
+.label{
+    color:#2457a6;
+    font-size:12px;
+    font-weight:900;
+    letter-spacing:1.5px;
 }
 
-.section-title {
-    font-size: 36px;
-    letter-spacing: -2px;
-    margin: 8px 0 10px;
-    font-weight: 900;
+.title{
+    margin:7px 0 10px;
+    font-size:36px;
+    line-height:1.3;
+    letter-spacing:-2px;
+    font-weight:900;
 }
 
-.section-description {
-    color: #777;
-    margin: 0;
+.desc{
+    color:#777;
+    margin:0 0 40px;
 }
 
 /* INHERITANCE */
 
-.inheritance-box {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 50px;
-    align-items: center;
+.inheritance-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:40px;
+    align-items:center;
 }
 
-.inheritance-text h2 {
-    font-size: 38px;
-    line-height: 1.35;
-    letter-spacing: -2px;
-    margin: 10px 0 20px;
+.inheritance h2{
+    font-size:42px;
+    line-height:1.3;
+    letter-spacing:-3px;
+    margin:10px 0 20px;
 }
 
-.inheritance-text p {
-    color: #666;
+.inheritance p{
+    color:#666;
 }
 
-.problem-list {
-    border: 1px solid #e5e5e5;
-    border-radius: 7px;
-    overflow: hidden;
+.problem-list{
+    background:#fff;
+    border:1px solid #e4e4e4;
+    border-radius:10px;
+    overflow:hidden;
 }
 
-.problem-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 19px 22px;
-    border-bottom: 1px solid #eee;
-    font-size: 15px;
+.problem{
+    padding:19px 22px;
+    border-bottom:1px solid #eee;
+    display:flex;
+    justify-content:space-between;
 }
 
-.problem-item:last-child {
-    border-bottom: 0;
+.problem:last-child{
+    border-bottom:0;
 }
 
-.problem-item span {
-    color: #2457a6;
-    font-weight: 800;
-}
-
-/* PROCESS */
-
-.process {
-    background: #f5f7fa;
-}
-
-.process-grid {
-    display: grid;
-    grid-template-columns: repeat(4,1fr);
-    gap: 15px;
-}
-
-.process-card {
-    background: #fff;
-    padding: 30px 22px;
-    border: 1px solid #e8e8e8;
-    border-radius: 6px;
-}
-
-.process-number {
-    color: #2457a6;
-    font-size: 13px;
-    font-weight: 900;
-}
-
-.process-card h3 {
-    margin: 12px 0 7px;
-    font-size: 19px;
-}
-
-.process-card p {
-    margin: 0;
-    color: #777;
-    font-size: 14px;
+.problem span{
+    color:#2457a6;
+    font-weight:900;
 }
 
 /* SERVICES */
 
-.services {
-    display: grid;
-    grid-template-columns: repeat(3,1fr);
-    gap: 18px;
+.services{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
 }
 
-.service-card {
-    border: 1px solid #e5e5e5;
-    padding: 32px;
-    border-radius: 6px;
-    transition: .2s;
+.service{
+    background:#fff;
+    border:1px solid #e4e4e4;
+    border-radius:8px;
+    padding:30px;
+    transition:.2s;
 }
 
-.service-card:hover {
-    border-color: #2457a6;
-    transform: translateY(-3px);
+.service:hover{
+    transform:translateY(-3px);
+    border-color:#2457a6;
 }
 
-.service-number {
-    color: #2457a6;
-    font-size: 13px;
-    font-weight: 800;
+.service-number{
+    color:#2457a6;
+    font-weight:900;
 }
 
-.service-card h3 {
-    font-size: 21px;
-    margin: 13px 0 9px;
+.service h3{
+    margin:10px 0;
+    font-size:20px;
 }
 
-.service-card p {
-    margin: 0;
-    color: #777;
-    font-size: 14px;
+.service p{
+    color:#777;
+    font-size:14px;
+    margin:0;
+}
+
+/* CALCULATOR */
+
+.calculator-section{
+    background:#f0f2f5;
+}
+
+.calculator{
+    background:#fff;
+    border-radius:12px;
+    border:1px solid #ddd;
+    overflow:hidden;
+}
+
+.calc-tabs{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+}
+
+.calc-tab{
+    padding:20px;
+    border:0;
+    background:#e9edf2;
+    font-size:16px;
+    font-weight:900;
+    cursor:pointer;
+}
+
+.calc-tab.active{
+    background:#2457a6;
+    color:#fff;
+}
+
+.calc-body{
+    padding:35px;
+}
+
+.calc-description{
+    background:#f6f8fb;
+    padding:18px;
+    border-radius:8px;
+    margin-bottom:25px;
+    color:#555;
+    font-size:14px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+.form-group{
+    margin-bottom:15px;
+}
+
+.form-group.full{
+    grid-column:1/-1;
+}
+
+.form-group label{
+    display:block;
+    margin-bottom:6px;
+    font-size:13px;
+    font-weight:800;
+}
+
+select,
+input{
+    width:100%;
+    height:48px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    padding:0 12px;
+    font-size:14px;
+    background:#fff;
+}
+
+.result{
+    margin-top:20px;
+    padding:22px;
+    background:#f8f9fa;
+    border:1px solid #ddd;
+    border-radius:8px;
+}
+
+.result-row{
+    display:flex;
+    justify-content:space-between;
+    padding:7px 0;
+    font-size:14px;
+}
+
+.result-total{
+    margin-top:10px;
+    padding-top:15px;
+    border-top:2px solid #ddd;
+    font-size:20px;
+    font-weight:900;
+    color:#2457a6;
+}
+
+.note{
+    margin-top:15px;
+    font-size:12px;
+    color:#777;
 }
 
 /* CORPORATE */
 
-.corporate {
-    background: #f5f7fa;
+.corp-box{
+    background:#fff;
+    border-radius:10px;
+    border:1px solid #ddd;
+    overflow:hidden;
 }
 
-.corporate-list {
-    border-top: 2px solid #222;
+.corp-item{
+    display:flex;
+    justify-content:space-between;
+    padding:22px;
+    border-bottom:1px solid #eee;
 }
 
-.corporate-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 22px 10px;
-    border-bottom: 1px solid #ddd;
+.corp-item:last-child{
+    border-bottom:0;
 }
 
-.corporate-item strong {
-    font-size: 16px;
+.corp-item strong{
+    font-size:16px;
 }
 
-.corporate-item span {
-    color: #777;
-    font-size: 14px;
+.corp-item span{
+    color:#777;
+    font-size:14px;
 }
 
 /* BLOG */
 
-.info-box {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
+.blog-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
 }
 
-.info-card {
-    border: 1px solid #e5e5e5;
-    border-radius: 7px;
-    padding: 35px;
+.blog-card{
+    background:#fff;
+    border:1px solid #ddd;
+    border-radius:10px;
+    padding:30px;
 }
 
-.info-card h3 {
-    margin: 0 0 12px;
-    font-size: 22px;
+.blog-card h3{
+    margin-top:0;
 }
 
-.info-card p {
-    color: #777;
-    font-size: 14px;
+.blog-card p{
+    color:#777;
+    font-size:14px;
 }
 
-.blog-link {
-    color: #2457a6;
-    font-weight: 800;
+.blog-link{
+    color:#2457a6;
+    font-weight:900;
 }
 
 /* CONTACT */
 
-.contact {
-    background: #2457a6;
-    color: #fff;
-    text-align: center;
+.contact{
+    background:#2457a6;
+    color:#fff;
+    text-align:center;
 }
 
-.contact h2 {
-    font-size: 38px;
-    letter-spacing: -2px;
-    margin: 0 0 12px;
+.contact .title{
+    color:#fff;
 }
 
-.contact-description {
-    color: rgba(255,255,255,.8);
+.contact p{
+    color:rgba(255,255,255,.8);
 }
 
-.phone {
-    font-size: 38px;
-    font-weight: 900;
-    margin: 25px 0;
-}
-
-.contact-address {
-    color: rgba(255,255,255,.8);
-    margin-bottom: 30px;
-}
-
-.contact .btn {
-    background: #fff;
-    color: #2457a6;
+.phone{
+    font-size:38px;
+    font-weight:900;
+    margin:20px 0;
 }
 
 /* FOOTER */
 
-.footer {
-    background: #151515;
-    color: #999;
-    padding: 40px 0;
-    font-size: 13px;
+.footer{
+    background:#171717;
+    color:#999;
+    padding:40px 0;
+    font-size:13px;
 }
 
-.footer-title {
-    color: #fff;
-    font-size: 16px;
-    font-weight: 800;
-    margin-bottom: 10px;
+.footer strong{
+    color:#fff;
+    font-size:16px;
 }
 
-.footer-line {
-    margin-bottom: 5px;
+.footer div{
+    margin:5px 0;
 }
 
 /* MOBILE CALL */
 
-.mobile-call {
-    display: none;
+.mobile-call{
+    display:none;
 }
 
 /* MOBILE */
 
-@media(max-width:768px) {
+@media(max-width:768px){
 
-    .container {
-        padding: 0 20px;
+    .container{
+        padding:0 18px;
     }
 
-    .header-inner {
-        height: 64px;
+    .header-inner{
+        height:64px;
     }
 
-    .nav {
-        display: none;
+    .nav{
+        display:none;
     }
 
-    .hero {
-        padding: 75px 0 85px;
+    .hero{
+        padding:70px 0 80px;
     }
 
-    .hero h1 {
-        font-size: 42px;
-        letter-spacing: -2.5px;
+    .hero h1{
+        font-size:42px;
+        letter-spacing:-3px;
     }
 
-    .hero-description {
-        font-size: 16px;
+    .hero p{
+        font-size:16px;
     }
 
-    .quick-section {
-        margin-top: 0;
-        padding-top: 15px;
+    .quick{
+        margin-top:0;
+        padding-top:15px;
     }
 
-    .quick-menu {
-        grid-template-columns: repeat(2,1fr);
-        box-shadow: none;
-    }
-
-    .quick-item:nth-child(2) {
-        border-right: 0;
+    .quick-grid{
+        grid-template-columns:1fr 1fr;
+        box-shadow:none;
     }
 
     .quick-item:nth-child(1),
-    .quick-item:nth-child(2) {
-        border-bottom: 1px solid #eee;
+    .quick-item:nth-child(2){
+        border-bottom:1px solid #eee;
     }
 
-    .section {
-        padding: 75px 0;
+    .quick-item:nth-child(2){
+        border-right:0;
     }
 
-    .section-title {
-        font-size: 30px;
+    .section{
+        padding:70px 0;
     }
 
-    .inheritance-box {
-        grid-template-columns: 1fr;
-        gap: 35px;
+    .title{
+        font-size:30px;
     }
 
-    .inheritance-text h2 {
-        font-size: 31px;
+    .inheritance-grid{
+        grid-template-columns:1fr;
     }
 
-    .process-grid {
-        grid-template-columns: 1fr 1fr;
+    .inheritance h2{
+        font-size:33px;
     }
 
-    .services {
-        grid-template-columns: 1fr;
+    .services{
+        grid-template-columns:1fr;
     }
 
-    .info-box {
-        grid-template-columns: 1fr;
+    .form-grid{
+        grid-template-columns:1fr;
     }
 
-    .corporate-item {
-        display: block;
+    .form-group.full{
+        grid-column:auto;
     }
 
-    .corporate-item span {
-        display: block;
-        margin-top: 5px;
+    .calc-body{
+        padding:22px;
     }
 
-    .contact h2 {
-        font-size: 31px;
+    .blog-grid{
+        grid-template-columns:1fr;
     }
 
-    .phone {
-        font-size: 30px;
+    .corp-item{
+        display:block;
     }
 
-    .mobile-call {
-        display: block;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        z-index: 2000;
-        background: #2457a6;
-        color: #fff;
-        text-align: center;
-        padding: 14px;
-        font-weight: 800;
-        box-shadow: 0 -3px 15px rgba(0,0,0,.15);
+    .corp-item span{
+        display:block;
+        margin-top:5px;
     }
 
-    body {
-        padding-bottom: 55px;
+    .phone{
+        font-size:30px;
+    }
+
+    .mobile-call{
+        display:block;
+        position:fixed;
+        left:0;
+        right:0;
+        bottom:0;
+        z-index:2000;
+        background:#2457a6;
+        color:#fff;
+        text-align:center;
+        padding:14px;
+        font-weight:900;
+    }
+
+    body{
+        padding-bottom:55px;
     }
 }
+
+.hidden{
+    display:none !important;
+}
+
 </style>
 </head>
 
@@ -604,15 +661,16 @@ a {
 
 <a href="#" class="logo">
 현재두 법무사 사무소
-<span class="logo-sub">인천 법무사</span>
+<small>인천 법무사</small>
 </a>
 
 <nav class="nav">
 <a href="#inheritance">상속</a>
 <a href="#services">주요업무</a>
+<a href="#calculator">계산기</a>
 <a href="#corporate">법인등기</a>
-<a href="#info">법률정보</a>
-<a href="#contact">상담안내</a>
+<a href="#blog">법률정보</a>
+<a href="#contact">상담</a>
 </nav>
 
 </div>
@@ -626,39 +684,35 @@ a {
 
 <div class="container">
 
-<div class="hero-content">
-
 <div class="hero-label">
-INCHON · JUDICIAL SCRIVENER
+INCHON JUDICIAL SCRIVENER
 </div>
 
 <h1>
-상속·등기,<br>
-<span>복잡한 문제를 쉽게</span><br>
-해결하세요.
+복잡한 등기,<br>
+<span>쉽게 확인하고</span><br>
+정확하게 진행하세요.
 </h1>
 
-<p class="hero-description">
+<p>
 상속등기부터 상속포기·한정승인,
-부동산등기, 증여등기, 법인등기까지
-상황에 맞는 절차를 확인하고 안내합니다.
+부동산등기, 증여등기, 법인설립과
+법인변경등기까지 필요한 절차를 안내합니다.
 </p>
 
-<div class="hero-buttons">
+<div class="buttons">
 
-<a href="#inheritance" class="btn btn-primary">
-상속 문제 알아보기
+<a href="#calculator" class="btn btn-primary">
+취득세·등기비용 계산
 </a>
 
-<a href="tel:0324251500" class="btn btn-secondary">
+<a href="#services" class="btn btn-border">
+주요 업무 확인
+</a>
+
+<a href="tel:0324251500" class="btn btn-dark">
 032-425-1500
 </a>
-
-</div>
-
-<div class="hero-phone">
-인천 현재두 법무사 사무소
-</div>
 
 </div>
 
@@ -667,36 +721,36 @@ INCHON · JUDICIAL SCRIVENER
 </section>
 
 
-<!-- QUICK MENU -->
+<!-- QUICK -->
 
-<section class="quick-section">
+<section class="quick">
 
 <div class="container">
 
-<div class="quick-menu">
+<div class="quick-grid">
 
-<a href="#inheritance" class="quick-item">
-<div class="quick-number">01</div>
+<a class="quick-item" href="#inheritance">
+<strong>01</strong>
 <h3>상속등기</h3>
-<p>상속재산 부동산 이전</p>
+<p>상속재산·상속인 확인</p>
 </a>
 
-<a href="#inheritance" class="quick-item">
-<div class="quick-number">02</div>
+<a class="quick-item" href="#inheritance">
+<strong>02</strong>
 <h3>상속포기·한정승인</h3>
 <p>상속채무 해결</p>
 </a>
 
-<a href="#corporate" class="quick-item">
-<div class="quick-number">03</div>
+<a class="quick-item" href="#corporate">
+<strong>03</strong>
 <h3>법인등기</h3>
-<p>회사 변경등기</p>
+<p>설립·변경·증자</p>
 </a>
 
-<a href="#services" class="quick-item">
-<div class="quick-number">04</div>
-<h3>부동산등기</h3>
-<p>매매·증여·재산분할</p>
+<a class="quick-item" href="#calculator">
+<strong>04</strong>
+<h3>등기 비용 계산</h3>
+<p>취득세·법인등기</p>
 </a>
 
 </div>
@@ -708,28 +762,27 @@ INCHON · JUDICIAL SCRIVENER
 
 <!-- INHERITANCE -->
 
-<section class="section" id="inheritance">
+<section class="section inheritance" id="inheritance">
 
 <div class="container">
 
-<div class="inheritance-box">
+<div class="inheritance-grid">
 
-<div class="inheritance-text">
+<div>
 
-<div class="section-label">
-INHERITANCE
-</div>
+<div class="label">INHERITANCE</div>
 
 <h2>
 상속은<br>
-먼저 상황을<br>
-확인해야 합니다.
+등기부터 하는 것이<br>
+아닐 수 있습니다.
 </h2>
 
 <p>
-상속인이 여러 명이거나 연락이 되지 않는 경우,
-상속채무가 있는 경우에는 단순히 부동산만
-상속등기하는 것으로 해결되지 않을 수 있습니다.
+상속인이 여러 명이거나 연락두절인 경우,
+상속채무가 있는 경우에는 먼저 상속관계를
+확인하고 상속포기·한정승인·상속재산분할 등의
+절차를 검토해야 합니다.
 </p>
 
 <a href="tel:0324251500" class="btn btn-primary">
@@ -738,35 +791,34 @@ INHERITANCE
 
 </div>
 
-
 <div class="problem-list">
 
-<div class="problem-item">
+<div class="problem">
 상속인 중 연락두절자가 있습니다.
 <span>→</span>
 </div>
 
-<div class="problem-item">
+<div class="problem">
 상속인간 협의가 되지 않습니다.
 <span>→</span>
 </div>
 
-<div class="problem-item">
+<div class="problem">
 상속받을 재산보다 빚이 많습니다.
 <span>→</span>
 </div>
 
-<div class="problem-item">
+<div class="problem">
 이복형제·이부형제가 있습니다.
 <span>→</span>
 </div>
 
-<div class="problem-item">
+<div class="problem">
 대습상속인이 있습니다.
 <span>→</span>
 </div>
 
-<div class="problem-item">
+<div class="problem">
 상속재산을 어떻게 나눌지 모르겠습니다.
 <span>→</span>
 </div>
@@ -780,64 +832,73 @@ INHERITANCE
 </section>
 
 
-<!-- PROCESS -->
+<!-- SERVICES -->
 
-<section class="section process">
+<section class="section gray" id="services">
 
 <div class="container">
 
-<div class="section-header">
+<div class="label">SERVICES</div>
 
-<div class="section-label">
-PROCESS
-</div>
+<h2 class="title">주요 업무</h2>
 
-<h2 class="section-title">
-처음부터 절차를 확인하세요.
-</h2>
-
-<p class="section-description">
-현재 상황을 확인한 후 필요한 절차를 안내합니다.
+<p class="desc">
+현재두 법무사 사무소에서 주로 진행하는 업무입니다.
 </p>
 
-</div>
+<div class="services">
 
-
-<div class="process-grid">
-
-<div class="process-card">
-<div class="process-number">STEP 01</div>
-<h3>상황 확인</h3>
+<div class="service">
+<div class="service-number">01</div>
+<h3>상속등기</h3>
 <p>
-상속인과 재산·채무 등
-현재 상황을 확인합니다.
+협의분할 상속등기, 법정상속,
+상속재산분할 등에 따른 부동산 이전등기
 </p>
 </div>
 
-<div class="process-card">
-<div class="process-number">STEP 02</div>
-<h3>절차 검토</h3>
+<div class="service">
+<div class="service-number">02</div>
+<h3>상속포기·한정승인</h3>
 <p>
-상속등기, 상속포기,
-한정승인 등 필요한 절차를 검토합니다.
+상속채무가 많은 경우 상속포기,
+한정승인 및 특별한정승인 절차
 </p>
 </div>
 
-<div class="process-card">
-<div class="process-number">STEP 03</div>
-<h3>서류 준비</h3>
+<div class="service">
+<div class="service-number">03</div>
+<h3>부동산등기</h3>
 <p>
-업무에 필요한 서류와
-준비사항을 안내합니다.
+매매·증여·재산분할 등에 따른
+소유권이전등기
 </p>
 </div>
 
-<div class="process-card">
-<div class="process-number">STEP 04</div>
-<h3>절차 진행</h3>
+<div class="service">
+<div class="service-number">04</div>
+<h3>법인설립</h3>
 <p>
-확인된 절차에 따라
-등기 또는 법원 업무를 진행합니다.
+주식회사·유한회사 설립 및
+1인법인 설립 관련 절차
+</p>
+</div>
+
+<div class="service">
+<div class="service-number">05</div>
+<h3>법인변경등기</h3>
+<p>
+대표이사·임원·상호·목적·본점주소
+변경 및 자본금증자
+</p>
+</div>
+
+<div class="service">
+<div class="service-number">06</div>
+<h3>증여·재산분할</h3>
+<p>
+부동산 증여 및 이혼에 따른
+재산분할 소유권이전등기
 </p>
 </div>
 
@@ -848,83 +909,287 @@ PROCESS
 </section>
 
 
-<!-- SERVICES -->
+<!-- CALCULATOR -->
 
-<section class="section" id="services">
+<section class="section calculator-section" id="calculator">
 
 <div class="container">
 
-<div class="section-header">
+<div class="label">CALCULATOR</div>
 
-<div class="section-label">
-SERVICES
-</div>
+<h2 class="title">등기 비용 계산기</h2>
 
-<h2 class="section-title">
-주요 업무
-</h2>
-
-<p class="section-description">
-상속·부동산·법인 관련 업무를 상담합니다.
+<p class="desc">
+복잡한 계산을 먼저 확인해보세요.
+실제 신고·등기 비용은 개별 조건에 따라 달라질 수 있습니다.
 </p>
 
+
+<div class="calculator">
+
+<div class="calc-tabs">
+
+<button class="calc-tab active"
+onclick="showCalculator('tax',this)">
+부동산 취득세 계산기
+</button>
+
+<button class="calc-tab"
+onclick="showCalculator('corp',this)">
+법인등기 비용 계산기
+</button>
+
 </div>
 
 
-<div class="services">
+<!-- 취득세 -->
 
-<div class="service-card">
-<div class="service-number">01</div>
-<h3>상속등기</h3>
-<p>
-상속으로 인한 부동산 소유권이전,
-협의분할에 의한 상속등기 등을 안내합니다.
-</p>
+<div id="taxCalculator" class="calc-body">
+
+<div class="calc-description">
+<strong>부동산 취득세 예상 계산</strong><br>
+매매·상속·증여·재산분할 등 취득원인에 따라
+예상 세액을 계산합니다.
 </div>
 
-<div class="service-card">
-<div class="service-number">02</div>
-<h3>상속포기·한정승인</h3>
-<p>
-상속채무가 많은 경우 상속포기,
-한정승인, 특별한정승인 절차를 검토합니다.
-</p>
+<div class="form-grid">
+
+<div class="form-group">
+
+<label>취득 원인</label>
+
+<select id="taxReason" onchange="calculateTax()">
+
+<option value="sale">매매 / 유상취득</option>
+<option value="inheritance">상속</option>
+<option value="gift">증여</option>
+<option value="divorce">이혼 / 재산분할</option>
+
+</select>
+
 </div>
 
-<div class="service-card">
-<div class="service-number">03</div>
-<h3>부동산등기</h3>
-<p>
-매매·증여·재산분할 등에 따른
-부동산 소유권이전등기를 안내합니다.
-</p>
+
+<div class="form-group">
+
+<label>취득가액 / 시가표준액</label>
+
+<input
+id="taxPrice"
+type="text"
+value="600,000,000"
+oninput="formatTaxPrice(this)">
+
 </div>
 
-<div class="service-card">
-<div class="service-number">04</div>
-<h3>법인설립·법인등기</h3>
-<p>
-법인설립부터 대표이사·임원변경,
-본점이전, 자본금증자 등을 진행합니다.
-</p>
+
+<div class="form-group">
+
+<label>주택 수</label>
+
+<select id="taxHouse" onchange="calculateTax()">
+
+<option value="1">1주택</option>
+<option value="2">2주택</option>
+<option value="3">3주택</option>
+<option value="4">4주택 이상</option>
+
+</select>
+
 </div>
 
-<div class="service-card">
-<div class="service-number">05</div>
-<h3>증여등기</h3>
-<p>
-부동산 증여에 따른 소유권이전등기와
-관련 절차를 안내합니다.
-</p>
+
+<div class="form-group">
+
+<label>지역</label>
+
+<select id="taxRegion" onchange="calculateTax()">
+
+<option value="normal">비조정대상지역</option>
+<option value="regulated">조정대상지역</option>
+
+</select>
+
 </div>
 
-<div class="service-card">
-<div class="service-number">06</div>
-<h3>재산분할</h3>
-<p>
-협의이혼 등에 따른 부동산
-재산분할과 이전등기를 안내합니다.
-</p>
+
+<div class="form-group">
+
+<label>전용면적</label>
+
+<select id="taxArea" onchange="calculateTax()">
+
+<option value="under">85㎡ 이하</option>
+<option value="over">85㎡ 초과</option>
+
+</select>
+
+</div>
+
+
+<div class="form-group" id="homelessBox">
+
+<label>상속 무주택 특례</label>
+
+<select id="taxHomeless" onchange="calculateTax()">
+
+<option value="no">해당 없음</option>
+<option value="yes">상속인 세대 전원 무주택</option>
+
+</select>
+
+</div>
+
+</div>
+
+
+<div class="result">
+
+<div class="result-row">
+<span>취득세율</span>
+<strong id="taxRate">1.00%</strong>
+</div>
+
+<div class="result-row">
+<span>취득세</span>
+<strong id="taxMain">6,000,000원</strong>
+</div>
+
+<div class="result-row">
+<span>지방교육세</span>
+<strong id="taxEdu">600,000원</strong>
+</div>
+
+<div class="result-row">
+<span>농어촌특별세</span>
+<strong id="taxRural">0원</strong>
+</div>
+
+<div class="result-row result-total">
+<span>예상 총 세액</span>
+<strong id="taxTotal">6,600,000원</strong>
+</div>
+
+</div>
+
+<div class="note">
+※ 본 계산기는 이해를 돕기 위한 예상 계산기입니다.
+실제 세액은 주택 수, 취득가액, 면적, 지역,
+감면요건 및 개별 사실관계에 따라 달라질 수 있습니다.
+</div>
+
+</div>
+
+
+<!-- 법인등기 -->
+
+<div id="corpCalculator" class="calc-body hidden">
+
+<div class="calc-description">
+
+<strong>법인등기 비용 예상 계산</strong><br>
+
+자본금과 본점 소재지, 등기 유형 등을 입력하면
+등록면허세와 교육세 등을 포함한 공과금 예상액을 확인할 수 있습니다.
+
+</div>
+
+
+<div class="form-grid">
+
+<div class="form-group">
+
+<label>등기 종류</label>
+
+<select id="corpType" onchange="calculateCorp()">
+
+<option value="capital">법인설립</option>
+<option value="increase">자본금증자</option>
+<option value="director">임원변경</option>
+<option value="head">본점이전</option>
+<option value="purpose">상호·목적변경</option>
+
+</select>
+
+</div>
+
+
+<div class="form-group">
+
+<label>자본금</label>
+
+<input
+id="corpCapital"
+type="text"
+value="10,000,000"
+oninput="formatCorpCapital(this)">
+
+</div>
+
+
+<div class="form-group">
+
+<label>본점 소재지</label>
+
+<select id="corpArea" onchange="calculateCorp()">
+
+<option value="normal">비과밀억제권역</option>
+<option value="over">과밀억제권역</option>
+
+</select>
+
+</div>
+
+
+<div class="form-group">
+
+<label>전자등기 여부</label>
+
+<select id="corpElectronic" onchange="calculateCorp()">
+
+<option value="yes">전자등기</option>
+<option value="no">서류등기</option>
+
+</select>
+
+</div>
+
+</div>
+
+
+<div class="result">
+
+<div class="result-row">
+<span>등록면허세</span>
+<strong id="corpTax">112,500원</strong>
+</div>
+
+<div class="result-row">
+<span>지방교육세</span>
+<strong id="corpEdu">22,500원</strong>
+</div>
+
+<div class="result-row">
+<span>등기신청 수수료 등</span>
+<strong id="corpFee">약 2,000원</strong>
+</div>
+
+<div class="result-row result-total">
+<span>예상 공과금</span>
+<strong id="corpTotal">137,000원</strong>
+</div>
+
+</div>
+
+
+<div class="note">
+
+※ 법인등기 공과금은 등기 종류와 자본금,
+본점 소재지 등에 따라 달라집니다.
+전자등기 여부 및 사건별 추가 비용도 발생할 수 있습니다.
+
+</div>
+
 </div>
 
 </div>
@@ -936,55 +1201,58 @@ SERVICES
 
 <!-- CORPORATE -->
 
-<section class="section corporate" id="corporate">
+<section class="section" id="corporate">
 
 <div class="container">
 
-<div class="section-header">
+<div class="label">CORPORATE REGISTRATION</div>
 
-<div class="section-label">
-CORPORATE REGISTRATION
-</div>
+<h2 class="title">법인등기</h2>
 
-<h2 class="section-title">
-법인등기
-</h2>
-
-<p class="section-description">
-회사 변경사항에 따른 법인등기 절차를 안내합니다.
+<p class="desc">
+설립부터 대표이사 변경, 본점이전, 자본금증자까지
+법인 운영 중 발생하는 다양한 변경등기를 안내합니다.
 </p>
 
-</div>
+<div class="corp-box">
 
-
-<div class="corporate-list">
-
-<div class="corporate-item">
+<div class="corp-item">
 <strong>법인설립</strong>
-<span>주식회사·유한회사 설립</span>
+<span>주식회사·유한회사·1인법인</span>
 </div>
 
-<div class="corporate-item">
-<strong>대표이사·임원변경</strong>
-<span>취임·중임·사임·해임 등</span>
+<div class="corp-item">
+<strong>대표이사 변경</strong>
+<span>취임·중임·사임·해임</span>
 </div>
 
-<div class="corporate-item">
+<div class="corp-item">
+<strong>임원 변경</strong>
+<span>이사·감사 변경 및 중임</span>
+</div>
+
+<div class="corp-item">
 <strong>본점주소 이전</strong>
 <span>관내·관외 본점이전</span>
 </div>
 
-<div class="corporate-item">
+<div class="corp-item">
 <strong>자본금증자</strong>
-<span>유상증자·가수금 증자 등</span>
+<span>유상증자·가수금 증자</span>
 </div>
 
-<div class="corporate-item">
+<div class="corp-item">
 <strong>상호·목적 변경</strong>
 <span>정관 및 등기사항 변경</span>
 </div>
 
 </div>
+
+<br>
+
+<a href="#calculator" class="btn btn-primary">
+법인등기 비용 계산하기
+</a>
 
 </div>
 
@@ -993,71 +1261,74 @@ CORPORATE REGISTRATION
 
 <!-- BLOG -->
 
-<section class="section" id="info">
+<section class="section gray" id="blog">
 
 <div class="container">
 
-<div class="section-header">
+<div class="label">LEGAL INFORMATION</div>
 
-<div class="section-label">
-LEGAL INFORMATION
-</div>
+<h2 class="title">법률정보</h2>
 
-<h2 class="section-title">
-법률정보
-</h2>
-
-<p class="section-description">
-상속과 법인등기에 관한 자세한 내용을 네이버 블로그에서 확인하세요.
+<p class="desc">
+상속·법인·부동산등기에 관한 자세한 내용은
+네이버 블로그에서 확인할 수 있습니다.
 </p>
 
-</div>
+<div class="blog-grid">
 
-
-<div class="info-box">
-
-<div class="info-card">
+<div class="blog-card">
 
 <h3>상속 관련 정보</h3>
 
 <p>
 상속등기, 상속포기, 한정승인,
 특별한정승인, 상속재산분할,
-연락두절 상속인 등 다양한 정보를 확인할 수 있습니다.
+연락두절 상속인, 이복형제·이부형제 등
+상속과 관련된 실무 정보를 제공합니다.
 </p>
 
 <a
+class="blog-link"
 href="https://blog.naver.com/hjd21"
 target="_blank"
-rel="noopener noreferrer"
-class="blog-link">
-네이버 블로그에서 상속정보 보기 →
+rel="noopener">
+상속정보 보러가기 →
 </a>
 
 </div>
 
 
-<div class="info-card">
+<div class="blog-card">
 
 <h3>법인등기 관련 정보</h3>
 
 <p>
 법인설립, 대표이사 변경,
 임원변경, 본점이전, 자본금증자,
-상호·목적변경 등의 정보를 확인할 수 있습니다.
+상호·목적변경 등 법인등기 정보를 제공합니다.
 </p>
 
 <a
+class="blog-link"
 href="https://blog.naver.com/hjd21"
 target="_blank"
-rel="noopener noreferrer"
-class="blog-link">
-네이버 블로그에서 법인정보 보기 →
+rel="noopener">
+법인등기 정보 보러가기 →
 </a>
 
 </div>
 
 </div>
+
+<br>
+
+<a
+href="https://blog.naver.com/hjd21"
+target="_blank"
+rel="noopener"
+class="btn btn-primary">
+현재두 법무사 네이버 블로그
+</a>
 
 </div>
 
@@ -1070,13 +1341,17 @@ class="blog-link">
 
 <div class="container">
 
-<h2>
-궁금한 점이 있다면<br>
-상담해보세요.
+<div class="label" style="color:#dce8ff;">
+CONSULTATION
+</div>
+
+<h2 class="title">
+상담이 필요한 경우<br>
+현재 상황부터 확인하세요.
 </h2>
 
-<p class="contact-description">
-현재두 법무사 사무소
+<p>
+상속·부동산·법인등기 관련 상담
 </p>
 
 <div class="phone">
@@ -1085,12 +1360,7 @@ class="blog-link">
 </a>
 </div>
 
-<div class="contact-address">
-인천광역시 미추홀구 경원대로 873,<br>
-201호(주안동, 인성빌딩)
-</div>
-
-<a href="tel:0324251500" class="btn">
+<a href="tel:0324251500" class="btn btn-white">
 전화 상담하기
 </a>
 
@@ -1105,31 +1375,29 @@ class="blog-link">
 
 <div class="container">
 
-<div class="footer-title">
-현재두 법무사 사무소
-</div>
+<strong>현재두 법무사 사무소</strong>
 
-<div class="footer-line">
+<div>
 주소 : 인천광역시 미추홀구 경원대로 873,
 201호(주안동, 인성빌딩)
 </div>
 
-<div class="footer-line">
+<div>
 전화 : 032-425-1500
 </div>
 
-<div class="footer-line">
+<div>
 네이버 블로그 :
-<a href="https://blog.naver.com/hjd21"
+<a
+href="https://blog.naver.com/hjd21"
 target="_blank"
-rel="noopener noreferrer">
+rel="noopener">
 blog.naver.com/hjd21
 </a>
 </div>
 
-<div class="footer-line">
-Copyright © 2026 현재두 법무사 사무소.
-All rights reserved.
+<div>
+© 2026 현재두 법무사 사무소. All rights reserved.
 </div>
 
 </div>
@@ -1137,12 +1405,425 @@ All rights reserved.
 </footer>
 
 
-<!-- MOBILE FIXED CALL -->
+<!-- MOBILE CALL -->
 
 <a href="tel:0324251500" class="mobile-call">
 전화 상담 032-425-1500
 </a>
 
+
+<script>
+
+/* 숫자 */
+
+function comma(num){
+
+    return Math.round(num)
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g,",");
+}
+
+function number(value){
+
+    return parseInt(
+        String(value).replace(/,/g,"")
+    ) || 0;
+
+}
+
+
+/* 계산기 탭 */
+
+function showCalculator(type,button){
+
+    document.getElementById("taxCalculator")
+    .classList.add("hidden");
+
+    document.getElementById("corpCalculator")
+    .classList.add("hidden");
+
+    document.querySelectorAll(".calc-tab")
+    .forEach(function(tab){
+
+        tab.classList.remove("active");
+
+    });
+
+    button.classList.add("active");
+
+    if(type==="tax"){
+
+        document.getElementById("taxCalculator")
+        .classList.remove("hidden");
+
+    }else{
+
+        document.getElementById("corpCalculator")
+        .classList.remove("hidden");
+
+    }
+
+}
+
+
+/* 취득세 금액 */
+
+function formatTaxPrice(input){
+
+    let value=number(input.value);
+
+    input.value=comma(value);
+
+    calculateTax();
+
+}
+
+
+/* 취득세 계산 */
+
+function calculateTax(){
+
+    let reason=
+    document.getElementById("taxReason").value;
+
+    let price=
+    number(document.getElementById("taxPrice").value);
+
+    let house=
+    document.getElementById("taxHouse").value;
+
+    let region=
+    document.getElementById("taxRegion").value;
+
+    let area=
+    document.getElementById("taxArea").value;
+
+    let homeless=
+    document.getElementById("taxHomeless").value;
+
+
+    let rate=0;
+
+    let edu=0;
+
+    let rural=0;
+
+
+    /* 매매 */
+
+    if(reason==="sale"){
+
+        if(region==="regulated"){
+
+            if(house==="1"){
+
+                if(price<=600000000){
+
+                    rate=.01;
+
+                }else if(price<=900000000){
+
+                    rate=(price*(2/300000000)-3)/100;
+
+                }else{
+
+                    rate=.03;
+
+                }
+
+            }else if(house==="2"){
+
+                rate=.08;
+
+            }else{
+
+                rate=.12;
+
+            }
+
+        }else{
+
+            if(house==="1" || house==="2"){
+
+                if(price<=600000000){
+
+                    rate=.01;
+
+                }else if(price<=900000000){
+
+                    rate=(price*(2/300000000)-3)/100;
+
+                }else{
+
+                    rate=.03;
+
+                }
+
+            }else if(house==="3"){
+
+                rate=.08;
+
+            }else{
+
+                rate=.12;
+
+            }
+
+        }
+
+
+        if(rate>=.08){
+
+            edu=.004;
+
+        }else{
+
+            edu=rate*.1;
+
+        }
+
+
+        rural=
+        area==="over"
+        ? (rate>=.08 ? .01 : .002)
+        : 0;
+
+    }
+
+
+    /* 상속 */
+
+    else if(reason==="inheritance"){
+
+        if(homeless==="yes"){
+
+            rate=.003;
+
+            edu=.0006;
+
+            rural=0;
+
+        }else{
+
+            rate=.023;
+
+            edu=.002;
+
+            rural=
+            area==="over" ? .003 : 0;
+
+        }
+
+    }
+
+
+    /* 증여 */
+
+    else if(reason==="gift"){
+
+        if(
+            region==="regulated" &&
+            price>=300000000
+        ){
+
+            rate=.12;
+
+            edu=.004;
+
+            rural=
+            area==="over" ? .01 : 0;
+
+        }else{
+
+            rate=.035;
+
+            edu=.003;
+
+            rural=
+            area==="over" ? .002 : 0;
+
+        }
+
+    }
+
+
+    /* 재산분할 */
+
+    else if(reason==="divorce"){
+
+        rate=.015;
+
+        edu=.003;
+
+        rural=
+        area==="over" ? .002 : 0;
+
+    }
+
+
+    let tax=
+    Math.floor(price*rate);
+
+    let eduTax=
+    Math.floor(price*edu);
+
+    let ruralTax=
+    Math.floor(price*rural);
+
+    let total=
+    tax+eduTax+ruralTax;
+
+
+    document.getElementById("taxRate")
+    .innerText=(rate*100).toFixed(2)+"%";
+
+    document.getElementById("taxMain")
+    .innerText=comma(tax)+"원";
+
+    document.getElementById("taxEdu")
+    .innerText=comma(eduTax)+"원";
+
+    document.getElementById("taxRural")
+    .innerText=comma(ruralTax)+"원";
+
+    document.getElementById("taxTotal")
+    .innerText=comma(total)+"원";
+
+}
+
+
+/* 법인 자본금 */
+
+function formatCorpCapital(input){
+
+    let value=number(input.value);
+
+    input.value=comma(value);
+
+    calculateCorp();
+
+}
+
+
+/* 법인등기 계산 */
+
+function calculateCorp(){
+
+    let type=
+    document.getElementById("corpType").value;
+
+    let capital=
+    number(document.getElementById("corpCapital").value);
+
+    let area=
+    document.getElementById("corpArea").value;
+
+    let electronic=
+    document.getElementById("corpElectronic").value;
+
+
+    let registrationTax=0;
+
+    let educationTax=0;
+
+    let applicationFee=2000;
+
+
+    /*
+       기본 등록면허세
+
+       설립·증자:
+       자본금 × 0.4%
+
+       과밀억제권역:
+       3배 중과
+
+       최소세액 112,500원 기준
+    */
+
+
+    if(type==="capital" || type==="increase"){
+
+        registrationTax=
+        Math.max(
+            capital*.004,
+            112500
+        );
+
+        if(area==="over"){
+
+            registrationTax*=3;
+
+        }
+
+    }
+
+
+    /*
+       임원·본점·상호·목적 변경
+       기본 등록면허세
+    */
+
+    else{
+
+        registrationTax=40500;
+
+        if(area==="over"){
+
+            registrationTax*=3;
+
+        }
+
+    }
+
+
+    educationTax=
+    registrationTax*.2;
+
+
+    /*
+       전자등기 수수료 차이
+    */
+
+    if(electronic==="no"){
+
+        applicationFee+=3000;
+
+    }
+
+
+    let total=
+    registrationTax+
+    educationTax+
+    applicationFee;
+
+
+    document.getElementById("corpTax")
+    .innerText=comma(registrationTax)+"원";
+
+    document.getElementById("corpEdu")
+    .innerText=comma(educationTax)+"원";
+
+    document.getElementById("corpFee")
+    .innerText=comma(applicationFee)+"원";
+
+    document.getElementById("corpTotal")
+    .innerText=comma(total)+"원";
+
+}
+
+
+/* 초기 실행 */
+
+window.onload=function(){
+
+    calculateTax();
+
+    calculateCorp();
+
+};
+
+</script>
 
 </body>
 </html>
