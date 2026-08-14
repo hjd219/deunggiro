@@ -1,0 +1,290 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>부동산 취득세 종합계산기 | 등기로</title><meta name="description" content="상속·증여·일반 부동산 취득의 취득세, 지방교육세, 농어촌특별세를 지분까지 반영해 계산합니다."><style>
+:root{
+  --primary:#2457a6; --primary-dark:#173d78; --ink:#20242b; --muted:#6b7280;
+  --line:#e5e7eb; --bg:#f6f7f9; --card:#fff; --soft:#eef3fb; --max:1180px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR","Malgun Gothic",sans-serif;color:var(--ink);background:var(--bg);line-height:1.7}
+a{text-decoration:none;color:inherit}
+button,input,select,textarea{font:inherit}
+.container{width:100%;max-width:var(--max);margin:auto;padding:0 22px}
+.header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.97);border-bottom:1px solid var(--line);backdrop-filter:blur(10px)}
+.header-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.logo{font-size:20px;font-weight:900;letter-spacing:-1px}.logo small{display:block;font-size:11px;color:#777;font-weight:500}
+.nav{display:flex;gap:22px;font-size:14px;font-weight:800;align-items:center}.nav a:hover{color:var(--primary)}
+.hero{background:linear-gradient(135deg,#f1f5fb,#fff);padding:92px 0 80px}
+.hero-label,.label{color:var(--primary);font-size:12px;font-weight:900;letter-spacing:1.4px}
+.hero h1{font-size:clamp(40px,6vw,68px);line-height:1.18;letter-spacing:-4px;margin:10px 0 20px;font-weight:900}
+.hero h1 span{color:var(--primary)}
+.hero p{max-width:760px;color:#646b76;font-size:18px;margin-bottom:30px}
+.buttons{display:flex;flex-wrap:wrap;gap:10px}
+.btn{border:0;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 22px;border-radius:7px;font-weight:900}
+.btn-primary{background:var(--primary);color:#fff}.btn-dark{background:#222;color:#fff}.btn-border{background:#fff;border:1px solid #d7dbe2}.btn-soft{background:var(--soft);color:var(--primary)}
+.section{padding:76px 0}.section.white{background:#fff}.section.soft{background:#eef1f5}
+.title{font-size:36px;line-height:1.3;letter-spacing:-2px;margin:7px 0 10px;font-weight:900}.desc{color:var(--muted);margin:0 0 34px}
+.quick{margin-top:-28px;position:relative}.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:0 10px 35px rgba(0,0,0,.06)}
+.quick-item{padding:24px 15px;text-align:center;border-right:1px solid #eee}.quick-item:last-child{border-right:0}.quick-item strong{color:var(--primary);font-size:12px}.quick-item h3{font-size:17px;margin:4px 0}.quick-item p{font-size:12px;color:#888;margin:0}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:28px}.card h3{margin:6px 0 10px}.card p{color:var(--muted);font-size:14px;margin:0}.num{font-weight:900;color:var(--primary);font-size:13px}
+.calculator{background:#fff;border:1px solid #ddd;border-radius:12px;overflow:hidden}.calc-tabs{display:grid;grid-template-columns:1fr 1fr}.calc-tab{border:0;padding:18px;background:#e8edf4;font-weight:900;cursor:pointer}.calc-tab.active{background:var(--primary);color:#fff}.calc-body{padding:30px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.form-group{margin-bottom:13px}.form-group.full{grid-column:1/-1}.form-group label{display:block;font-size:13px;font-weight:900;margin-bottom:6px}
+input,select,textarea{width:100%;border:1px solid #cfd4dc;border-radius:7px;background:#fff;padding:11px 12px}input,select{height:47px}textarea{min-height:160px;resize:vertical}
+.result{margin-top:18px;padding:20px;border:1px solid #ddd;border-radius:8px;background:#fafbfc}.result-row{display:flex;justify-content:space-between;gap:20px;padding:6px 0}.result-total{border-top:2px solid #ddd;margin-top:10px;padding-top:13px;color:var(--primary);font-weight:900;font-size:20px}
+.post-toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:20px}.search-wrap{display:flex;gap:8px;flex:1;min-width:260px}.search-wrap input{flex:1}.category-tabs{display:flex;gap:8px;flex-wrap:wrap}.chip{border:1px solid #d6dbe3;background:#fff;border-radius:999px;padding:8px 14px;font-size:13px;font-weight:800;cursor:pointer}.chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.post-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.post-card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:24px;transition:.2s}.post-card:hover{transform:translateY(-2px);border-color:#b9c8df}.post-meta{font-size:12px;color:#7b8490;margin-bottom:7px}.badge{display:inline-block;padding:3px 8px;border-radius:999px;background:var(--soft);color:var(--primary);font-size:11px;font-weight:900;margin-right:7px}.post-card h3{font-size:20px;line-height:1.45;letter-spacing:-.6px;margin:8px 0}.post-card p{font-size:14px;color:var(--muted);margin:0}.empty{padding:50px 10px;text-align:center;color:#777}
+.article-wrap{max-width:850px;margin:auto}.article{background:#fff;border:1px solid var(--line);border-radius:12px;padding:clamp(24px,5vw,54px)}.article h1{font-size:clamp(30px,5vw,46px);line-height:1.35;letter-spacing:-2px;margin:12px 0 14px}.article-body{font-size:17px}.article-body h2{font-size:28px;margin:44px 0 12px;letter-spacing:-1px}.article-body h3{font-size:22px;margin:32px 0 10px}.article-body p{margin:0 0 18px}.article-body ul,.article-body ol{padding-left:24px}.article-body blockquote{margin:24px 0;padding:16px 20px;border-left:4px solid var(--primary);background:#f6f8fb;color:#4b5563}.article-body img{max-width:100%;height:auto}.article-body a{color:var(--primary);text-decoration:underline}.related{margin-top:28px}
+.cta{background:var(--primary);color:#fff;text-align:center;padding:55px 20px}.cta h2{margin:0 0 10px;font-size:32px}.cta p{color:rgba(255,255,255,.84)}.phone{font-size:36px;font-weight:900;margin:16px 0}
+.footer{background:#171717;color:#999;padding:38px 0;font-size:13px}.footer strong{color:#fff}
+.admin-shell{max-width:1040px;margin:35px auto;padding:0 20px}.admin-panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px;margin-bottom:18px}.admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.admin-help{font-size:13px;color:#6b7280}.editor-toolbar{display:flex;gap:6px;flex-wrap:wrap;padding:10px;border:1px solid #d5dae2;border-bottom:0;border-radius:8px 8px 0 0;background:#f7f8fa}.editor-toolbar button{border:1px solid #d7dce3;background:#fff;border-radius:5px;padding:6px 10px;cursor:pointer;font-weight:800}.editor{min-height:420px;background:#fff;border:1px solid #d5dae2;border-radius:0 0 8px 8px;padding:22px;outline:none}.status{display:none;margin-top:14px;padding:12px 14px;border-radius:7px}.status.show{display:block}.status.ok{background:#eaf7ee;color:#176c35}.status.err{background:#fff0f0;color:#9b2020}.preview-box{border:1px dashed #c9ced7;border-radius:8px;padding:16px;background:#fafbfc}
+.notice{background:#fff9e9;border:1px solid #f0dfaa;border-radius:8px;padding:14px;color:#6e5b20;font-size:13px}
+.admin-top{display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap}
+.mobile-only{display:none}
+@media(max-width:800px){
+ .nav{display:none}.mobile-only{display:inline-flex}.hero{padding:70px 0 66px}.hero h1{letter-spacing:-2.5px}
+ .quick-grid,.cards,.post-grid,.form-grid,.admin-grid{grid-template-columns:1fr}.quick-item{border-right:0;border-bottom:1px solid #eee}.quick-item:last-child{border-bottom:0}
+ .section{padding:58px 0}.title{font-size:30px}.article{border-left:0;border-right:0;border-radius:0}.container{padding:0 16px}
+}
+
+@media(max-width:1000px){#services .cards{grid-template-columns:repeat(2,1fr)!important}.quick-grid{grid-template-columns:repeat(2,1fr)!important}}
+@media(max-width:600px){#services .cards,.quick-grid{grid-template-columns:1fr!important}}
+
+#calculator .calculator{box-shadow:0 12px 34px rgba(0,0,0,.06)}
+#calculator .calc-body{padding:34px}
+#calculator .result{margin-top:22px}
+#calculator .notice strong{font-size:15px}
+@media(max-width:800px){#calculator .calc-tabs{grid-template-columns:1fr}#calculator .calc-body{padding:20px}#calculator .result-row{align-items:flex-start}}
+
+
+body{background:linear-gradient(180deg,#f4f7fb 0,#fff 420px,#f6f7f9 100%)}
+.header{box-shadow:0 8px 30px rgba(27,44,77,.05)}
+.logo span{font-size:24px;letter-spacing:-1.5px}
+.hero{position:relative;overflow:hidden;background:
+radial-gradient(circle at 85% 20%,rgba(36,87,166,.16),transparent 34%),
+radial-gradient(circle at 15% 85%,rgba(163,132,70,.12),transparent 32%),
+linear-gradient(135deg,#f7f9fd,#ffffff 60%,#eef4fb)}
+.hero:after{content:"등기로";position:absolute;right:-30px;bottom:-70px;font-size:210px;font-weight:900;letter-spacing:-18px;color:rgba(36,87,166,.035);pointer-events:none}
+.hero .container{position:relative;z-index:2}
+.hero-badges{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0}
+.hero-badge{padding:8px 13px;border-radius:999px;background:#fff;border:1px solid #dde5f0;font-size:12px;font-weight:900;color:#36547e}
+.quick{margin-top:-36px}
+.quick-grid{box-shadow:0 18px 50px rgba(25,41,68,.10);border:0}
+.quick-item{position:relative;overflow:hidden;transition:.25s;background:linear-gradient(180deg,#fff,#fbfcff)}
+.quick-item:before{content:"";position:absolute;left:0;top:0;width:100%;height:3px;background:linear-gradient(90deg,#2457a6,#a38446)}
+.quick-item:hover{transform:translateY(-5px);box-shadow:0 12px 25px rgba(25,41,68,.08);z-index:2}
+.quick-item .go{display:inline-block;margin-top:10px;color:var(--primary);font-weight:900;font-size:12px}
+#services .cards{gap:18px}
+#services .card{position:relative;overflow:hidden;min-height:230px;transition:.25s;padding:30px}
+#services .card:after{content:"→";position:absolute;right:22px;bottom:16px;font-size:28px;color:#c7d3e6;font-weight:900}
+#services .card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(25,41,68,.10);border-color:#c7d5ea}
+.service-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#eaf1fb,#fff);border:1px solid #dbe5f2;font-size:22px;margin-bottom:16px}
+.brand-strip{padding:28px 0;background:#18243a;color:#fff}
+.brand-strip-inner{display:flex;gap:14px;justify-content:space-between;align-items:center;flex-wrap:wrap}
+.brand-strip strong{font-size:22px;letter-spacing:-1px}
+.brand-strip span{color:#cbd5e1;font-size:13px}
+.feature-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:22px}
+.feature-panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:32px;box-shadow:0 12px 34px rgba(0,0,0,.04)}
+.feature-list{display:grid;gap:12px;margin-top:18px}
+.feature-item{display:flex;gap:14px;padding:16px;border-radius:10px;background:#f8fafc;border:1px solid #edf0f4}
+.feature-item b{display:block;margin-bottom:3px}
+.feature-num{min-width:34px;height:34px;border-radius:50%;background:#eaf1fb;color:#2457a6;display:flex;align-items:center;justify-content:center;font-weight:900}
+.calc-launch-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.calc-launch{background:linear-gradient(135deg,#fff,#f4f8fd);border:1px solid #dce5f1;border-radius:16px;padding:30px;position:relative;overflow:hidden;transition:.25s}
+.calc-launch:hover{transform:translateY(-5px);box-shadow:0 18px 40px rgba(25,41,68,.10)}
+.calc-launch h3{font-size:25px;margin:7px 0}.calc-launch p{color:#6b7280}
+.calc-launch .big-arrow{position:absolute;right:22px;bottom:12px;font-size:48px;color:#d6e1ef}
+@media(max-width:900px){.feature-grid,.calc-launch-grid{grid-template-columns:1fr}.hero:after{font-size:120px;bottom:-30px}}
+
+:root{
+  --primary:#2457a6; --primary-dark:#173d78; --ink:#20242b; --muted:#6b7280;
+  --line:#e5e7eb; --bg:#f6f7f9; --card:#fff; --soft:#eef3fb; --max:1180px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR","Malgun Gothic",sans-serif;color:var(--ink);background:var(--bg);line-height:1.7}
+a{text-decoration:none;color:inherit}
+button,input,select,textarea{font:inherit}
+.container{width:100%;max-width:var(--max);margin:auto;padding:0 22px}
+.header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.97);border-bottom:1px solid var(--line);backdrop-filter:blur(10px)}
+.header-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.logo{font-size:20px;font-weight:900;letter-spacing:-1px}.logo small{display:block;font-size:11px;color:#777;font-weight:500}
+.nav{display:flex;gap:22px;font-size:14px;font-weight:800;align-items:center}.nav a:hover{color:var(--primary)}
+.hero{background:linear-gradient(135deg,#f1f5fb,#fff);padding:92px 0 80px}
+.hero-label,.label{color:var(--primary);font-size:12px;font-weight:900;letter-spacing:1.4px}
+.hero h1{font-size:clamp(40px,6vw,68px);line-height:1.18;letter-spacing:-4px;margin:10px 0 20px;font-weight:900}
+.hero h1 span{color:var(--primary)}
+.hero p{max-width:760px;color:#646b76;font-size:18px;margin-bottom:30px}
+.buttons{display:flex;flex-wrap:wrap;gap:10px}
+.btn{border:0;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 22px;border-radius:7px;font-weight:900}
+.btn-primary{background:var(--primary);color:#fff}.btn-dark{background:#222;color:#fff}.btn-border{background:#fff;border:1px solid #d7dbe2}.btn-soft{background:var(--soft);color:var(--primary)}
+.section{padding:76px 0}.section.white{background:#fff}.section.soft{background:#eef1f5}
+.title{font-size:36px;line-height:1.3;letter-spacing:-2px;margin:7px 0 10px;font-weight:900}.desc{color:var(--muted);margin:0 0 34px}
+.quick{margin-top:-28px;position:relative}.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:0 10px 35px rgba(0,0,0,.06)}
+.quick-item{padding:24px 15px;text-align:center;border-right:1px solid #eee}.quick-item:last-child{border-right:0}.quick-item strong{color:var(--primary);font-size:12px}.quick-item h3{font-size:17px;margin:4px 0}.quick-item p{font-size:12px;color:#888;margin:0}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:28px}.card h3{margin:6px 0 10px}.card p{color:var(--muted);font-size:14px;margin:0}.num{font-weight:900;color:var(--primary);font-size:13px}
+.calculator{background:#fff;border:1px solid #ddd;border-radius:12px;overflow:hidden}.calc-tabs{display:grid;grid-template-columns:1fr 1fr}.calc-tab{border:0;padding:18px;background:#e8edf4;font-weight:900;cursor:pointer}.calc-tab.active{background:var(--primary);color:#fff}.calc-body{padding:30px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.form-group{margin-bottom:13px}.form-group.full{grid-column:1/-1}.form-group label{display:block;font-size:13px;font-weight:900;margin-bottom:6px}
+input,select,textarea{width:100%;border:1px solid #cfd4dc;border-radius:7px;background:#fff;padding:11px 12px}input,select{height:47px}textarea{min-height:160px;resize:vertical}
+.result{margin-top:18px;padding:20px;border:1px solid #ddd;border-radius:8px;background:#fafbfc}.result-row{display:flex;justify-content:space-between;gap:20px;padding:6px 0}.result-total{border-top:2px solid #ddd;margin-top:10px;padding-top:13px;color:var(--primary);font-weight:900;font-size:20px}
+.post-toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:20px}.search-wrap{display:flex;gap:8px;flex:1;min-width:260px}.search-wrap input{flex:1}.category-tabs{display:flex;gap:8px;flex-wrap:wrap}.chip{border:1px solid #d6dbe3;background:#fff;border-radius:999px;padding:8px 14px;font-size:13px;font-weight:800;cursor:pointer}.chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.post-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.post-card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:24px;transition:.2s}.post-card:hover{transform:translateY(-2px);border-color:#b9c8df}.post-meta{font-size:12px;color:#7b8490;margin-bottom:7px}.badge{display:inline-block;padding:3px 8px;border-radius:999px;background:var(--soft);color:var(--primary);font-size:11px;font-weight:900;margin-right:7px}.post-card h3{font-size:20px;line-height:1.45;letter-spacing:-.6px;margin:8px 0}.post-card p{font-size:14px;color:var(--muted);margin:0}.empty{padding:50px 10px;text-align:center;color:#777}
+.article-wrap{max-width:850px;margin:auto}.article{background:#fff;border:1px solid var(--line);border-radius:12px;padding:clamp(24px,5vw,54px)}.article h1{font-size:clamp(30px,5vw,46px);line-height:1.35;letter-spacing:-2px;margin:12px 0 14px}.article-body{font-size:17px}.article-body h2{font-size:28px;margin:44px 0 12px;letter-spacing:-1px}.article-body h3{font-size:22px;margin:32px 0 10px}.article-body p{margin:0 0 18px}.article-body ul,.article-body ol{padding-left:24px}.article-body blockquote{margin:24px 0;padding:16px 20px;border-left:4px solid var(--primary);background:#f6f8fb;color:#4b5563}.article-body img{max-width:100%;height:auto}.article-body a{color:var(--primary);text-decoration:underline}.related{margin-top:28px}
+.cta{background:var(--primary);color:#fff;text-align:center;padding:55px 20px}.cta h2{margin:0 0 10px;font-size:32px}.cta p{color:rgba(255,255,255,.84)}.phone{font-size:36px;font-weight:900;margin:16px 0}
+.footer{background:#171717;color:#999;padding:38px 0;font-size:13px}.footer strong{color:#fff}
+.admin-shell{max-width:1040px;margin:35px auto;padding:0 20px}.admin-panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px;margin-bottom:18px}.admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.admin-help{font-size:13px;color:#6b7280}.editor-toolbar{display:flex;gap:6px;flex-wrap:wrap;padding:10px;border:1px solid #d5dae2;border-bottom:0;border-radius:8px 8px 0 0;background:#f7f8fa}.editor-toolbar button{border:1px solid #d7dce3;background:#fff;border-radius:5px;padding:6px 10px;cursor:pointer;font-weight:800}.editor{min-height:420px;background:#fff;border:1px solid #d5dae2;border-radius:0 0 8px 8px;padding:22px;outline:none}.status{display:none;margin-top:14px;padding:12px 14px;border-radius:7px}.status.show{display:block}.status.ok{background:#eaf7ee;color:#176c35}.status.err{background:#fff0f0;color:#9b2020}.preview-box{border:1px dashed #c9ced7;border-radius:8px;padding:16px;background:#fafbfc}
+.notice{background:#fff9e9;border:1px solid #f0dfaa;border-radius:8px;padding:14px;color:#6e5b20;font-size:13px}
+.admin-top{display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap}
+.mobile-only{display:none}
+@media(max-width:800px){
+ .nav{display:none}.mobile-only{display:inline-flex}.hero{padding:70px 0 66px}.hero h1{letter-spacing:-2.5px}
+ .quick-grid,.cards,.post-grid,.form-grid,.admin-grid{grid-template-columns:1fr}.quick-item{border-right:0;border-bottom:1px solid #eee}.quick-item:last-child{border-bottom:0}
+ .section{padding:58px 0}.title{font-size:30px}.article{border-left:0;border-right:0;border-radius:0}.container{padding:0 16px}
+}
+
+@media(max-width:1000px){#services .cards{grid-template-columns:repeat(2,1fr)!important}.quick-grid{grid-template-columns:repeat(2,1fr)!important}}
+@media(max-width:600px){#services .cards,.quick-grid{grid-template-columns:1fr!important}}
+
+#calculator .calculator{box-shadow:0 12px 34px rgba(0,0,0,.06)}
+#calculator .calc-body{padding:34px}
+#calculator .result{margin-top:22px}
+#calculator .notice strong{font-size:15px}
+@media(max-width:800px){#calculator .calc-tabs{grid-template-columns:1fr}#calculator .calc-body{padding:20px}#calculator .result-row{align-items:flex-start}}
+
+
+body{background:linear-gradient(180deg,#f4f7fb 0,#fff 420px,#f6f7f9 100%)}
+.header{box-shadow:0 8px 30px rgba(27,44,77,.05)}
+.logo span{font-size:24px;letter-spacing:-1.5px}
+.hero{position:relative;overflow:hidden;background:
+radial-gradient(circle at 85% 20%,rgba(36,87,166,.16),transparent 34%),
+radial-gradient(circle at 15% 85%,rgba(163,132,70,.12),transparent 32%),
+linear-gradient(135deg,#f7f9fd,#ffffff 60%,#eef4fb)}
+.hero:after{content:"등기로";position:absolute;right:-30px;bottom:-70px;font-size:210px;font-weight:900;letter-spacing:-18px;color:rgba(36,87,166,.035);pointer-events:none}
+.hero .container{position:relative;z-index:2}
+.hero-badges{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0}
+.hero-badge{padding:8px 13px;border-radius:999px;background:#fff;border:1px solid #dde5f0;font-size:12px;font-weight:900;color:#36547e}
+.quick{margin-top:-36px}
+.quick-grid{box-shadow:0 18px 50px rgba(25,41,68,.10);border:0}
+.quick-item{position:relative;overflow:hidden;transition:.25s;background:linear-gradient(180deg,#fff,#fbfcff)}
+.quick-item:before{content:"";position:absolute;left:0;top:0;width:100%;height:3px;background:linear-gradient(90deg,#2457a6,#a38446)}
+.quick-item:hover{transform:translateY(-5px);box-shadow:0 12px 25px rgba(25,41,68,.08);z-index:2}
+.quick-item .go{display:inline-block;margin-top:10px;color:var(--primary);font-weight:900;font-size:12px}
+#services .cards{gap:18px}
+#services .card{position:relative;overflow:hidden;min-height:230px;transition:.25s;padding:30px}
+#services .card:after{content:"→";position:absolute;right:22px;bottom:16px;font-size:28px;color:#c7d3e6;font-weight:900}
+#services .card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(25,41,68,.10);border-color:#c7d5ea}
+.service-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#eaf1fb,#fff);border:1px solid #dbe5f2;font-size:22px;margin-bottom:16px}
+.brand-strip{padding:28px 0;background:#18243a;color:#fff}
+.brand-strip-inner{display:flex;gap:14px;justify-content:space-between;align-items:center;flex-wrap:wrap}
+.brand-strip strong{font-size:22px;letter-spacing:-1px}
+.brand-strip span{color:#cbd5e1;font-size:13px}
+.feature-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:22px}
+.feature-panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:32px;box-shadow:0 12px 34px rgba(0,0,0,.04)}
+.feature-list{display:grid;gap:12px;margin-top:18px}
+.feature-item{display:flex;gap:14px;padding:16px;border-radius:10px;background:#f8fafc;border:1px solid #edf0f4}
+.feature-item b{display:block;margin-bottom:3px}
+.feature-num{min-width:34px;height:34px;border-radius:50%;background:#eaf1fb;color:#2457a6;display:flex;align-items:center;justify-content:center;font-weight:900}
+.calc-launch-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.calc-launch{background:linear-gradient(135deg,#fff,#f4f8fd);border:1px solid #dce5f1;border-radius:16px;padding:30px;position:relative;overflow:hidden;transition:.25s}
+.calc-launch:hover{transform:translateY(-5px);box-shadow:0 18px 40px rgba(25,41,68,.10)}
+.calc-launch h3{font-size:25px;margin:7px 0}.calc-launch p{color:#6b7280}
+.calc-launch .big-arrow{position:absolute;right:22px;bottom:12px;font-size:48px;color:#d6e1ef}
+@media(max-width:900px){.feature-grid,.calc-launch-grid{grid-template-columns:1fr}.hero:after{font-size:120px;bottom:-30px}}
+
+.subhero{padding:78px 0 64px;background:
+radial-gradient(circle at 85% 20%,rgba(36,87,166,.16),transparent 32%),
+linear-gradient(135deg,#f8faff,#fff)}
+.subhero h1{font-size:clamp(42px,6vw,66px);line-height:1.15;letter-spacing:-4px;margin:10px 0 18px}
+.subhero p{max-width:760px;color:#667085;font-size:17px}
+.breadcrumb{font-size:12px;color:#768196;margin-bottom:16px}
+.info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.info-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:26px;box-shadow:0 8px 24px rgba(0,0,0,.035)}
+.info-card h3{margin:8px 0;font-size:20px}.info-card p{color:#6b7280;font-size:14px;margin:0}
+.steps{display:grid;gap:12px}.step{display:grid;grid-template-columns:54px 1fr;gap:16px;align-items:start;padding:20px;background:#fff;border:1px solid var(--line);border-radius:12px}
+.step-no{width:42px;height:42px;border-radius:12px;background:#2457a6;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900}
+.faq{display:grid;gap:10px}.faq-item{background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px}.faq-item b{display:block;margin-bottom:6px}
+.link-card{display:block;background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px;transition:.2s}.link-card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.07)}
+.page-cta{padding:58px 0;background:#1a2740;color:#fff}.page-cta .title{color:#fff}.page-cta p{color:#cbd5e1}
+@media(max-width:800px){.info-grid{grid-template-columns:1fr}.subhero h1{letter-spacing:-2px}.step{grid-template-columns:44px 1fr}}
+</style></head><body><header class="header">
+  <div class="container header-inner">
+    <a class="logo" href="/"><span>등기로</span><small>현재두 법무사 사무소 · 인천</small></a>
+    <nav class="nav">
+      <a href="/#services">업무안내</a>
+      <a href="/inheritance.html">상속</a>
+      <a href="/corporate.html">법인</a>
+      <a href="/realestate.html">부동산</a>
+      <a href="/renunciation.html">한정승인·상속포기</a>
+      <a href="/family.html">가사</a>
+      <a href="/posts.html">법률정보</a>
+      <a href="/#contact">상담안내</a>
+    </nav>
+    <a class="btn btn-primary mobile-only" href="tel:0324251500">전화상담</a>
+  </div>
+</header>
+<section class="subhero"><div class="container"><div class="breadcrumb"><a href="/">홈</a> / 계산기</div><div class="label">REAL ESTATE TAX</div><h1>부동산 취득세 종합계산기</h1><p>상속·증여·일반 부동산 취득의 취득세, 지방교육세, 농어촌특별세를 지분까지 반영해 계산합니다.</p></div></section>
+<section class="section"><div class="container"><div class="calculator"><div class="calc-body"><div id="acqCalc">
+    <h3 style="margin-top:0">부동산 취득세 종합계산</h3>
+    <p class="admin-help">취득원인과 부동산 종류를 선택하면 기본 세율을 자동 적용합니다. 실제 신고 전에는 감면요건과 부가세목을 별도로 확인해야 합니다.</p>
+    <div class="form-grid">
+     <div class="form-group"><label>취득원인</label><select id="acqType" onchange="syncAcqRate()">
+      <option value="inherit-normal">상속 - 일반 부동산(농지 외)</option>
+      <option value="inherit-farm">상속 - 농지</option>
+      <option value="inherit-home">상속 - 1가구 1주택 특례 검토</option>
+      <option value="gift">증여 - 일반</option>
+      <option value="sale-other">매매 - 주택 외 일반 부동산</option>
+      <option value="custom">직접 세율 입력</option>
+     </select></div>
+     <div class="form-group"><label>과세표준(원)</label><input id="acqBase" inputmode="numeric" placeholder="예: 300000000" oninput="formatNumberInput(this)"></div>
+     <div class="form-group"><label>취득세 본세율</label><div style="display:flex;gap:8px;align-items:center"><input id="acqRatePct" type="number" step="0.01" value="2.8"><span style="font-weight:900">%</span></div></div>
+     <div class="form-group"><label>지방교육세율(과세표준 대비)</label><div style="display:flex;gap:8px;align-items:center"><input id="eduRatePct" type="number" step="0.01" value="0.16"><span style="font-weight:900">%</span></div></div>
+     <div class="form-group"><label>농어촌특별세율(과세표준 대비)</label><div style="display:flex;gap:8px;align-items:center"><input id="ruralRatePct" type="number" step="0.01" value="0.20"><span style="font-weight:900">%</span></div></div>
+     <div class="form-group"><label>취득 지분</label><div style="display:flex;gap:8px;align-items:center"><input id="sharePct" type="number" step="0.01" value="100" min="0" max="100"><span style="font-weight:900">%</span></div></div>
+    </div>
+    <div id="acqGuide" class="notice" style="margin:8px 0 18px">일반 상속(농지 외) 기본 취득세율 2.8%를 적용했습니다.</div>
+    <div class="buttons"><button class="btn btn-primary" onclick="calcAcq()">취득세 계산하기</button><button class="btn btn-border" onclick="resetAcq()">초기화</button></div>
+    <div id="acqResult" class="result"><div class="empty" style="padding:20px">과세표준을 입력하고 계산하기를 눌러주세요.</div></div>
+    <div class="notice" style="margin-top:18px"><strong>상속 주택 감면 확인</strong><br>1가구 1주택 특례는 상속개시일 기준 세대와 주택보유 현황 등 별도 요건 검토가 필요합니다. 여러 상속인이 지분으로 취득하거나 세대구성이 다른 경우 계산 결과만으로 감면 여부를 확정할 수 없습니다.</div>
+   </div>
+   </div></div></div></div></section>
+<section class="page-cta"><div class="container"><h2 class="title">계산 결과는 예상치입니다.</h2><p>실제 신고 전에는 물건 종류, 감면, 중과, 소재지 등 개별 요건 확인이 필요합니다.</p><a class="btn btn-primary" href="tel:0324251500">032-425-1500 상담</a></div></section><footer class="footer"><div class="container"><strong>등기로 · 현재두 법무사 사무소</strong><br>인천 · 상속 · 법인 · 부동산 · 한정승인·상속포기 · 가사<br>상담전화 032-425-1500</div></footer>
+<script>function money(n){return Math.round(Number(n)||0).toLocaleString('ko-KR')+'원'}
+function num(v){return Number(String(v||'').replace(/,/g,''))||0}
+function formatNumberInput(el){const raw=el.value.replace(/[^\d]/g,'');el.value=raw?Number(raw).toLocaleString('ko-KR'):''}
+function showCalc(id,btn){document.getElementById('acqCalc').style.display=id==='acq'?'block':'none';document.getElementById('corpCalc').style.display=id==='corp'?'block':'none';document.querySelectorAll('.calc-tab').forEach(x=>x.classList.remove('active'));btn.classList.add('active')}
+function syncAcqRate(){
+ const t=document.getElementById('acqType').value,rate=document.getElementById('acqRatePct'),edu=document.getElementById('eduRatePct'),rural=document.getElementById('ruralRatePct'),guide=document.getElementById('acqGuide');
+ const presets={
+  'inherit-normal':[2.8,0.16,0.20,'일반 상속(농지 외) 기본 취득세율 2.8%를 적용했습니다.'],
+  'inherit-farm':[2.3,0.06,0.20,'상속 농지 기본 취득세율 2.3%를 적용했습니다. 농지 요건은 별도 확인이 필요합니다.'],
+  'inherit-home':[0.8,0.16,0,'상속 1가구 1주택 특례 적용을 가정한 값입니다. 실제 감면 대상 여부를 반드시 확인하세요.'],
+  'gift':[3.5,0.30,0,'일반 증여 기본세율 예시입니다. 주택 수·지역·법인 취득 등 중과 사유는 별도 검토가 필요합니다.'],
+  'sale-other':[4.0,0.40,0.20,'주택 외 일반 매매의 기본세율 예시입니다. 주택 매매 취득세는 가격·주택수 등에 따라 별도 계산이 필요합니다.'],
+  'custom':[0,0,0,'직접 적용할 세율을 입력하세요.']
+ };
+ const p=presets[t];rate.value=p[0];edu.value=p[1];rural.value=p[2];guide.textContent=p[3]
+}
+function calcAcq(){
+ const base=num(document.getElementById('acqBase').value),share=Math.max(0,Math.min(100,Number(document.getElementById('sharePct').value)||100));
+ if(!base){alert('과세표준을 입력하세요.');return}
+ const taxable=base*(share/100),rate=(Number(document.getElementById('acqRatePct').value)||0)/100,eduRate=(Number(document.getElementById('eduRatePct').value)||0)/100,ruralRate=(Number(document.getElementById('ruralRatePct').value)||0)/100;
+ const acq=taxable*rate,edu=taxable*eduRate,rural=taxable*ruralRate,total=acq+edu+rural;
+ document.getElementById('acqResult').innerHTML='<div class="result-row"><span>전체 과세표준</span><b>'+money(base)+'</b></div><div class="result-row"><span>취득 지분</span><b>'+share.toLocaleString('ko-KR')+'%</b></div><div class="result-row"><span>지분 적용 과세표준</span><b>'+money(taxable)+'</b></div><div class="result-row"><span>취득세 본세 ('+(rate*100).toFixed(2)+'%)</span><b>'+money(acq)+'</b></div><div class="result-row"><span>지방교육세 ('+(eduRate*100).toFixed(2)+'%)</span><b>'+money(edu)+'</b></div><div class="result-row"><span>농어촌특별세 ('+(ruralRate*100).toFixed(2)+'%)</span><b>'+money(rural)+'</b></div><div class="result-row result-total"><span>예상 세금 합계</span><b>'+money(total)+'</b></div><p class="admin-help" style="margin-bottom:0">본 계산은 입력한 세율 기준 예상치입니다. 실제 신고세액은 물건 종류·감면·중과·세대 및 주택수 판정 등에 따라 달라질 수 있습니다.</p>'
+}
+function resetAcq(){document.getElementById('acqBase').value='';document.getElementById('sharePct').value='100';document.getElementById('acqType').value='inherit-normal';syncAcqRate();document.getElementById('acqResult').innerHTML='<div class="empty" style="padding:20px">과세표준을 입력하고 계산하기를 눌러주세요.</div>'}
+function syncCorpFields(){
+ const type=document.getElementById('corpType').value,area=document.getElementById('corpArea').value,mode=document.getElementById('corpMode'),mult=document.getElementById('corpMultiplier'),guide=document.getElementById('corpGuide');
+ if(type==='incorporation'||type==='increase'){mode.value='capital';guide.textContent='설립·증자는 자본금 기준 계산으로 설정되어 있습니다.'}
+ else if(type!=='custom'){mode.value='fixed';guide.textContent='변경등기는 정액 등록면허세를 직접 확인하여 입력할 수 있게 설정했습니다.'}
+ mult.value=area==='overcrowded'?'3':'1';
+ document.getElementById('capitalGroup').style.display=mode.value==='capital'?'block':'none';
+ document.getElementById('fixedGroup').style.display=mode.value==='fixed'?'block':'none'
+}
+function calcCorp(){
+ const mode=document.getElementById('corpMode').value,mult=Number(document.getElementById('corpMultiplier').value)||1,eduRate=Number(document.getElementById('corpEdu').value)||0;
+ let baseReg=0,basis='';
+ if(mode==='capital'){const capital=num(document.getElementById('corpCapital').value);if(!capital){alert('자본금 또는 증가 자본금을 입력하세요.');return}baseReg=Math.max(112500,capital*0.004);basis='자본금 기준 '+money(capital)+' × 0.4%, 최저 112,500원'}
+ else{baseReg=num(document.getElementById('corpFixed').value);if(!baseReg){alert('정액 등록면허세를 입력하세요.');return}basis='입력한 정액 등록면허세'}
+ const reg=baseReg*mult,edu=reg*eduRate,total=reg+edu;
+ document.getElementById('corpResult').innerHTML='<div class="result-row"><span>계산 기준</span><b style="text-align:right">'+basis+'</b></div><div class="result-row"><span>중과 배수</span><b>'+mult+'배</b></div><div class="result-row"><span>등록면허세</span><b>'+money(reg)+'</b></div><div class="result-row"><span>지방교육세</span><b>'+money(edu)+'</b></div><div class="result-row result-total"><span>예상 세금 합계</span><b>'+money(total)+'</b></div><p class="admin-help" style="margin-bottom:0">등기유형, 본점 소재지, 과밀 중과요건 및 관할 등에 따라 실제 세액은 달라질 수 있습니다.</p>'
+}
+function resetCorp(){document.getElementById('corpType').value='incorporation';document.getElementById('corpArea').value='normal';document.getElementById('corpCapital').value='';document.getElementById('corpFixed').value='40,200';document.getElementById('corpEdu').value='0.2';document.getElementById('corpMode').value='capital';document.getElementById('corpMultiplier').value='1';syncCorpFields();document.getElementById('corpResult').innerHTML='<div class="empty" style="padding:20px">등기 종류와 금액을 입력하고 계산하기를 눌러주세요.</div>'}
+document.addEventListener('DOMContentLoaded',()=>{ syncAcqRate(); });
+</script></body></html>
