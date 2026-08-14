@@ -100,6 +100,38 @@ linear-gradient(135deg,#f7f9fd,#ffffff 60%,#eef4fb)}
 .calc-launch .big-arrow{position:absolute;right:22px;bottom:12px;font-size:48px;color:#d6e1ef}
 @media(max-width:900px){.feature-grid,.calc-launch-grid{grid-template-columns:1fr}.hero:after{font-size:120px;bottom:-30px}}
 
+
+.service-icon svg{
+  width:28px;
+  height:28px;
+  stroke:currentColor;
+  fill:none;
+  stroke-width:1.8;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+
+/* v12 layout fix */
+.quick-grid{grid-template-columns:repeat(5,1fr)!important}
+#services .cards{grid-template-columns:repeat(5,1fr)!important}
+@media(max-width:1000px){
+  .quick-grid,#services .cards{grid-template-columns:repeat(2,1fr)!important}
+}
+@media(max-width:600px){
+  .quick-grid,#services .cards{grid-template-columns:1fr!important}
+}
+
+
+.service-icon svg{
+  width:27px;height:27px;
+  stroke:#2457a6;fill:none;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round
+}
+.quick-grid,#services .cards{grid-template-columns:repeat(5,1fr)!important}
+@media(max-width:1000px){.quick-grid,#services .cards{grid-template-columns:repeat(2,1fr)!important}}
+@media(max-width:600px){.quick-grid,#services .cards{grid-template-columns:1fr!important}}
+
 </style>
 </head>
 <body>
@@ -141,13 +173,28 @@ linear-gradient(135deg,#f7f9fd,#ffffff 60%,#eef4fb)}
 <section class="section white" id="services"><div class="container">
  <div class="label">DEUNGGIRO SERVICES</div>
  <h2 class="title">등기로 업무안내</h2>
- <p class="desc">업무별 단독 페이지에서 절차, 준비서류, 자주 묻는 내용, 관련 글을 한 번에 확인할 수 있습니다.</p>
+ <p class="desc">필요한 업무를 선택하면 분야별 상세 페이지로 이동합니다.</p>
  <div class="cards" style="grid-template-columns:repeat(5,1fr)">
-  <a class="card" href="/inheritance.html"><div class="service-icon">家</div><span class="num">01</span><h3>상속</h3><p>상속등기 · 협의분할 · 법정상속 · 상속재산분할</p></a>
-  <a class="card" href="/corporate.html"><div class="service-icon">法</div><span class="num">02</span><h3>법인</h3><p>법인설립 · 임원변경 · 본점이전 · 목적 · 증자</p></a>
-  <a class="card" href="/realestate.html"><div class="service-icon">登</div><span class="num">03</span><h3>부동산</h3><p>매매 · 증여 · 재산분할 · 근저당 · 가등기</p></a>
-  <a class="card" href="/renunciation.html"><div class="service-icon">承</div><span class="num">04</span><h3>한정승인·상속포기</h3><p>상속포기 · 한정승인 · 특별한정승인</p></a>
-  <a class="card" href="/family.html"><div class="service-icon">家</div><span class="num">05</span><h3>가사</h3><p>협의이혼 · 재산분할 · 개명 · 후견</p></a>
+  <a class="card" href="/inheritance.html">
+   <div class="service-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v5h5"/><path d="M10 12h5M10 16h5"/></svg></div>
+   <span class="num">01</span><h3>상속</h3><p>상속등기 · 협의분할 · 상속재산분할</p>
+  </a>
+  <a class="card" href="/corporate.html">
+   <div class="service-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V5h10v16M14 9h6v12"/><path d="M7 9h4M7 13h4M7 17h4M17 13h1M17 17h1"/></svg></div>
+   <span class="num">02</span><h3>법인</h3><p>법인설립 · 임원변경 · 본점이전 · 증자</p>
+  </a>
+  <a class="card" href="/realestate.html">
+   <div class="service-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg></div>
+   <span class="num">03</span><h3>부동산</h3><p>매매 · 증여 · 재산분할 · 근저당</p>
+  </a>
+  <a class="card" href="/renunciation.html">
+   <div class="service-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.7 2.8 8.2 7 10 4.2-1.8 7-5.3 7-10V6z"/><path d="m9 12 2 2 4-4"/></svg></div>
+   <span class="num">04</span><h3>한정승인·상속포기</h3><p>상속포기 · 한정승인 · 특별한정승인</p>
+  </a>
+  <a class="card" href="/family.html">
+   <div class="service-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20v-8l8-6 8 6v8"/><path d="M8 20v-5h8v5"/><circle cx="9" cy="11" r="1.4"/><circle cx="15" cy="11" r="1.4"/></svg></div>
+   <span class="num">05</span><h3>가사</h3><p>협의이혼 · 재산분할 · 개명 · 후견</p>
+  </a>
  </div>
 </div></section>
 
@@ -208,9 +255,9 @@ linear-gradient(135deg,#f7f9fd,#ffffff 60%,#eef4fb)}
 <section class="section soft" id="calculator"><div class="container">
  <div class="label">CALCULATOR</div><h2 class="title">등기로 비용 계산기</h2>
  <p class="desc">계산기도 각각 독립 페이지로 분리했습니다. 필요한 계산기를 선택하세요.</p>
- <div class="calc-launch-grid" style="grid-template-columns:repeat(3,1fr)">
+ <div class="calc-launch-grid">
   <a class="calc-launch" href="/acquisition-calculator.html"><div class="label">REAL ESTATE TAX</div><h3>부동산 취득세 종합계산기</h3><p>상속·증여·일반 부동산 취득, 지분, 취득세·지방교육세·농어촌특별세를 계산합니다.</p><span class="btn btn-primary">계산기 열기</span><div class="big-arrow">→</div></a>
-  <a class="calc-launch" href="/corporate-calculator.html"><div class="label">CORPORATE TAX</div><h3>법인등기 비용 계산기</h3><p>법인설립·증자·본점이전·임원·상호·목적변경과 과밀 중과를 계산합니다.</p><span class="btn btn-primary">계산기 열기</span><div class="big-arrow">→</div></a><a class="calc-launch" href="/divorce-calculator.html"><div class="label">DIVORCE</div><h3>이혼 재산분할 계산기</h3><p>재산분할 예상금액과 재산분할 부동산 취득 관련 세금을 계산합니다.</p><span class="btn btn-primary">계산기 열기</span><div class="big-arrow">→</div></a>
+  <a class="calc-launch" href="/corporate-calculator.html"><div class="label">CORPORATE TAX</div><h3>법인등기 비용 계산기</h3><p>법인설립·증자·본점이전·임원·상호·목적변경과 과밀 중과를 계산합니다.</p><span class="btn btn-primary">계산기 열기</span><div class="big-arrow">→</div></a>
  </div>
 </div></section>
 <section class="section white" id="legal-info"><div class="container">
