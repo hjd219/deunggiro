@@ -1,5 +1,9 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>가사도 등기로 | 등기로</title><meta name="description" content="협의이혼, 재산분할, 개명, 성년후견·한정후견 등 주요 가사절차를 안내합니다."><style>
+<!doctype html>
+<html lang="ko"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>이혼 재산분할 계산기 | 등기로</title>
+<meta name="description" content="이혼 재산분할 예상금액과 재산분할로 부동산을 취득하는 경우의 취득세·지방교육세·농어촌특별세를 계산합니다.">
+<style>
 :root{
   --primary:#2457a6; --primary-dark:#173d78; --ink:#20242b; --muted:#6b7280;
   --line:#e5e7eb; --bg:#f6f7f9; --card:#fff; --soft:#eef3fb; --max:1180px;
@@ -109,7 +113,18 @@ linear-gradient(135deg,#f8faff,#fff)}
 .link-card{display:block;background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px;transition:.2s}.link-card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.07)}
 .page-cta{padding:58px 0;background:#1a2740;color:#fff}.page-cta .title{color:#fff}.page-cta p{color:#cbd5e1}
 @media(max-width:800px){.info-grid{grid-template-columns:1fr}.subhero h1{letter-spacing:-2px}.step{grid-template-columns:44px 1fr}}
-</style></head><body><header class="header">
+
+.divorce-tabs{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:24px}
+.divorce-tab{border:0;padding:18px;background:#eef2f7;font-weight:900;cursor:pointer}
+.divorce-tab.active{background:var(--primary);color:#fff}
+.calc-note{font-size:13px;color:#6b7280;margin-top:12px}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+.kpi{background:#f8fafc;border:1px solid #e7ebf0;border-radius:10px;padding:16px}
+.kpi span{display:block;font-size:12px;color:#6b7280}.kpi b{font-size:21px}
+@media(max-width:700px){.divorce-tabs,.kpi-grid{grid-template-columns:1fr}}
+</style>
+</head><body>
+<header class="header">
   <div class="container header-inner">
     <a class="logo" href="/"><span>등기로</span><small>현재두 법무사 사무소 · 인천</small></a>
     <nav class="nav">
@@ -125,8 +140,139 @@ linear-gradient(135deg,#f8faff,#fff)}
     <a class="btn btn-primary mobile-only" href="tel:0324251500">전화상담</a>
   </div>
 </header>
-<section class="subhero"><div class="container"><div class="breadcrumb"><a href="/">홈</a> / 업무안내 / 가사도 등기로</div><div class="label">FAMILY</div><h1>가사도 등기로</h1><p>협의이혼, 재산분할, 개명, 성년후견·한정후견 등 주요 가사절차를 안내합니다.</p><div class="buttons"><a class="btn btn-primary" href="tel:0324251500">032-425-1500 상담</a><a class="btn btn-border" href="/posts.html">관련 법률정보</a></div></div></section>
-<section class="section white"><div class="container"><div class="label">MAIN SERVICES</div><h2 class="title">주요 업무</h2><div class="info-grid"><div class="info-card"><div class="label">01</div><h3>이혼·재산분할</h3><p>협의이혼 · 재산분할 합의 · 관련 등기</p></div><div class="info-card"><div class="label">02</div><h3>개명</h3><p>개명허가 신청 · 필요서류 · 허가 후 절차</p></div><div class="info-card"><div class="label">03</div><h3>후견</h3><p>성년후견 · 한정후견 · 가족관계 관련 절차</p></div></div></div></section>
-<section class="section soft"><div class="container feature-grid"><div class="feature-panel"><div class="label">PROCESS</div><h2 class="title" style="font-size:30px">진행 절차</h2><div class="steps"><div class="step"><div class="step-no">1</div><div><h3 style="margin:0 0 6px">사건유형 확인</h3><p style="margin:0;color:#6b7280">협의이혼, 개명, 후견 등 필요한 절차를 구분합니다.</p></div></div><div class="step"><div class="step-no">2</div><div><h3 style="margin:0 0 6px">관할 확인</h3><p style="margin:0;color:#6b7280">주소지와 사건 유형에 따라 관할 가정법원을 확인합니다.</p></div></div><div class="step"><div class="step-no">3</div><div><h3 style="margin:0 0 6px">서류 준비</h3><p style="margin:0;color:#6b7280">가족관계증명서, 주민등록자료, 재산자료 등 사건별 서류를 준비합니다.</p></div></div><div class="step"><div class="step-no">4</div><div><h3 style="margin:0 0 6px">허가·신고 후 후속절차</h3><p style="margin:0;color:#6b7280">법원 허가나 확인 후 가족관계등록, 등기 등 후속절차를 진행합니다.</p></div></div></div></div><div class="feature-panel"><div class="label">FAQ</div><h2 class="title" style="font-size:30px">자주 묻는 질문</h2><div class="faq"><div class="faq-item"><b>협의이혼 합의서만 쓰면 이혼되나요?</b><span>법원의 협의이혼의사 확인과 이혼신고 절차가 별도로 필요합니다.</span></div><div class="faq-item"><b>재산분할로 부동산을 넘기면 등기도 해야 하나요?</b><span>부동산 소유권을 실제로 이전하려면 재산분할을 원인으로 한 소유권이전등기가 필요합니다.</span></div><div class="faq-item"><b>개명허가 후 무엇을 해야 하나요?</b><span>가족관계등록부 정정 후 주민등록, 금융기관, 면허 등 각종 명의를 변경해야 합니다.</span></div></div></div></div></section>
-<section class="section"><div class="container"><div class="label">CALCULATOR</div><h2 class="title">이혼 재산분할 계산기</h2><p class="desc">재산분할 예상금액과 부동산 취득세를 계산해보세요.</p><div style="margin-bottom:36px"><a class="btn btn-primary" href="/divorce-calculator.html">이혼 재산분할 계산기 열기</a></div><div class="label">RELATED</div><h2 class="title">관련 메뉴</h2><div class="info-grid" style="grid-template-columns:repeat(2,1fr)"><a class="link-card" href="/posts.html"><div class="label">LINK</div><h3>가사 법률정보 보기 →</h3></a><a class="link-card" href="/#contact"><div class="label">LINK</div><h3>상담안내 →</h3></a></div></div></section>
-<section class="page-cta"><div class="container"><div class="label" style="color:#9fb9df">DEUNGGIRO</div><h2 class="title">복잡한 절차는 등기로에서 확인하세요.</h2><p>사건 내용에 따라 필요한 서류와 진행방식이 달라질 수 있습니다.</p><a class="btn btn-primary" href="tel:0324251500">032-425-1500 상담</a></div></section><footer class="footer"><div class="container"><strong>등기로 · 현재두 법무사 사무소</strong><br>인천 · 상속 · 법인 · 부동산 · 한정승인·상속포기 · 가사<br>상담전화 032-425-1500</div></footer></body></html>
+
+<section class="subhero">
+ <div class="container">
+  <div class="breadcrumb"><a href="/">홈</a> / 가사 / 이혼 재산분할 계산기</div>
+  <div class="label">DIVORCE & PROPERTY DIVISION</div>
+  <h1>이혼 재산분할 계산기</h1>
+  <p>재산분할 예상금액과 부동산을 재산분할로 이전받을 때의 취득 관련 세금을 각각 계산해 볼 수 있습니다.</p>
+ </div>
+</section>
+
+<section class="section"><div class="container">
+ <div class="calculator">
+  <div class="calc-body">
+   <div class="divorce-tabs">
+    <button class="divorce-tab active" onclick="showDivCalc('division',this)">재산분할 금액 계산</button>
+    <button class="divorce-tab" onclick="showDivCalc('tax',this)">부동산 취득세 계산</button>
+   </div>
+
+   <div id="divisionCalc">
+    <h2 style="margin-top:0">재산분할 예상금액</h2>
+    <p class="admin-help">아래 계산은 단순 산술 계산입니다. 실제 재산분할 비율은 혼인기간, 재산형성 기여도, 재산의 성격 등 구체적 사정에 따라 달라질 수 있습니다.</p>
+    <div class="form-grid">
+     <div class="form-group"><label>부동산·예금 등 적극재산 합계(원)</label><input id="assetTotal" inputmode="numeric" placeholder="예: 800000000" oninput="formatNumberInput(this)"></div>
+     <div class="form-group"><label>공동재산 관련 채무 합계(원)</label><input id="debtTotal" inputmode="numeric" placeholder="예: 200000000" oninput="formatNumberInput(this)"></div>
+     <div class="form-group"><label>내 재산분할 비율</label><div style="display:flex;gap:8px;align-items:center"><input id="divisionPct" type="number" value="50" min="0" max="100" step="1"><span style="font-weight:900">%</span></div></div>
+     <div class="form-group"><label>이미 내 명의로 보유한 분할대상 재산(원)</label><input id="alreadyMine" inputmode="numeric" placeholder="예: 150000000" oninput="formatNumberInput(this)"></div>
+    </div>
+    <div class="buttons"><button class="btn btn-primary" onclick="calcDivision()">재산분할 계산하기</button><button class="btn btn-border" onclick="resetDivision()">초기화</button></div>
+    <div id="divisionResult" class="result"><div class="empty" style="padding:20px">재산과 채무를 입력하고 계산하기를 눌러주세요.</div></div>
+   </div>
+
+   <div id="taxCalc" style="display:none">
+    <h2 style="margin-top:0">이혼 재산분할 부동산 취득세</h2>
+    <p class="admin-help">민법상 이혼에 따른 재산분할로 부동산을 이전받는 경우를 전제로 한 간편 계산입니다.</p>
+    <div class="form-grid">
+     <div class="form-group"><label>부동산 과세표준(원)</label><input id="divTaxBase" inputmode="numeric" placeholder="예: 400000000" oninput="formatNumberInput(this)"></div>
+     <div class="form-group"><label>이전받는 지분</label><div style="display:flex;gap:8px;align-items:center"><input id="divShare" type="number" value="100" min="0" max="100" step="0.01"><span style="font-weight:900">%</span></div></div>
+     <div class="form-group"><label>취득세율</label><div style="display:flex;gap:8px;align-items:center"><input id="divAcqRate" type="number" value="1.5" step="0.1"><span style="font-weight:900">%</span></div></div>
+     <div class="form-group"><label>지방교육세율</label><div style="display:flex;gap:8px;align-items:center"><input id="divEduRate" type="number" value="0.3" step="0.1"><span style="font-weight:900">%</span></div></div>
+     <div class="form-group"><label>농어촌특별세</label><select id="divRuralApply"><option value="yes">적용하여 계산</option><option value="no">계산하지 않음</option></select></div>
+     <div class="form-group"><label>농어촌특별세율</label><div style="display:flex;gap:8px;align-items:center"><input id="divRuralRate" type="number" value="0.4" step="0.1"><span style="font-weight:900">%</span></div></div>
+    </div>
+    <div class="notice" style="margin:8px 0 18px">
+     <strong>재산분할과 위자료는 다릅니다.</strong><br>
+     이 계산기는 이혼에 따른 <strong>재산분할</strong>로 부동산을 이전받는 경우를 전제로 합니다. 위자료 명목의 부동산 이전은 세금 구조가 달라질 수 있습니다.
+    </div>
+    <div class="buttons"><button class="btn btn-primary" onclick="calcDivorceTax()">취득세 계산하기</button><button class="btn btn-border" onclick="resetDivorceTax()">초기화</button></div>
+    <div id="taxResult" class="result"><div class="empty" style="padding:20px">과세표준과 지분을 입력하고 계산하기를 눌러주세요.</div></div>
+   </div>
+  </div>
+ </div>
+</div></section>
+
+<section class="section soft"><div class="container">
+ <div class="label">GUIDE</div><h2 class="title">계산 전 확인할 점</h2>
+ <div class="info-grid">
+  <div class="info-card"><div class="label">01</div><h3>재산분할 대상</h3><p>혼인 중 부부의 협력으로 형성한 재산을 중심으로 판단하며, 특유재산도 형성·유지 기여에 따라 문제가 될 수 있습니다.</p></div>
+  <div class="info-card"><div class="label">02</div><h3>분할비율</h3><p>50:50이 자동 적용되는 것은 아닙니다. 혼인기간, 소득, 가사노동, 재산형성·유지 기여 등을 종합적으로 봅니다.</p></div>
+  <div class="info-card"><div class="label">03</div><h3>부동산 이전</h3><p>재산분할로 부동산 소유권을 넘기는 경우 실제 소유권이전등기와 취득 관련 세금 신고가 필요합니다.</p></div>
+ </div>
+</div></section>
+
+<section class="page-cta"><div class="container">
+ <div class="label" style="color:#9fb9df">DEUNGGIRO</div>
+ <h2 class="title">이혼·재산분할도 등기로</h2>
+ <p>재산분할 합의서 작성부터 부동산 재산분할 등기까지 확인할 수 있습니다.</p>
+ <a class="btn btn-primary" href="tel:0324251500">032-425-1500 상담</a>
+</div></section>
+
+<footer class="footer"><div class="container"><strong>등기로 · 현재두 법무사 사무소</strong><br>인천 · 상속 · 법인 · 부동산 · 한정승인·상속포기 · 가사<br>상담전화 032-425-1500</div></footer>
+
+<script>
+function num(v){return Number(String(v||'').replace(/,/g,''))||0}
+function money(n){return Math.round(Number(n)||0).toLocaleString('ko-KR')+'원'}
+function formatNumberInput(el){const raw=el.value.replace(/[^\d]/g,'');el.value=raw?Number(raw).toLocaleString('ko-KR'):''}
+function showDivCalc(id,btn){
+ document.getElementById('divisionCalc').style.display=id==='division'?'block':'none';
+ document.getElementById('taxCalc').style.display=id==='tax'?'block':'none';
+ document.querySelectorAll('.divorce-tab').forEach(x=>x.classList.remove('active'));
+ btn.classList.add('active');
+}
+function calcDivision(){
+ const assets=num(document.getElementById('assetTotal').value);
+ const debts=num(document.getElementById('debtTotal').value);
+ const pct=(Number(document.getElementById('divisionPct').value)||0)/100;
+ const already=num(document.getElementById('alreadyMine').value);
+ if(!assets){alert('적극재산 합계를 입력하세요.');return}
+ const net=Math.max(0,assets-debts);
+ const target=net*pct;
+ const additional=target-already;
+ document.getElementById('divisionResult').innerHTML=
+  '<div class="result-row"><span>적극재산 합계</span><b>'+money(assets)+'</b></div>'+
+  '<div class="result-row"><span>채무 합계</span><b>- '+money(debts)+'</b></div>'+
+  '<div class="result-row"><span>순재산</span><b>'+money(net)+'</b></div>'+
+  '<div class="result-row"><span>적용 분할비율</span><b>'+(pct*100).toFixed(1).replace(/\.0$/,'')+'%</b></div>'+
+  '<div class="result-row"><span>내 몫 예상액</span><b>'+money(target)+'</b></div>'+
+  '<div class="result-row"><span>현재 내 명의 재산</span><b>'+money(already)+'</b></div>'+
+  '<div class="result-row result-total"><span>'+(additional>=0?'추가로 받을 금액':'상대방 몫으로 조정할 금액')+'</span><b>'+money(Math.abs(additional))+'</b></div>'+
+  '<p class="calc-note">법원이 인정하는 실제 분할비율을 예측하는 기능이 아니라 사용자가 입력한 비율을 적용한 산술 계산입니다.</p>';
+}
+function calcDivorceTax(){
+ const base=num(document.getElementById('divTaxBase').value);
+ if(!base){alert('부동산 과세표준을 입력하세요.');return}
+ const share=(Number(document.getElementById('divShare').value)||100)/100;
+ const taxable=base*share;
+ const ar=(Number(document.getElementById('divAcqRate').value)||0)/100;
+ const er=(Number(document.getElementById('divEduRate').value)||0)/100;
+ const ruralOn=document.getElementById('divRuralApply').value==='yes';
+ const rr=ruralOn?(Number(document.getElementById('divRuralRate').value)||0)/100:0;
+ const a=taxable*ar,e=taxable*er,r=taxable*rr,total=a+e+r;
+ document.getElementById('taxResult').innerHTML=
+  '<div class="result-row"><span>전체 과세표준</span><b>'+money(base)+'</b></div>'+
+  '<div class="result-row"><span>이전 지분</span><b>'+(share*100).toFixed(2).replace(/\.00$/,'')+'%</b></div>'+
+  '<div class="result-row"><span>지분 적용 과세표준</span><b>'+money(taxable)+'</b></div>'+
+  '<div class="result-row"><span>취득세 ('+(ar*100)+'%)</span><b>'+money(a)+'</b></div>'+
+  '<div class="result-row"><span>지방교육세 ('+(er*100)+'%)</span><b>'+money(e)+'</b></div>'+
+  '<div class="result-row"><span>농어촌특별세 ('+(rr*100)+'%)</span><b>'+money(r)+'</b></div>'+
+  '<div class="result-row result-total"><span>예상 세금 합계</span><b>'+money(total)+'</b></div>'+
+  '<p class="calc-note">기본값은 재산분할 취득의 특례세율을 기준으로 넣어두었으며, 실제 과세표준·농특세 적용 여부 등은 신고 전 확인이 필요합니다.</p>';
+}
+function resetDivision(){
+ ['assetTotal','debtTotal','alreadyMine'].forEach(id=>document.getElementById(id).value='');
+ document.getElementById('divisionPct').value='50';
+ document.getElementById('divisionResult').innerHTML='<div class="empty" style="padding:20px">재산과 채무를 입력하고 계산하기를 눌러주세요.</div>';
+}
+function resetDivorceTax(){
+ document.getElementById('divTaxBase').value='';
+ document.getElementById('divShare').value='100';
+ document.getElementById('divAcqRate').value='1.5';
+ document.getElementById('divEduRate').value='0.3';
+ document.getElementById('divRuralApply').value='yes';
+ document.getElementById('divRuralRate').value='0.4';
+ document.getElementById('taxResult').innerHTML='<div class="empty" style="padding:20px">과세표준과 지분을 입력하고 계산하기를 눌러주세요.</div>';
+}
+</script>
+</body></html>
