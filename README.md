@@ -29,3 +29,11 @@ title, description, keywords, canonical, Open Graph 메타태그가 개별 글�
 ## 주의
 `admin.html` 주소 자체는 공개될 수 있습니다. 실제 게시 권한은 GitHub 토큰이 있어야 합니다.
 공용 PC에서는 토큰을 입력하지 마세요.
+
+
+## 관리자 글 관리 기능
+- 새 글 작성
+- 기존 글 목록 조회
+- 기존 글 수정
+- 기존 글 삭제
+- 삭제 시 posts HTML과 posts.json 목록에서 함께 제거
