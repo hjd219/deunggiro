@@ -145,6 +145,132 @@ linear-gradient(135deg,#f7f9fd,#ffffff 60%,#eef4fb)}
 .footer-info-v22 strong{display:inline-block;width:42px;color:#fff}
 .footer-info-v22 a{color:#fff;text-decoration:none;font-weight:800}
 
+
+/* v25 - 이미지 없이 업무별 경계선 강조 */
+.quick-grid{
+  grid-template-columns:repeat(5,1fr)!important;
+  border:1px solid #cfd8e6!important;
+  border-radius:12px!important;
+  overflow:hidden!important;
+  background:#fff!important;
+}
+.quick-item{
+  background:#fff!important;
+  background-image:none!important;
+  border-right:1px solid #cfd8e6!important;
+  border-bottom:0!important;
+  min-height:165px;
+  position:relative;
+  transition:background .18s ease, box-shadow .18s ease;
+}
+.quick-item:last-child{border-right:0!important}
+.quick-item::after{display:none!important}
+.quick-item:hover{
+  background:#f6f9fe!important;
+  box-shadow:inset 0 3px 0 #2457a6;
+}
+@media(max-width:1000px){
+ .quick-grid{grid-template-columns:repeat(2,1fr)!important}
+ .quick-item{border-bottom:1px solid #cfd8e6!important}
+}
+@media(max-width:600px){
+ .quick-grid{grid-template-columns:1fr!important}
+ .quick-item{border-right:0!important;border-bottom:1px solid #cfd8e6!important}
+ .quick-item:last-child{border-bottom:0!important}
+}
+
+
+/* v26 - 마우스 선택 시 카드 색상 변경 */
+.quick-item{
+  transition:background-color .18s ease, color .18s ease, box-shadow .18s ease, transform .18s ease!important;
+}
+.quick-item:hover,
+.quick-item:focus-visible{
+  background:#2457a6!important;
+  color:#fff!important;
+  box-shadow:inset 0 0 0 1px #2457a6,0 10px 24px rgba(36,87,166,.18)!important;
+  transform:translateY(-2px);
+  z-index:2;
+}
+.quick-item:hover strong,
+.quick-item:hover h3,
+.quick-item:hover p,
+.quick-item:hover .go,
+.quick-item:focus-visible strong,
+.quick-item:focus-visible h3,
+.quick-item:focus-visible p,
+.quick-item:focus-visible .go{
+  color:#fff!important;
+}
+
+
+/* v27 - 홈페이지 전체 선택 요소에 동일한 마우스 강조 효과 */
+.btn,.card,.quick-item,.chip,.calc-tab,.post-card,
+a[class*="card"],a[class*="item"]{
+  transition:background-color .18s ease,color .18s ease,border-color .18s ease,
+             box-shadow .18s ease,transform .18s ease!important;
+}
+
+/* 업무카드 / 일반카드 / 게시글카드 */
+.card:hover,.post-card:hover,
+a[class*="card"]:hover,a[class*="item"]:hover{
+  background:#2457a6!important;
+  color:#fff!important;
+  border-color:#2457a6!important;
+  box-shadow:0 10px 24px rgba(36,87,166,.18)!important;
+  transform:translateY(-2px);
+}
+.card:hover h2,.card:hover h3,.card:hover h4,.card:hover p,.card:hover span,.card:hover strong,
+.post-card:hover h2,.post-card:hover h3,.post-card:hover p,.post-card:hover span,.post-card:hover strong,
+a[class*="card"]:hover h2,a[class*="card"]:hover h3,a[class*="card"]:hover p,a[class*="card"]:hover span,a[class*="card"]:hover strong,
+a[class*="item"]:hover h2,a[class*="item"]:hover h3,a[class*="item"]:hover p,a[class*="item"]:hover span,a[class*="item"]:hover strong{
+  color:#fff!important;
+}
+
+/* 흰색/테두리 버튼 */
+.btn-border:hover,.btn-soft:hover{
+  background:#2457a6!important;
+  color:#fff!important;
+  border-color:#2457a6!important;
+  box-shadow:0 8px 18px rgba(36,87,166,.16)!important;
+  transform:translateY(-1px);
+}
+
+/* 파란 버튼은 더 진한 파랑 */
+.btn-primary:hover{
+  background:#173d78!important;
+  color:#fff!important;
+  box-shadow:0 8px 18px rgba(23,61,120,.22)!important;
+  transform:translateY(-1px);
+}
+
+/* 검정 버튼 */
+.btn-dark:hover{
+  background:#2457a6!important;
+  color:#fff!important;
+  box-shadow:0 8px 18px rgba(36,87,166,.18)!important;
+  transform:translateY(-1px);
+}
+
+/* 탭/칩 */
+.chip:hover,.calc-tab:hover{
+  background:#2457a6!important;
+  color:#fff!important;
+  border-color:#2457a6!important;
+}
+
+/* 상단 메뉴는 배경 대신 글자 강조 */
+.nav a:hover{
+  color:#2457a6!important;
+}
+
+/* 키보드 선택도 동일하게 */
+.btn:focus-visible,.card:focus-visible,.quick-item:focus-visible,.post-card:focus-visible,
+.chip:focus-visible,.calc-tab:focus-visible{
+  outline:3px solid rgba(36,87,166,.25);
+  outline-offset:2px;
+}
+
 </style>
 </head>
 <body>
@@ -176,7 +302,7 @@ linear-gradient(135deg,#f7f9fd,#ffffff 60%,#eef4fb)}
  </div>
 </section>
 <div class="container quick"><div class="quick-grid" style="grid-template-columns:repeat(5,1fr)">
- <a class="quick-item" href="/inheritance.html"><strong>01</strong><h3>상속</h3><p>상속등기·재산분할</p><span class="go">자세히 보기 →</span></a>
+ <a class="quick-item" href="/family.html"><strong>01</strong><h3>상속</h3><p>상속등기·재산분할</p><span class="go">자세히 보기 →</span></a>
  <a class="quick-item" href="/corporate.html"><strong>02</strong><h3>법인</h3><p>설립·변경·증자</p><span class="go">자세히 보기 →</span></a>
  <a class="quick-item" href="/realestate.html"><strong>03</strong><h3>부동산</h3><p>매매·증여·담보</p><span class="go">자세히 보기 →</span></a>
  <a class="quick-item" href="/renunciation.html"><strong>04</strong><h3>한정승인·상속포기</h3><p>채무상속 대응</p><span class="go">자세히 보기 →</span></a>

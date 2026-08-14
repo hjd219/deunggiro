@@ -220,71 +220,297 @@ linear-gradient(135deg,#f8faff,#fff)}
   </div>
 </header>
 <section class="subhero"><div class="container"><div class="breadcrumb"><a href="/">홈</a> / 계산기</div><div class="label">REAL ESTATE TAX</div><h1>부동산 취득세 종합계산기</h1><p>상속·증여·일반 부동산 취득의 취득세, 지방교육세, 농어촌특별세를 지분까지 반영해 계산합니다.</p></div></section>
-<section class="section"><div class="container"><div class="calculator"><div class="calc-body"><div id="acqCalc">
-    <h3 style="margin-top:0">부동산 취득세 종합계산</h3>
-    <p class="admin-help">취득원인과 부동산 종류를 선택하면 기본 세율을 자동 적용합니다. 실제 신고 전에는 감면요건과 부가세목을 별도로 확인해야 합니다.</p>
-    <div class="form-grid">
-     <div class="form-group"><label>취득원인</label><select id="acqType" onchange="syncAcqRate()">
-      <option value="inherit-normal">상속 - 일반 부동산(농지 외)</option>
-      <option value="inherit-farm">상속 - 농지</option>
-      <option value="inherit-home">상속 - 1가구 1주택 특례 검토</option>
-      <option value="gift">증여 - 일반</option>
-      <option value="sale-other">매매 - 주택 외 일반 부동산</option>
-      <option value="custom">직접 세율 입력</option>
-     </select></div>
-     <div class="form-group"><label>과세표준(원)</label><input id="acqBase" inputmode="numeric" placeholder="예: 300000000" oninput="formatNumberInput(this)"></div>
-     <div class="form-group"><label>취득세 본세율</label><div style="display:flex;gap:8px;align-items:center"><input id="acqRatePct" type="number" step="0.01" value="2.8"><span style="font-weight:900">%</span></div></div>
-     <div class="form-group"><label>지방교육세율(과세표준 대비)</label><div style="display:flex;gap:8px;align-items:center"><input id="eduRatePct" type="number" step="0.01" value="0.16"><span style="font-weight:900">%</span></div></div>
-     <div class="form-group"><label>농어촌특별세율(과세표준 대비)</label><div style="display:flex;gap:8px;align-items:center"><input id="ruralRatePct" type="number" step="0.01" value="0.20"><span style="font-weight:900">%</span></div></div>
-     <div class="form-group"><label>취득 지분</label><div style="display:flex;gap:8px;align-items:center"><input id="sharePct" type="number" step="0.01" value="100" min="0" max="100"><span style="font-weight:900">%</span></div></div>
+<section class="section"><div class="container">
+<div class="calculator">
+ <div class="calc-body">
+  <div id="acqCalc">
+   <h2 style="margin-top:0">부동산 취득세 종합계산</h2>
+   <p class="admin-help">매매·증여·상속 중 취득원인을 선택하면 필요한 항목만 표시됩니다.</p>
+
+   <div class="form-grid">
+    <div class="form-group">
+     <label>취득원인</label>
+     <select id="calcType" onchange="syncAcqUI()">
+      <option value="sale">매매</option>
+      <option value="gift">증여</option>
+      <option value="inherit">상속</option>
+     </select>
     </div>
-    <div id="acqGuide" class="notice" style="margin:8px 0 18px">일반 상속(농지 외) 기본 취득세율 2.8%를 적용했습니다.</div>
-    <div class="buttons"><button class="btn btn-primary" onclick="calcAcq()">취득세 계산하기</button><button class="btn btn-border" onclick="resetAcq()">초기화</button></div>
-    <div id="acqResult" class="result"><div class="empty" style="padding:20px">과세표준을 입력하고 계산하기를 눌러주세요.</div></div>
-    <div class="notice" style="margin-top:18px"><strong>상속 주택 감면 확인</strong><br>1가구 1주택 특례는 상속개시일 기준 세대와 주택보유 현황 등 별도 요건 검토가 필요합니다. 여러 상속인이 지분으로 취득하거나 세대구성이 다른 경우 계산 결과만으로 감면 여부를 확정할 수 없습니다.</div>
+
+    <div class="form-group">
+     <label>취득가액 / 시가인정액 / 시가표준액(원)</label>
+     <input id="price" inputmode="numeric" placeholder="예: 500000000" oninput="formatNumberInput(this)">
+    </div>
+
+    <div class="form-group" id="regionGroup">
+     <label>지역</label>
+     <select id="region" onchange="syncAcqUI()">
+      <option value="nonregulated">조정대상지역 이외</option>
+      <option value="regulated">조정대상지역</option>
+     </select>
+    </div>
+
+    <div class="form-group" id="homeCountGroup">
+     <label>취득 후 주택수</label>
+     <select id="homeCount">
+      <option value="1">1주택</option>
+      <option value="2">2주택</option>
+      <option value="3">3주택</option>
+      <option value="4">4주택 이상</option>
+     </select>
+    </div>
+
+    <div class="form-group" id="officialPriceGroup" style="display:none">
+     <label>주택 시가표준액(공시가격)(원)</label>
+     <input id="officialPrice" inputmode="numeric" placeholder="예: 280000000" oninput="formatNumberInput(this)">
+    </div>
+
+    <div class="form-group" id="areaGroup">
+     <label>전용면적</label>
+     <select id="area85">
+      <option value="under">85㎡ 이하</option>
+      <option value="over">85㎡ 초과</option>
+     </select>
+    </div>
+
+    <div class="form-group" id="luxuryGroup">
+     <label>고급주택·별장 여부</label>
+     <select id="luxury">
+      <option value="no">해당 없음</option>
+      <option value="yes">고급주택·별장</option>
+     </select>
+    </div>
+
+    <div class="form-group" id="exceptionGroup" style="display:none">
+     <label>중과세 제외주택 여부</label>
+     <select id="exceptionHouse">
+      <option value="no">아니오</option>
+      <option value="yes">예</option>
+     </select>
+    </div>
+
+    <div class="form-group" id="shareGroup">
+     <label>취득 지분</label>
+     <div style="display:flex;gap:8px;align-items:center">
+      <input id="sharePct" type="number" step="0.01" min="0" max="100" value="100">
+      <span style="font-weight:900">%</span>
+     </div>
+    </div>
+
+    <div class="form-group" id="inheritTypeGroup" style="display:none">
+     <label>상속 부동산 종류</label>
+     <select id="inheritType" onchange="syncAcqUI()">
+      <option value="normal">주택·건물·토지(농지 외)</option>
+      <option value="farm">농지</option>
+     </select>
+    </div>
+
+    <div class="form-group" id="oneHomeGroup" style="display:none">
+     <label>상속 1가구 1주택 여부</label>
+     <select id="oneHome">
+      <option value="no">아니오</option>
+      <option value="yes">예</option>
+     </select>
+    </div>
+
+    <div class="form-group" id="selfFarmGroup" style="display:none">
+     <label>자경농지 여부</label>
+     <select id="selfFarm">
+      <option value="no">아니오</option>
+      <option value="yes">예</option>
+     </select>
+    </div>
    </div>
-   </div></div></div></div></section>
-<section class="page-cta"><div class="container"><h2 class="title">계산 결과는 예상치입니다.</h2><p>실제 신고 전에는 물건 종류, 감면, 중과, 소재지 등 개별 요건 확인이 필요합니다.</p><a class="btn btn-primary" href="tel:0324251500">032-425-1500 상담</a></div></section><footer class="footer"><div class="container"><strong>등기로 · 현재두 법무사 사무소</strong><br>인천 · 상속 · 법인 · 부동산 · 한정승인·상속포기 · 가사<br>상담전화 032-425-1500</div></footer>
-<script>function money(n){return Math.round(Number(n)||0).toLocaleString('ko-KR')+'원'}
+
+   <div id="ruleGuide" class="notice" style="margin:12px 0 20px"></div>
+
+   <div class="buttons">
+    <button class="btn btn-primary" onclick="calculateAcquisition()">취득세 계산하기</button>
+    <button class="btn btn-border" onclick="resetAcquisition()">초기화</button>
+   </div>
+
+   <div id="acqResult" class="result">
+    <div class="empty" style="padding:20px">취득원인과 금액을 입력하고 계산하기를 눌러주세요.</div>
+   </div>
+  </div>
+ </div>
+</div>
+</div></section>
+<section class="section soft"><div class="container"><div class="notice"><strong>계산기 적용 기준</strong><br>매매·증여·상속별 취득세, 지방교육세, 농어촌특별세율을 구분하여 계산합니다. 실제 신고 시에는 조정대상지역 지정 여부, 중과세 제외주택, 고급주택·별장, 1세대 주택수, 자경농지 요건 등을 별도로 확인해야 합니다.</div></div></section><section class="page-cta"><div class="container"><h2 class="title">계산 결과는 예상치입니다.</h2><p>실제 신고 전에는 물건 종류, 감면, 중과, 소재지 등 개별 요건 확인이 필요합니다.</p><a class="btn btn-primary" href="tel:0324251500">032-425-1500 상담</a></div></section><footer class="footer"><div class="container"><strong>등기로 · 현재두 법무사 사무소</strong><br>인천 · 상속 · 법인 · 부동산 · 한정승인·상속포기 · 가사<br>상담전화 032-425-1500</div></footer>
+<script>
 function num(v){return Number(String(v||'').replace(/,/g,''))||0}
-function formatNumberInput(el){const raw=el.value.replace(/[^\d]/g,'');el.value=raw?Number(raw).toLocaleString('ko-KR'):''}
-function showCalc(id,btn){document.getElementById('acqCalc').style.display=id==='acq'?'block':'none';document.getElementById('corpCalc').style.display=id==='corp'?'block':'none';document.querySelectorAll('.calc-tab').forEach(x=>x.classList.remove('active'));btn.classList.add('active')}
-function syncAcqRate(){
- const t=document.getElementById('acqType').value,rate=document.getElementById('acqRatePct'),edu=document.getElementById('eduRatePct'),rural=document.getElementById('ruralRatePct'),guide=document.getElementById('acqGuide');
- const presets={
-  'inherit-normal':[2.8,0.16,0.20,'일반 상속(농지 외) 기본 취득세율 2.8%를 적용했습니다.'],
-  'inherit-farm':[2.3,0.06,0.20,'상속 농지 기본 취득세율 2.3%를 적용했습니다. 농지 요건은 별도 확인이 필요합니다.'],
-  'inherit-home':[0.8,0.16,0,'상속 1가구 1주택 특례 적용을 가정한 값입니다. 실제 감면 대상 여부를 반드시 확인하세요.'],
-  'gift':[3.5,0.30,0,'일반 증여 기본세율 예시입니다. 주택 수·지역·법인 취득 등 중과 사유는 별도 검토가 필요합니다.'],
-  'sale-other':[4.0,0.40,0.20,'주택 외 일반 매매의 기본세율 예시입니다. 주택 매매 취득세는 가격·주택수 등에 따라 별도 계산이 필요합니다.'],
-  'custom':[0,0,0,'직접 적용할 세율을 입력하세요.']
- };
- const p=presets[t];rate.value=p[0];edu.value=p[1];rural.value=p[2];guide.textContent=p[3]
+function money(n){return Math.round(Number(n)||0).toLocaleString('ko-KR')+'원'}
+function formatNumberInput(el){
+ const raw=el.value.replace(/[^\d]/g,'');
+ el.value=raw?Number(raw).toLocaleString('ko-KR'):'';
 }
-function calcAcq(){
- const base=num(document.getElementById('acqBase').value),share=Math.max(0,Math.min(100,Number(document.getElementById('sharePct').value)||100));
- if(!base){alert('과세표준을 입력하세요.');return}
- const taxable=base*(share/100),rate=(Number(document.getElementById('acqRatePct').value)||0)/100,eduRate=(Number(document.getElementById('eduRatePct').value)||0)/100,ruralRate=(Number(document.getElementById('ruralRatePct').value)||0)/100;
- const acq=taxable*rate,edu=taxable*eduRate,rural=taxable*ruralRate,total=acq+edu+rural;
- document.getElementById('acqResult').innerHTML='<div class="result-row"><span>전체 과세표준</span><b>'+money(base)+'</b></div><div class="result-row"><span>취득 지분</span><b>'+share.toLocaleString('ko-KR')+'%</b></div><div class="result-row"><span>지분 적용 과세표준</span><b>'+money(taxable)+'</b></div><div class="result-row"><span>취득세 본세 ('+(rate*100).toFixed(2)+'%)</span><b>'+money(acq)+'</b></div><div class="result-row"><span>지방교육세 ('+(eduRate*100).toFixed(2)+'%)</span><b>'+money(edu)+'</b></div><div class="result-row"><span>농어촌특별세 ('+(ruralRate*100).toFixed(2)+'%)</span><b>'+money(rural)+'</b></div><div class="result-row result-total"><span>예상 세금 합계</span><b>'+money(total)+'</b></div><p class="admin-help" style="margin-bottom:0">본 계산은 입력한 세율 기준 예상치입니다. 실제 신고세액은 물건 종류·감면·중과·세대 및 주택수 판정 등에 따라 달라질 수 있습니다.</p>'
+function show(id,on){document.getElementById(id).style.display=on?'block':'none'}
+
+function syncAcqUI(){
+ const type=document.getElementById('calcType').value;
+ const region=document.getElementById('region').value;
+ const inheritType=document.getElementById('inheritType').value;
+
+ show('regionGroup', type!=='inherit');
+ show('homeCountGroup', type==='sale');
+ show('officialPriceGroup', type==='gift' && region==='regulated');
+ show('areaGroup', type!=='inherit' || inheritType==='normal');
+ show('luxuryGroup', type!=='inherit');
+ show('exceptionGroup', type==='gift' && region==='regulated');
+ show('inheritTypeGroup', type==='inherit');
+ show('oneHomeGroup', type==='inherit' && inheritType==='normal');
+ show('selfFarmGroup', type==='inherit' && inheritType==='farm');
+
+ let guide='';
+ if(type==='sale'){
+   guide = region==='regulated'
+     ? '조정대상지역 매매: 1주택은 1~3% 일반세율, 2주택 8%, 3주택 이상 12%를 적용합니다.'
+     : '조정대상지역 이외 매매: 2주택 이하 1~3% 일반세율, 3주택 8%, 4주택 이상 12%를 적용합니다.';
+ } else if(type==='gift'){
+   guide = region==='regulated'
+     ? '조정대상지역 증여: 주택 시가표준액 3억원 미만은 3.5%, 3억원 이상은 12%를 적용합니다. 중과세 제외주택은 3.5%를 적용합니다.'
+     : '조정대상지역 이외 증여: 시가인정액 기준 3.5%를 적용합니다.';
+ } else {
+   guide = inheritType==='normal'
+     ? '상속 주택·건물·토지(농지 외): 취득세 2.8% + 교육세 0.16% + 농특세 0.2%를 기본 적용합니다.'
+     : '상속 농지: 취득세 2.3% + 교육세 0.06% + 농특세 0.2%를 기본 적용합니다.';
+ }
+ document.getElementById('ruleGuide').textContent=guide;
 }
-function resetAcq(){document.getElementById('acqBase').value='';document.getElementById('sharePct').value='100';document.getElementById('acqType').value='inherit-normal';syncAcqRate();document.getElementById('acqResult').innerHTML='<div class="empty" style="padding:20px">과세표준을 입력하고 계산하기를 눌러주세요.</div>'}
-function syncCorpFields(){
- const type=document.getElementById('corpType').value,area=document.getElementById('corpArea').value,mode=document.getElementById('corpMode'),mult=document.getElementById('corpMultiplier'),guide=document.getElementById('corpGuide');
- if(type==='incorporation'||type==='increase'){mode.value='capital';guide.textContent='설립·증자는 자본금 기준 계산으로 설정되어 있습니다.'}
- else if(type!=='custom'){mode.value='fixed';guide.textContent='변경등기는 정액 등록면허세를 직접 확인하여 입력할 수 있게 설정했습니다.'}
- mult.value=area==='overcrowded'?'3':'1';
- document.getElementById('capitalGroup').style.display=mode.value==='capital'?'block':'none';
- document.getElementById('fixedGroup').style.display=mode.value==='fixed'?'block':'none'
+
+function generalSaleRate(price){
+ if(price<=600000000) return 0.01;
+ if(price>900000000) return 0.03;
+ const rateIndex=(price*2/300000000 - 3)*0.01;
+ return Math.round(rateIndex*10000)/10000;
 }
-function calcCorp(){
- const mode=document.getElementById('corpMode').value,mult=Number(document.getElementById('corpMultiplier').value)||1,eduRate=Number(document.getElementById('corpEdu').value)||0;
- let baseReg=0,basis='';
- if(mode==='capital'){const capital=num(document.getElementById('corpCapital').value);if(!capital){alert('자본금 또는 증가 자본금을 입력하세요.');return}baseReg=Math.max(112500,capital*0.004);basis='자본금 기준 '+money(capital)+' × 0.4%, 최저 112,500원'}
- else{baseReg=num(document.getElementById('corpFixed').value);if(!baseReg){alert('정액 등록면허세를 입력하세요.');return}basis='입력한 정액 등록면허세'}
- const reg=baseReg*mult,edu=reg*eduRate,total=reg+edu;
- document.getElementById('corpResult').innerHTML='<div class="result-row"><span>계산 기준</span><b style="text-align:right">'+basis+'</b></div><div class="result-row"><span>중과 배수</span><b>'+mult+'배</b></div><div class="result-row"><span>등록면허세</span><b>'+money(reg)+'</b></div><div class="result-row"><span>지방교육세</span><b>'+money(edu)+'</b></div><div class="result-row result-total"><span>예상 세금 합계</span><b>'+money(total)+'</b></div><p class="admin-help" style="margin-bottom:0">등기유형, 본점 소재지, 과밀 중과요건 및 관할 등에 따라 실제 세액은 달라질 수 있습니다.</p>'
+function generalEduRate(price){
+ if(price<=600000000) return 0.001;
+ if(price>900000000) return 0.003;
+ const acqRate=generalSaleRate(price);
+ return acqRate*0.1;
 }
-function resetCorp(){document.getElementById('corpType').value='incorporation';document.getElementById('corpArea').value='normal';document.getElementById('corpCapital').value='';document.getElementById('corpFixed').value='40,200';document.getElementById('corpEdu').value='0.2';document.getElementById('corpMode').value='capital';document.getElementById('corpMultiplier').value='1';syncCorpFields();document.getElementById('corpResult').innerHTML='<div class="empty" style="padding:20px">등기 종류와 금액을 입력하고 계산하기를 눌러주세요.</div>'}
-document.addEventListener('DOMContentLoaded',()=>{ syncAcqRate(); });
+
+function calculateAcquisition(){
+ const type=document.getElementById('calcType').value;
+ const region=document.getElementById('region').value;
+ const homeCount=Number(document.getElementById('homeCount').value);
+ const price=num(document.getElementById('price').value);
+ const official=num(document.getElementById('officialPrice').value);
+ const area85=document.getElementById('area85').value;
+ const luxury=document.getElementById('luxury').value==='yes';
+ const exception=document.getElementById('exceptionHouse').value==='yes';
+ const share=(Number(document.getElementById('sharePct').value)||100)/100;
+ const inheritType=document.getElementById('inheritType').value;
+ const oneHome=document.getElementById('oneHome').value==='yes';
+ const selfFarm=document.getElementById('selfFarm').value==='yes';
+
+ if(!price){alert('금액을 입력하세요.');return}
+
+ const taxable=price*share;
+ let acqRate=0, eduRate=0, ruralRate=0, note='';
+
+ if(type==='sale'){
+   const normalRate=generalSaleRate(taxable);
+   const normalEdu=generalEduRate(taxable);
+
+   if(region==='regulated'){
+     if(homeCount<=1 || exception){
+       acqRate=normalRate; eduRate=normalEdu; ruralRate=(area85==='under'?0:0.002);
+       note=exception?'중과세 제외주택으로 일반세율 적용':'조정대상지역 1주택 일반세율 적용';
+     }else if(homeCount===2){
+       acqRate=0.08; eduRate=0.004; ruralRate=0.006;
+       note='조정대상지역 2주택 중과세율 적용';
+     }else{
+       acqRate=0.12; eduRate=0.004; ruralRate=0.01;
+       note='조정대상지역 3주택 이상 중과세율 적용';
+     }
+   }else{
+     if(homeCount<=2 || exception){
+       acqRate=normalRate; eduRate=normalEdu; ruralRate=(area85==='under'?0:0.002);
+       note=exception?'중과세 제외주택으로 일반세율 적용':'비조정지역 2주택 이하 일반세율 적용';
+     }else if(homeCount===3){
+       acqRate=0.08; eduRate=0.004; ruralRate=0.006;
+       note='비조정지역 3주택 중과세율 적용';
+     }else{
+       acqRate=0.12; eduRate=0.004; ruralRate=0.01;
+       note='비조정지역 4주택 이상 중과세율 적용';
+     }
+   }
+   if(luxury){acqRate+=0.08; note+=' + 고급주택·별장 8% 가산';}
+ }
+
+ if(type==='gift'){
+   if(region==='regulated'){
+     if(!official){alert('조정대상지역 증여는 주택 시가표준액(공시가격)을 입력하세요.');return}
+     if(official<300000000 || exception){
+       acqRate=0.035; eduRate=luxury?0.004:0.003; ruralRate=(area85==='under'&&!luxury)?0:0.002;
+       note=exception?'중과세 제외주택으로 3.5% 적용':'시가표준액 3억원 미만 3.5% 적용';
+     }else{
+       acqRate=0.12; eduRate=0.004; ruralRate=(area85==='under'&&!luxury)?0:0.01;
+       note='시가표준액 3억원 이상 12% 적용';
+     }
+   }else{
+     acqRate=0.035; eduRate=luxury?0.004:0.003; ruralRate=(area85==='under'&&!luxury)?0:0.002;
+     note='비조정지역 증여 3.5% 적용';
+   }
+   if(luxury){acqRate+=0.08; note+=' + 고급주택·별장 8% 가산';}
+ }
+
+ if(type==='inherit'){
+   if(inheritType==='normal'){
+     if(oneHome){
+       acqRate=0.008; eduRate=0.0016; ruralRate=0;
+       note='상속 1가구 1주택 특례 가정: 취득세 0.8%, 교육세 0.16%, 농특세 비과세';
+     }else{
+       acqRate=0.028; eduRate=0.0016; ruralRate=0.002;
+       note='상속 일반 부동산 기본세율 적용';
+     }
+   }else{
+     if(selfFarm){
+       acqRate=0.0015; eduRate=0.0003; ruralRate=0;
+       note='자경농지 감면 가정';
+     }else{
+       acqRate=0.023; eduRate=0.0006; ruralRate=0.002;
+       note='상속 농지 기본세율 적용';
+     }
+   }
+ }
+
+ const acq=taxable*acqRate;
+ const edu=taxable*eduRate;
+ const rural=taxable*ruralRate;
+ const total=acq+edu+rural;
+
+ document.getElementById('acqResult').innerHTML=
+ '<div class="result-row"><span>계산 기준 금액</span><b>'+money(price)+'</b></div>'+
+ '<div class="result-row"><span>취득 지분</span><b>'+(share*100).toFixed(2).replace(/\.00$/,'')+'%</b></div>'+
+ '<div class="result-row"><span>지분 적용 금액</span><b>'+money(taxable)+'</b></div>'+
+ '<div class="result-row"><span>취득세율</span><b>'+(acqRate*100).toFixed(4).replace(/0+$/,'').replace(/\.$/,'')+'%</b></div>'+
+ '<div class="result-row"><span>취득세</span><b>'+money(acq)+'</b></div>'+
+ '<div class="result-row"><span>교육세율</span><b>'+(eduRate*100).toFixed(4).replace(/0+$/,'').replace(/\.$/,'')+'%</b></div>'+
+ '<div class="result-row"><span>교육세</span><b>'+money(edu)+'</b></div>'+
+ '<div class="result-row"><span>농특세율</span><b>'+(ruralRate*100).toFixed(4).replace(/0+$/,'').replace(/\.$/,'')+'%</b></div>'+
+ '<div class="result-row"><span>농특세</span><b>'+money(rural)+'</b></div>'+
+ '<div class="result-row result-total"><span>예상 세금 합계</span><b>'+money(total)+'</b></div>'+
+ '<div class="notice" style="margin-top:14px"><strong>적용기준</strong><br>'+note+'</div>';
+}
+
+function resetAcquisition(){
+ document.getElementById('calcType').value='sale';
+ document.getElementById('price').value='';
+ document.getElementById('region').value='nonregulated';
+ document.getElementById('homeCount').value='1';
+ document.getElementById('officialPrice').value='';
+ document.getElementById('area85').value='under';
+ document.getElementById('luxury').value='no';
+ document.getElementById('exceptionHouse').value='no';
+ document.getElementById('sharePct').value='100';
+ document.getElementById('inheritType').value='normal';
+ document.getElementById('oneHome').value='no';
+ document.getElementById('selfFarm').value='no';
+ syncAcqUI();
+ document.getElementById('acqResult').innerHTML='<div class="empty" style="padding:20px">취득원인과 금액을 입력하고 계산하기를 눌러주세요.</div>';
+}
+document.addEventListener('DOMContentLoaded',syncAcqUI);
 </script></body></html>
