@@ -132,6 +132,19 @@ linear-gradient(135deg,#f7f9fd,#ffffff 60%,#eef4fb)}
 @media(max-width:1000px){.quick-grid,#services .cards{grid-template-columns:repeat(2,1fr)!important}}
 @media(max-width:600px){.quick-grid,#services .cards{grid-template-columns:1fr!important}}
 
+
+/* 상담영역 간결화 */
+.final-cta,.bottom-cta{padding-top:42px!important;padding-bottom:42px!important}
+.final-cta h2,.bottom-cta h2{margin-bottom:10px!important}
+.final-cta p,.bottom-cta p{margin-bottom:18px!important}
+
+.site-footer-v22{background:#172840;color:#fff;padding:42px 0 46px}
+.footer-brand-v22{font-size:24px;font-weight:900;letter-spacing:-.5px;margin-bottom:7px}
+.footer-office-v22{font-size:16px;font-weight:800;margin-bottom:18px;color:#e7eef9}
+.footer-info-v22{font-size:14px;line-height:2;color:#c9d5e7}
+.footer-info-v22 strong{display:inline-block;width:42px;color:#fff}
+.footer-info-v22 a{color:#fff;text-decoration:none;font-weight:800}
+
 </style>
 </head>
 <body>
@@ -266,15 +279,20 @@ linear-gradient(135deg,#f7f9fd,#ffffff 60%,#eef4fb)}
  <div style="margin-top:24px"><a class="btn btn-border" href="/posts.html">법률정보 전체보기</a></div>
 </div></section>
 
-<section class="cta" id="contact"><div class="container"><h2>상담이 필요한 경우</h2><p>사건 내용을 간단히 정리한 후 전화로 문의하시면 됩니다.</p><div class="phone">032-425-1500</div><a class="btn btn-white" href="tel:0324251500">전화 연결</a></div></section>
 
-<footer class="footer">
+
+
+<footer class="site-footer-v22">
   <div class="container">
-    <strong>현재두 법무사 사무소</strong><br>
-    인천 · 상속등기 · 상속포기 · 한정승인 · 법인등기 · 부동산등기<br>
-    상담전화 032-425-1500
+    <div class="footer-brand-v22">등기로</div>
+    <div class="footer-office-v22">현재두 법무사 사무소</div>
+    <div class="footer-info-v22">
+      <div><strong>주소</strong> 인천 미추홀구 경원대로 873, 201호(주안동, 인성빌딩) · 인천가정법원 옆</div>
+      <div><strong>전화</strong> <a href="tel:0324251500">032-425-1500</a></div>
+    </div>
   </div>
 </footer>
+
 
 <script>
 async function loadLatest(){try{const r=await fetch('/data/posts.json?'+Date.now());const posts=await r.json();const el=document.getElementById('latestPosts');if(!posts.length){el.innerHTML='<div class="empty">아직 등록된 글이 없습니다.</div>';return}el.innerHTML=posts.slice(0,4).map(p=>`<a class="post-card" href="/posts/${p.slug}.html"><div class="post-meta"><span class="badge">${p.category}</span>${p.date}</div><h3>${escapeHtml(p.title)}</h3><p>${escapeHtml(p.summary||'')}</p></a>`).join('')}catch(e){document.getElementById('latestPosts').innerHTML='<div class="empty">게시글을 불러오지 못했습니다.</div>'}}
