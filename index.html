@@ -53,6 +53,13 @@ input,select,textarea{width:100%;border:1px solid #cfd4dc;border-radius:7px;back
 
 @media(max-width:1000px){#services .cards{grid-template-columns:repeat(2,1fr)!important}.quick-grid{grid-template-columns:repeat(2,1fr)!important}}
 @media(max-width:600px){#services .cards,.quick-grid{grid-template-columns:1fr!important}}
+
+#calculator .calculator{box-shadow:0 12px 34px rgba(0,0,0,.06)}
+#calculator .calc-body{padding:34px}
+#calculator .result{margin-top:22px}
+#calculator .notice strong{font-size:15px}
+@media(max-width:800px){#calculator .calc-tabs{grid-template-columns:1fr}#calculator .calc-body{padding:20px}#calculator .result-row{align-items:flex-start}}
+
 </style>
 </head>
 <body>
@@ -154,30 +161,60 @@ input,select,textarea{width:100%;border:1px solid #cfd4dc;border-radius:7px;back
 </div></section>
 
 <section class="section soft" id="calculator"><div class="container">
- <div class="label">CALCULATOR</div><h2 class="title">간편 비용 계산기</h2>
+ <div class="label">CALCULATOR</div>
+ <h2 class="title">등기로 비용 계산기</h2>
+ <p class="desc">부동산 취득세와 법인등기 세금을 항목별로 입력해 예상 금액을 확인할 수 있습니다.</p>
  <div class="calculator">
-  <div class="calc-tabs"><button class="calc-tab active" onclick="showCalc('acq',this)">상속 취득세 간편계산</button><button class="calc-tab" onclick="showCalc('corp',this)">법인 등록면허세 계산</button></div>
+  <div class="calc-tabs">
+   <button class="calc-tab active" onclick="showCalc('acq',this)">부동산 취득세 종합계산</button>
+   <button class="calc-tab" onclick="showCalc('corp',this)">법인등기 비용 계산</button>
+  </div>
   <div class="calc-body">
    <div id="acqCalc">
+    <h3 style="margin-top:0">부동산 취득세 종합계산</h3>
+    <p class="admin-help">취득원인과 부동산 종류를 선택하면 기본 세율을 자동 적용합니다. 실제 신고 전에는 감면요건과 부가세목을 별도로 확인해야 합니다.</p>
     <div class="form-grid">
-      <div class="form-group"><label>과세표준(원)</label><input id="acqBase" inputmode="numeric" placeholder="예: 300000000"></div>
-      <div class="form-group"><label>적용 세율</label><select id="acqRate"><option value="0.028">일반 상속 2.8%</option><option value="0.008">무주택 상속 감면 가정 0.8%</option></select></div>
+     <div class="form-group"><label>취득원인</label><select id="acqType" onchange="syncAcqRate()">
+      <option value="inherit-normal">상속 - 일반 부동산(농지 외)</option>
+      <option value="inherit-farm">상속 - 농지</option>
+      <option value="inherit-home">상속 - 1가구 1주택 특례 검토</option>
+      <option value="gift">증여 - 일반</option>
+      <option value="sale-other">매매 - 주택 외 일반 부동산</option>
+      <option value="custom">직접 세율 입력</option>
+     </select></div>
+     <div class="form-group"><label>과세표준(원)</label><input id="acqBase" inputmode="numeric" placeholder="예: 300000000" oninput="formatNumberInput(this)"></div>
+     <div class="form-group"><label>취득세 본세율</label><div style="display:flex;gap:8px;align-items:center"><input id="acqRatePct" type="number" step="0.01" value="2.8"><span style="font-weight:900">%</span></div></div>
+     <div class="form-group"><label>지방교육세율(과세표준 대비)</label><div style="display:flex;gap:8px;align-items:center"><input id="eduRatePct" type="number" step="0.01" value="0.16"><span style="font-weight:900">%</span></div></div>
+     <div class="form-group"><label>농어촌특별세율(과세표준 대비)</label><div style="display:flex;gap:8px;align-items:center"><input id="ruralRatePct" type="number" step="0.01" value="0.20"><span style="font-weight:900">%</span></div></div>
+     <div class="form-group"><label>취득 지분</label><div style="display:flex;gap:8px;align-items:center"><input id="sharePct" type="number" step="0.01" value="100" min="0" max="100"><span style="font-weight:900">%</span></div></div>
     </div>
-    <button class="btn btn-primary" onclick="calcAcq()">계산하기</button><div id="acqResult" class="result"></div>
-    <p class="admin-help">간편 계산용입니다. 농어촌특별세·지방교육세 및 감면요건 등 실제 신고는 개별 검토가 필요합니다.</p>
+    <div id="acqGuide" class="notice" style="margin:8px 0 18px">일반 상속(농지 외) 기본 취득세율 2.8%를 적용했습니다.</div>
+    <div class="buttons"><button class="btn btn-primary" onclick="calcAcq()">취득세 계산하기</button><button class="btn btn-border" onclick="resetAcq()">초기화</button></div>
+    <div id="acqResult" class="result"><div class="empty" style="padding:20px">과세표준을 입력하고 계산하기를 눌러주세요.</div></div>
+    <div class="notice" style="margin-top:18px"><strong>상속 주택 감면 확인</strong><br>1가구 1주택 특례는 상속개시일 기준 세대와 주택보유 현황 등 별도 요건 검토가 필요합니다. 여러 상속인이 지분으로 취득하거나 세대구성이 다른 경우 계산 결과만으로 감면 여부를 확정할 수 없습니다.</div>
    </div>
    <div id="corpCalc" style="display:none">
+    <h3 style="margin-top:0">법인등기 비용 계산</h3>
+    <p class="admin-help">법인 설립·증자처럼 자본금에 따라 달라지는 등기와 정액 변경등기를 나눠 계산합니다.</p>
     <div class="form-grid">
-      <div class="form-group"><label>자본금(원)</label><input id="corpCapital" inputmode="numeric" placeholder="예: 50000000"></div>
-      <div class="form-group"><label>지역</label><select id="corpArea"><option value="1">비과밀</option><option value="3">과밀 3배 중과 가정</option></select></div>
+     <div class="form-group"><label>등기 종류</label><select id="corpType" onchange="syncCorpFields()">
+      <option value="incorporation">법인 설립</option><option value="increase">유상증자·자본금 증자</option><option value="relocation">본점이전</option><option value="director">대표이사·임원변경</option><option value="name">상호변경</option><option value="purpose">목적추가·변경</option><option value="custom">직접 입력</option>
+     </select></div>
+     <div class="form-group"><label>지역 구분</label><select id="corpArea" onchange="syncCorpFields()"><option value="normal">비과밀 또는 중과 제외</option><option value="overcrowded">과밀 중과 적용</option></select></div>
+     <div class="form-group" id="capitalGroup"><label>자본금 / 증가 자본금(원)</label><input id="corpCapital" inputmode="numeric" placeholder="예: 50000000" oninput="formatNumberInput(this)"></div>
+     <div class="form-group"><label>등록면허세 계산방식</label><select id="corpMode" onchange="syncCorpFields()"><option value="capital">자본금 × 0.4% (최저 112,500원)</option><option value="fixed">정액세 직접 입력</option></select></div>
+     <div class="form-group" id="fixedGroup" style="display:none"><label>정액 등록면허세(원)</label><input id="corpFixed" inputmode="numeric" value="40,200" oninput="formatNumberInput(this)"></div>
+     <div class="form-group"><label>지방교육세</label><select id="corpEdu"><option value="0.2">등록면허세의 20%</option><option value="0">계산하지 않음</option></select></div>
+     <div class="form-group"><label>중과 배수</label><select id="corpMultiplier"><option value="1">1배</option><option value="3">3배</option></select></div>
     </div>
-    <button class="btn btn-primary" onclick="calcCorp()">계산하기</button><div id="corpResult" class="result"></div>
-    <p class="admin-help">설립·증자 등의 간편 계산 예시입니다. 등기유형 및 이전지역 등에 따라 실제 세액이 달라질 수 있습니다.</p>
+    <div id="corpGuide" class="notice" style="margin:8px 0 18px">설립·증자는 자본금 기준 계산으로 설정되어 있습니다.</div>
+    <div class="buttons"><button class="btn btn-primary" onclick="calcCorp()">법인등기 세금 계산하기</button><button class="btn btn-border" onclick="resetCorp()">초기화</button></div>
+    <div id="corpResult" class="result"><div class="empty" style="padding:20px">등기 종류와 금액을 입력하고 계산하기를 눌러주세요.</div></div>
+    <div class="notice" style="margin-top:18px"><strong>인천 과밀·비과밀 확인</strong><br>인천은 지역에 따라 과밀 중과 여부가 달라질 수 있습니다. 인천경제자유구역, 남동국가산업단지 및 일부 지역은 과밀억제권역에서 제외될 수 있으므로 실제 소재지를 기준으로 확인해야 합니다.</div>
    </div>
   </div>
  </div>
 </div></section>
-
 <section class="section white" id="legal-info"><div class="container">
  <div class="label">LEGAL INFORMATION</div><h2 class="title">최근 법률정보</h2><p class="desc">홈페이지에 직접 게시한 글이 여기에 자동으로 표시됩니다.</p>
  <div id="latestPosts" class="post-grid"><div class="empty">게시글을 불러오는 중입니다.</div></div>
@@ -195,10 +232,47 @@ input,select,textarea{width:100%;border:1px solid #cfd4dc;border-radius:7px;back
 </footer>
 
 <script>
-function money(n){return Math.round(n).toLocaleString('ko-KR')+'원'}
+function money(n){return Math.round(Number(n)||0).toLocaleString('ko-KR')+'원'}
+function num(v){return Number(String(v||'').replace(/,/g,''))||0}
+function formatNumberInput(el){const raw=el.value.replace(/[^\d]/g,'');el.value=raw?Number(raw).toLocaleString('ko-KR'):''}
 function showCalc(id,btn){document.getElementById('acqCalc').style.display=id==='acq'?'block':'none';document.getElementById('corpCalc').style.display=id==='corp'?'block':'none';document.querySelectorAll('.calc-tab').forEach(x=>x.classList.remove('active'));btn.classList.add('active')}
-function calcAcq(){const b=Number(document.getElementById('acqBase').value.replace(/,/g,''))||0;const r=Number(document.getElementById('acqRate').value);document.getElementById('acqResult').innerHTML='<div class="result-row"><span>과세표준</span><b>'+money(b)+'</b></div><div class="result-row result-total"><span>취득세 본세 간편계산</span><b>'+money(b*r)+'</b></div>'}
-function calcCorp(){const c=Number(document.getElementById('corpCapital').value.replace(/,/g,''))||0;const m=Number(document.getElementById('corpArea').value);const base=Math.max(112500,c*0.004);const reg=base*m, edu=reg*0.2;document.getElementById('corpResult').innerHTML='<div class="result-row"><span>등록면허세</span><b>'+money(reg)+'</b></div><div class="result-row"><span>지방교육세</span><b>'+money(edu)+'</b></div><div class="result-row result-total"><span>합계</span><b>'+money(reg+edu)+'</b></div>'}
+function syncAcqRate(){
+ const t=document.getElementById('acqType').value,rate=document.getElementById('acqRatePct'),edu=document.getElementById('eduRatePct'),rural=document.getElementById('ruralRatePct'),guide=document.getElementById('acqGuide');
+ const presets={
+  'inherit-normal':[2.8,0.16,0.20,'일반 상속(농지 외) 기본 취득세율 2.8%를 적용했습니다.'],
+  'inherit-farm':[2.3,0.06,0.20,'상속 농지 기본 취득세율 2.3%를 적용했습니다. 농지 요건은 별도 확인이 필요합니다.'],
+  'inherit-home':[0.8,0.16,0,'상속 1가구 1주택 특례 적용을 가정한 값입니다. 실제 감면 대상 여부를 반드시 확인하세요.'],
+  'gift':[3.5,0.30,0,'일반 증여 기본세율 예시입니다. 주택 수·지역·법인 취득 등 중과 사유는 별도 검토가 필요합니다.'],
+  'sale-other':[4.0,0.40,0.20,'주택 외 일반 매매의 기본세율 예시입니다. 주택 매매 취득세는 가격·주택수 등에 따라 별도 계산이 필요합니다.'],
+  'custom':[0,0,0,'직접 적용할 세율을 입력하세요.']
+ };
+ const p=presets[t];rate.value=p[0];edu.value=p[1];rural.value=p[2];guide.textContent=p[3]
+}
+function calcAcq(){
+ const base=num(document.getElementById('acqBase').value),share=Math.max(0,Math.min(100,Number(document.getElementById('sharePct').value)||100));
+ if(!base){alert('과세표준을 입력하세요.');return}
+ const taxable=base*(share/100),rate=(Number(document.getElementById('acqRatePct').value)||0)/100,eduRate=(Number(document.getElementById('eduRatePct').value)||0)/100,ruralRate=(Number(document.getElementById('ruralRatePct').value)||0)/100;
+ const acq=taxable*rate,edu=taxable*eduRate,rural=taxable*ruralRate,total=acq+edu+rural;
+ document.getElementById('acqResult').innerHTML='<div class="result-row"><span>전체 과세표준</span><b>'+money(base)+'</b></div><div class="result-row"><span>취득 지분</span><b>'+share.toLocaleString('ko-KR')+'%</b></div><div class="result-row"><span>지분 적용 과세표준</span><b>'+money(taxable)+'</b></div><div class="result-row"><span>취득세 본세 ('+(rate*100).toFixed(2)+'%)</span><b>'+money(acq)+'</b></div><div class="result-row"><span>지방교육세 ('+(eduRate*100).toFixed(2)+'%)</span><b>'+money(edu)+'</b></div><div class="result-row"><span>농어촌특별세 ('+(ruralRate*100).toFixed(2)+'%)</span><b>'+money(rural)+'</b></div><div class="result-row result-total"><span>예상 세금 합계</span><b>'+money(total)+'</b></div><p class="admin-help" style="margin-bottom:0">본 계산은 입력한 세율 기준 예상치입니다. 실제 신고세액은 물건 종류·감면·중과·세대 및 주택수 판정 등에 따라 달라질 수 있습니다.</p>'
+}
+function resetAcq(){document.getElementById('acqBase').value='';document.getElementById('sharePct').value='100';document.getElementById('acqType').value='inherit-normal';syncAcqRate();document.getElementById('acqResult').innerHTML='<div class="empty" style="padding:20px">과세표준을 입력하고 계산하기를 눌러주세요.</div>'}
+function syncCorpFields(){
+ const type=document.getElementById('corpType').value,area=document.getElementById('corpArea').value,mode=document.getElementById('corpMode'),mult=document.getElementById('corpMultiplier'),guide=document.getElementById('corpGuide');
+ if(type==='incorporation'||type==='increase'){mode.value='capital';guide.textContent='설립·증자는 자본금 기준 계산으로 설정되어 있습니다.'}
+ else if(type!=='custom'){mode.value='fixed';guide.textContent='변경등기는 정액 등록면허세를 직접 확인하여 입력할 수 있게 설정했습니다.'}
+ mult.value=area==='overcrowded'?'3':'1';
+ document.getElementById('capitalGroup').style.display=mode.value==='capital'?'block':'none';
+ document.getElementById('fixedGroup').style.display=mode.value==='fixed'?'block':'none'
+}
+function calcCorp(){
+ const mode=document.getElementById('corpMode').value,mult=Number(document.getElementById('corpMultiplier').value)||1,eduRate=Number(document.getElementById('corpEdu').value)||0;
+ let baseReg=0,basis='';
+ if(mode==='capital'){const capital=num(document.getElementById('corpCapital').value);if(!capital){alert('자본금 또는 증가 자본금을 입력하세요.');return}baseReg=Math.max(112500,capital*0.004);basis='자본금 기준 '+money(capital)+' × 0.4%, 최저 112,500원'}
+ else{baseReg=num(document.getElementById('corpFixed').value);if(!baseReg){alert('정액 등록면허세를 입력하세요.');return}basis='입력한 정액 등록면허세'}
+ const reg=baseReg*mult,edu=reg*eduRate,total=reg+edu;
+ document.getElementById('corpResult').innerHTML='<div class="result-row"><span>계산 기준</span><b style="text-align:right">'+basis+'</b></div><div class="result-row"><span>중과 배수</span><b>'+mult+'배</b></div><div class="result-row"><span>등록면허세</span><b>'+money(reg)+'</b></div><div class="result-row"><span>지방교육세</span><b>'+money(edu)+'</b></div><div class="result-row result-total"><span>예상 세금 합계</span><b>'+money(total)+'</b></div><p class="admin-help" style="margin-bottom:0">등기유형, 본점 소재지, 과밀 중과요건 및 관할 등에 따라 실제 세액은 달라질 수 있습니다.</p>'
+}
+function resetCorp(){document.getElementById('corpType').value='incorporation';document.getElementById('corpArea').value='normal';document.getElementById('corpCapital').value='';document.getElementById('corpFixed').value='40,200';document.getElementById('corpEdu').value='0.2';document.getElementById('corpMode').value='capital';document.getElementById('corpMultiplier').value='1';syncCorpFields();document.getElementById('corpResult').innerHTML='<div class="empty" style="padding:20px">등기 종류와 금액을 입력하고 계산하기를 눌러주세요.</div>'}
 async function loadLatest(){try{const r=await fetch('/data/posts.json?'+Date.now());const posts=await r.json();const el=document.getElementById('latestPosts');if(!posts.length){el.innerHTML='<div class="empty">아직 등록된 글이 없습니다.</div>';return}el.innerHTML=posts.slice(0,4).map(p=>`<a class="post-card" href="/posts/${p.slug}.html"><div class="post-meta"><span class="badge">${p.category}</span>${p.date}</div><h3>${escapeHtml(p.title)}</h3><p>${escapeHtml(p.summary||'')}</p></a>`).join('')}catch(e){document.getElementById('latestPosts').innerHTML='<div class="empty">게시글을 불러오지 못했습니다.</div>'}}
 function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 loadLatest()
