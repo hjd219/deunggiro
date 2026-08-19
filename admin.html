@@ -1855,6 +1855,27 @@ function status(msg,ok=true){const s=$('status');s.className='status show '+(ok?
 function preview(){$('preview').style.display='block';$('preview').innerHTML='<h1>'+esc($('title').value||'제목 없음')+'</h1><div class="post-meta"><span class="badge">'+esc($('category').value)+'</span>'+esc($('date').value)+'</div><div class="article-body">'+sanitize($('editor').innerHTML)+'</div>'}
 function b64(str){return btoa(unescape(encodeURIComponent(str)))}
 function unb64(s){return decodeURIComponent(escape(atob(s.replace(/\n/g,''))))}
+
+function safeParsePostsJson(text){
+  const s=String(text||'').replace(/^\uFEFF/,'').trim();
+
+  /* 빈 posts.json이면 새 목록으로 취급 */
+  if(!s)return [];
+
+  try{
+    const data=JSON.parse(s);
+    if(Array.isArray(data))return data;
+
+    /* 예전 형식이 {posts:[...]} 형태인 경우도 호환 */
+    if(data && Array.isArray(data.posts))return data.posts;
+
+    throw new Error('posts.json 형식이 올바르지 않습니다.');
+  }catch(e){
+    console.error('posts.json parse error:',e,s.slice(0,300));
+    throw new Error('게시글 목록(posts.json)이 비어 있거나 JSON 형식이 깨져 있습니다. GitHub의 data/posts.json 파일을 확인해 주세요.');
+  }
+}
+
 async function api(path,opt={}){const owner=$('owner').value.trim(),repo=$('repo').value.trim(),branch=$('branch').value.trim(),token=$('token').value.trim();if(!token)throw new Error('GitHub 토큰을 입력하세요.');const r=await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${encodeURIComponent(branch)}`,{...opt,headers:{'Accept':'application/vnd.github+json','Authorization':'Bearer '+token,'X-GitHub-Api-Version':'2022-11-28',...(opt.headers||{})}});if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(j.message||('GitHub 오류 '+r.status))}return r.json()}
 async function put(path,content,message,sha){const owner=$('owner').value.trim(),repo=$('repo').value.trim(),branch=$('branch').value.trim(),token=$('token').value.trim();const body={message,content:b64(content),branch};if(sha)body.sha=sha;const r=await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`,{method:'PUT',headers:{'Accept':'application/vnd.github+json','Authorization':'Bearer '+token,'X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'},body:JSON.stringify(body)});if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(j.message||('GitHub 오류 '+r.status))}return r.json()}
 function makeArticle(p,body){return `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(p.title)} | 현재두 법무사 사무소</title><meta name="description" content="${esc(p.summary)}"><meta name="keywords" content="${esc(p.keywords)}"><meta property="og:type" content="article"><meta property="og:title" content="${esc(p.title)}"><meta property="og:description" content="${esc(p.summary)}"><meta property="og:url" content="https://www.deunggiro.kr/posts/${esc(p.slug)}.html"><link rel="canonical" href="https://www.deunggiro.kr/posts/${esc(p.slug)}.html"><style>
@@ -2073,7 +2094,18 @@ async function publishPost(){
   localStorage.setItem('dg_owner',$('owner').value.trim());localStorage.setItem('dg_repo',$('repo').value.trim());localStorage.setItem('dg_branch',$('branch').value.trim());
   status('게시글 목록을 확인하고 있습니다...');
   let list=[],sha=null;
-  try{const f=await api('data/posts.json');sha=f.sha;list=JSON.parse(unb64(f.content))}catch(e){if(!String(e.message).includes('Not Found'))throw e}
+  try{
+    const f=await api('data/posts.json');
+    sha=f.sha;
+    list=safeParsePostsJson(unb64(f.content));
+  }catch(e){
+    if(String(e.message).includes('Not Found')){
+      list=[];
+      sha=null;
+    }else{
+      throw e;
+    }
+  }
   if(editingOriginalSlug&&editingOriginalSlug!==p.slug){list=list.filter(x=>x.slug!==editingOriginalSlug&&x.slug!==p.slug)}else{list=list.filter(x=>x.slug!==p.slug)} list.unshift(p);
   await put('data/posts.json',JSON.stringify(list,null,2),'게시글 목록 업데이트: '+p.title,sha);
   let oldsha=null; try{oldsha=(await api('posts/'+p.slug+'.html')).sha}catch(e){}
@@ -2087,7 +2119,7 @@ async function publishPost(){
 let editingOriginalSlug = null;
 function showMode(mode){const write=mode==='write';$('writeMode').classList.toggle('hidden',!write);$('manageMode').classList.toggle('hidden',write);$('writeTab').classList.toggle('active',write);$('manageTab').classList.toggle('active',!write);if(!write)loadManagePosts()}
 function manageStatus(msg,ok=true){const e=$('manageStatus');e.className='status show '+(ok?'ok':'err');e.textContent=msg}
-async function getPostList(){const f=await api('data/posts.json');return {sha:f.sha,list:JSON.parse(unb64(f.content))}}
+async function getPostList(){const f=await api('data/posts.json');return {sha:f.sha,list:safeParsePostsJson(unb64(f.content))}}
 async function loadManagePosts(){try{manageStatus('게시글을 불러오는 중입니다...');const {list}=await getPostList();window.__managePosts=list;if(!list.length){$('manageList').innerHTML='<div class="empty">등록된 글이 없습니다.</div>';manageStatus('등록된 글이 없습니다.');return}$('manageList').innerHTML=list.map((p,i)=>`<div class="manage-item"><div><div class="manage-title">${esc(p.title)}</div><div class="manage-meta">${esc(p.category)} · ${esc(p.date)} · /posts/${esc(p.slug)}.html</div></div><div class="manage-actions"><button class="btn btn-border btn-sm" onclick="editPost(${i})">수정</button><button class="btn btn-danger btn-sm" onclick="deletePost(${i})">삭제</button></div></div>`).join('');manageStatus(list.length+'개의 글을 불러왔습니다.')}catch(e){$('manageList').innerHTML='<div class="empty">게시글을 불러오지 못했습니다.</div>';manageStatus(e.message||String(e),false)}}
 async function editPost(i){try{const p=(window.__managePosts||[])[i];if(!p)throw new Error('글 정보를 찾을 수 없습니다.');const f=await api('posts/'+p.slug+'.html');const html=unb64(f.content);const m=html.match(/<div class="article-body">([\s\S]*?)<\/div><div class="related">/);$('category').value=p.category||'기타';$('date').value=p.date||new Date().toISOString().slice(0,10);$('title').value=p.title||'';$('slug').value=p.slug||'';restoreThumbnail(p.thumbnail||'');$('keywords').value=p.keywords||'';$('summary').value=p.summary||'';$('editor').innerHTML=m?m[1]:'<p>본문을 불러오지 못했습니다. 내용을 다시 입력하세요.</p>';editingOriginalSlug=p.slug;showMode('write');status('수정할 글을 불러왔습니다. 내용을 변경한 뒤 GitHub에 게시하기를 누르세요.');window.scrollTo({top:0,behavior:'smooth'})}catch(e){manageStatus(e.message||String(e),false)}}
 async function deleteGithubFile(path,sha,message){const owner=$('owner').value.trim(),repo=$('repo').value.trim(),branch=$('branch').value.trim(),token=$('token').value.trim();if(!token)throw new Error('GitHub 토큰을 입력하세요.');const r=await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`,{method:'DELETE',headers:{'Accept':'application/vnd.github+json','Authorization':'Bearer '+token,'X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'},body:JSON.stringify({message,sha,branch})});if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(j.message||('GitHub 오류 '+r.status))}return r.json()}
