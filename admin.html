@@ -989,7 +989,7 @@ input,select,textarea{width:100%;border:1px solid #cfd4dc;border-radius:7px;back
  <div id="writeMode">
  <div class="admin-panel">
   <h2>4. 게시</h2>
-  <div class="buttons"><button id="publishBtn" class="btn btn-primary" onclick="publishPost()">새 글 게시</button><button class="btn btn-border" onclick="preview()">미리보기</button></div>
+  <div class="buttons"><button id="publishBtn" class="btn btn-primary" onclick="publishPost()">새 글 게시</button><button class="btn btn-border" onclick="preview()">미리보기</button><button class="btn btn-border" onclick="testGithubConnection()">GitHub 연결 확인</button></div>
   <div id="status" class="status"></div><div id="preview" class="preview-box" style="display:none;margin-top:15px"></div>
  </div>
  </div>
@@ -1954,11 +1954,51 @@ async function queuedPut(path,content,message,sha){
   return enqueueGithubWrite(()=>put(path,content,message,sha));
 }
 
-async function api(path,opt={}){const owner=$('owner').value.trim(),repo=$('repo').value.trim(),branch=$('branch').value.trim(),token=$('token').value.trim();if(!token)throw new Error('GitHub 토큰을 입력하세요.');const r=await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${encodeURIComponent(branch)}`,{...opt,headers:{'Accept':'application/vnd.github+json','Authorization':'Bearer '+token,'X-GitHub-Api-Version':'2022-11-28',...(opt.headers||{})}});if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(j.message||('GitHub 오류 '+r.status))}return r.json()}
+
+/* v37 - GitHub API 네트워크 오류 보강 */
+async function githubFetch(url,options={},label='GitHub API'){
+  let lastError=null;
+
+  for(let attempt=0;attempt<3;attempt++){
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),15000);
+
+    try{
+      const r=await fetch(url,{
+        ...options,
+        signal:controller.signal,
+        cache:'no-store'
+      });
+      clearTimeout(timer);
+      return r;
+    }catch(e){
+      clearTimeout(timer);
+      lastError=e;
+
+      if(e?.name==='AbortError'){
+        lastError=new Error(label+' 요청 시간이 초과되었습니다. 인터넷 연결을 확인해 주세요.');
+      }else if(String(e?.message||e).includes('Failed to fetch')){
+        lastError=new Error(
+          label+' 연결에 실패했습니다. '+
+          '인터넷 연결, GitHub 접속 상태, 브라우저의 콘텐츠 차단/VPN/광고차단 확장 프로그램을 확인해 주세요.'
+        );
+      }
+
+      if(attempt<2){
+        await new Promise(r=>setTimeout(r,700*(attempt+1)));
+        continue;
+      }
+    }
+  }
+
+  throw lastError||new Error(label+' 연결에 실패했습니다.');
+}
+
+async function api(path,opt={}){const owner=$('owner').value.trim(),repo=$('repo').value.trim(),branch=$('branch').value.trim(),token=$('token').value.trim();if(!token)throw new Error('GitHub 토큰을 입력하세요.');const r=await githubFetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${encodeURIComponent(branch)}`,{...opt,headers:{'Accept':'application/vnd.github+json','Authorization':'Bearer '+token,'X-GitHub-Api-Version':'2022-11-28',...(opt.headers||{})}});if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(j.message||('GitHub 오류 '+r.status))}return r.json()}
 async function put(path,content,message,sha){const owner=$('owner').value.trim(),repo=$('repo').value.trim(),branch=$('branch').value.trim(),token=$('token').value.trim();const body={message,content:b64(content),branch}
 
 
-;if(sha)body.sha=sha;const r=await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`,{method:'PUT',headers:{'Accept':'application/vnd.github+json','Authorization':'Bearer '+token,'X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'},body:JSON.stringify(body)});if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(j.message||('GitHub 오류 '+r.status))}return r.json()}
+;if(sha)body.sha=sha;const r=await githubFetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`,{method:'PUT',headers:{'Accept':'application/vnd.github+json','Authorization':'Bearer '+token,'X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'},body:JSON.stringify(body)});if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(j.message||('GitHub 오류 '+r.status))}return r.json()}
 function makeArticle(p,body){return `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(p.title)} | 현재두 법무사 사무소</title><meta name="description" content="${esc(p.summary)}"><meta name="keywords" content="${esc(p.keywords)}"><meta property="og:type" content="article"><meta property="og:title" content="${esc(p.title)}"><meta property="og:description" content="${esc(p.summary)}"><meta property="og:url" content="https://www.deunggiro.kr/posts/${esc(p.slug)}.html"><link rel="canonical" href="https://www.deunggiro.kr/posts/${esc(p.slug)}.html"><meta name="dg-title" content="${esc(p.title)}"><meta name="dg-category" content="${esc(p.category)}"><meta name="dg-date" content="${esc(p.date)}"><meta name="dg-summary" content="${esc(p.summary)}">${p.thumbnail?`<meta name="dg-thumbnail" content="${esc(p.thumbnail)}">`:``}<style>
 :root{
   --primary:#2457a6; --primary-dark:#173d78; --ink:#20242b; --muted:#6b7280;
@@ -2177,7 +2217,7 @@ async function apiFresh(path){
   const base=`https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
   const url=base+`?ref=${encodeURIComponent(branch)}&_=${Date.now()}`;
 
-  const r=await fetch(url,{
+  const r=await githubFetch(url,{
     method:'GET',
     cache:'no-store',
     headers:{
@@ -2274,6 +2314,41 @@ async function updatePostsJsonLatest(mutator,message){
   throw lastError||new Error('게시글 목록 저장에 실패했습니다.');
 }
 
+
+async function testGithubConnection(){
+  try{
+    status('GitHub 연결을 확인하고 있습니다...');
+    const owner=$('owner').value.trim();
+    const repo=$('repo').value.trim();
+    const branch=$('branch').value.trim();
+    const token=$('token').value.trim();
+
+    if(!owner||!repo||!branch||!token){
+      throw new Error('GitHub 저장소 정보와 토큰을 먼저 입력하세요.');
+    }
+
+    const url=`https://api.github.com/repos/${owner}/${repo}/branches/${encodeURIComponent(branch)}?_=${Date.now()}`;
+    const r=await githubFetch(url,{
+      method:'GET',
+      headers:{
+        'Accept':'application/vnd.github+json',
+        'Authorization':'Bearer '+token,
+        'X-GitHub-Api-Version':'2022-11-28',
+        'Cache-Control':'no-cache'
+      }
+    },'GitHub 연결 확인');
+
+    if(!r.ok){
+      const j=await r.json().catch(()=>({}));
+      throw new Error(j.message||('GitHub 오류 '+r.status));
+    }
+
+    status('GitHub 연결 정상입니다.');
+  }catch(e){
+    status(e.message||String(e),false);
+  }
+}
+
 async function publishPost(){
   const isEdit=!!editingOriginalSlug;
   const btn=$('publishBtn');
@@ -2341,7 +2416,9 @@ async function publishPost(){
     );
 
   }catch(e){
-    status(e.message||String(e),false);
+    console.error('게시/수정 저장 오류:',e);
+    const msg=e?.message||String(e);
+    status(msg,false);
   }finally{
     if(btn){
       btn.disabled=false;
