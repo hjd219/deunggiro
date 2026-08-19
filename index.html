@@ -3,24 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>등기로 | 현재두 법무사 사무소</title>
-<meta name="description" content="등기로는 현재두 법무사 사무소의 인천 상속등기·상속포기·한정승인·법인등기·부동산등기 안내 사이트입니다.">
-<meta name="robots" content="index,follow">
+<title>등기로 | 인천 상속등기·법인등기·부동산등기</title>
+<meta name="description" content="등기로는 인천 상속등기, 법인등기, 부동산등기, 한정승인·상속포기, 가사 업무의 절차·필요서류·비용계산·법률정보를 제공합니다.">
 <link rel="canonical" href="https://www.deunggiro.kr/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="등기로">
-<meta property="og:title" content="등기로 | 현재두 법무사 사무소">
-<meta property="og:description" content="인천 상속·법인·부동산등기 안내 사이트 등기로">
+<meta property="og:title" content="등기로 | 인천 상속등기·법인등기·부동산등기">
+<meta property="og:description" content="상속등기는 등기로, 법인등기도 등기로. 인천 상속·법인·부동산·한정승인·상속포기·가사 안내.">
 <meta property="og:url" content="https://www.deunggiro.kr/">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "등기로",
-  "alternateName": "현재두 법무사 사무소",
-  "url": "https://www.deunggiro.kr/"
-}
-</script>
 <style>
 :root{
   --primary:#2457a6;--primary-dark:#173d78;--ink:#20242b;--muted:#68717d;
@@ -343,7 +333,6 @@ h1 span{color:var(--primary)}
 }
 
 
-/* v61 - 새 인물사진 전체 표시 / 내용 안 잘리게 */
 .photo{
   position:relative!important;
   min-height:555px!important;
@@ -355,11 +344,15 @@ h1 span{color:var(--primary)}
 }
 .photo::before{
   content:""!important;
-  display:none!important;
+  display:block!important;
+  position:absolute!important;
+  left:0!important;top:0!important;bottom:0!important;
+  width:18%!important;
+  z-index:2!important;
+  pointer-events:none!important;
+  background:linear-gradient(90deg,#f5f9fd 0%,rgba(245,249,253,.45) 42%,rgba(245,249,253,0) 100%)!important;
 }
-.photo::after{
-  display:none!important;
-}
+.photo::after{display:none!important}
 .photo img{
   display:block!important;
   width:100%!important;
@@ -373,26 +366,474 @@ h1 span{color:var(--primary)}
 }
 
 
-/* v62 - 인물사진 높이를 큰 제목 블록과 시각적으로 맞춤 */
+/* v60-photo-align - v60 구조 유지, 인물사진만 교체 및 제목 높이 정렬 */
 @media (min-width:1001px){
   .photo{
     min-height:555px!important;
     display:flex!important;
-    align-items:center!important;
+    align-items:flex-start!important;
     justify-content:flex-end!important;
     overflow:visible!important;
     background:transparent!important;
+    padding-top:112px!important;
+    padding-bottom:0!important;
   }
-
+  .photo::before,
+  .photo::after{
+    display:none!important;
+  }
   .photo img{
+    display:block!important;
     width:100%!important;
     height:auto!important;
-    max-height:430px!important;
+    max-height:315px!important;
     object-fit:contain!important;
-    object-position:right center!important;
+    object-position:right top!important;
     margin:0!important;
     transform:none!important;
     filter:none!important;
+  }
+}
+
+
+/* mobile optimization v65 */
+@media (max-width:800px){
+  body{overflow-x:hidden!important;}
+  .container{width:100%!important;max-width:none!important;padding-left:18px!important;padding-right:18px!important;}
+  .header-inner{min-height:64px!important;}
+  .logo{font-size:24px!important;}
+  .logo small{font-size:10px!important;}
+  .mobile-only{display:inline-flex!important;min-height:40px!important;padding:0 14px!important;font-size:13px!important;}
+
+  .hero{overflow:hidden!important;}
+  .hero-grid{display:flex!important;flex-direction:column!important;min-height:0!important;}
+  .copy{order:1!important;padding:38px 0 18px!important;text-align:left!important;}
+  .hero-label{font-size:11px!important;margin-bottom:8px!important;}
+  h1{font-size:38px!important;line-height:1.13!important;letter-spacing:-2.5px!important;margin:8px 0 18px!important;}
+  .copy p{width:auto!important;max-width:none!important;font-size:15px!important;line-height:1.65!important;margin-bottom:18px!important;}
+  .copy p br{display:none!important;}
+
+  .tags{gap:7px!important;margin-bottom:16px!important;}
+  .tags a{padding:8px 11px!important;font-size:11px!important;}
+
+  .buttons{gap:8px!important;}
+  .buttons .btn{min-height:44px!important;padding:0 15px!important;font-size:13px!important;flex:1 1 auto!important;}
+
+  .photo{
+    order:2!important;
+    display:flex!important;
+    min-height:0!important;
+    height:auto!important;
+    padding:0!important;
+    margin:0!important;
+    align-items:flex-end!important;
+    justify-content:center!important;
+    overflow:hidden!important;
+    background:transparent!important;
+  }
+  .photo::before,.photo::after{display:none!important;}
+  .photo img{
+    display:block!important;
+    width:100%!important;
+    height:auto!important;
+    max-height:none!important;
+    object-fit:contain!important;
+    object-position:center bottom!important;
+    margin:0 auto!important;
+  }
+
+  .quick{margin-top:0!important;padding-top:12px!important;}
+  .quick-grid{grid-template-columns:1fr!important;border-radius:10px!important;}
+  .quick-item{min-height:auto!important;padding:18px 14px!important;border-right:0!important;border-bottom:1px solid #e1e6ee!important;}
+  .quick-item:last-child{border-bottom:0!important;}
+  .quick-item h3{font-size:17px!important;margin:5px 0!important;}
+  .quick-item p,.quick-item .go{font-size:12px!important;}
+
+  .section{padding:44px 0!important;}
+  .title{font-size:27px!important;letter-spacing:-1.5px!important;}
+  .desc{font-size:14px!important;margin-bottom:22px!important;}
+
+  .calc-grid,.post-box{grid-template-columns:1fr!important;gap:12px!important;}
+  .calc-card,.info-box{padding:22px!important;}
+  .calc-card h3,.info-box h3{font-size:20px!important;}
+
+  .contact{padding:38px 0!important;}
+  .contact-grid{grid-template-columns:1fr!important;gap:16px!important;}
+  .contact h2{font-size:26px!important;line-height:1.4!important;}
+  .contact .phone{font-size:25px!important;}
+
+  .footer{padding:30px 0 34px!important;}
+  .footer-info{font-size:13px!important;}
+  .footer-info strong{width:38px!important;}
+}
+
+
+/* v66 - 홈페이지 전체 모바일/태블릿 최적화 */
+html,body{
+  max-width:100%!important;
+  overflow-x:hidden!important;
+}
+img{
+  max-width:100%;
+}
+section,header,footer,.container,.hero-grid,.quick-grid,.calc-grid,.post-box,.contact-grid{
+  min-width:0!important;
+}
+#services,#calculator,#contact{
+  scroll-margin-top:78px;
+}
+
+/* 태블릿 */
+@media (max-width:1000px){
+  .container{
+    max-width:100%!important;
+    padding-left:22px!important;
+    padding-right:22px!important;
+  }
+
+  .header-inner{
+    min-height:68px!important;
+  }
+  .nav{
+    display:none!important;
+  }
+  .mobile-only{
+    display:inline-flex!important;
+  }
+
+  .hero-grid{
+    display:flex!important;
+    flex-direction:column!important;
+    min-height:0!important;
+  }
+  .copy{
+    order:1!important;
+    width:100%!important;
+    padding:50px 0 22px!important;
+  }
+  .copy p{
+    width:100%!important;
+    max-width:680px!important;
+  }
+  .photo{
+    order:2!important;
+    display:flex!important;
+    width:100%!important;
+    min-height:0!important;
+    height:auto!important;
+    padding:0!important;
+    margin:0!important;
+    overflow:hidden!important;
+    align-items:flex-end!important;
+    justify-content:center!important;
+  }
+  .photo img{
+    width:100%!important;
+    height:auto!important;
+    max-height:470px!important;
+    object-fit:contain!important;
+    object-position:center bottom!important;
+  }
+
+  .quick{
+    margin-top:0!important;
+    padding-top:18px!important;
+  }
+  .quick-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .quick-item{
+    border-bottom:1px solid #e1e6ee!important;
+  }
+
+  .calc-grid,
+  .post-box{
+    grid-template-columns:1fr!important;
+  }
+
+  .contact-grid{
+    grid-template-columns:1fr!important;
+    gap:18px!important;
+  }
+}
+
+/* 일반 스마트폰 */
+@media (max-width:800px){
+  .container{
+    padding-left:18px!important;
+    padding-right:18px!important;
+  }
+
+  .header{
+    position:sticky!important;
+    top:0!important;
+  }
+  .header-inner{
+    min-height:62px!important;
+    gap:10px!important;
+  }
+  .logo{
+    font-size:23px!important;
+    letter-spacing:-1px!important;
+    line-height:1.1!important;
+  }
+  .logo small{
+    font-size:9px!important;
+    margin-top:3px!important;
+  }
+  .mobile-only{
+    min-height:38px!important;
+    padding:0 12px!important;
+    border-radius:6px!important;
+    font-size:12px!important;
+    white-space:nowrap!important;
+  }
+
+  .hero{
+    background:linear-gradient(180deg,#fbfdff 0%,#f4f8fc 100%)!important;
+  }
+  .copy{
+    padding:34px 0 16px!important;
+  }
+  .hero-label{
+    font-size:10px!important;
+    letter-spacing:1px!important;
+  }
+  h1{
+    font-size:37px!important;
+    line-height:1.14!important;
+    letter-spacing:-2.5px!important;
+    margin:9px 0 16px!important;
+    word-break:keep-all!important;
+  }
+  .copy p{
+    font-size:14px!important;
+    line-height:1.65!important;
+    margin:0 0 17px!important;
+    word-break:keep-all!important;
+  }
+  .copy p br{
+    display:none!important;
+  }
+
+  .tags{
+    display:flex!important;
+    gap:7px!important;
+    margin:0 0 15px!important;
+  }
+  .tags a{
+    min-height:34px!important;
+    padding:7px 10px!important;
+    font-size:11px!important;
+  }
+
+  .buttons{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:8px!important;
+    width:100%!important;
+  }
+  .buttons .btn{
+    width:100%!important;
+    min-height:43px!important;
+    padding:0 10px!important;
+    font-size:12px!important;
+  }
+  .buttons .btn-dark{
+    grid-column:1 / -1!important;
+  }
+
+  .photo{
+    margin-top:8px!important;
+  }
+  .photo img{
+    width:100%!important;
+    max-height:none!important;
+    object-fit:contain!important;
+    object-position:center bottom!important;
+  }
+
+  .quick{
+    padding-top:14px!important;
+  }
+  .quick-grid{
+    grid-template-columns:1fr!important;
+    border-radius:10px!important;
+    box-shadow:0 10px 24px rgba(25,45,78,.07)!important;
+  }
+  .quick-item{
+    min-height:auto!important;
+    padding:17px 14px!important;
+    border-right:0!important;
+    border-bottom:1px solid #e1e6ee!important;
+  }
+  .quick-item:last-child{
+    border-bottom:0!important;
+  }
+  .quick-item strong{
+    font-size:11px!important;
+  }
+  .quick-item h3{
+    font-size:17px!important;
+    line-height:1.35!important;
+    margin:5px 0!important;
+  }
+  .quick-item p,
+  .quick-item .go{
+    font-size:11px!important;
+  }
+
+  .section{
+    padding:42px 0!important;
+  }
+  .label{
+    font-size:10px!important;
+  }
+  .title{
+    font-size:26px!important;
+    line-height:1.3!important;
+    letter-spacing:-1.5px!important;
+    margin-top:5px!important;
+  }
+  .desc{
+    font-size:13px!important;
+    line-height:1.65!important;
+    margin-bottom:20px!important;
+  }
+
+  .calc-grid,
+  .post-box{
+    gap:12px!important;
+  }
+  .calc-card,
+  .info-box{
+    padding:20px!important;
+    border-radius:11px!important;
+  }
+  .calc-card h3,
+  .info-box h3{
+    font-size:20px!important;
+    line-height:1.4!important;
+  }
+  .calc-card p,
+  .info-box p{
+    font-size:13px!important;
+    line-height:1.65!important;
+  }
+  .calc-card .btn,
+  .info-box .btn{
+    width:100%!important;
+    margin-top:4px!important;
+  }
+
+  .contact{
+    padding:36px 0!important;
+  }
+  .contact h2{
+    font-size:25px!important;
+    line-height:1.4!important;
+    letter-spacing:-1px!important;
+  }
+  .contact p{
+    font-size:13px!important;
+    line-height:1.65!important;
+  }
+  .contact .phone{
+    font-size:24px!important;
+    display:inline-block!important;
+  }
+
+  .footer{
+    padding:28px 0 32px!important;
+  }
+  .footer-brand{
+    font-size:21px!important;
+  }
+  .footer-office{
+    font-size:14px!important;
+    margin-bottom:12px!important;
+  }
+  .footer-info{
+    font-size:12px!important;
+    line-height:1.8!important;
+    word-break:keep-all!important;
+  }
+  .footer-info div{
+    margin-bottom:5px!important;
+  }
+  .footer-info strong{
+    width:auto!important;
+    margin-right:8px!important;
+  }
+}
+
+/* 작은 스마트폰 */
+@media (max-width:480px){
+  .container{
+    padding-left:14px!important;
+    padding-right:14px!important;
+  }
+  .header-inner{
+    min-height:58px!important;
+  }
+  .logo{
+    font-size:21px!important;
+  }
+  .logo small{
+    display:none!important;
+  }
+  .mobile-only{
+    min-height:36px!important;
+    padding:0 10px!important;
+    font-size:11px!important;
+  }
+
+  .copy{
+    padding-top:28px!important;
+  }
+  h1{
+    font-size:32px!important;
+    letter-spacing:-2px!important;
+  }
+  .copy p{
+    font-size:13px!important;
+  }
+
+  .tags{
+    gap:6px!important;
+  }
+  .tags a{
+    padding:6px 9px!important;
+    font-size:10px!important;
+  }
+
+  .buttons{
+    grid-template-columns:1fr!important;
+  }
+  .buttons .btn-dark{
+    grid-column:auto!important;
+  }
+
+  .quick-item{
+    padding:15px 12px!important;
+  }
+
+  .section{
+    padding:36px 0!important;
+  }
+  .title{
+    font-size:23px!important;
+  }
+  .calc-card,
+  .info-box{
+    padding:17px!important;
+  }
+
+  .contact h2{
+    font-size:22px!important;
+  }
+  .contact .phone{
+    font-size:22px!important;
   }
 }
 
