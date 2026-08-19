@@ -2176,6 +2176,70 @@ async function rebuildPostListFromFolder(){
   return rebuilt;
 }
 
+
+async function deletePost(target,title=''){
+  let slug='';
+  let postTitle=title||'';
+
+  if(typeof target==='number' || /^\d+$/.test(String(target))){
+    const idx=Number(target);
+    const p=(window.__managePosts||[])[idx];
+    if(!p){
+      alert('삭제할 글 정보를 찾지 못했습니다.');
+      return;
+    }
+    slug=String(p.slug||'').replace(/\.html$/i,'').trim();
+    postTitle=postTitle||p.title||'';
+  }else{
+    slug=String(target||'').replace(/\.html$/i,'').trim();
+  }
+
+  if(!slug){
+    alert('삭제할 글 주소를 찾지 못했습니다.');
+    return;
+  }
+
+  if(!confirm((postTitle?`"${postTitle}" 글을 삭제할까요?`:'이 글을 삭제할까요?')+'\n삭제하면 되돌리기 어렵습니다.')){
+    return;
+  }
+
+  try{
+    manageStatus('글을 삭제하고 있습니다...');
+
+    await deleteGithubFile(
+      'posts/'+slug+'.html',
+      '게시글 삭제: '+slug
+    );
+
+    let sha=null;
+    let list=[];
+    try{
+      const f=await api('data/posts.json');
+      sha=f.sha||null;
+      list=safeParsePostsJson(unb64(f.content||''));
+    }catch(e){
+      if(!String(e.message||e).includes('Not Found'))throw e;
+    }
+
+    list=list.filter(p=>String(p.slug||'').replace(/\.html$/i,'')!==slug);
+
+    const payload=JSON.stringify(list,null,2);
+    if(sha){
+      await put('data/posts.json',payload,'게시글 목록에서 삭제: '+slug,sha);
+    }else{
+      await put('data/posts.json',payload,'게시글 목록 생성/정리');
+    }
+
+    manageStatus('삭제되었습니다.');
+    await loadManagePosts();
+
+  }catch(e){
+    console.error(e);
+    manageStatus('삭제 실패: '+(e.message||e),false);
+    alert('삭제하지 못했습니다.\n'+(e.message||e));
+  }
+}
+
 async function getPostList(){
   let sha=null;
   let list=[];
