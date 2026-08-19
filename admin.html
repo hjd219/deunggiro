@@ -857,6 +857,24 @@ input,select,textarea{width:100%;border:1px solid #cfd4dc;border-radius:7px;back
 /* v30 - 수정 모드 표시 */
 #publishBtn:disabled{opacity:.65;cursor:wait}
 
+
+/* stable v38 - 편집툴바 스크롤 고정 */
+.editor-toolbar,.native-toolbar{
+  position:sticky!important;
+  top:0!important;
+  z-index:1000!important;
+  background:#f7f8fa!important;
+  box-shadow:0 4px 12px rgba(15,23,42,.08);
+}
+@media(max-width:700px){
+  .editor-toolbar,.native-toolbar{
+    top:0!important;
+    max-height:42vh!important;
+    overflow-y:auto!important;
+    -webkit-overflow-scrolling:touch!important;
+  }
+}
+
 </style></head><body>
 <div class="admin-shell">
  <div class="admin-top"><div><div class="label">DEUNGGIRO CMS</div><h1 style="margin:4px 0">관리자 글쓰기</h1></div><a class="btn btn-border" href="/">홈페이지</a></div>
@@ -984,12 +1002,12 @@ input,select,textarea{width:100%;border:1px solid #cfd4dc;border-radius:7px;back
   <p class="admin-help">본문은 HTML로 정리되어 개별 정적 페이지로 생성됩니다. 검색엔진이 읽을 수 있는 실제 HTML 파일입니다.</p>
  </div>
  <div class="admin-panel">
-  <div class="tabs"><button id="writeTab" class="tab-btn active" onclick="showMode('write')">새 글 작성 / 수정</button><button id="manageTab" class="tab-btn" onclick="showMode('manage')">기존 글 관리</button></div>
+  <div class="tabs"><button id="writeTab" class="tab-btn active" onclick="openNewPost()">새 글 작성</button><button id="manageTab" class="tab-btn" onclick="showMode('manage')">기존 글 관리</button></div>
  </div>
  <div id="writeMode">
  <div class="admin-panel">
   <h2>4. 게시</h2>
-  <div class="buttons"><button id="publishBtn" class="btn btn-primary" onclick="publishPost()">새 글 게시</button><button class="btn btn-border" onclick="preview()">미리보기</button><button class="btn btn-border" onclick="testGithubConnection()">GitHub 연결 확인</button></div>
+  <div class="buttons"><button id="publishBtn" class="btn btn-primary" onclick="publishPost()">새 글 게시</button><button class="btn btn-border" onclick="preview()">미리보기</button></div>
   <div id="status" class="status"></div><div id="preview" class="preview-box" style="display:none;margin-top:15px"></div>
  </div>
  </div>
@@ -1904,101 +1922,203 @@ function preview(){$('preview').style.display='block';$('preview').innerHTML='<h
 function b64(str){return btoa(unescape(encodeURIComponent(str)))}
 function unb64(s){return decodeURIComponent(escape(atob(s.replace(/\n/g,''))))}
 
+
 function safeParsePostsJson(text){
   const s=String(text||'').replace(/^\uFEFF/,'').trim();
-
-  /* 빈 posts.json이면 새 목록으로 취급 */
   if(!s)return [];
-
   try{
     const data=JSON.parse(s);
     if(Array.isArray(data))return data;
-
-    /* 예전 형식이 {posts:[...]} 형태인 경우도 호환 */
     if(data && Array.isArray(data.posts))return data.posts;
-
     throw new Error('posts.json 형식이 올바르지 않습니다.');
   }catch(e){
-    console.error('posts.json parse error:',e,s.slice(0,300));
-    throw new Error('게시글 목록(posts.json)이 비어 있거나 JSON 형식이 깨져 있습니다. GitHub의 data/posts.json 파일을 확인해 주세요.');
+    console.error('posts.json parse error:',e);
+    throw new Error('data/posts.json 형식이 깨져 있습니다. GitHub에서 파일 내용을 확인해 주세요.');
   }
 }
 
+function githubConfig(){
+  const owner=$('owner').value.trim();
+  const repo=$('repo').value.trim();
+  const branch=$('branch').value.trim();
+  const token=$('token').value.trim();
 
-async function loadPostsSafe(){
+  if(!owner||!repo||!branch||!token){
+    throw new Error('GitHub 저장소 정보와 토큰을 확인하세요.');
+  }
+  return {owner,repo,branch,token};
+}
+
+async function githubRequest(url,options={}){
   try{
-    const f=await api('data/posts.json');
-    return {
-      sha:f.sha||null,
-      list:safeParsePostsJson(unb64(f.content||''))
-    };
+    return await fetch(url,options);
   }catch(e){
-    if(String(e.message||e).includes('Not Found')){
-      return {sha:null,list:[]};
+    console.error('GitHub fetch error:',e);
+    throw new Error('GitHub API 연결에 실패했습니다. 잠시 후 다시 시도해 주세요.');
+  }
+}
+
+async function getGithubFile(path){
+  const {owner,repo,branch,token}=githubConfig();
+  const url=`https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${encodeURIComponent(branch)}`;
+  const r=await githubRequest(url,{
+    method:'GET',
+    cache:'no-store',
+    headers:{
+      'Accept':'application/vnd.github+json',
+      'Authorization':'Bearer '+token,
+      'X-GitHub-Api-Version':'2022-11-28'
     }
+  });
+
+  if(!r.ok){
+    const j=await r.json().catch(()=>({}));
+    const err=new Error(j.message||('GitHub 오류 '+r.status));
+    err.status=r.status;
+    throw err;
+  }
+  return r.json();
+}
+
+async function putGithubFile(path,content,message,sha=null){
+  const {owner,repo,branch,token}=githubConfig();
+  const body={message,content:b64(content),branch};
+  if(sha)body.sha=sha;
+
+  const r=await githubRequest(
+    `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+    {
+      method:'PUT',
+      headers:{
+        'Accept':'application/vnd.github+json',
+        'Authorization':'Bearer '+token,
+        'X-GitHub-Api-Version':'2022-11-28',
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify(body)
+    }
+  );
+
+  if(!r.ok){
+    const j=await r.json().catch(()=>({}));
+    const err=new Error(j.message||('GitHub 오류 '+r.status));
+    err.status=r.status;
+    throw err;
+  }
+  return r.json();
+}
+
+async function deleteGithubFile(path,message){
+  let current;
+  try{
+    current=await getGithubFile(path);
+  }catch(e){
+    if(e.status===404 || String(e.message||e).includes('Not Found'))return false;
     throw e;
   }
+
+  const {owner,repo,branch,token}=githubConfig();
+  const r=await githubRequest(
+    `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+    {
+      method:'DELETE',
+      headers:{
+        'Accept':'application/vnd.github+json',
+        'Authorization':'Bearer '+token,
+        'X-GitHub-Api-Version':'2022-11-28',
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify({
+        message,
+        sha:current.sha,
+        branch
+      })
+    }
+  );
+
+  if(!r.ok){
+    const j=await r.json().catch(()=>({}));
+    const err=new Error(j.message||('GitHub 오류 '+r.status));
+    err.status=r.status;
+    throw err;
+  }
+  return true;
 }
 
-
-/* v35 - GitHub 쓰기 작업 직렬화 */
-let githubWriteQueue=Promise.resolve();
-
-function enqueueGithubWrite(task){
-  const run=githubWriteQueue.then(task,task);
-  githubWriteQueue=run.catch(()=>{});
-  return run;
+function isShaConflict(e){
+  const msg=String(e?.message||e).toLowerCase();
+  return e?.status===409 ||
+         msg.includes('sha') ||
+         msg.includes('does not match') ||
+         msg.includes('conflict');
 }
 
-async function queuedPut(path,content,message,sha){
-  return enqueueGithubWrite(()=>put(path,content,message,sha));
-}
-
-
-/* v37 - GitHub API 네트워크 오류 보강 */
-async function githubFetch(url,options={},label='GitHub API'){
+async function saveFileWithRetry(path,content,message){
   let lastError=null;
 
-  for(let attempt=0;attempt<3;attempt++){
-    const controller=new AbortController();
-    const timer=setTimeout(()=>controller.abort(),15000);
-
+  for(let attempt=0;attempt<4;attempt++){
     try{
-      const r=await fetch(url,{
-        ...options,
-        signal:controller.signal,
-        cache:'no-store'
-      });
-      clearTimeout(timer);
-      return r;
-    }catch(e){
-      clearTimeout(timer);
-      lastError=e;
-
-      if(e?.name==='AbortError'){
-        lastError=new Error(label+' 요청 시간이 초과되었습니다. 인터넷 연결을 확인해 주세요.');
-      }else if(String(e?.message||e).includes('Failed to fetch')){
-        lastError=new Error(
-          label+' 연결에 실패했습니다. '+
-          '인터넷 연결, GitHub 접속 상태, 브라우저의 콘텐츠 차단/VPN/광고차단 확장 프로그램을 확인해 주세요.'
-        );
+      let sha=null;
+      try{
+        const current=await getGithubFile(path);
+        sha=current.sha||null;
+      }catch(e){
+        if(!(e.status===404 || String(e.message||e).includes('Not Found')))throw e;
       }
 
-      if(attempt<2){
-        await new Promise(r=>setTimeout(r,700*(attempt+1)));
+      return await putGithubFile(path,content,message,sha);
+
+    }catch(e){
+      lastError=e;
+      if(isShaConflict(e) && attempt<3){
+        await new Promise(r=>setTimeout(r,500*(attempt+1)));
         continue;
       }
+      throw e;
     }
   }
 
-  throw lastError||new Error(label+' 연결에 실패했습니다.');
+  throw lastError||new Error(path+' 저장에 실패했습니다.');
 }
 
-async function api(path,opt={}){const owner=$('owner').value.trim(),repo=$('repo').value.trim(),branch=$('branch').value.trim(),token=$('token').value.trim();if(!token)throw new Error('GitHub 토큰을 입력하세요.');const r=await githubFetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${encodeURIComponent(branch)}`,{...opt,headers:{'Accept':'application/vnd.github+json','Authorization':'Bearer '+token,'X-GitHub-Api-Version':'2022-11-28',...(opt.headers||{})}});if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(j.message||('GitHub 오류 '+r.status))}return r.json()}
-async function put(path,content,message,sha){const owner=$('owner').value.trim(),repo=$('repo').value.trim(),branch=$('branch').value.trim(),token=$('token').value.trim();const body={message,content:b64(content),branch}
+async function updatePostsJson(mutator,message){
+  let lastError=null;
 
+  for(let attempt=0;attempt<4;attempt++){
+    try{
+      let sha=null;
+      let list=[];
 
-;if(sha)body.sha=sha;const r=await githubFetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`,{method:'PUT',headers:{'Accept':'application/vnd.github+json','Authorization':'Bearer '+token,'X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'},body:JSON.stringify(body)});if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(j.message||('GitHub 오류 '+r.status))}return r.json()}
+      try{
+        const current=await getGithubFile('data/posts.json');
+        sha=current.sha||null;
+        list=safeParsePostsJson(unb64(current.content||''));
+      }catch(e){
+        if(!(e.status===404 || String(e.message||e).includes('Not Found')))throw e;
+      }
+
+      const next=await mutator(Array.isArray(list)?list:[]);
+      await putGithubFile(
+        'data/posts.json',
+        JSON.stringify(next,null,2),
+        message,
+        sha
+      );
+      return next;
+
+    }catch(e){
+      lastError=e;
+      if(isShaConflict(e) && attempt<3){
+        await new Promise(r=>setTimeout(r,500*(attempt+1)));
+        continue;
+      }
+      throw e;
+    }
+  }
+
+  throw lastError||new Error('게시글 목록 저장에 실패했습니다.');
+}
+
 function makeArticle(p,body){return `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(p.title)} | 현재두 법무사 사무소</title><meta name="description" content="${esc(p.summary)}"><meta name="keywords" content="${esc(p.keywords)}"><meta property="og:type" content="article"><meta property="og:title" content="${esc(p.title)}"><meta property="og:description" content="${esc(p.summary)}"><meta property="og:url" content="https://www.deunggiro.kr/posts/${esc(p.slug)}.html"><link rel="canonical" href="https://www.deunggiro.kr/posts/${esc(p.slug)}.html"><meta name="dg-title" content="${esc(p.title)}"><meta name="dg-category" content="${esc(p.category)}"><meta name="dg-date" content="${esc(p.date)}"><meta name="dg-summary" content="${esc(p.summary)}">${p.thumbnail?`<meta name="dg-thumbnail" content="${esc(p.thumbnail)}">`:``}<style>
 :root{
   --primary:#2457a6; --primary-dark:#173d78; --ink:#20242b; --muted:#6b7280;
@@ -2204,149 +2324,41 @@ input,select,textarea{width:100%;border:1px solid #cfd4dc;border-radius:7px;back
 
 </body></html>`}
 
-/* v31 - 수정/게시 저장용 최신 SHA 처리 */
+let editingOriginalSlug=null;
 
-async function apiFresh(path){
-  const owner=$('owner').value.trim();
-  const repo=$('repo').value.trim();
-  const branch=$('branch').value.trim();
-  const token=$('token').value.trim();
-
-  if(!owner||!repo||!branch||!token)throw new Error('GitHub 연결정보와 토큰을 확인하세요.');
-
-  const base=`https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
-  const url=base+`?ref=${encodeURIComponent(branch)}&_=${Date.now()}`;
-
-  const r=await githubFetch(url,{
-    method:'GET',
-    cache:'no-store',
-    headers:{
-      'Accept':'application/vnd.github+json',
-      'Authorization':'Bearer '+token,
-      'X-GitHub-Api-Version':'2022-11-28',
-      'Cache-Control':'no-cache',
-      'Pragma':'no-cache'
-    }
-  });
-
-  if(!r.ok){
-    const j=await r.json().catch(()=>({}));
-    throw new Error(j.message||('GitHub 오류 '+r.status));
-  }
-  return r.json();
+function showMode(mode){
+  const write=mode==='write';
+  $('writeMode').classList.toggle('hidden',!write);
+  $('manageMode').classList.toggle('hidden',write);
+  $('writeTab').classList.toggle('active',write);
+  $('manageTab').classList.toggle('active',!write);
+  if(!write)loadManagePosts();
 }
 
-async function putWithLatestSha(path,content,message){
-  let lastError=null;
-
-  for(let attempt=0; attempt<5; attempt++){
-    try{
-      let sha=null;
-
-      try{
-        const current=await apiFresh(path);
-        sha=current.sha||null;
-      }catch(e){
-        if(!String(e.message||e).includes('Not Found'))throw e;
-      }
-
-      return await queuedPut(path,content,message,sha);
-
-    }catch(e){
-      lastError=e;
-      const msg=String(e.message||e).toLowerCase();
-
-      if(
-        msg.includes('sha') ||
-        msg.includes('does not match') ||
-        msg.includes('409') ||
-        msg.includes('conflict')
-      ){
-        await new Promise(r=>setTimeout(r,700*(attempt+1)));
-        continue;
-      }
-
-      throw e;
-    }
-  }
-
-  throw lastError||new Error(path+' 저장에 실패했습니다.');
+function resetEditorForm(){
+  editingOriginalSlug=null;
+  $('category').value='기타';
+  $('date').value=new Date().toISOString().slice(0,10);
+  $('title').value='';
+  $('slug').value='';
+  $('keywords').value='';
+  $('summary').value='';
+  restoreThumbnail('');
+  $('editor').innerHTML='<p>여기에 글을 작성하세요.</p>';
+  if($('publishBtn'))$('publishBtn').textContent='새 글 게시';
+  status('');
 }
 
-async function updatePostsJsonLatest(mutator,message){
-  let lastError=null;
-
-  for(let attempt=0; attempt<5; attempt++){
-    try{
-      let sha=null;
-      let list=[];
-
-      try{
-        const f=await apiFresh('data/posts.json');
-        sha=f.sha||null;
-        list=safeParsePostsJson(unb64(f.content||''));
-      }catch(e){
-        if(!String(e.message||e).includes('Not Found'))throw e;
-      }
-
-      const next=await mutator(Array.isArray(list)?list:[]);
-      await queuedPut('data/posts.json',JSON.stringify(next,null,2),message,sha);
-      return next;
-
-    }catch(e){
-      lastError=e;
-      const msg=String(e.message||e).toLowerCase();
-
-      if(
-        msg.includes('sha') ||
-        msg.includes('does not match') ||
-        msg.includes('409') ||
-        msg.includes('conflict')
-      ){
-        await new Promise(r=>setTimeout(r,700*(attempt+1)));
-        continue;
-      }
-
-      throw e;
-    }
-  }
-
-  throw lastError||new Error('게시글 목록 저장에 실패했습니다.');
+function openNewPost(){
+  resetEditorForm();
+  showMode('write');
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
-
-async function testGithubConnection(){
-  try{
-    status('GitHub 연결을 확인하고 있습니다...');
-    const owner=$('owner').value.trim();
-    const repo=$('repo').value.trim();
-    const branch=$('branch').value.trim();
-    const token=$('token').value.trim();
-
-    if(!owner||!repo||!branch||!token){
-      throw new Error('GitHub 저장소 정보와 토큰을 먼저 입력하세요.');
-    }
-
-    const url=`https://api.github.com/repos/${owner}/${repo}/branches/${encodeURIComponent(branch)}?_=${Date.now()}`;
-    const r=await githubFetch(url,{
-      method:'GET',
-      headers:{
-        'Accept':'application/vnd.github+json',
-        'Authorization':'Bearer '+token,
-        'X-GitHub-Api-Version':'2022-11-28',
-        'Cache-Control':'no-cache'
-      }
-    },'GitHub 연결 확인');
-
-    if(!r.ok){
-      const j=await r.json().catch(()=>({}));
-      throw new Error(j.message||('GitHub 오류 '+r.status));
-    }
-
-    status('GitHub 연결 정상입니다.');
-  }catch(e){
-    status(e.message||String(e),false);
-  }
+function manageStatus(msg,ok=true){
+  const e=$('manageStatus');
+  e.className='status show '+(ok?'ok':'err');
+  e.textContent=msg;
 }
 
 async function publishPost(){
@@ -2360,65 +2372,57 @@ async function publishPost(){
     }
 
     const title=$('title').value.trim();
-    const fixedSlug=editingOriginalSlug || slugify(title);
-    $('slug').value=fixedSlug;
+    const slug=editingOriginalSlug || slugify(title);
+    $('slug').value=slug;
 
     const p={
       title,
       category:$('category').value,
       date:$('date').value,
-      slug:fixedSlug,
+      slug,
       keywords:$('keywords').value.trim(),
       summary:$('summary').value.trim(),
       thumbnail:$('thumbnail')?.value||''
     };
 
     if(!p.title||!p.summary)throw new Error('제목과 요약은 반드시 입력하세요.');
-    if(!/^[a-z0-9][a-z0-9-]*$/.test(p.slug))throw new Error('영문주소 자동 생성에 실패했습니다. 제목을 다시 확인하세요.');
+    if(!/^[a-z0-9][a-z0-9-]*$/.test(p.slug))throw new Error('영문주소 자동 생성에 실패했습니다.');
 
     const body=sanitize($('editor').innerHTML);
-    if(body.replace(/<[^>]+>/g,'').trim().length<30)throw new Error('본문을 더 작성하세요.');
+    if(body.replace(/<[^>]+>/g,'').trim().length<30){
+      throw new Error('본문을 더 작성하세요.');
+    }
 
     localStorage.setItem('dg_owner',$('owner').value.trim());
     localStorage.setItem('dg_repo',$('repo').value.trim());
     localStorage.setItem('dg_branch',$('branch').value.trim());
 
-    status(isEdit?'최신 파일 상태를 확인한 뒤 수정 저장하고 있습니다...':'새 글을 게시하고 있습니다...');
+    status(isEdit?'기존 글을 수정 저장하고 있습니다...':'새 글을 게시하고 있습니다...');
 
-    /* 1. 실제 글 HTML부터 최신 SHA로 확실하게 저장 */
-    await putWithLatestSha(
+    // 1) 실제 글 HTML 저장
+    await saveFileWithRetry(
       'posts/'+p.slug+'.html',
       makeArticle(p,body),
       (isEdit?'법률정보 수정: ':'법률정보 게시: ')+p.title
     );
 
-    /* 2. posts.json도 최신 SHA 기준으로 갱신 */
-    await updatePostsJsonLatest(list=>{
+    // 2) 목록 저장
+    await updatePostsJson(list=>{
       const clean=list.filter(x=>String(x.slug||'').replace(/\.html$/i,'')!==p.slug);
-      clean.unshift({
-        title:p.title,
-        category:p.category,
-        date:p.date,
-        slug:p.slug,
-        keywords:p.keywords,
-        summary:p.summary,
-        thumbnail:p.thumbnail||''
-      });
+      clean.unshift({...p});
       return clean;
     },(isEdit?'게시글 목록 수정: ':'게시글 목록 업데이트: ')+p.title);
 
     editingOriginalSlug=p.slug;
 
-    if(btn)btn.textContent='수정 내용 저장';
     status(isEdit
-      ?'수정 저장 완료. 본문과 썸네일까지 같은 글 주소에 덮어썼습니다. GitHub Pages 배포 후 변경 내용이 표시됩니다.'
-      :'게시 완료. GitHub Pages 배포가 끝나면 홈페이지에 표시됩니다.'
+      ?'수정 저장 완료. 기존 글에 덮어썼습니다.'
+      :'게시 완료. GitHub Pages 배포 후 홈페이지에 표시됩니다.'
     );
 
   }catch(e){
-    console.error('게시/수정 저장 오류:',e);
-    const msg=e?.message||String(e);
-    status(msg,false);
+    console.error(e);
+    status(e.message||String(e),false);
   }finally{
     if(btn){
       btn.disabled=false;
@@ -2427,19 +2431,23 @@ async function publishPost(){
   }
 }
 
-let editingOriginalSlug = null;
-function showMode(mode){const write=mode==='write';$('writeMode').classList.toggle('hidden',!write);$('manageMode').classList.toggle('hidden',write);$('writeTab').classList.toggle('active',write);$('manageTab').classList.toggle('active',!write);if(!write)loadManagePosts()}
-function manageStatus(msg,ok=true){const e=$('manageStatus');e.className='status show '+(ok?'ok':'err');e.textContent=msg}
 async function rebuildPostListFromFolder(){
-  const files=await api('posts');
+  let files;
+  try{
+    files=await getGithubFile('posts');
+  }catch(e){
+    if(e.status===404)return [];
+    throw e;
+  }
+
   if(!Array.isArray(files))return [];
 
   const htmlFiles=files.filter(f=>f && f.type==='file' && /\.html$/i.test(f.name||''));
-
   const rebuilt=[];
+
   for(const file of htmlFiles){
     try{
-      const f=await api('posts/'+file.name);
+      const f=await getGithubFile('posts/'+file.name);
       const source=unb64(f.content||'');
 
       const titleMeta=source.match(/<meta\s+name=["']dg-title["']\s+content=["']([^"']*)["']/i);
@@ -2454,24 +2462,23 @@ async function rebuildPostListFromFolder(){
       const h1Match=source.match(/<h1>([\s\S]*?)<\/h1>/i);
 
       const slug=(file.name||'').replace(/\.html$/i,'');
-      const rawTitle=(titleMeta?.[1]||h1Match?.[1]||titleMatch?.[1]||slug)
+      const title=(titleMeta?.[1]||h1Match?.[1]||titleMatch?.[1]||slug)
         .replace(/<[^>]+>/g,'')
         .replace(/\s*\|\s*현재두 법무사 사무소\s*$/,'')
         .trim();
-      const category=(categoryMeta?.[1]||badgeMatch?.[1]||'기타').replace(/<[^>]+>/g,'').trim();
-      const date=(dateMeta?.[1]||badgeMatch?.[2]||'').trim().slice(0,10);
 
       rebuilt.push({
-        title:rawTitle||slug,
-        category:category||'기타',
-        date:date||'',
+        title:title||slug,
+        category:(categoryMeta?.[1]||badgeMatch?.[1]||'기타').replace(/<[^>]+>/g,'').trim(),
+        date:(dateMeta?.[1]||badgeMatch?.[2]||'').trim().slice(0,10),
         slug,
         keywords:keyMatch?.[1]||'',
         summary:summaryMeta?.[1]||descMatch?.[1]||'',
         thumbnail:thumbMatch?.[1]||''
       });
+
     }catch(e){
-      console.warn('기존 글 복구 실패:',file.name,e);
+      console.warn('기존 글 읽기 실패:',file.name,e);
     }
   }
 
@@ -2479,44 +2486,124 @@ async function rebuildPostListFromFolder(){
   return rebuilt;
 }
 
+async function getPostList(){
+  try{
+    const f=await getGithubFile('data/posts.json');
+    return {sha:f.sha||null,list:safeParsePostsJson(unb64(f.content||''))};
+  }catch(e){
+    if(!(e.status===404 || String(e.message||e).includes('Not Found')))throw e;
+  }
 
-async function deletePost(target,title=''){
-  let slug='';
-  let postTitle=title||'';
+  // posts.json 자체가 없을 때만 복구
+  const rebuilt=await rebuildPostListFromFolder();
 
-  if(typeof target==='number' || /^\d+$/.test(String(target))){
-    const idx=Number(target);
-    const p=(window.__managePosts||[])[idx];
-    if(!p){
-      alert('삭제할 글 정보를 찾지 못했습니다.');
+  if(rebuilt.length){
+    await saveFileWithRetry(
+      'data/posts.json',
+      JSON.stringify(rebuilt,null,2),
+      '기존 게시글 목록 자동 복구'
+    );
+  }
+
+  return {sha:null,list:rebuilt};
+}
+
+async function loadManagePosts(){
+  try{
+    manageStatus('게시글 목록을 불러오는 중입니다...');
+    const {list}=await getPostList();
+    window.__managePosts=list;
+
+    if(!list.length){
+      $('manageList').innerHTML='<div class="empty">등록된 글이 없습니다.</div>';
+      manageStatus('등록된 글이 없습니다.');
       return;
     }
-    slug=String(p.slug||'').replace(/\.html$/i,'').trim();
-    postTitle=postTitle||p.title||'';
-  }else{
-    slug=String(target||'').replace(/\.html$/i,'').trim();
-  }
 
-  if(!slug){
-    alert('삭제할 글 주소를 찾지 못했습니다.');
+    $('manageList').innerHTML=list.map((p,i)=>`
+      <div class="manage-item">
+        <div>
+          <div class="manage-title">${esc(p.title)}</div>
+          <div class="manage-meta">${esc(p.category)} · ${esc(p.date)} · /posts/${esc(p.slug)}.html</div>
+        </div>
+        <div class="manage-actions">
+          <button class="btn btn-border btn-sm" onclick="editPost(${i})">수정</button>
+          <button class="btn btn-danger btn-sm" onclick="deletePost(${i})">삭제</button>
+        </div>
+      </div>
+    `).join('');
+
+    manageStatus(list.length+'개의 글을 불러왔습니다.');
+
+  }catch(e){
+    console.error(e);
+    $('manageList').innerHTML='<div class="empty">게시글을 불러오지 못했습니다.</div>';
+    manageStatus(e.message||String(e),false);
+  }
+}
+
+async function editPost(i){
+  try{
+    const p=(window.__managePosts||[])[Number(i)];
+    if(!p)throw new Error('글 정보를 찾을 수 없습니다.');
+
+    manageStatus('수정할 글을 불러오는 중입니다...');
+
+    const f=await getGithubFile('posts/'+p.slug+'.html');
+    const source=unb64(f.content||'');
+
+    const bodyMatch=source.match(/<div class="article-body">([\s\S]*?)<\/div><div class="related">/);
+    const thumbMatch=source.match(/<meta\s+name=["']dg-thumbnail["']\s+content=["']([^"']*)["']/i);
+    const titleMeta=source.match(/<meta\s+name=["']dg-title["']\s+content=["']([^"']*)["']/i);
+    const categoryMeta=source.match(/<meta\s+name=["']dg-category["']\s+content=["']([^"']*)["']/i);
+    const dateMeta=source.match(/<meta\s+name=["']dg-date["']\s+content=["']([^"']*)["']/i);
+    const summaryMeta=source.match(/<meta\s+name=["']dg-summary["']\s+content=["']([^"']*)["']/i);
+
+    $('category').value=categoryMeta?.[1]||p.category||'기타';
+    $('date').value=(dateMeta?.[1]||p.date||new Date().toISOString().slice(0,10)).slice(0,10);
+    $('title').value=titleMeta?.[1]||p.title||'';
+    $('slug').value=p.slug||'';
+    restoreThumbnail(p.thumbnail||thumbMatch?.[1]||'');
+    $('keywords').value=p.keywords||'';
+    $('summary').value=summaryMeta?.[1]||p.summary||'';
+    $('editor').innerHTML=bodyMatch?bodyMatch[1]:'<p>본문을 불러오지 못했습니다. 내용을 다시 입력하세요.</p>';
+
+    editingOriginalSlug=String(p.slug||'').replace(/\.html$/i,'');
+    prepareExistingMedia();
+
+    showMode('write');
+    if($('publishBtn'))$('publishBtn').textContent='수정 내용 저장';
+    status('수정 모드입니다. 변경 후 「수정 내용 저장」을 누르면 기존 글에 덮어씁니다.');
+    window.scrollTo({top:0,behavior:'smooth'});
+
+  }catch(e){
+    console.error(e);
+    manageStatus(e.message||String(e),false);
+  }
+}
+
+async function deletePost(i){
+  const p=(window.__managePosts||[])[Number(i)];
+  if(!p){
+    manageStatus('삭제할 글 정보를 찾지 못했습니다.',false);
     return;
   }
 
-  if(!confirm((postTitle?`"${postTitle}" 글을 삭제할까요?`:'이 글을 삭제할까요?')+'\n삭제하면 되돌리기 어렵습니다.')){
-    return;
-  }
+  if(!confirm(`"${p.title}" 글을 삭제할까요?\n삭제하면 되돌리기 어렵습니다.`))return;
 
   try{
     manageStatus('글을 삭제하고 있습니다...');
 
+    // 파일 삭제. 이미 없으면 성공으로 처리
     await deleteGithubFile(
-      'posts/'+slug+'.html',
-      '게시글 삭제: '+slug
+      'posts/'+p.slug+'.html',
+      '법률정보 삭제: '+p.title
     );
 
-    await updatePostsJsonLatest(
-      list=>list.filter(p=>String(p.slug||'').replace(/\.html$/i,'')!==slug),
-      '게시글 목록에서 삭제: '+slug
+    // 목록 삭제
+    await updatePostsJson(
+      list=>list.filter(x=>String(x.slug||'').replace(/\.html$/i,'')!==String(p.slug||'').replace(/\.html$/i,'')),
+      '게시글 목록에서 삭제: '+p.title
     );
 
     manageStatus('삭제되었습니다.');
@@ -2524,88 +2611,10 @@ async function deletePost(target,title=''){
 
   }catch(e){
     console.error(e);
-    manageStatus('삭제 실패: '+(e.message||e),false);
-    alert('삭제하지 못했습니다.\n'+(e.message||e));
-  }
-}
-
-async function getPostList(){
-  let sha=null;
-  let list=[];
-  let missing=false;
-
-  try{
-    const f=await apiFresh('data/posts.json');
-    sha=f.sha||null;
-    list=safeParsePostsJson(unb64(f.content||''));
-  }catch(e){
-    if(String(e.message||e).includes('Not Found')){
-      missing=true;
-    }else{
-      throw e;
-    }
-  }
-
-  if(list.length){
-    return {sha,list};
-  }
-
-  /* posts.json이 없을 때만 /posts 폴더에서 복구.
-     수정 저장 과정에서는 기존 목록을 임의 재구성하지 않음 */
-  if(!missing){
-    return {sha,list:[]};
-  }
-
-  const rebuilt=await rebuildPostListFromFolder();
-
-  if(rebuilt.length){
-    await putWithLatestSha(
-      'data/posts.json',
-      JSON.stringify(rebuilt,null,2),
-      '기존 게시글 목록 자동 복구'
-    );
-    try{
-      const refreshed=await apiFresh('data/posts.json');
-      sha=refreshed.sha||null;
-    }catch(e){}
-  }
-
-  return {sha,list:rebuilt};
-}
-async function loadManagePosts(){try{manageStatus('게시글 목록을 확인하고 있습니다. 목록이 비어 있으면 /posts 폴더에서 자동 복구합니다...');const {list}=await getPostList();window.__managePosts=list;if(!list.length){$('manageList').innerHTML='<div class="empty">등록된 글이 없습니다.</div>';manageStatus('등록된 글이 없습니다.');return}$('manageList').innerHTML=list.map((p,i)=>`<div class="manage-item"><div><div class="manage-title">${esc(p.title)}</div><div class="manage-meta">${esc(p.category)} · ${esc(p.date)} · /posts/${esc(p.slug)}.html</div></div><div class="manage-actions"><button class="btn btn-border btn-sm" onclick="editPost(${i})">수정</button><button class="btn btn-danger btn-sm" onclick="deletePost(${i})">삭제</button></div></div>`).join('');manageStatus(list.length+'개의 글을 불러왔습니다.')}catch(e){$('manageList').innerHTML='<div class="empty">게시글을 불러오지 못했습니다.</div>';manageStatus(e.message||String(e),false)}}
-async function editPost(i){
-  try{
-    const p=(window.__managePosts||[])[i];
-    if(!p)throw new Error('글 정보를 찾을 수 없습니다.');
-
-    manageStatus('수정할 글을 불러오는 중입니다...');
-    const f=await api('posts/'+p.slug+'.html');
-    const source=unb64(f.content||'');
-    const m=source.match(/<div class="article-body">([\s\S]*?)<\/div><div class="related">/);
-
-    $('category').value=p.category||'기타';
-    $('date').value=p.date||new Date().toISOString().slice(0,10);
-    $('title').value=p.title||'';
-    $('slug').value=p.slug||'';
-    const thumbMatch=source.match(/<meta\s+name=["']dg-thumbnail["']\s+content=["']([^"']*)["']/i);
-    restoreThumbnail(p.thumbnail||thumbMatch?.[1]||'');
-    $('keywords').value=p.keywords||'';
-    $('summary').value=p.summary||'';
-    $('editor').innerHTML=m?m[1]:'<p>본문을 불러오지 못했습니다. 내용을 다시 입력하세요.</p>';
-
-    editingOriginalSlug=String(p.slug||'').replace(/\.html$/i,'');
-    prepareExistingMedia();
-
-    showMode('write');
-    if($('publishBtn'))$('publishBtn').textContent='수정 내용 저장';
-
-    status('수정 모드입니다. 내용을 변경한 뒤 「수정 내용 저장」을 누르면 기존 글에 덮어씁니다.');
-    window.scrollTo({top:0,behavior:'smooth'});
-
-  }catch(e){
     manageStatus(e.message||String(e),false);
   }
 }
-async function deleteGithubFile(path,sha,message){const owner=$('owner').value.trim(),repo=$('repo').value.trim(),branch=$('branch').value.trim(),token=$('token').value.trim();if(!token)throw new Error('GitHub 토큰을 입력하세요.');const r=await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`,{method:'DELETE',headers:{'Accept':'application/vnd.github+json','Authorization':'Bearer '+token,'X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'},body:JSON.stringify({message,sha,branch})});if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(j.message||('GitHub 오류 '+r.status))}return r.json()}
 
+/* 최초 화면 */
+if($('publishBtn'))$('publishBtn').textContent='새 글 게시';
 </script></body></html>
