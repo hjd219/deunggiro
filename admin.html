@@ -762,6 +762,15 @@ input,select,textarea{width:100%;border:1px solid #cfd4dc;border-radius:7px;back
   }
 }
 
+
+/* v18 - 관리자 미디어 주소 모달 위치/표시 보강 */
+#mediaUrlModal{
+  z-index:2147483000!important;
+}
+#mediaUrlModal.media-url-modal:not([hidden]){
+  display:flex!important;
+}
+
 </style></head><body>
 <div class="admin-shell">
  <div class="admin-top"><div><div class="label">DEUNGGIRO CMS</div><h1 style="margin:4px 0">관리자 글쓰기</h1></div><a class="btn btn-border" href="/">홈페이지</a></div>
@@ -906,6 +915,29 @@ input,select,textarea{width:100%;border:1px solid #cfd4dc;border-radius:7px;back
   </div>
  </div>
 </div>
+<div id="mediaUrlModal" class="media-url-modal" hidden>
+  <div class="media-url-backdrop" onclick="closeMediaUrlDialog()"></div>
+  <div class="media-url-dialog" role="dialog" aria-modal="true" aria-labelledby="mediaUrlTitle">
+    <div class="media-url-head">
+      <strong id="mediaUrlTitle">미디어 주소 입력</strong>
+      <button type="button" class="media-url-x" onclick="closeMediaUrlDialog()">×</button>
+    </div>
+    <div class="media-url-body">
+      <label id="mediaUrlLabel" for="mediaUrlInput">주소(URL)</label>
+      <input id="mediaUrlInput" type="url" inputmode="url" autocomplete="off" placeholder="https://">
+      <div id="mediaAltWrap" class="media-alt-wrap" hidden>
+        <label for="mediaAltInput">이미지 설명(선택)</label>
+        <input id="mediaAltInput" type="text" placeholder="예: 상속등기 필요서류 안내 이미지">
+      </div>
+      <p id="mediaUrlHelp" class="media-url-help"></p>
+    </div>
+    <div class="media-url-actions">
+      <button type="button" class="btn btn-border" onclick="closeMediaUrlDialog()">취소</button>
+      <button type="button" class="btn btn-primary" onclick="confirmMediaUrlDialog()">본문에 넣기</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const $=id=>document.getElementById(id);
 $('date').value=new Date().toISOString().slice(0,10);
@@ -1404,6 +1436,11 @@ function openMediaUrlDialog(mode){
   const altWrap=$('mediaAltWrap');
   const help=$('mediaUrlHelp');
   const title=$('mediaUrlTitle');
+
+  if(!modal || !input || !altWrap || !help || !title){
+    alert('미디어 주소 입력창을 불러오지 못했습니다. 페이지를 새로고침한 뒤 다시 시도하세요.');
+    return;
+  }
 
   input.value='';
   $('mediaAltInput').value='';
@@ -1943,28 +1980,7 @@ input,select,textarea{width:100%;border:1px solid #cfd4dc;border-radius:7px;back
   </div>
 </footer>
 
-<div id="mediaUrlModal" class="media-url-modal" hidden>
-  <div class="media-url-backdrop" onclick="closeMediaUrlDialog()"></div>
-  <div class="media-url-dialog" role="dialog" aria-modal="true" aria-labelledby="mediaUrlTitle">
-    <div class="media-url-head">
-      <strong id="mediaUrlTitle">미디어 주소 입력</strong>
-      <button type="button" class="media-url-x" onclick="closeMediaUrlDialog()">×</button>
-    </div>
-    <div class="media-url-body">
-      <label id="mediaUrlLabel" for="mediaUrlInput">주소(URL)</label>
-      <input id="mediaUrlInput" type="url" inputmode="url" autocomplete="off" placeholder="https://">
-      <div id="mediaAltWrap" class="media-alt-wrap" hidden>
-        <label for="mediaAltInput">이미지 설명(선택)</label>
-        <input id="mediaAltInput" type="text" placeholder="예: 상속등기 필요서류 안내 이미지">
-      </div>
-      <p id="mediaUrlHelp" class="media-url-help"></p>
-    </div>
-    <div class="media-url-actions">
-      <button type="button" class="btn btn-border" onclick="closeMediaUrlDialog()">취소</button>
-      <button type="button" class="btn btn-primary" onclick="confirmMediaUrlDialog()">본문에 넣기</button>
-    </div>
-  </div>
-</div>
+
 
 </body></html>`}
 async function publishPost(){
