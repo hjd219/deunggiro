@@ -1,4 +1,4 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">${p.thumbnail?`<meta property="og:image" content="${esc(p.thumbnail)}">`:``}
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>등기로 | 관리자 글쓰기</title><meta name="robots" content="noindex,nofollow"><style>
 :root{
   --primary:#2457a6; --primary-dark:#173d78; --ink:#20242b; --muted:#6b7280;
@@ -771,6 +771,46 @@ input,select,textarea{width:100%;border:1px solid #cfd4dc;border-radius:7px;back
   display:flex!important;
 }
 
+
+/* v19 동영상/유튜브 선택 보강 */
+.media-box{
+  position:relative!important;
+}
+.media-pick-handle{
+  position:absolute;
+  left:8px;
+  top:8px;
+  z-index:35;
+  border:1px solid rgba(0,0,0,.18);
+  border-radius:999px;
+  background:rgba(255,255,255,.94);
+  color:#2457a6;
+  padding:6px 10px;
+  font-size:11px;
+  font-weight:900;
+  cursor:pointer;
+  line-height:1;
+  box-shadow:0 2px 8px rgba(0,0,0,.12);
+}
+.media-box.media-selected .media-pick-handle{
+  background:#2457a6;
+  color:#fff;
+}
+.media-box:focus{
+  outline:none;
+}
+@media(max-width:700px){
+  .media-pick-handle{
+    left:6px;
+    top:6px;
+    min-width:46px;
+    min-height:30px;
+    padding:7px 10px;
+    font-size:11px;
+    touch-action:manipulation;
+  }
+}
+
 </style></head><body>
 <div class="admin-shell">
  <div class="admin-top"><div><div class="label">DEUNGGIRO CMS</div><h1 style="margin:4px 0">관리자 글쓰기</h1></div><a class="btn btn-border" href="/">홈페이지</a></div>
@@ -1256,10 +1296,34 @@ $('editor').addEventListener('paste',()=>setTimeout(()=>{
 let selectedMedia=null;
 let selectedMediaBox=null;
 
+/* v19 - 동영상/유튜브 포함 미디어 선택을 pointerdown 캡처 단계에서 먼저 처리 */
+$('editor').addEventListener('pointerdown',e=>{
+  const box=e.target.closest?.('.media-box');
+  if(!box)return;
+
+  /* 조절점/미니툴바 버튼 조작 중에도 선택상태 유지 */
+  selectMediaBox(box);
+},true);
+
+/* 클릭도 보조로 유지 */
+$('editor').addEventListener('click',e=>{
+  const box=e.target.closest?.('.media-box');
+  if(box){
+    selectMediaBox(box);
+    return;
+  }
+},true);
+
+
 function wrapMediaElement(media){
   if(!media || media.closest('.media-box')) return media?.closest('.media-box') || null;
   const box=document.createElement('span');
   box.className='media-box';
+  box.tabIndex=0;
+  box.setAttribute('role','group');
+  box.setAttribute('aria-label','미디어 선택 영역');
+  box.addEventListener('pointerdown',()=>selectMediaBox(box),true);
+  box.addEventListener('focus',()=>selectMediaBox(box));
   box.contentEditable='false';
 
   const currentWidth = media.style.width || '';
@@ -1276,6 +1340,20 @@ function wrapMediaElement(media){
   media.style.width='100%';
   media.style.maxWidth='100%';
   media.style.height='auto'; if(media.tagName==='IFRAME')media.style.aspectRatio='16 / 9';
+
+  if(media.tagName==='VIDEO' || media.tagName==='IFRAME'){
+    const pick=document.createElement('button');
+    pick.type='button';
+    pick.className='media-pick-handle';
+    pick.textContent='선택';
+    pick.title='미디어 선택';
+    pick.contentEditable='false';
+    pick.addEventListener('pointerdown',e=>{
+      e.preventDefault();e.stopPropagation();
+      selectMediaBox(box);
+    });
+    box.appendChild(pick);
+  }
 
   const mini=document.createElement('div');
   mini.className='media-mini-toolbar';
@@ -1734,7 +1812,7 @@ function sanitize(html){
   const t=document.createElement('template');
   t.innerHTML=html;
 
-  t.content.querySelectorAll('script,object,embed,form,input,button,style,link,.media-resize-handle,.media-delete-handle,.media-mini-toolbar').forEach(x=>x.remove());
+  t.content.querySelectorAll('script,object,embed,form,input,button,style,link,.media-resize-handle,.media-delete-handle,.media-mini-toolbar,.media-pick-handle').forEach(x=>x.remove());
   t.content.querySelectorAll('iframe').forEach(f=>{
     const src=f.getAttribute('src')||'';
     if(!/^https:\/\/(www\.)?youtube(-nocookie)?\.com\/embed\/[A-Za-z0-9_-]+/.test(src))f.remove();
