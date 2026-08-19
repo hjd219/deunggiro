@@ -1729,6 +1729,7 @@ function insertYouTube(){
 function restoreThumbnail(data){
   const v=data||'';
   if(!$('thumbnail')||!$('thumbnailPreview'))return;
+  if($('thumbnailFile'))$('thumbnailFile').value='';
   $('thumbnail').value=v;
   $('thumbnailPreview').innerHTML='';
   if(v){const img=document.createElement('img');img.src=v;img.alt='썸네일 미리보기';$('thumbnailPreview').appendChild(img)}
@@ -1749,6 +1750,7 @@ async function handleThumbnailFile(file){
   if(!file)return;
   try{
     const data=await readImageAsDataURL(file);
+    $('thumbnail').value='';
     $('thumbnail').value=data;
     $('thumbnailPreview').innerHTML='';
     const img=document.createElement('img');
@@ -1943,7 +1945,7 @@ async function put(path,content,message,sha){const owner=$('owner').value.trim()
 
 
 ;if(sha)body.sha=sha;const r=await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`,{method:'PUT',headers:{'Accept':'application/vnd.github+json','Authorization':'Bearer '+token,'X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'},body:JSON.stringify(body)});if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(j.message||('GitHub 오류 '+r.status))}return r.json()}
-function makeArticle(p,body){return `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(p.title)} | 현재두 법무사 사무소</title><meta name="description" content="${esc(p.summary)}"><meta name="keywords" content="${esc(p.keywords)}"><meta property="og:type" content="article"><meta property="og:title" content="${esc(p.title)}"><meta property="og:description" content="${esc(p.summary)}"><meta property="og:url" content="https://www.deunggiro.kr/posts/${esc(p.slug)}.html"><link rel="canonical" href="https://www.deunggiro.kr/posts/${esc(p.slug)}.html"><style>
+function makeArticle(p,body){return `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(p.title)} | 현재두 법무사 사무소</title><meta name="description" content="${esc(p.summary)}"><meta name="keywords" content="${esc(p.keywords)}"><meta property="og:type" content="article"><meta property="og:title" content="${esc(p.title)}"><meta property="og:description" content="${esc(p.summary)}"><meta property="og:url" content="https://www.deunggiro.kr/posts/${esc(p.slug)}.html"><link rel="canonical" href="https://www.deunggiro.kr/posts/${esc(p.slug)}.html">${p.thumbnail?`<meta name="dg-thumbnail" content="${esc(p.thumbnail)}">`:``}<style>
 :root{
   --primary:#2457a6; --primary-dark:#173d78; --ink:#20242b; --muted:#6b7280;
   --line:#e5e7eb; --bg:#f6f7f9; --card:#fff; --soft:#eef3fb; --max:1180px;
@@ -2259,7 +2261,7 @@ async function publishPost(){
 
     if(btn)btn.textContent='수정 내용 저장';
     status(isEdit
-      ?'수정 저장 완료. 같은 글 주소에 덮어썼습니다. GitHub Pages 배포 후 변경 내용이 표시됩니다.'
+      ?'수정 저장 완료. 본문과 썸네일까지 같은 글 주소에 덮어썼습니다. GitHub Pages 배포 후 변경 내용이 표시됩니다.'
       :'게시 완료. GitHub Pages 배포가 끝나면 홈페이지에 표시됩니다.'
     );
 
@@ -2291,6 +2293,7 @@ async function rebuildPostListFromFolder(){
       const titleMatch=source.match(/<title>([\s\S]*?)<\/title>/i);
       const descMatch=source.match(/<meta\s+name=["']description["']\s+content=["']([^"']*)["']/i);
       const keyMatch=source.match(/<meta\s+name=["']keywords["']\s+content=["']([^"']*)["']/i);
+      const thumbMatch=source.match(/<meta\s+name=["']dg-thumbnail["']\s+content=["']([^"']*)["']/i);
       const badgeMatch=source.match(/<span class=["']badge["']>([\s\S]*?)<\/span>\s*([^<\n]+)/i);
       const h1Match=source.match(/<h1>([\s\S]*?)<\/h1>/i);
 
@@ -2306,7 +2309,7 @@ async function rebuildPostListFromFolder(){
         slug,
         keywords:keyMatch?.[1]||'',
         summary:descMatch?.[1]||'',
-        thumbnail:''
+        thumbnail:thumbMatch?.[1]||''
       });
     }catch(e){
       console.warn('기존 글 복구 실패:',file.name,e);
@@ -2431,7 +2434,8 @@ async function editPost(i){
     $('date').value=p.date||new Date().toISOString().slice(0,10);
     $('title').value=p.title||'';
     $('slug').value=p.slug||'';
-    restoreThumbnail(p.thumbnail||'');
+    const thumbMatch=source.match(/<meta\s+name=["']dg-thumbnail["']\s+content=["']([^"']*)["']/i);
+    restoreThumbnail(p.thumbnail||thumbMatch?.[1]||'');
     $('keywords').value=p.keywords||'';
     $('summary').value=p.summary||'';
     $('editor').innerHTML=m?m[1]:'<p>본문을 불러오지 못했습니다. 내용을 다시 입력하세요.</p>';
