@@ -1940,12 +1940,26 @@ async function loadPostsSafe(){
   }
 }
 
+
+/* v35 - GitHub 쓰기 작업 직렬화 */
+let githubWriteQueue=Promise.resolve();
+
+function enqueueGithubWrite(task){
+  const run=githubWriteQueue.then(task,task);
+  githubWriteQueue=run.catch(()=>{});
+  return run;
+}
+
+async function queuedPut(path,content,message,sha){
+  return enqueueGithubWrite(()=>put(path,content,message,sha));
+}
+
 async function api(path,opt={}){const owner=$('owner').value.trim(),repo=$('repo').value.trim(),branch=$('branch').value.trim(),token=$('token').value.trim();if(!token)throw new Error('GitHub 토큰을 입력하세요.');const r=await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${encodeURIComponent(branch)}`,{...opt,headers:{'Accept':'application/vnd.github+json','Authorization':'Bearer '+token,'X-GitHub-Api-Version':'2022-11-28',...(opt.headers||{})}});if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(j.message||('GitHub 오류 '+r.status))}return r.json()}
 async function put(path,content,message,sha){const owner=$('owner').value.trim(),repo=$('repo').value.trim(),branch=$('branch').value.trim(),token=$('token').value.trim();const body={message,content:b64(content),branch}
 
 
 ;if(sha)body.sha=sha;const r=await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`,{method:'PUT',headers:{'Accept':'application/vnd.github+json','Authorization':'Bearer '+token,'X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'},body:JSON.stringify(body)});if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(j.message||('GitHub 오류 '+r.status))}return r.json()}
-function makeArticle(p,body){return `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(p.title)} | 현재두 법무사 사무소</title><meta name="description" content="${esc(p.summary)}"><meta name="keywords" content="${esc(p.keywords)}"><meta property="og:type" content="article"><meta property="og:title" content="${esc(p.title)}"><meta property="og:description" content="${esc(p.summary)}"><meta property="og:url" content="https://www.deunggiro.kr/posts/${esc(p.slug)}.html"><link rel="canonical" href="https://www.deunggiro.kr/posts/${esc(p.slug)}.html">${p.thumbnail?`<meta name="dg-thumbnail" content="${esc(p.thumbnail)}">`:``}<style>
+function makeArticle(p,body){return `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(p.title)} | 현재두 법무사 사무소</title><meta name="description" content="${esc(p.summary)}"><meta name="keywords" content="${esc(p.keywords)}"><meta property="og:type" content="article"><meta property="og:title" content="${esc(p.title)}"><meta property="og:description" content="${esc(p.summary)}"><meta property="og:url" content="https://www.deunggiro.kr/posts/${esc(p.slug)}.html"><link rel="canonical" href="https://www.deunggiro.kr/posts/${esc(p.slug)}.html"><meta name="dg-title" content="${esc(p.title)}"><meta name="dg-category" content="${esc(p.category)}"><meta name="dg-date" content="${esc(p.date)}"><meta name="dg-summary" content="${esc(p.summary)}">${p.thumbnail?`<meta name="dg-thumbnail" content="${esc(p.thumbnail)}">`:``}<style>
 :root{
   --primary:#2457a6; --primary-dark:#173d78; --ink:#20242b; --muted:#6b7280;
   --line:#e5e7eb; --bg:#f6f7f9; --card:#fff; --soft:#eef3fb; --max:1180px;
@@ -2151,39 +2165,84 @@ input,select,textarea{width:100%;border:1px solid #cfd4dc;border-radius:7px;back
 </body></html>`}
 
 /* v31 - 수정/게시 저장용 최신 SHA 처리 */
+
+async function apiFresh(path){
+  const owner=$('owner').value.trim();
+  const repo=$('repo').value.trim();
+  const branch=$('branch').value.trim();
+  const token=$('token').value.trim();
+
+  if(!owner||!repo||!branch||!token)throw new Error('GitHub 연결정보와 토큰을 확인하세요.');
+
+  const base=`https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+  const url=base+`?ref=${encodeURIComponent(branch)}&_=${Date.now()}`;
+
+  const r=await fetch(url,{
+    method:'GET',
+    cache:'no-store',
+    headers:{
+      'Accept':'application/vnd.github+json',
+      'Authorization':'Bearer '+token,
+      'X-GitHub-Api-Version':'2022-11-28',
+      'Cache-Control':'no-cache',
+      'Pragma':'no-cache'
+    }
+  });
+
+  if(!r.ok){
+    const j=await r.json().catch(()=>({}));
+    throw new Error(j.message||('GitHub 오류 '+r.status));
+  }
+  return r.json();
+}
+
 async function putWithLatestSha(path,content,message){
   let lastError=null;
-  for(let attempt=0; attempt<3; attempt++){
+
+  for(let attempt=0; attempt<5; attempt++){
     try{
       let sha=null;
+
       try{
-        const current=await api(path);
+        const current=await apiFresh(path);
         sha=current.sha||null;
       }catch(e){
         if(!String(e.message||e).includes('Not Found'))throw e;
       }
-      return await put(path,content,message,sha);
+
+      return await queuedPut(path,content,message,sha);
+
     }catch(e){
       lastError=e;
       const msg=String(e.message||e).toLowerCase();
-      if(msg.includes('sha') || msg.includes('does not match') ||
-         msg.includes('409') || msg.includes('conflict')){
-        await new Promise(r=>setTimeout(r,300*(attempt+1)));
+
+      if(
+        msg.includes('sha') ||
+        msg.includes('does not match') ||
+        msg.includes('409') ||
+        msg.includes('conflict')
+      ){
+        await new Promise(r=>setTimeout(r,700*(attempt+1)));
         continue;
       }
+
       throw e;
     }
   }
-  throw lastError || new Error(path+' 저장에 실패했습니다.');
+
+  throw lastError||new Error(path+' 저장에 실패했습니다.');
 }
 
 async function updatePostsJsonLatest(mutator,message){
   let lastError=null;
-  for(let attempt=0; attempt<3; attempt++){
+
+  for(let attempt=0; attempt<5; attempt++){
     try{
-      let sha=null, list=[];
+      let sha=null;
+      let list=[];
+
       try{
-        const f=await api('data/posts.json');
+        const f=await apiFresh('data/posts.json');
         sha=f.sha||null;
         list=safeParsePostsJson(unb64(f.content||''));
       }catch(e){
@@ -2191,20 +2250,28 @@ async function updatePostsJsonLatest(mutator,message){
       }
 
       const next=await mutator(Array.isArray(list)?list:[]);
-      await put('data/posts.json',JSON.stringify(next,null,2),message,sha);
+      await queuedPut('data/posts.json',JSON.stringify(next,null,2),message,sha);
       return next;
+
     }catch(e){
       lastError=e;
       const msg=String(e.message||e).toLowerCase();
-      if(msg.includes('sha') || msg.includes('does not match') ||
-         msg.includes('409') || msg.includes('conflict')){
-        await new Promise(r=>setTimeout(r,300*(attempt+1)));
+
+      if(
+        msg.includes('sha') ||
+        msg.includes('does not match') ||
+        msg.includes('409') ||
+        msg.includes('conflict')
+      ){
+        await new Promise(r=>setTimeout(r,700*(attempt+1)));
         continue;
       }
+
       throw e;
     }
   }
-  throw lastError || new Error('게시글 목록 저장에 실패했습니다.');
+
+  throw lastError||new Error('게시글 목록 저장에 실패했습니다.');
 }
 
 async function publishPost(){
@@ -2241,7 +2308,7 @@ async function publishPost(){
     localStorage.setItem('dg_repo',$('repo').value.trim());
     localStorage.setItem('dg_branch',$('branch').value.trim());
 
-    status(isEdit?'기존 글을 수정 저장하고 있습니다...':'새 글을 게시하고 있습니다...');
+    status(isEdit?'최신 파일 상태를 확인한 뒤 수정 저장하고 있습니다...':'새 글을 게시하고 있습니다...');
 
     /* 1. 실제 글 HTML부터 최신 SHA로 확실하게 저장 */
     await putWithLatestSha(
@@ -2253,7 +2320,15 @@ async function publishPost(){
     /* 2. posts.json도 최신 SHA 기준으로 갱신 */
     await updatePostsJsonLatest(list=>{
       const clean=list.filter(x=>String(x.slug||'').replace(/\.html$/i,'')!==p.slug);
-      clean.unshift(p);
+      clean.unshift({
+        title:p.title,
+        category:p.category,
+        date:p.date,
+        slug:p.slug,
+        keywords:p.keywords,
+        summary:p.summary,
+        thumbnail:p.thumbnail||''
+      });
       return clean;
     },(isEdit?'게시글 목록 수정: ':'게시글 목록 업데이트: ')+p.title);
 
@@ -2290,6 +2365,10 @@ async function rebuildPostListFromFolder(){
       const f=await api('posts/'+file.name);
       const source=unb64(f.content||'');
 
+      const titleMeta=source.match(/<meta\s+name=["']dg-title["']\s+content=["']([^"']*)["']/i);
+      const categoryMeta=source.match(/<meta\s+name=["']dg-category["']\s+content=["']([^"']*)["']/i);
+      const dateMeta=source.match(/<meta\s+name=["']dg-date["']\s+content=["']([^"']*)["']/i);
+      const summaryMeta=source.match(/<meta\s+name=["']dg-summary["']\s+content=["']([^"']*)["']/i);
       const titleMatch=source.match(/<title>([\s\S]*?)<\/title>/i);
       const descMatch=source.match(/<meta\s+name=["']description["']\s+content=["']([^"']*)["']/i);
       const keyMatch=source.match(/<meta\s+name=["']keywords["']\s+content=["']([^"']*)["']/i);
@@ -2298,9 +2377,12 @@ async function rebuildPostListFromFolder(){
       const h1Match=source.match(/<h1>([\s\S]*?)<\/h1>/i);
 
       const slug=(file.name||'').replace(/\.html$/i,'');
-      const rawTitle=(h1Match?.[1]||titleMatch?.[1]||slug).replace(/<[^>]+>/g,'').replace(/\s*\|\s*현재두 법무사 사무소\s*$/,'').trim();
-      const category=(badgeMatch?.[1]||'기타').replace(/<[^>]+>/g,'').trim();
-      const date=(badgeMatch?.[2]||'').trim().slice(0,10);
+      const rawTitle=(titleMeta?.[1]||h1Match?.[1]||titleMatch?.[1]||slug)
+        .replace(/<[^>]+>/g,'')
+        .replace(/\s*\|\s*현재두 법무사 사무소\s*$/,'')
+        .trim();
+      const category=(categoryMeta?.[1]||badgeMatch?.[1]||'기타').replace(/<[^>]+>/g,'').trim();
+      const date=(dateMeta?.[1]||badgeMatch?.[2]||'').trim().slice(0,10);
 
       rebuilt.push({
         title:rawTitle||slug,
@@ -2308,7 +2390,7 @@ async function rebuildPostListFromFolder(){
         date:date||'',
         slug,
         keywords:keyMatch?.[1]||'',
-        summary:descMatch?.[1]||'',
+        summary:summaryMeta?.[1]||descMatch?.[1]||'',
         thumbnail:thumbMatch?.[1]||''
       });
     }catch(e){
@@ -2355,24 +2437,10 @@ async function deletePost(target,title=''){
       '게시글 삭제: '+slug
     );
 
-    let sha=null;
-    let list=[];
-    try{
-      const f=await api('data/posts.json');
-      sha=f.sha||null;
-      list=safeParsePostsJson(unb64(f.content||''));
-    }catch(e){
-      if(!String(e.message||e).includes('Not Found'))throw e;
-    }
-
-    list=list.filter(p=>String(p.slug||'').replace(/\.html$/i,'')!==slug);
-
-    const payload=JSON.stringify(list,null,2);
-    if(sha){
-      await put('data/posts.json',payload,'게시글 목록에서 삭제: '+slug,sha);
-    }else{
-      await put('data/posts.json',payload,'게시글 목록 생성/정리');
-    }
+    await updatePostsJsonLatest(
+      list=>list.filter(p=>String(p.slug||'').replace(/\.html$/i,'')!==slug),
+      '게시글 목록에서 삭제: '+slug
+    );
 
     manageStatus('삭제되었습니다.');
     await loadManagePosts();
@@ -2387,34 +2455,42 @@ async function deletePost(target,title=''){
 async function getPostList(){
   let sha=null;
   let list=[];
+  let missing=false;
 
   try{
-    const f=await api('data/posts.json');
+    const f=await apiFresh('data/posts.json');
     sha=f.sha||null;
     list=safeParsePostsJson(unb64(f.content||''));
   }catch(e){
-    if(!String(e.message||e).includes('Not Found'))throw e;
+    if(String(e.message||e).includes('Not Found')){
+      missing=true;
+    }else{
+      throw e;
+    }
   }
 
   if(list.length){
     return {sha,list};
   }
 
+  /* posts.json이 없을 때만 /posts 폴더에서 복구.
+     수정 저장 과정에서는 기존 목록을 임의 재구성하지 않음 */
+  if(!missing){
+    return {sha,list:[]};
+  }
+
   const rebuilt=await rebuildPostListFromFolder();
 
   if(rebuilt.length){
+    await putWithLatestSha(
+      'data/posts.json',
+      JSON.stringify(rebuilt,null,2),
+      '기존 게시글 목록 자동 복구'
+    );
     try{
-      await put(
-        'data/posts.json',
-        JSON.stringify(rebuilt,null,2),
-        '기존 게시글 목록 자동 복구',
-        sha
-      );
-      const refreshed=await api('data/posts.json');
-      sha=refreshed.sha||sha;
-    }catch(e){
-      console.warn('posts.json 자동 복구 저장 실패:',e);
-    }
+      const refreshed=await apiFresh('data/posts.json');
+      sha=refreshed.sha||null;
+    }catch(e){}
   }
 
   return {sha,list:rebuilt};
@@ -2454,6 +2530,5 @@ async function editPost(i){
   }
 }
 async function deleteGithubFile(path,sha,message){const owner=$('owner').value.trim(),repo=$('repo').value.trim(),branch=$('branch').value.trim(),token=$('token').value.trim();if(!token)throw new Error('GitHub 토큰을 입력하세요.');const r=await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`,{method:'DELETE',headers:{'Accept':'application/vnd.github+json','Authorization':'Bearer '+token,'X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'},body:JSON.stringify({message,sha,branch})});if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(j.message||('GitHub 오류 '+r.status))}return r.json()}
-async function deletePost(i){try{const p=(window.__managePosts||[])[i];if(!p)throw new Error('글 정보를 찾을 수 없습니다.');if(!confirm('정말 삭제하시겠습니까?\n\n'+p.title+'\n\n삭제하면 홈페이지 목록과 개별 글 페이지에서 모두 제거됩니다.'))return;manageStatus('삭제 중입니다...');const {sha:listSha,list}=await getPostList();const file=await api('posts/'+p.slug+'.html');const newList=list.filter(x=>x.slug!==p.slug);await put('data/posts.json',JSON.stringify(newList,null,2),'게시글 목록에서 삭제: '+p.title,listSha);await deleteGithubFile('posts/'+p.slug+'.html',file.sha,'법률정보 삭제: '+p.title);manageStatus('삭제 완료. GitHub Pages 배포 후 홈페이지에서도 사라집니다.');await loadManagePosts()}catch(e){manageStatus(e.message||String(e),false)}}
 
 </script></body></html>
