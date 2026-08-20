@@ -858,7 +858,7 @@ input,select,textarea{width:100%;border:1px solid #cfd4dc;border-radius:7px;back
 #publishBtn:disabled{opacity:.65;cursor:wait}
 
 
-/* stable v39 - 기존 글 보존 저장 + 편집툴바 스크롤 고정 */
+/* stable v41 - 대용량 기존 글 완전 복구·보존 저장 + 편집툴바 스크롤 고정 */
 .editor-toolbar,.native-toolbar{
   position:sticky!important;
   top:0!important;
@@ -1980,6 +1980,39 @@ async function getGithubFile(path){
   return r.json();
 }
 
+// 이미지가 내장된 1MB 이상 HTML은 Contents API의 content가 비어 올 수 있다.
+// 이 경우 Git Blob API로 원문 전체를 다시 읽는다.
+async function getGithubTextFile(path){
+  const file=await getGithubFile(path);
+
+  if(file && file.content){
+    return {file,source:unb64(file.content)};
+  }
+
+  if(file && file.git_url){
+    const {token}=githubConfig();
+    const r=await githubRequest(file.git_url,{
+      method:'GET',
+      cache:'no-store',
+      headers:{
+        'Accept':'application/vnd.github+json',
+        'Authorization':'Bearer '+token,
+        'X-GitHub-Api-Version':'2022-11-28'
+      }
+    });
+    if(!r.ok){
+      const j=await r.json().catch(()=>({}));
+      const err=new Error(j.message||('GitHub 오류 '+r.status));
+      err.status=r.status;
+      throw err;
+    }
+    const blob=await r.json();
+    if(blob && blob.content)return {file,source:unb64(blob.content)};
+  }
+
+  throw new Error(path+' 파일 내용을 읽지 못했습니다.');
+}
+
 async function putGithubFile(path,content,message,sha=null){
   const {owner,repo,branch,token}=githubConfig();
   const body={message,content:b64(content),branch};
@@ -2115,8 +2148,12 @@ async function updatePostsJson(mutator,message){
             .filter(Boolean)
         );
         const hasMissingPost=folderSlugs.some(slug=>!listedSlugs.has(slug));
+        const hasIncompletePost=(Array.isArray(list)?list:[]).some(x=>{
+          const slug=String(x?.slug||'').replace(/\.html$/i,'');
+          return !x?.title || x.title===slug || (!x?.summary && (!x?.category || x.category==='기타'));
+        });
 
-        if(hasMissingPost){
+        if(hasMissingPost||hasIncompletePost){
           const rebuilt=await rebuildPostListFromFolder();
           const merged=new Map();
 
@@ -2127,7 +2164,21 @@ async function updatePostsJson(mutator,message){
           });
           (Array.isArray(list)?list:[]).forEach(x=>{
             const slug=String(x?.slug||'').replace(/\.html$/i,'');
-            if(slug)merged.set(slug,{...(merged.get(slug)||{}),...x,slug});
+            if(!slug)return;
+            const recovered=merged.get(slug)||{};
+            const oldTitle=String(x?.title||'').trim();
+            const oldIsPlaceholder=!oldTitle || oldTitle===slug;
+            merged.set(slug,{
+              ...recovered,
+              ...x,
+              slug,
+              title:oldIsPlaceholder?(recovered.title||oldTitle):oldTitle,
+              category:(x?.category && x.category!=='기타')?x.category:(recovered.category||x?.category||'기타'),
+              date:x?.date||recovered.date||'',
+              keywords:x?.keywords||recovered.keywords||'',
+              summary:x?.summary||recovered.summary||'',
+              thumbnail:x?.thumbnail||recovered.thumbnail||''
+            });
           });
           list=[...merged.values()];
         }
@@ -2486,8 +2537,7 @@ async function rebuildPostListFromFolder(){
 
   for(const file of htmlFiles){
     try{
-      const f=await getGithubFile('posts/'+file.name);
-      const source=unb64(f.content||'');
+      const {source}=await getGithubTextFile('posts/'+file.name);
 
       const titleMeta=source.match(/<meta\s+name=["']dg-title["']\s+content=["']([^"']*)["']/i);
       const categoryMeta=source.match(/<meta\s+name=["']dg-category["']\s+content=["']([^"']*)["']/i);
@@ -2526,25 +2576,72 @@ async function rebuildPostListFromFolder(){
 }
 
 async function getPostList(){
+  let sha=null;
+  let list=[];
+
   try{
     const f=await getGithubFile('data/posts.json');
-    return {sha:f.sha||null,list:safeParsePostsJson(unb64(f.content||''))};
+    sha=f.sha||null;
+    list=safeParsePostsJson(unb64(f.content||''));
   }catch(e){
     if(!(e.status===404 || String(e.message||e).includes('Not Found')))throw e;
   }
 
-  // posts.json 자체가 없을 때만 복구
+  // posts.json이 없거나 비어 있거나 일부 글이 누락된 경우 실제 HTML에서 복구
+  let needsRebuild=!Array.isArray(list) || !list.length || list.some(x=>{
+    const slug=String(x?.slug||'').replace(/\.html$/i,'');
+    return !x?.title || x.title===slug || (!x?.summary && (!x?.category || x.category==='기타'));
+  });
+
+  if(!needsRebuild){
+    try{
+      const files=await getGithubFile('posts');
+      const listedSlugs=new Set(
+        list.map(x=>String(x?.slug||'').replace(/\.html$/i,'')).filter(Boolean)
+      );
+      needsRebuild=Array.isArray(files) && files.some(f=>
+        f && f.type==='file' && /\.html$/i.test(f.name||'') &&
+        !listedSlugs.has(String(f.name||'').replace(/\.html$/i,''))
+      );
+    }catch(e){
+      if(!(e.status===404 || String(e.message||e).includes('Not Found')))throw e;
+    }
+  }
+
+  if(!needsRebuild)return {sha,list};
+
   const rebuilt=await rebuildPostListFromFolder();
 
   if(rebuilt.length){
-    await saveFileWithRetry(
-      'data/posts.json',
-      JSON.stringify(rebuilt,null,2),
-      '기존 게시글 목록 자동 복구'
-    );
+    const merged=new Map();
+    rebuilt.forEach(x=>{
+      const slug=String(x?.slug||'').replace(/\.html$/i,'');
+      if(slug)merged.set(slug,{...x,slug});
+    });
+    (Array.isArray(list)?list:[]).forEach(x=>{
+      const slug=String(x?.slug||'').replace(/\.html$/i,'');
+      if(!slug)return;
+      const recovered=merged.get(slug)||{};
+      const oldTitle=String(x?.title||'').trim();
+      const oldIsPlaceholder=!oldTitle || oldTitle===slug;
+      merged.set(slug,{
+        ...recovered,
+        ...x,
+        slug,
+        title:oldIsPlaceholder?(recovered.title||oldTitle):oldTitle,
+        category:(x?.category && x.category!=='기타')?x.category:(recovered.category||x?.category||'기타'),
+        date:x?.date||recovered.date||'',
+        keywords:x?.keywords||recovered.keywords||'',
+        summary:x?.summary||recovered.summary||'',
+        thumbnail:x?.thumbnail||recovered.thumbnail||''
+      });
+    });
+    list=[...merged.values()];
+
+    await saveFileWithRetry('data/posts.json',JSON.stringify(list,null,2),'기존 게시글 목록 자동 복구');
   }
 
-  return {sha:null,list:rebuilt};
+  return {sha,list};
 }
 
 async function loadManagePosts(){
@@ -2588,8 +2685,7 @@ async function editPost(i){
 
     manageStatus('수정할 글을 불러오는 중입니다...');
 
-    const f=await getGithubFile('posts/'+p.slug+'.html');
-    const source=unb64(f.content||'');
+    const {source}=await getGithubTextFile('posts/'+p.slug+'.html');
 
     const bodyMatch=source.match(/<div class="article-body">([\s\S]*?)<\/div><div class="related">/);
     const thumbMatch=source.match(/<meta\s+name=["']dg-thumbnail["']\s+content=["']([^"']*)["']/i);
