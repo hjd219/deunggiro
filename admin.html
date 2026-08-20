@@ -858,7 +858,7 @@ input,select,textarea{width:100%;border:1px solid #cfd4dc;border-radius:7px;back
 #publishBtn:disabled{opacity:.65;cursor:wait}
 
 
-/* stable v38 - 편집툴바 스크롤 고정 */
+/* stable v39 - 기존 글 보존 저장 + 편집툴바 스크롤 고정 */
 .editor-toolbar,.native-toolbar{
   position:sticky!important;
   top:0!important;
@@ -2095,6 +2095,45 @@ async function updatePostsJson(mutator,message){
         list=safeParsePostsJson(unb64(current.content||''));
       }catch(e){
         if(!(e.status===404 || String(e.message||e).includes('Not Found')))throw e;
+      }
+
+      /*
+       * posts.json이 예전 글을 일부 포함하지 않은 상태에서 새 글을 저장하면
+       * 목록이 새 글만으로 덮이는 문제가 생길 수 있다. 저장 직전에 실제
+       * posts 폴더와 목록을 비교하고, JSON에 빠진 HTML 글을 먼저 복구한다.
+       */
+      try{
+        const files=await getGithubFile('posts');
+        const folderSlugs=Array.isArray(files)
+          ? files
+              .filter(f=>f && f.type==='file' && /\.html$/i.test(f.name||''))
+              .map(f=>String(f.name||'').replace(/\.html$/i,''))
+          : [];
+        const listedSlugs=new Set(
+          (Array.isArray(list)?list:[])
+            .map(x=>String(x?.slug||'').replace(/\.html$/i,''))
+            .filter(Boolean)
+        );
+        const hasMissingPost=folderSlugs.some(slug=>!listedSlugs.has(slug));
+
+        if(hasMissingPost){
+          const rebuilt=await rebuildPostListFromFolder();
+          const merged=new Map();
+
+          // 실제 HTML에서 복구한 글을 먼저 넣고 기존 JSON의 상세정보를 우선 적용
+          rebuilt.forEach(x=>{
+            const slug=String(x?.slug||'').replace(/\.html$/i,'');
+            if(slug)merged.set(slug,{...x,slug});
+          });
+          (Array.isArray(list)?list:[]).forEach(x=>{
+            const slug=String(x?.slug||'').replace(/\.html$/i,'');
+            if(slug)merged.set(slug,{...(merged.get(slug)||{}),...x,slug});
+          });
+          list=[...merged.values()];
+        }
+      }catch(e){
+        // 폴더 대조 실패만으로 기존 JSON 목록까지 버리지는 않는다.
+        console.warn('기존 글 목록 대조 실패:',e);
       }
 
       const next=await mutator(Array.isArray(list)?list:[]);
