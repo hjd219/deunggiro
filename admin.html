@@ -858,7 +858,7 @@ input,select,textarea{width:100%;border:1px solid #cfd4dc;border-radius:7px;back
 #publishBtn:disabled{opacity:.65;cursor:wait}
 
 
-/* stable v43 - 모바일 좌우 고정 + 빈 이미지 완전 제거 + 기존 글 복구 */
+/* stable v45 - 사이트맵 자동 갱신 + 편집 빈 줄 정리 + 모바일 좌우 고정 */
 .editor-toolbar,.native-toolbar{
   position:sticky!important;
   top:0!important;
@@ -994,6 +994,7 @@ input,select,textarea{width:100%;border:1px solid #cfd4dc;border-radius:7px;back
         <button type="button" onclick="cmd('redo')">다시 실행</button>
         <button type="button" onclick="cmd('removeFormat')">선택 서식 제거</button>
         <button type="button" onclick="clearEditorFormatting()">본문 전체 서식 정리</button>
+        <button type="button" onclick="cleanEditorBlankLines()">빈 줄 정리</button>
       </div>
     </details>
 
@@ -1290,6 +1291,27 @@ function clearEditorFormatting(){
     if(el.matches('img,video,iframe,.shape-box,.media-box'))return;
     el.removeAttribute('style');
   });
+}
+
+function cleanEditorBlankLines(){
+  const ed=$('editor');
+  let removed=0;
+
+  // 복사·붙여넣기로 생긴 내용 없는 문단과 빈 껍데기만 제거한다.
+  // 제목·본문처럼 내용이 있는 문단은 합치거나 건드리지 않는다.
+  [...ed.querySelectorAll('p,div,section,article,blockquote,span')].reverse().forEach(el=>{
+    if(!ed.contains(el) || el.matches('.shape-box,.shape-rounded,.shape-outline,.shape-note,.media-box'))return;
+    if(el.querySelector('img,video,iframe,table,hr,ul,ol'))return;
+    const text=String(el.textContent||'').replace(/\u00a0|\u200b|\ufeff/g,'').trim();
+    const html=String(el.innerHTML||'')
+      .replace(/<br\s*\/?>/gi,'')
+      .replace(/&nbsp;|&#160;/gi,'')
+      .replace(/<wbr\s*\/?>/gi,'')
+      .trim();
+    if(!text && !html){el.remove();removed++;}
+  });
+
+  alert(removed?removed+'개의 빈 줄을 정리했습니다.':'정리할 빈 줄이 없습니다.');
 }
 
 function removePastedImageRemnants(){
@@ -2522,6 +2544,55 @@ function manageStatus(msg,ok=true){
   e.textContent=msg;
 }
 
+function xmlEsc(value){
+  return String(value||'').replace(/[&<>"']/g,ch=>({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'
+  }[ch]));
+}
+
+function makeSitemap(posts){
+  const base='https://www.deunggiro.kr';
+  const today=new Date().toISOString().slice(0,10);
+  const fixed=[
+    ['/',today,'weekly','1.0'],
+    ['/inheritance.html','2026-08-14','monthly','0.9'],
+    ['/corporate.html','2026-08-14','monthly','0.9'],
+    ['/realestate.html','2026-08-14','monthly','0.9'],
+    ['/renunciation.html','2026-08-14','monthly','0.9'],
+    ['/family.html','2026-08-14','monthly','0.9'],
+    ['/acquisition-calculator.html','2026-08-14','monthly','0.8'],
+    ['/corporate-calculator.html','2026-08-14','monthly','0.8'],
+    ['/divorce-calculator.html','2026-08-14','monthly','0.8'],
+    ['/posts.html',today,'weekly','0.8']
+  ];
+
+  const seen=new Set();
+  const postRows=(Array.isArray(posts)?posts:[]).flatMap(p=>{
+    const slug=String(p?.slug||'').replace(/\.html$/i,'').trim();
+    if(!/^[a-z0-9][a-z0-9-]*$/.test(slug)||seen.has(slug))return [];
+    seen.add(slug);
+    const date=/^\d{4}-\d{2}-\d{2}$/.test(String(p?.date||''))?String(p.date):today;
+    return [['/posts/'+slug+'.html',date,'monthly','0.7']];
+  });
+
+  const rows=[...fixed,...postRows];
+  return `<?xml version="1.0" encoding="UTF-8"?>\n`+
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`+
+    rows.map(([path,date,freq,priority])=>
+      `  <url>\n`+
+      `    <loc>${xmlEsc(base+path)}</loc>\n`+
+      `    <lastmod>${xmlEsc(date)}</lastmod>\n`+
+      `    <changefreq>${freq}</changefreq>\n`+
+      `    <priority>${priority}</priority>\n`+
+      `  </url>`
+    ).join('\n')+
+    `\n</urlset>\n`;
+}
+
+async function updateSitemap(posts,message){
+  return saveFileWithRetry('sitemap.xml',makeSitemap(posts),message);
+}
+
 async function publishPost(){
   const isEdit=!!editingOriginalSlug;
   const btn=$('publishBtn');
@@ -2568,11 +2639,17 @@ async function publishPost(){
     );
 
     // 2) 목록 저장
-    await updatePostsJson(list=>{
+    const updatedPosts=await updatePostsJson(list=>{
       const clean=list.filter(x=>String(x.slug||'').replace(/\.html$/i,'')!==p.slug);
       clean.unshift({...p});
       return clean;
     },(isEdit?'게시글 목록 수정: ':'게시글 목록 업데이트: ')+p.title);
+
+    // 3) 검색엔진 사이트맵 자동 갱신
+    await updateSitemap(
+      updatedPosts,
+      (isEdit?'사이트맵 글 수정 반영: ':'사이트맵 새 글 추가: ')+p.title
+    );
 
     editingOriginalSlug=p.slug;
 
@@ -2807,10 +2884,13 @@ async function deletePost(i){
     );
 
     // 목록 삭제
-    await updatePostsJson(
+    const remainingPosts=await updatePostsJson(
       list=>list.filter(x=>String(x.slug||'').replace(/\.html$/i,'')!==String(p.slug||'').replace(/\.html$/i,'')),
       '게시글 목록에서 삭제: '+p.title
     );
+
+    // 삭제된 글을 사이트맵에서도 자동 제거
+    await updateSitemap(remainingPosts,'사이트맵 글 삭제 반영: '+p.title);
 
     manageStatus('삭제되었습니다.');
     await loadManagePosts();
