@@ -858,7 +858,7 @@ input,select,textarea{width:100%;border:1px solid #cfd4dc;border-radius:7px;back
 #publishBtn:disabled{opacity:.65;cursor:wait}
 
 
-/* stable v41 - 대용량 기존 글 완전 복구·보존 저장 + 편집툴바 스크롤 고정 */
+/* stable v42 - 빈 이미지 완전 제거 + 대용량 기존 글 복구·보존 저장 */
 .editor-toolbar,.native-toolbar{
   position:sticky!important;
   top:0!important;
@@ -964,6 +964,7 @@ input,select,textarea{width:100%;border:1px solid #cfd4dc;border-radius:7px;back
 <button type="button" onclick="openMediaUrlDialog('image')">이미지 주소</button>
         <button type="button" onclick="openMediaUrlDialog('video')">동영상 주소</button>
         <button type="button" onclick="openMediaUrlDialog('youtube')">유튜브 주소</button>
+        <button type="button" onclick="removePastedImageRemnants()">빈 이미지 정리</button>
         <div class="tool-sep"></div>
         <button type="button" onclick="alignSelectedMedia('left')">선택 미디어 왼쪽</button>
         <button type="button" onclick="alignSelectedMedia('center')">선택 미디어 가운데</button>
@@ -1289,6 +1290,35 @@ function clearEditorFormatting(){
     if(el.matches('img,video,iframe,.shape-box,.media-box'))return;
     el.removeAttribute('style');
   });
+}
+
+function removePastedImageRemnants(){
+  if(!confirm('복사·붙여넣기로 들어온 외부 이미지와 깨진 빈 이미지 틀을 정리할까요?\n직접 첨부한 이미지는 유지됩니다.'))return;
+  const ed=$('editor');
+  let removed=0;
+
+  ed.querySelectorAll('img').forEach(img=>{
+    const src=String(img.getAttribute('src')||'').trim();
+    const isAttached=/^data:image\/(?:png|jpe?g|gif|webp|svg\+xml);base64,/i.test(src);
+    const isBroken=!src || (img.complete && img.naturalWidth===0);
+    if(!isAttached || isBroken){
+      const box=img.closest('.media-box');
+      if(box)box.remove(); else img.remove();
+      removed++;
+    }
+  });
+
+  ed.querySelectorAll('.media-box,figure,p,div,span').forEach(el=>{
+    if(!ed.contains(el) || el.matches('.shape-box,.shape-rounded,.shape-outline,.shape-note'))return;
+    if(el.querySelector('img,video,iframe,hr'))return;
+    const text=String(el.textContent||'').replace(/\u00a0/g,'').trim();
+    const html=String(el.innerHTML||'').replace(/<br\s*\/?>/gi,'').replace(/&nbsp;/gi,'').trim();
+    if(!text && !html)el.remove();
+  });
+
+  selectedMedia=null;
+  selectedMediaBox=null;
+  alert(removed?removed+'개의 빈 이미지 또는 외부 이미지 흔적을 정리했습니다.':'정리할 빈 이미지가 없습니다.');
 }
 
 function insertShape(type){
@@ -1879,6 +1909,12 @@ function sanitize(html){
   t.innerHTML=html;
 
   t.content.querySelectorAll('script,object,embed,form,input,button,style,link,.media-resize-handle,.media-delete-handle,.media-mini-toolbar,.media-pick-handle').forEach(x=>x.remove());
+  // 복사·붙여넣기 또는 삭제 뒤 남은 빈 이미지 태그를 저장 전에 제거
+  t.content.querySelectorAll('img').forEach(img=>{
+    const src=String(img.getAttribute('src')||'').trim();
+    const valid=/^(https?:\/\/|data:image\/(?:png|jpe?g|gif|webp|svg\+xml);base64,)/i.test(src);
+    if(!src || !valid)img.remove();
+  });
   t.content.querySelectorAll('iframe').forEach(f=>{
     const src=f.getAttribute('src')||'';
     if(!/^https:\/\/(www\.)?youtube(-nocookie)?\.com\/embed\/[A-Za-z0-9_-]+/.test(src))f.remove();
@@ -1907,6 +1943,15 @@ function sanitize(html){
   });
 
   t.content.querySelectorAll('.media-selected').forEach(x=>x.classList.remove('media-selected'));
+
+  // 이미지 삭제 후 남는 figure·빈 문단·빈 박스도 함께 제거
+  t.content.querySelectorAll('figure,p,div,span').forEach(el=>{
+    if(el.matches('.shape-box,.shape-rounded,.shape-outline,.shape-note'))return;
+    if(el.querySelector('img,video,iframe,hr'))return;
+    const text=String(el.textContent||'').replace(/\u00a0/g,'').trim();
+    const html=String(el.innerHTML||'').replace(/<br\s*\/?>/gi,'').replace(/&nbsp;/gi,'').trim();
+    if(!text && !html)el.remove();
+  });
 
   t.content.querySelectorAll('*').forEach(el=>{
     [...el.attributes].forEach(a=>{
@@ -2215,6 +2260,7 @@ function makeArticle(p,body){return `<!doctype html><html lang="ko"><head><meta 
   --line:#e5e7eb; --bg:#f6f7f9; --card:#fff; --soft:#eef3fb; --max:1180px;
 }
 *{box-sizing:border-box}
+img:not([src]),img[src=""]{display:none!important}
 html{scroll-behavior:smooth}
 body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR","Malgun Gothic",sans-serif;color:var(--ink);background:var(--bg);line-height:1.7}
 a{text-decoration:none;color:inherit}
@@ -2410,7 +2456,16 @@ input,select,textarea{width:100%;border:1px solid #cfd4dc;border-radius:7px;back
   </div>
 </footer>
 
-
+<script>
+document.querySelectorAll('.article-body img').forEach(function(img){
+  img.addEventListener('error',function(){
+    var parent=img.parentElement;
+    img.remove();
+    if(parent && !parent.textContent.trim() && !parent.querySelector('img,video,iframe,hr'))parent.remove();
+  });
+  if(img.complete && img.naturalWidth===0)img.dispatchEvent(new Event('error'));
+});
+<\/script>
 
 </body></html>`}
 
