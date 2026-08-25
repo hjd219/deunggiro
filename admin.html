@@ -1816,6 +1816,70 @@ function readImageAsDataURL(file){
   });
 }
 
+function imageExtensionFromDataUrl(dataUrl){
+  const mime=(String(dataUrl||'').match(/^data:(image\/[^;]+);base64,/i)||[])[1]||'';
+  return ({
+    'image/jpeg':'jpg','image/jpg':'jpg','image/png':'png','image/gif':'gif',
+    'image/webp':'webp','image/svg+xml':'svg'
+  })[mime.toLowerCase()]||'png';
+}
+
+async function saveDataUrlFile(path,dataUrl,message){
+  const match=String(dataUrl||'').match(/^data:image\/[^;]+;base64,([A-Za-z0-9+/=\r\n]+)$/i);
+  if(!match)throw new Error('첨부 이미지 형식이 올바르지 않습니다.');
+
+  let sha=null;
+  try{
+    const current=await getGithubFile(path);
+    sha=current.sha||null;
+  }catch(e){
+    if(!(e.status===404 || String(e.message||e).includes('Not Found')))throw e;
+  }
+
+  const {owner,repo,branch,token}=githubConfig();
+  const payload={message,content:match[1].replace(/\s/g,''),branch};
+  if(sha)payload.sha=sha;
+  const r=await githubRequest(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`,{
+    method:'PUT',
+    headers:{
+      'Accept':'application/vnd.github+json',
+      'Authorization':'Bearer '+token,
+      'X-GitHub-Api-Version':'2022-11-28',
+      'Content-Type':'application/json'
+    },
+    body:JSON.stringify(payload)
+  });
+  if(!r.ok){
+    const j=await r.json().catch(()=>({}));
+    const err=new Error(j.message||('이미지 저장 오류 '+r.status));
+    err.status=r.status;
+    throw err;
+  }
+  return r.json();
+}
+
+async function externalizePostImages(slug,thumbnail,body){
+  let thumbnailPath=thumbnail||'';
+  if(/^data:image\//i.test(thumbnailPath)){
+    const ext=imageExtensionFromDataUrl(thumbnailPath);
+    const path=`assets/posts/${slug}-thumbnail.${ext}`;
+    await saveDataUrlFile(path,thumbnailPath,'게시글 썸네일 저장: '+slug);
+    thumbnailPath='/'+path;
+  }
+
+  const t=document.createElement('template');
+  t.innerHTML=body;
+  const images=[...t.content.querySelectorAll('img[src^="data:image/"]')];
+  for(let i=0;i<images.length;i++){
+    const src=images[i].getAttribute('src')||'';
+    const ext=imageExtensionFromDataUrl(src);
+    const path=`assets/posts/${slug}-body-${i+1}.${ext}`;
+    await saveDataUrlFile(path,src,'게시글 본문 이미지 저장: '+slug);
+    images[i].setAttribute('src','/'+path);
+  }
+  return {thumbnail:thumbnailPath,body:t.innerHTML};
+}
+
 async function handleThumbnailFile(file){
   if(!file)return;
   try{
@@ -2620,7 +2684,7 @@ async function publishPost(){
     if(!p.title||!p.summary)throw new Error('제목과 요약은 반드시 입력하세요.');
     if(!/^[a-z0-9][a-z0-9-]*$/.test(p.slug))throw new Error('영문주소 자동 생성에 실패했습니다.');
 
-    const body=sanitize($('editor').innerHTML);
+    let body=sanitize($('editor').innerHTML);
     if(body.replace(/<[^>]+>/g,'').trim().length<30){
       throw new Error('본문을 더 작성하세요.');
     }
@@ -2630,6 +2694,11 @@ async function publishPost(){
     localStorage.setItem('dg_branch',$('branch').value.trim());
 
     status(isEdit?'기존 글을 수정 저장하고 있습니다...':'새 글을 게시하고 있습니다...');
+
+    // 이미지는 JSON/HTML에 Base64로 넣지 않고 별도 파일로 저장한다.
+    const media=await externalizePostImages(p.slug,p.thumbnail,body);
+    p.thumbnail=media.thumbnail;
+    body=media.body;
 
     // 1) 실제 글 HTML 저장
     await saveFileWithRetry(
