@@ -12,58 +12,22 @@ jobs:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Add title rolling to detail pages
+      - name: Add title rolling
+        env:
+          ROLLING_B64: PHNjcmlwdD4KLyogQVVUT19USVRMRV9ST0xMSU5HX1YxICovCihmdW5jdGlvbigpewogIGNvbnN0IGJveD1kb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnYXV0by1yZWxhdGVkLXBvc3RzJyk7CiAgaWYoIWJveCkgcmV0dXJuOwogIGNvbnN0IGNhdGVnb3J5PWJveC5kYXRhc2V0LmNhdGVnb3J5LCBiYWRnZT1ib3guZGF0YXNldC5iYWRnZXx8Y2F0ZWdvcnk7CiAgY29uc3QgZXNjPXM9PlN0cmluZyhzfHwnJykucmVwbGFjZSgvWyY8PlwiJ10vZyxtPT4oeycmJzonJmFtcDsnLCc8JzonJmx0OycsJz4nOicmZ3Q7JywnXCInOicmcXVvdDsnLCInIjondJiMzMDM5Oyd9W21dKSk7CiAgbGV0IHBvc3RzPVtdLHN0YXJ0PTAsdGltZXI9bnVsbDsKICBmdW5jdGlvbiByZW5kZXIoKXsKICAgIGlmKCFwb3N0cy5sZW5ndGgpcmV0dXJuOwogICAgY29uc3Qgbj1NYXRoLm1pbig0LHBvc3RzLmxlbmd0aCksIHZpc2libGU9W107CiAgICBmb3IobGV0IGk9MDtpPG47aSsrKXZpc2libGUucHVzaChwb3N0c1soc3RhcnQraSklcG9zdHMubGVuZ3RoXSk7CiAgICBib3guaW5uZXJIVE1MPXZpc2libGUubWFwKHA9Pic8YSBocmVmPSIvcG9zdHMvJytlbmNvZGVVUklDb21wb25lbnQocC5zbHVnKSsnLmh0bWwiPjxzcGFuIGNsYXNzPSJyZWxhdGVkLWJhZGdlIj4nK2VzYyhiYWRnZSkrJzwvc3Bhbj48c3BhbiBjbGFzcz0icmVsYXRlZC10aXRsZSBhdXRvLXJvbGwtdGl0bGUiPicsZXNjKHAudGl0bGUpKyc8L3NwYW4+PHNwYW4gY2xhc3M9InJlbGF0ZWQtYXJyb3ciPuKGkjwvc3Bhbj48L2E+Jykuam9pbignJyk7CiAgICBib3gucXVlcnlTZWxlY3RvckFsbCgnLmF1dG8tcm9sbC10aXRsZScpLmZvckVhY2goZWw9PntlbC5zdHlsZS5hbmltYXRpb249J25vbmUnO3ZvaWQgZWwub2Zmc2V0V2lkdGg7ZWwuc3R5bGUuYW5pbWF0aW9uPSdhdXRvVGl0bGVSb2xsSW4gLjM4cyBlYXNlJzt9KTsKICB9CiAgZnVuY3Rpb24gc3RvcCgpe2lmKHRpbWVyKXtsZWFySW50ZXJ2YWwodGltZXIpO3RpbWVyPW51bGw7fX0KICBmdW5jdGlvbiBwbGF5KCl7aWYocG9zdHMubGVuZ3RoPjQpdGltZXI9c2V0SW50ZXJ2YWwoKCk9PntzdGFydD0oc3RhcnQrMSklcG9zdHMubGVuZ3RoO3JlbmRlcigpO30sMzAwMCk7fQogIGZldGNoKCcvZGF0YS9wb3N0cy5qc29uP3Y9JytEYXRlLm5vdygpLHtjYWNoZTonbm8tc3RvcmUnfSkudGhlbihyPT5yLmpzb24oKSkudGhlbihkYXRhPT57CiAgICBwb3N0cz1kYXRhLmZpbHRlcihwPT5wLmNhdGVnb3J5PT09Y2F0ZWdvcnkpLnNvcnQoKGEsYik9PlN0cmluZyhiLmRhdGV8fCcnKS5sb2NhbGVDb21wYXJlKFN0cmluZyhhLmRhdGV8fCcnKSk7CiAgICBpZighcG9zdHMubGVuZ3RoKXJldHVybjsgc3RvcCgpO3JlbmRlcigpO3BsYXkoKTsKICAgIGJveC5hZGRFdmVudExpc3RlbmVyKCdtb3VzZWVudGVyJyxzdG9wKTsgYm94LmFkZEV2ZW50TGlzdGVuZXIoJ21vdXNlbGVhdmUnLCgpPT57c3RvcCgpO3BsYXkoKTt9KTsKICB9KTsKfSkoKTsKPC9zY3JpcHQ+CjxzdHlsZT4KQGtleWZyYW1lcyBhdXRvVGl0bGVSb2xsSW57ZnJvbXtvcGFjaXR5OjA7dHJhbnNmb3JtOnRyYW5zbGF0ZVkoOHB4KX10b3tvcGFjaXR5OjE7dHJhbnNmb3JtOnRyYW5zbGF0ZVkoMCl9fQojYXV0by1yZWxhdGVkLXBvc3RzIC5yZWxhdGVkLXRpdGxle2Rpc3BsYXk6YmxvY2s7d2hpdGUtc3BhY2U6bm93cmFwO292ZXJmbG93OmhpZGRlbjt0ZXh0LW92ZXJmbG93OmVsbGlwc2lzfQo8L3N0eWxlPgo=
         run: |
           python3 - <<'PY'
           from pathlib import Path
-
+          import os, base64
           pages=['inheritance.html','renunciation.html','corporate.html','realestate.html','family.html']
           marker='/* AUTO_TITLE_ROLLING_V1 */'
-          script=r'''
-<script>
-/* AUTO_TITLE_ROLLING_V1 */
-(function(){
-  const box=document.getElementById('auto-related-posts');
-  if(!box) return;
-  const category=box.dataset.category;
-  const badge=box.dataset.badge || category;
-  const esc=s=>String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
-  let posts=[], start=0, timer=null;
-  const render=()=>{
-    if(!posts.length) return;
-    const visible=[];
-    const count=Math.min(4,posts.length);
-    for(let i=0;i<count;i++) visible.push(posts[(start+i)%posts.length]);
-    box.innerHTML=visible.map(p=>'<a href="/posts/'+encodeURIComponent(p.slug)+'.html"><span class="related-badge">'+esc(badge)+'</span><span class="related-title auto-roll-title">'+esc(p.title)+'</span><span class="related-arrow">→</span></a>').join('');
-    box.querySelectorAll('.auto-roll-title').forEach(el=>{
-      el.style.animation='none'; void el.offsetWidth; el.style.animation='autoTitleRollIn .38s ease';
-    });
-  };
-  const next=()=>{ if(posts.length>4){ start=(start+1)%posts.length; render(); } };
-  const play=()=>{ if(posts.length>4) timer=setInterval(next,3000); };
-  const stop=()=>{ if(timer){clearInterval(timer);timer=null;} };
-  fetch('/data/posts.json?v='+Date.now(),{cache:'no-store'})
-    .then(r=>{if(!r.ok) throw new Error('posts'); return r.json();})
-    .then(data=>{
-      posts=data.filter(p=>p.category===category).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
-      if(!posts.length) return;
-      stop(); render(); play();
-      box.addEventListener('mouseenter',stop);
-      box.addEventListener('mouseleave',()=>{stop();play();});
-    });
-})();
-</script>
-<style>
-@keyframes autoTitleRollIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-#auto-related-posts .related-title{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-</style>
-'''
+          script=base64.b64decode(os.environ['ROLLING_B64']).decode('utf-8')
           for f in pages:
-            p=Path(f); t=p.read_text(encoding='utf-8')
-            if marker in t: continue
-            if '</body>' not in t: raise RuntimeError(f+' body not found')
-            t=t.replace('</body>',script+'\n</body>',1)
-            p.write_text(t,encoding='utf-8')
+              p=Path(f)
+              t=p.read_text(encoding='utf-8')
+              if marker not in t:
+                  t=t.replace('</body>',script+'\n</body>',1)
+                  p.write_text(t,encoding='utf-8')
           PY
       - name: Commit changes
         run: |
