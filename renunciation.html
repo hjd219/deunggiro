@@ -185,6 +185,27 @@ linear-gradient(135deg,#f8faff,#fff)}
   }
 }
 </script>
+<style>
+/* MOBILE_STICKY_MENU_V1 */
+@media(max-width:800px){
+  .header{position:sticky!important;top:0!important;z-index:999!important;background:#fff!important;}
+  .header-inner{min-height:64px!important;height:64px!important;padding-top:0!important;padding-bottom:0!important;gap:8px!important;}
+  .header .logo{margin-right:auto!important;min-width:0!important;}
+  .header .logo span{font-size:24px!important;line-height:1!important;}
+  .header .logo small{display:none!important;}
+  .header .nav{display:none!important;}
+  .header .mobile-only{display:inline-flex!important;height:40px!important;min-height:40px!important;padding:0 13px!important;border-radius:9px!important;font-size:14px!important;}
+  .mobile-menu-btn{display:inline-flex!important;align-items:center;justify-content:center;height:40px;padding:0 12px;border:0;border-radius:9px;background:#eef3f8;color:#1f2937;font-size:14px;font-weight:900;cursor:pointer;}
+  .mobile-menu-panel{display:none;position:fixed;top:64px;left:0;right:0;z-index:998;background:#fff;border-bottom:1px solid #dfe4ea;box-shadow:0 12px 24px rgba(20,35,55,.14);padding:12px 16px 16px;}
+  .mobile-menu-panel.open{display:block;}
+  .mobile-menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .mobile-menu-grid a{display:flex;align-items:center;min-height:44px;padding:0 12px;border:1px solid #e1e7ee;border-radius:10px;background:#f6f8fb;color:#17202d;font-size:13px;font-weight:850;text-decoration:none;}
+  .mobile-menu-grid a:first-child{grid-column:1/-1;background:#eef4ff;color:#2459a7;}
+  .mobile-menu-close{width:100%;height:38px;margin-top:10px;border:0;background:transparent;color:#667384;font-size:13px;font-weight:800;cursor:pointer;}
+  body.mobile-menu-open{overflow:hidden;}
+}
+@media(min-width:801px){.mobile-menu-btn,.mobile-menu-panel{display:none!important;}}
+</style>
 </head><body><header class="header">
   <div class="container header-inner">
     <a class="logo" href="/"><span>등기로</span><small>현재두 법무사 사무소 · 인천</small></a>
@@ -198,9 +219,9 @@ linear-gradient(135deg,#f8faff,#fff)}
       <a href="/posts.html">법률정보</a>
       <a href="/#contact">상담안내</a>
     </nav>
-    <a class="btn btn-primary mobile-only" href="tel:0324251500">전화상담</a>
+    <button type="button" class="mobile-menu-btn" id="mobile-menu-btn" aria-controls="mobile-menu-panel" aria-expanded="false">☰ 메뉴</button><a class="btn btn-primary mobile-only" href="tel:0324251500">전화상담</a>
   </div>
-</header>
+</header><div class="mobile-menu-panel" id="mobile-menu-panel" aria-hidden="true"><div class="mobile-menu-grid"><a href="/">홈</a><a href="/inheritance.html">상속등기</a><a href="/renunciation.html">상속포기·한정승인</a><a href="/corporate.html">법인등기</a><a href="/realestate.html">부동산등기</a><a href="/family.html">가사</a><a href="/posts.html">법률정보</a></div><button type="button" class="mobile-menu-close" id="mobile-menu-close">메뉴 닫기 ↑</button></div>
 <section class="subhero"><div class="container subhero-related-grid"><div class="subhero-copy"><div class="breadcrumb"><a href="/">홈</a> / 업무안내 / 한정승인·상속포기는 등기로</div><div class="label">RENUNCIATION</div><h1>한정승인·상속포기는 등기로</h1><p>부모·배우자 사망 후 상속채무가 걱정될 때 상속포기·한정승인·특별한정승인 절차와 3개월 기한을 확인하세요.</p><div class="buttons"><a class="btn btn-primary" href="tel:0324251500">032-425-1500 상담</a><a class="btn btn-border" href="/posts.html">관련 법률정보</a></div></div><aside class="related-posts-panel"><div class="related-posts-head"><div class="label">RELATED LEGAL INFORMATION</div><h2>상속포기·한정승인 주요 법률정보</h2><p>3개월 기한과 사망 후 재산처리 관련 글을 바로 확인하세요.</p></div><div class="related-posts-list" id="auto-related-posts" data-category="상속포기·한정승인" data-badge="상속포기"><a href="/posts.html"><span class="related-badge">상속포기</span><span class="related-title">최신 관련 법률정보를 불러오는 중입니다.</span><span class="related-arrow">→</span></a></div><div class="related-posts-actions"><a href="/posts.html">관련 법률정보 전체보기 →</a><a href="/posts.html">전체 법률정보 →</a></div></aside></div></section>
 <section class="section white"><div class="container"><div class="label">MAIN SERVICES</div><h2 class="title">주요 업무</h2><div class="info-grid"><a class="info-card" href="#service-1"><div class="label">01</div><h3>상속포기</h3><p>선순위 · 후순위 · 미성년자 · 친척 상속</p></a><a class="info-card" href="#service-2"><div class="label">02</div><h3>한정승인</h3><p>상속재산 범위 내 채무정리 · 청산절차</p></a><a class="info-card" href="#service-3"><div class="label">03</div><h3>특별한정승인</h3><p>3개월 경과 후 뒤늦게 상속채무를 알게 된 경우</p></a></div></div></section>
 <section class="section soft"><div class="container feature-grid"><div class="feature-panel"><div class="label">PROCESS</div><h2 class="title" style="font-size:30px">진행 절차</h2><div class="steps"><div class="step"><div class="step-no">1</div><div><h3 style="margin:0 0 6px">상속개시 확인</h3><p style="margin:0;color:#6b7280">사망일과 상속인이 된 사실을 안 날을 확인합니다.</p></div></div><div class="step"><div class="step-no">2</div><div><h3 style="margin:0 0 6px">재산·채무 조회</h3><p style="margin:0;color:#6b7280">예금, 부동산, 대출, 카드대금 등 적극·소극재산을 확인합니다.</p></div></div><div class="step"><div class="step-no">3</div><div><h3 style="margin:0 0 6px">절차 선택</h3><p style="margin:0;color:#6b7280">상속포기와 한정승인 중 가족 전체에 미치는 영향을 비교합니다.</p></div></div><div class="step"><div class="step-no">4</div><div><h3 style="margin:0 0 6px">법원 신청</h3><p style="margin:0;color:#6b7280">기간 내 관할 가정법원에 필요한 서류를 제출합니다.</p></div></div></div></div><div class="feature-panel"><div class="label">FAQ</div><h2 class="title" style="font-size:30px">자주 묻는 질문</h2><div class="faq"><div class="faq-item"><b>상속포기하면 빚이 완전히 끝나나요?</b><span>선순위 상속인이 포기하면 후순위 친족에게 상속이 넘어갈 수 있어 전체 상속순위를 확인해야 합니다.</span></div><div class="faq-item"><b>3개월이 지났으면 방법이 없나요?</b><span>뒤늦게 채무초과 사실을 알게 된 사정이 있다면 특별한정승인을 검토할 수 있습니다.</span></div><div class="faq-item"><b>미성년자도 상속포기가 가능한가요?</b><span>가능하지만 법정대리인과 이해상반 여부에 따라 특별대리인 문제가 생길 수 있습니다.</span></div></div></div></div></section>
@@ -287,4 +308,23 @@ linear-gradient(135deg,#f8faff,#fff)}
 @keyframes seqRollOut{to{opacity:0;transform:translateY(-9px)}}
 @keyframes seqRollIn{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
 </style>
+<script>
+/* MOBILE_STICKY_MENU_V1 */
+(function(){
+  const btn=document.getElementById('mobile-menu-btn');
+  const panel=document.getElementById('mobile-menu-panel');
+  const close=document.getElementById('mobile-menu-close');
+  if(!btn||!panel) return;
+  function setOpen(open){
+    panel.classList.toggle('open',open);
+    panel.setAttribute('aria-hidden',open?'false':'true');
+    btn.setAttribute('aria-expanded',open?'true':'false');
+    document.body.classList.toggle('mobile-menu-open',open);
+  }
+  btn.addEventListener('click',()=>setOpen(!panel.classList.contains('open')));
+  if(close) close.addEventListener('click',()=>setOpen(false));
+  panel.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setOpen(false)));
+  document.addEventListener('keydown',e=>{if(e.key==='Escape') setOpen(false);});
+})();
+</script>
 </body></html>

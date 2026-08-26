@@ -78,6 +78,27 @@ input,select,textarea{width:100%;border:1px solid #cfd4dc;border-radius:7px;back
 @media(max-width:480px){.related-posts-actions{grid-template-columns:1fr}.footer-route-title{font-size:19px}.footer-route-list{font-size:12px}.footer-route-actions{display:grid;grid-template-columns:1fr}.footer-route-actions a{justify-content:center}}
 
 </style>
+<style>
+/* MOBILE_STICKY_MENU_V1 */
+@media(max-width:800px){
+  .header{position:sticky!important;top:0!important;z-index:999!important;background:#fff!important;}
+  .header-inner{min-height:64px!important;height:64px!important;padding-top:0!important;padding-bottom:0!important;gap:8px!important;}
+  .header .logo{margin-right:auto!important;min-width:0!important;}
+  .header .logo span{font-size:24px!important;line-height:1!important;}
+  .header .logo small{display:none!important;}
+  .header .nav{display:none!important;}
+  .header .mobile-only{display:inline-flex!important;height:40px!important;min-height:40px!important;padding:0 13px!important;border-radius:9px!important;font-size:14px!important;}
+  .mobile-menu-btn{display:inline-flex!important;align-items:center;justify-content:center;height:40px;padding:0 12px;border:0;border-radius:9px;background:#eef3f8;color:#1f2937;font-size:14px;font-weight:900;cursor:pointer;}
+  .mobile-menu-panel{display:none;position:fixed;top:64px;left:0;right:0;z-index:998;background:#fff;border-bottom:1px solid #dfe4ea;box-shadow:0 12px 24px rgba(20,35,55,.14);padding:12px 16px 16px;}
+  .mobile-menu-panel.open{display:block;}
+  .mobile-menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .mobile-menu-grid a{display:flex;align-items:center;min-height:44px;padding:0 12px;border:1px solid #e1e7ee;border-radius:10px;background:#f6f8fb;color:#17202d;font-size:13px;font-weight:850;text-decoration:none;}
+  .mobile-menu-grid a:first-child{grid-column:1/-1;background:#eef4ff;color:#2459a7;}
+  .mobile-menu-close{width:100%;height:38px;margin-top:10px;border:0;background:transparent;color:#667384;font-size:13px;font-weight:800;cursor:pointer;}
+  body.mobile-menu-open{overflow:hidden;}
+}
+@media(min-width:801px){.mobile-menu-btn,.mobile-menu-panel{display:none!important;}}
+</style>
 </head><body>
 
 <header class="header">
@@ -93,9 +114,9 @@ input,select,textarea{width:100%;border:1px solid #cfd4dc;border-radius:7px;back
       <a href="/posts.html">법률정보</a>
       <a href="/#contact">상담안내</a>
     </nav>
-    <a class="btn btn-primary mobile-only" href="tel:0324251500">전화상담</a>
+    <button type="button" class="mobile-menu-btn" id="mobile-menu-btn" aria-controls="mobile-menu-panel" aria-expanded="false">☰ 메뉴</button><a class="btn btn-primary mobile-only" href="tel:0324251500">전화상담</a>
   </div>
-</header>
+</header><div class="mobile-menu-panel" id="mobile-menu-panel" aria-hidden="true"><div class="mobile-menu-grid"><a href="/">홈</a><a href="/inheritance.html">상속등기</a><a href="/renunciation.html">상속포기·한정승인</a><a href="/corporate.html">법인등기</a><a href="/realestate.html">부동산등기</a><a href="/family.html">가사</a><a href="/posts.html">법률정보</a></div><button type="button" class="mobile-menu-close" id="mobile-menu-close">메뉴 닫기 ↑</button></div>
 
 <section class="section"><div class="container"><div class="label">LEGAL INFORMATION</div><h1 class="title">법률정보</h1><p class="desc">상속·법인·부동산등기 관련 실무 정보를 정리합니다.</p>
 <div class="post-toolbar"><div class="search-wrap"><input id="q" placeholder="제목·내용 검색"><button class="btn btn-primary" onclick="searchPosts()">검색</button></div><div id="cats" class="category-tabs"></div></div>
@@ -118,4 +139,23 @@ function goPage(n){const total=Math.max(1,Math.ceil(filteredPosts().length/pageS
 function filteredPosts(){const q=document.getElementById('q').value.trim().toLowerCase();return all.filter(p=>(active==='전체'||p.category===active)&&(!q||(p.title+' '+(p.summary||'')+' '+(p.keywords||'')).toLowerCase().includes(q)))}
 function render(){const list=filteredPosts(),total=Math.ceil(list.length/pageSize);if(total&&page>total)page=total;const shown=list.slice((page-1)*pageSize,page*pageSize);document.getElementById('posts').innerHTML=shown.length?shown.map(p=>`<a class="post-card ${p.thumbnail?'':'no-thumb'}" href="/posts/${p.slug}.html">${p.thumbnail?`<img class="post-thumb" src="${esc(p.thumbnail)}" alt="${esc(p.title)}" loading="lazy">`:''}<div class="post-content"><div class="post-meta"><span class="badge">${esc(p.category)}</span>${esc(p.date)}</div><h3>${esc(p.title)}</h3><p>${esc(p.summary||'')}</p></div></a>`).join(''):'<div class="empty">검색 결과가 없습니다.</div>';const box=document.getElementById('pagination');box.innerHTML=total>1?`<button class="page-btn" onclick="goPage(${page-1})" ${page===1?'disabled':''}>이전</button>`+pageItems(total,page).map(n=>n==='…'?'<span class="page-dots">…</span>':`<button class="page-btn ${n===page?'active':''}" onclick="goPage(${n})" aria-label="${n}페이지">${n}</button>`).join('')+`<button class="page-btn" onclick="goPage(${page+1})" ${page===total?'disabled':''}>다음</button>`:''}
 document.getElementById('q').addEventListener('keydown',e=>{if(e.key==='Enter')searchPosts()});init()
-</script></body></html>
+</script><script>
+/* MOBILE_STICKY_MENU_V1 */
+(function(){
+  const btn=document.getElementById('mobile-menu-btn');
+  const panel=document.getElementById('mobile-menu-panel');
+  const close=document.getElementById('mobile-menu-close');
+  if(!btn||!panel) return;
+  function setOpen(open){
+    panel.classList.toggle('open',open);
+    panel.setAttribute('aria-hidden',open?'false':'true');
+    btn.setAttribute('aria-expanded',open?'true':'false');
+    document.body.classList.toggle('mobile-menu-open',open);
+  }
+  btn.addEventListener('click',()=>setOpen(!panel.classList.contains('open')));
+  if(close) close.addEventListener('click',()=>setOpen(false));
+  panel.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setOpen(false)));
+  document.addEventListener('keydown',e=>{if(e.key==='Escape') setOpen(false);});
+})();
+</script>
+</body></html>
