@@ -1,0 +1,53 @@
+name: Apply mobile sticky menu
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-mobile-sticky-menu.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Add mobile sticky menu
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          pages=['index.html','posts.html','inheritance.html','renunciation.html','corporate.html','realestate.html','family.html']
+          css='''<style>\n/* MOBILE_STICKY_MENU_V1 */\n@media(max-width:800px){\n  .header{position:sticky!important;top:0!important;z-index:999!important;background:#fff!important;}\n  .header-inner{min-height:64px!important;height:64px!important;padding-top:0!important;padding-bottom:0!important;gap:8px!important;}\n  .header .logo{margin-right:auto!important;min-width:0!important;}\n  .header .logo span{font-size:24px!important;line-height:1!important;}\n  .header .logo small{display:none!important;}\n  .header .nav{display:none!important;}\n  .header .mobile-only{display:inline-flex!important;height:40px!important;min-height:40px!important;padding:0 13px!important;border-radius:9px!important;font-size:14px!important;}\n  .mobile-menu-btn{display:inline-flex!important;align-items:center;justify-content:center;height:40px;padding:0 12px;border:0;border-radius:9px;background:#eef3f8;color:#1f2937;font-size:14px;font-weight:900;cursor:pointer;}\n  .mobile-menu-panel{display:none;position:fixed;top:64px;left:0;right:0;z-index:998;background:#fff;border-bottom:1px solid #dfe4ea;box-shadow:0 12px 24px rgba(20,35,55,.14);padding:12px 16px 16px;}\n  .mobile-menu-panel.open{display:block;}\n  .mobile-menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}\n  .mobile-menu-grid a{display:flex;align-items:center;min-height:44px;padding:0 12px;border:1px solid #e1e7ee;border-radius:10px;background:#f6f8fb;color:#17202d;font-size:13px;font-weight:850;text-decoration:none;}\n  .mobile-menu-grid a:first-child{grid-column:1/-1;background:#eef4ff;color:#2459a7;}\n  .mobile-menu-close{width:100%;height:38px;margin-top:10px;border:0;background:transparent;color:#667384;font-size:13px;font-weight:800;cursor:pointer;}\n  body.mobile-menu-open{overflow:hidden;}\n}\n@media(min-width:801px){.mobile-menu-btn,.mobile-menu-panel{display:none!important;}}\n</style>'''
+          panel='''<div class="mobile-menu-panel" id="mobile-menu-panel" aria-hidden="true"><div class="mobile-menu-grid"><a href="/">홈</a><a href="/inheritance.html">상속등기</a><a href="/renunciation.html">상속포기·한정승인</a><a href="/corporate.html">법인등기</a><a href="/realestate.html">부동산등기</a><a href="/family.html">가사</a><a href="/posts.html">법률정보</a></div><button type="button" class="mobile-menu-close" id="mobile-menu-close">메뉴 닫기 ↑</button></div>'''
+          js='''<script>\n/* MOBILE_STICKY_MENU_V1 */\n(function(){\n  const btn=document.getElementById('mobile-menu-btn');\n  const panel=document.getElementById('mobile-menu-panel');\n  const close=document.getElementById('mobile-menu-close');\n  if(!btn||!panel) return;\n  function setOpen(open){\n    panel.classList.toggle('open',open);\n    panel.setAttribute('aria-hidden',open?'false':'true');\n    btn.setAttribute('aria-expanded',open?'true':'false');\n    document.body.classList.toggle('mobile-menu-open',open);\n  }\n  btn.addEventListener('click',()=>setOpen(!panel.classList.contains('open')));\n  if(close) close.addEventListener('click',()=>setOpen(false));\n  panel.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setOpen(false)));\n  document.addEventListener('keydown',e=>{if(e.key==='Escape') setOpen(false);});\n})();\n</script>'''
+
+          for f in pages:
+              p=Path(f)
+              t=p.read_text(encoding='utf-8')
+              if 'MOBILE_STICKY_MENU_V1' in t:
+                  continue
+              # Insert menu button before existing mobile phone button.
+              target=re.search(r'(<a class="btn btn-primary mobile-only"[^>]*>.*?</a>)',t,re.S)
+              if not target:
+                  raise RuntimeError(f+': mobile phone button not found')
+              btn='<button type="button" class="mobile-menu-btn" id="mobile-menu-btn" aria-controls="mobile-menu-panel" aria-expanded="false">☰ 메뉴</button>'
+              t=t[:target.start()]+btn+t[target.start():]
+              # Add dropdown immediately after header so it is available across the whole page.
+              h_end=t.find('</header>')
+              if h_end<0: raise RuntimeError(f+': header end not found')
+              h_end+=len('</header>')
+              t=t[:h_end]+panel+t[h_end:]
+              # Add CSS before head end and JS before body end.
+              t=t.replace('</head>',css+'\n</head>',1)
+              t=t.replace('</body>',js+'\n</body>',1)
+              p.write_text(t,encoding='utf-8')
+          PY
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html posts.html inheritance.html renunciation.html corporate.html realestate.html family.html
+          git diff --cached --quiet || git commit -m "Add mobile sticky menu header"
+          git push
