@@ -213,14 +213,15 @@ linear-gradient(135deg,#f8faff,#fff)}
 .header{border-bottom:4px solid #82cef1!important}
 .header .nav{gap:8px!important}
 .header .nav a{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-height:40px!important;padding:8px 16px!important;border:1px solid #c5d0dc!important;border-radius:999px!important;background:#fff!important;color:#263442!important;transition:.16s!important}
-.header .nav a:hover,.header .nav a:focus-visible{background:#36a9e1!important;border-color:#36a9e1!important;color:#fff!important}
+.header .nav a:hover,.header .nav a:focus-visible,.header .nav a.active,.header .nav a.current,.header .nav a[aria-current="page"],.nav a.active,.nav a.current,.nav a[aria-current="page"]{background:#36a9e1!important;background-image:none!important;border-color:#36a9e1!important;color:#fff!important}
 }
 @media (hover:hover) and (pointer:fine){
 .quick-item:hover,.calc-card:hover,.calc-launch:hover,.card[href]:hover,.info-box[href]:hover,.post-card:hover,.seo-link-grid a:hover,.related-posts-list a:hover,#auto-related-posts a:hover,.related-posts-actions a:hover,.feature-item[href]:hover,.feature-panel[href]:hover,.legal-item:hover,.law-item:hover,.document-item[href]:hover,.doc-item[href]:hover,.service-card:hover,.service-item:hover,.topic-card:hover,.guide-card:hover{background:#36a9e1!important;background-image:none!important;border-color:#36a9e1!important;color:#fff!important}
 .quick-item:hover *,.calc-card:hover *,.calc-launch:hover *,.card[href]:hover *,.info-box[href]:hover *,.post-card:hover *,.seo-link-grid a:hover *,.related-posts-list a:hover *,#auto-related-posts a:hover *,.related-posts-actions a:hover *,.feature-item[href]:hover *,.feature-panel[href]:hover *,.legal-item:hover *,.law-item:hover *,.document-item[href]:hover *,.doc-item[href]:hover *,.service-card:hover *,.service-item:hover *,.topic-card:hover *,.guide-card:hover *{color:#fff!important}
 .btn:hover,.btn-primary:hover,.btn-dark:hover,.btn-border:hover,.btn-soft:hover,.page-btn:hover,.chip:hover,.category-tabs .chip:hover,.editor-toolbar button:hover{background:#36a9e1!important;background-image:none!important;border-color:#36a9e1!important;color:#fff!important}
-.post-card:hover .badge,.related-posts-list a:hover .related-badge,#auto-related-posts a:hover .related-badge{background:rgba(255,255,255,.18)!important;border-color:rgba(255,255,255,.65)!important;color:#fff!important}
 }
+/* active/selected menu and tab colors */
+.nav .active,.nav .current,.nav [aria-current="page"],.category-tabs .active,.category-tabs .current,.chip.active,.page-btn.active,.tab.active,.tabs .active{background:#36a9e1!important;background-image:none!important;border-color:#36a9e1!important;color:#fff!important}
 </style>
 </head><body><header class="header">
   <div class="container header-inner">
