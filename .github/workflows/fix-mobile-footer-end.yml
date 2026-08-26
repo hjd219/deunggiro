@@ -1,0 +1,40 @@
+name: Fix mobile footer end
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-mobile-footer-end.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Fix bottom background and overscroll
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          pages=['index.html','posts.html','inheritance.html','renunciation.html','corporate.html','realestate.html','family.html']
+          css='''\n<style>\n/* MOBILE_FOOTER_END_V1 */\nhtml{background:#172840;}\nbody{margin-bottom:0!important;}\n.footer{margin-bottom:0!important;padding-bottom:max(32px,env(safe-area-inset-bottom))!important;}\n@media(max-width:800px){\n  html,body{overscroll-behavior-y:none;}\n  body{padding-bottom:0!important;}\n  .footer{padding-bottom:max(28px,env(safe-area-inset-bottom))!important;}\n}\n</style>\n'''
+          for f in pages:
+              p=Path(f)
+              if not p.exists():
+                  continue
+              t=p.read_text(encoding='utf-8')
+              if 'MOBILE_FOOTER_END_V1' in t:
+                  continue
+              if '</head>' in t:
+                  t=t.replace('</head>',css+'</head>',1)
+              else:
+                  t=css+t
+              p.write_text(t,encoding='utf-8')
+          PY
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html posts.html inheritance.html renunciation.html corporate.html realestate.html family.html
+          git diff --cached --quiet || git commit -m "Fix mobile footer ending whitespace"
+          git push
