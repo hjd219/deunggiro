@@ -77,7 +77,19 @@ input,select,textarea{width:100%;border:1px solid #cfd4dc;border-radius:7px;back
 @media(max-width:700px){.docs-grid{grid-template-columns:1fr}.docs-card{padding:19px}}
 @media(max-width:480px){.related-posts-actions{grid-template-columns:1fr}.footer-route-title{font-size:19px}.footer-route-list{font-size:12px}.footer-route-actions{display:grid;grid-template-columns:1fr}.footer-route-actions a{justify-content:center}}
 
-</style></head><body>
+</style>
+<style>
+/* MOBILE_FOOTER_END_V1 */
+html{background:#172840;}
+body{margin-bottom:0!important;}
+.footer{margin-bottom:0!important;padding-bottom:max(32px,env(safe-area-inset-bottom))!important;}
+@media(max-width:800px){
+  html,body{overscroll-behavior-y:none;}
+  body{padding-bottom:0!important;}
+  .footer{padding-bottom:max(28px,env(safe-area-inset-bottom))!important;}
+}
+</style>
+</head><body>
 
 <header class="header">
   <div class="container header-inner">
