@@ -1,0 +1,74 @@
+name: Apply title rolling
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-title-rolling.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Add title rolling to detail pages
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          pages=['inheritance.html','renunciation.html','corporate.html','realestate.html','family.html']
+          marker='/* AUTO_TITLE_ROLLING_V1 */'
+          script=r'''
+<script>
+/* AUTO_TITLE_ROLLING_V1 */
+(function(){
+  const box=document.getElementById('auto-related-posts');
+  if(!box) return;
+  const category=box.dataset.category;
+  const badge=box.dataset.badge || category;
+  const esc=s=>String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+  let posts=[], start=0, timer=null;
+  const render=()=>{
+    if(!posts.length) return;
+    const visible=[];
+    const count=Math.min(4,posts.length);
+    for(let i=0;i<count;i++) visible.push(posts[(start+i)%posts.length]);
+    box.innerHTML=visible.map(p=>'<a href="/posts/'+encodeURIComponent(p.slug)+'.html"><span class="related-badge">'+esc(badge)+'</span><span class="related-title auto-roll-title">'+esc(p.title)+'</span><span class="related-arrow">→</span></a>').join('');
+    box.querySelectorAll('.auto-roll-title').forEach(el=>{
+      el.style.animation='none'; void el.offsetWidth; el.style.animation='autoTitleRollIn .38s ease';
+    });
+  };
+  const next=()=>{ if(posts.length>4){ start=(start+1)%posts.length; render(); } };
+  const play=()=>{ if(posts.length>4) timer=setInterval(next,3000); };
+  const stop=()=>{ if(timer){clearInterval(timer);timer=null;} };
+  fetch('/data/posts.json?v='+Date.now(),{cache:'no-store'})
+    .then(r=>{if(!r.ok) throw new Error('posts'); return r.json();})
+    .then(data=>{
+      posts=data.filter(p=>p.category===category).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
+      if(!posts.length) return;
+      stop(); render(); play();
+      box.addEventListener('mouseenter',stop);
+      box.addEventListener('mouseleave',()=>{stop();play();});
+    });
+})();
+</script>
+<style>
+@keyframes autoTitleRollIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+#auto-related-posts .related-title{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+</style>
+'''
+          for f in pages:
+            p=Path(f); t=p.read_text(encoding='utf-8')
+            if marker in t: continue
+            if '</body>' not in t: raise RuntimeError(f+' body not found')
+            t=t.replace('</body>',script+'\n</body>',1)
+            p.write_text(t,encoding='utf-8')
+          PY
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add inheritance.html renunciation.html corporate.html realestate.html family.html
+          git diff --cached --quiet || git commit -m "Roll related legal information titles automatically"
+          git push
