@@ -1,0 +1,74 @@
+name: Apply sequential rolling
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-sequential-rolling.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Replace rolling script
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          pages=['inheritance.html','renunciation.html','corporate.html','realestate.html','family.html']
+          new=r'''<script>
+/* AUTO_SEQUENTIAL_ROLLING_V2 */
+(function(){
+ const box=document.getElementById('auto-related-posts');
+ if(!box)return;
+ const category=box.dataset.category, badge=box.dataset.badge||category;
+ const esc=s=>String(s||'').replace(/[&<>\"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[m]));
+ let posts=[], visible=[], rowIndex=0, nextIndex=4, timer=null, paused=false;
+ function html(p){return '<a href="/posts/'+encodeURIComponent(p.slug)+'.html"><span class="related-badge">'+esc(badge)+'</span><span class="related-title seq-title">'+esc(p.title)+'</span><span class="related-arrow">→</span></a>'}
+ function init(){
+   if(!posts.length)return;
+   visible=posts.slice(0,Math.min(4,posts.length)); box.innerHTML=visible.map(html).join('');
+   if(posts.length>4) play();
+ }
+ function rollOne(){
+   if(paused||posts.length<=4)return;
+   const rows=[...box.querySelectorAll('a')]; if(!rows.length)return;
+   const row=rows[rowIndex%rows.length], span=row.querySelector('.seq-title');
+   span.classList.remove('seq-in'); span.classList.add('seq-out');
+   setTimeout(()=>{
+     const p=posts[nextIndex%posts.length];
+     row.href='/posts/'+encodeURIComponent(p.slug)+'.html'; span.textContent=p.title;
+     span.classList.remove('seq-out'); void span.offsetWidth; span.classList.add('seq-in');
+     nextIndex=(nextIndex+1)%posts.length; rowIndex=(rowIndex+1)%rows.length;
+   },280);
+ }
+ function play(){clearInterval(timer);timer=setInterval(rollOne,3000)}
+ box.addEventListener('mouseenter',()=>{paused=true}); box.addEventListener('mouseleave',()=>{paused=false});
+ fetch('/data/posts.json?v='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(data=>{
+   posts=data.filter(p=>p.category===category).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
+   init();
+ }).catch(()=>{});
+})();
+</script>
+<style>
+#auto-related-posts a{overflow:hidden}
+#auto-related-posts .seq-title{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#auto-related-posts .seq-title.seq-out{animation:seqTitleOut .28s ease forwards}
+#auto-related-posts .seq-title.seq-in{animation:seqTitleIn .34s ease}
+@keyframes seqTitleOut{to{opacity:0;transform:translateY(-9px)}}
+@keyframes seqTitleIn{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
+</style>'''
+          for f in pages:
+              p=Path(f); t=p.read_text(encoding='utf-8')
+              t=re.sub(r'<script>\s*/\* AUTO_TITLE_ROLLING_V1 \*/.*?</style>',new,t,flags=re.S)
+              if 'AUTO_SEQUENTIAL_ROLLING_V2' not in t:
+                  t=t.replace('</body>',new+'\n</body>',1)
+              p.write_text(t,encoding='utf-8')
+          PY
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add inheritance.html renunciation.html corporate.html realestate.html family.html
+          git diff --cached --quiet || git commit -m "Use sequential one-by-one legal info rolling"
+          git push
