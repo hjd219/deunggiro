@@ -5,18 +5,16 @@ document.addEventListener('DOMContentLoaded',()=>{
     const style=document.createElement('style');
     style.id='article-nav-style';
     style.textContent=`
-      body.article-v2 .article-prev-next{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:10px;align-items:stretch;margin-top:38px;padding-top:28px;border-top:1px solid #e7edf3}
-      body.article-v2 .article-nav-item,body.article-v2 .article-nav-list{min-height:92px;border:1px solid #dce5ef;border-radius:12px;background:#f8fbfe;text-decoration:none!important;transition:.18s}
-      body.article-v2 .article-nav-item{display:flex;flex-direction:column;justify-content:center;padding:15px 17px;min-width:0}
+      body.article-v2 .article-prev-next{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;align-items:stretch;margin-top:38px;padding-top:28px;border-top:1px solid #e7edf3}
+      body.article-v2 .article-nav-item{min-height:92px;border:1px solid #dce5ef;border-radius:12px;background:#f8fbfe;text-decoration:none!important;transition:.18s;display:flex;flex-direction:column;justify-content:center;padding:15px 17px;min-width:0}
       body.article-v2 .article-nav-item strong{display:block;font-size:13px;line-height:1.5;color:#263442;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
       body.article-v2 .article-nav-kicker{display:block;margin-bottom:5px;color:#36a9e1;font-size:11px;font-weight:900}
       body.article-v2 .article-nav-next{text-align:right}
-      body.article-v2 .article-nav-list{display:flex;align-items:center;justify-content:center;padding:0 18px;color:#172840!important;font-size:13px;font-weight:900;white-space:nowrap;background:#fff}
-      body.article-v2 a.article-nav-item:hover,body.article-v2 .article-nav-list:hover{background:#36a9e1!important;border-color:#36a9e1!important;color:#fff!important;transform:translateY(-2px)}
-      body.article-v2 a.article-nav-item:hover *,body.article-v2 .article-nav-list:hover{color:#fff!important}
+      body.article-v2 a.article-nav-item:hover{background:#36a9e1!important;border-color:#36a9e1!important;color:#fff!important;transform:translateY(-2px)}
+      body.article-v2 a.article-nav-item:hover *{color:#fff!important}
       body.article-v2 .article-nav-disabled{opacity:.48;background:#f7f8fa;cursor:default}
-      body.article-v2 .article-prev-next + .related{margin-top:14px!important;padding-top:0!important;border-top:0!important;justify-content:center!important}
-      @media(max-width:700px){body.article-v2 .article-prev-next{grid-template-columns:1fr;gap:8px;margin-top:30px;padding-top:22px}body.article-v2 .article-nav-item,body.article-v2 .article-nav-list{min-height:66px}body.article-v2 .article-nav-item{padding:12px 14px}body.article-v2 .article-nav-next{text-align:left}body.article-v2 .article-nav-list{order:2;min-height:48px}body.article-v2 .article-nav-prev{order:1}body.article-v2 .article-nav-next{order:3}}
+      body.article-v2 .article-prev-next + .related{margin-top:14px!important;padding-top:0!important;border-top:0!important;justify-content:center!important;gap:10px!important;flex-wrap:wrap!important}
+      @media(max-width:700px){body.article-v2 .article-prev-next{grid-template-columns:1fr;gap:8px;margin-top:30px;padding-top:22px}body.article-v2 .article-nav-item{min-height:66px;padding:12px 14px}body.article-v2 .article-nav-next{text-align:left}body.article-v2 .article-prev-next + .related{display:grid!important;grid-template-columns:1fr!important}body.article-v2 .article-prev-next + .related .btn{width:100%!important}}
     `;
     document.head.appendChild(style);
   }
@@ -45,16 +43,17 @@ document.addEventListener('DOMContentLoaded',()=>{
       const r=await fetch('/data/posts.json',{cache:'no-store'}); if(!r.ok)throw new Error('posts.json '+r.status);
       const posts=await r.json(); if(!Array.isArray(posts)||!posts.length)return;
       const current=posts.find(p=>String(p.slug||'').replace(/\.html$/i,'')===currentSlug); if(!current)return;
-      const group=groupOf(current.category);
-      const same=posts.filter(p=>groupOf(p.category)===group);
+      const group=groupOf(current.category),same=posts.filter(p=>groupOf(p.category)===group);
       const index=same.findIndex(p=>String(p.slug||'').replace(/\.html$/i,'')===currentSlug); if(index<0)return;
       const older=same[index+1]||null,newer=same[index-1]||null;
       const nav=document.createElement('nav'); nav.className='article-prev-next'; nav.setAttribute('aria-label',group+' 법률정보 이전글 다음글');
       const link=p=>`/posts/${encodeURIComponent(String(p.slug||'').replace(/\.html$/i,''))}.html`;
       const olderHtml=older?`<a class="article-nav-item article-nav-prev" href="${link(older)}"><span class="article-nav-kicker">← 이전 ${group} 글</span><strong>${escText(older.title)}</strong></a>`:`<span class="article-nav-item article-nav-disabled"><span class="article-nav-kicker">← 이전 ${group} 글</span><strong>이전 글이 없습니다</strong></span>`;
       const newerHtml=newer?`<a class="article-nav-item article-nav-next" href="${link(newer)}"><span class="article-nav-kicker">다음 ${group} 글 →</span><strong>${escText(newer.title)}</strong></a>`:`<span class="article-nav-item article-nav-disabled article-nav-next"><span class="article-nav-kicker">다음 ${group} 글 →</span><strong>다음 글이 없습니다</strong></span>`;
-      nav.innerHTML=`${olderHtml}<a class="article-nav-list" href="/posts.html?category=${encodeURIComponent(group)}">${listLabel(group)}</a>${newerHtml}`;
-      const related=article.querySelector('.related'); if(related){related.parentNode.insertBefore(nav,related);related.innerHTML='<a class="btn btn-primary" href="tel:0324251500">032-425-1500 상담</a>'}else article.appendChild(nav);
+      nav.innerHTML=`${olderHtml}${newerHtml}`;
+      const related=article.querySelector('.related');
+      const buttons=`<a class="btn btn-border" href="/posts.html?category=${encodeURIComponent(group)}">${listLabel(group)}</a><a class="btn btn-primary" href="tel:0324251500">032-425-1500 상담</a>`;
+      if(related){related.parentNode.insertBefore(nav,related);related.innerHTML=buttons}else{article.appendChild(nav);const actions=document.createElement('div');actions.className='related';actions.innerHTML=buttons;article.appendChild(actions)}
     }catch(e){console.warn('이전·다음 글 네비게이션을 불러오지 못했습니다.',e)}
   }
   buildArticleNavigation();
