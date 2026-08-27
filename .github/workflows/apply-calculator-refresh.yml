@@ -16,24 +16,20 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          import re
           pages={
             'corporate-calculator.html':'corporate-calculator-page',
             'acquisition-calculator.html':'acquisition-calculator-page',
           }
           link='<link rel="stylesheet" href="/assets/calculator-refresh.css?v=1">'
           for fn, cls in pages.items():
-            p=Path(fn); t=p.read_text(encoding='utf-8')
+            p=Path(fn)
+            t=p.read_text(encoding='utf-8')
             if '/assets/calculator-refresh.css' not in t:
               t=t.replace('</head>',link+'\n</head>',1)
-            m=re.search(r'<body([^>]*)>',t,re.I)
-            if m:
-              attrs=m.group(1)
-              if 'class=' in attrs:
-                attrs=re.sub(r'class=(['\"'])(.*?)\1',lambda x:'class='+x.group(1)+('calculator-page '+cls+' '+x.group(2)).strip()+x.group(1),attrs,1)
-              else:
-                attrs+=' class="calculator-page '+cls+'"'
-              t=t[:m.start()]+'<body'+attrs+'>'+t[m.end():]
+            if '<body>' in t:
+              t=t.replace('<body>','<body class="calculator-page '+cls+'">',1)
+            elif '<body ' in t and 'calculator-page' not in t.split('<body ',1)[1].split('>',1)[0]:
+              t=t.replace('<body ','<body class="calculator-page '+cls+'" ',1)
             p.write_text(t,encoding='utf-8')
           PY
       - name: Commit
