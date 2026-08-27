@@ -1,16 +1,18 @@
 from pathlib import Path
 import re
 
-CSS='<link rel="stylesheet" href="/assets/article-v2.css?v=3">'
-JS='<script src="/assets/article-v2.js?v=3" defer></script>'
+VERSION='4'
+CSS=f'<link rel="stylesheet" href="/assets/article-v2.css?v={VERSION}">'
+JS=f'<script src="/assets/article-v2.js?v={VERSION}" defer></script>'
 
 
 def inject_html(text: str) -> str:
-    text=re.sub(r'<link rel="stylesheet" href="/assets/article-v2\.css\?v=\d+">',CSS,text)
-    text=re.sub(r'<script src="/assets/article-v2\.js\?v=\d+" defer></script>',JS,text)
-    if CSS not in text:
+    # 기존 버전이 있으면 v4로 교체하고, 없으면 새로 삽입
+    text=re.sub(r'<link rel="stylesheet" href="/assets/article-v2\.css\?v=\d+">', CSS, text)
+    text=re.sub(r'<script src="/assets/article-v2\.js\?v=\d+" defer></script>', JS, text)
+    if '/assets/article-v2.css?' not in text:
         text=text.replace('</head>',CSS+'</head>',1)
-    if JS not in text:
+    if '/assets/article-v2.js?' not in text:
         text=text.replace('</body>',JS+'</body>',1)
     return text
 
