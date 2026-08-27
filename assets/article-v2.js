@@ -30,4 +30,57 @@ document.addEventListener('DOMContentLoaded',()=>{
     panel.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setOpen(false)));
     document.addEventListener('keydown',e=>{if(e.key==='Escape')setOpen(false)});
   }
+
+  function escText(v){
+    return String(v||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+  }
+
+  async function buildArticleNavigation(){
+    const article=document.querySelector('.article');
+    if(!article || document.querySelector('.article-prev-next'))return;
+
+    const match=location.pathname.match(/\/posts\/([^/]+)\.html$/i);
+    if(!match)return;
+    const currentSlug=decodeURIComponent(match[1]);
+
+    try{
+      const r=await fetch('/data/posts.json',{cache:'no-store'});
+      if(!r.ok)throw new Error('posts.json '+r.status);
+      const posts=await r.json();
+      if(!Array.isArray(posts) || !posts.length)return;
+
+      const index=posts.findIndex(p=>String(p.slug||'').replace(/\.html$/i,'')===currentSlug);
+      if(index<0)return;
+
+      /* posts.json은 최신 글이 앞쪽. 왼쪽 이전 글=시간상 이전(더 오래된 글), 오른쪽 다음 글=더 최근 글 */
+      const older=posts[index+1]||null;
+      const newer=posts[index-1]||null;
+
+      const nav=document.createElement('nav');
+      nav.className='article-prev-next';
+      nav.setAttribute('aria-label','법률정보 이전글 다음글');
+
+      const olderHtml=older
+        ? `<a class="article-nav-item article-nav-prev" href="/posts/${encodeURIComponent(String(older.slug||'').replace(/\.html$/i,''))}.html"><span class="article-nav-kicker">← 이전 글</span><strong>${escText(older.title)}</strong></a>`
+        : `<span class="article-nav-item article-nav-disabled"><span class="article-nav-kicker">← 이전 글</span><strong>이전 글이 없습니다</strong></span>`;
+
+      const newerHtml=newer
+        ? `<a class="article-nav-item article-nav-next" href="/posts/${encodeURIComponent(String(newer.slug||'').replace(/\.html$/i,''))}.html"><span class="article-nav-kicker">다음 글 →</span><strong>${escText(newer.title)}</strong></a>`
+        : `<span class="article-nav-item article-nav-disabled article-nav-next"><span class="article-nav-kicker">다음 글 →</span><strong>다음 글이 없습니다</strong></span>`;
+
+      nav.innerHTML=`${olderHtml}<a class="article-nav-list" href="/posts.html">법률정보 목록</a>${newerHtml}`;
+
+      const related=article.querySelector('.related');
+      if(related){
+        related.parentNode.insertBefore(nav,related);
+        related.innerHTML='<a class="btn btn-primary" href="tel:0324251500">032-425-1500 상담</a>';
+      }else{
+        article.appendChild(nav);
+      }
+    }catch(e){
+      console.warn('이전·다음 글 네비게이션을 불러오지 못했습니다.',e);
+    }
+  }
+
+  buildArticleNavigation();
 });
