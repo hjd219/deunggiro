@@ -26,7 +26,6 @@ jobs:
           from pathlib import Path
           import re, json, subprocess, sys
 
-          # 1) article image alignment: one authoritative rule, always left aligned
           cssp=Path('assets/article-v2.css')
           css=cssp.read_text(encoding='utf-8')
           css=css.replace('body.article-v2 .article-body img,body.article-v2 .article-body video{display:block;max-width:100%!important;height:auto!important;border-radius:10px;margin-left:auto;margin-right:auto}',
@@ -36,44 +35,39 @@ jobs:
           jsp=Path('assets/article-v2.js')
           js=jsp.read_text(encoding='utf-8')
           js=js.replace('margin:18px auto!important','margin:18px 0!important')
-          # Previous/next navigation must be date ordered even if JSON order is altered
           old="const category=categoryOf(current.category),same=posts.filter(p=>categoryOf(p.category)===category);"
           new="const category=categoryOf(current.category),same=posts.filter(p=>categoryOf(p.category)===category).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));"
           if old in js: js=js.replace(old,new)
           jsp.write_text(js,encoding='utf-8')
 
-          # 2) admin publishing: edits no longer jump to the front; keep stable date order
           ap=Path('admin.html')
           admin=ap.read_text(encoding='utf-8')
           old="""const clean=list.filter(x=>String(x.slug||'').replace(/\\.html$/i,'')!==p.slug);\n      clean.unshift({...p});\n      return clean;"""
           new="""const originalIndex=list.findIndex(x=>String(x.slug||'').replace(/\\.html$/i,'')===p.slug);\n      const clean=list.filter(x=>String(x.slug||'').replace(/\\.html$/i,'')!==p.slug);\n      if(isEdit&&originalIndex>=0) clean.splice(Math.min(originalIndex,clean.length),0,{...p});\n      else clean.unshift({...p});\n      clean.sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));\n      return clean;"""
-          if old not in admin:
+          if old in admin:
+              admin=admin.replace(old,new,1)
+          elif 'const originalIndex=list.findIndex' not in admin:
               raise SystemExit('admin publishing block not found')
-          admin=admin.replace(old,new,1)
           ap.write_text(admin,encoding='utf-8')
 
-          # 3) SEO sync always renders newest date first and uses shared shell only as authority
           sp=Path('scripts/sync-seo.py')
           sync=sp.read_text(encoding='utf-8')
-          sync=sync.replace('    posts = load_posts()\n    sync_posts_html(posts)',
-                            '    posts = sorted(load_posts(), key=lambda p: str(p.get("date", "")), reverse=True)\n    sync_posts_html(posts)')
+          if 'posts = sorted(load_posts()' not in sync:
+              sync=sync.replace('    posts = load_posts()\n    sync_posts_html(posts)',
+                                '    posts = sorted(load_posts(), key=lambda p: str(p.get("date", "")), reverse=True)\n    sync_posts_html(posts)')
           sp.write_text(sync,encoding='utf-8')
 
-          # 4) Run the SEO sync now so posts.html static links and sitemap are fully current
           subprocess.run([sys.executable,'scripts/sync-seo.py'],check=True)
-
-          # 5) Ensure every public page + every article has shared shell files
           subprocess.run([sys.executable,'scripts/apply-site-shell.py'],check=True)
           subprocess.run([sys.executable,'scripts/apply-article-v2.py'],check=True)
 
-          # 6) Static consistency checks
           posts=json.loads(Path('data/posts.json').read_text(encoding='utf-8-sig'))
           slugs=[str(x.get('slug','')).removesuffix('.html') for x in posts if x.get('slug')]
           post_files={p.stem for p in Path('posts').glob('*.html')}
           missing=[s for s in slugs if s not in post_files]
           if missing: raise SystemExit('Missing post HTML: '+', '.join(missing))
           ph=Path('posts.html').read_text(encoding='utf-8')
-          static=set(re.findall(r'href="/posts/([^"/?#]+)\\.html"',ph))
+          static=set(re.findall(r'href="/posts/([^"/?#]+)\.html"',ph))
           miss_static=[s for s in slugs if s not in static]
           if miss_static: raise SystemExit('posts.html static links missing: '+', '.join(miss_static))
           sm=Path('sitemap.xml').read_text(encoding='utf-8')
@@ -85,7 +79,8 @@ jobs:
               raise SystemExit('legacy centered image override still present')
           if 'new URLSearchParams(location.search)' not in ph:
               raise SystemExit('category query filter missing from posts.html')
-          # JS syntax checks
+          if 'const originalIndex=list.findIndex' not in ap.read_text(encoding='utf-8'):
+              raise SystemExit('admin edit-order repair missing')
           for f in ['assets/article-v2.js','assets/site-shell.js']:
               subprocess.run(['node','--check',f],check=True)
           print('ALL FIXES AND CHECKS PASSED')
