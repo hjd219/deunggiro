@@ -1,0 +1,62 @@
+name: Fix category filtering and post categories
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/fix-category-filter.yml']
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch files
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json,re
+
+          # 1) posts.html: read ?category=... and activate matching filter
+          p=Path('posts.html')
+          s=p.read_text(encoding='utf-8')
+          old="async function init(){try{const r=await fetch('/data/posts.json?'+Date.now());all=await r.json();const cs=['전체',...new Set(all.map(x=>x.category))];document.getElementById('cats').innerHTML=cs.map(c=>`<button class=\"chip ${c==='전체'?'active':''}\" onclick=\"setCat('${esc(c)}',this)\">${esc(c)}</button>`).join('');render()}"
+          new="async function init(){try{const params=new URLSearchParams(location.search);const requested=params.get('category');const r=await fetch('/data/posts.json?'+Date.now());all=await r.json();const cs=['전체',...new Set(all.map(x=>x.category))];if(requested&&cs.includes(requested))active=requested;document.getElementById('cats').innerHTML=cs.map(c=>`<button class=\"chip ${c===active?'active':''}\" onclick=\"setCat('${esc(c)}',this)\">${esc(c)}</button>`).join('');render()}"
+          if old not in s:
+              raise SystemExit('posts.html init pattern not found')
+          s=s.replace(old,new,1)
+
+          # static SEO cards: correct two categories too
+          for slug in ['real-estate-provisional-seizure-incheon-procedure-6069xy','sale-real-estate-guide-bvcdri']:
+              pattern=rf'(<a class="post-card" href="/posts/{re.escape(slug)}\.html"[\s\S]*?<span class="badge">)기타(</span>)'
+              s,n=re.subn(pattern,rf'\1부동산등기\2',s,count=1)
+          p.write_text(s,encoding='utf-8')
+
+          # 2) admin category fallback mapping
+          p=Path('admin.html')
+          s=p.read_text(encoding='utf-8')
+          old="const catMap={'상속':'inheritance','법인':'corporate','부동산':'real-estate','한정승인·상속포기':'inheritance','가사':'family','기타':'legal'};"
+          new="const catMap={'상속':'inheritance','상속등기':'inheritance-registration','상속포기·한정승인':'inheritance-renunciation','상속재산분할':'inheritance-partition','법인':'corporate','법인등기':'corporate-registration','부동산':'real-estate','부동산등기':'real-estate-registration','한정승인·상속포기':'inheritance','가사':'family','기타':'legal'};"
+          if old not in s:
+              raise SystemExit('admin catMap pattern not found')
+          s=s.replace(old,new,1)
+          p.write_text(s,encoding='utf-8')
+
+          # 3) posts.json: correct two existing categories
+          p=Path('data/posts.json')
+          data=json.loads(p.read_text(encoding='utf-8'))
+          targets={'real-estate-provisional-seizure-incheon-procedure-6069xy','sale-real-estate-guide-bvcdri'}
+          changed=0
+          for item in data:
+              if item.get('slug') in targets:
+                  item['category']='부동산등기'; changed+=1
+          if changed!=2:
+              raise SystemExit(f'expected 2 category fixes, got {changed}')
+          p.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          PY
+      - name: Commit fixes
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add posts.html admin.html data/posts.json
+          git commit -m 'Fix category filters and category metadata'
+          git push
