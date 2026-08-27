@@ -8,6 +8,7 @@ on:
       - 'posts/**'
       - 'sitemap.xml'
       - 'scripts/seo-auto.mjs'
+      - 'scripts/rss-auto.mjs'
       - 'scripts/seo-trigger.txt'
   workflow_dispatch:
 
@@ -28,11 +29,16 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Validate SEO script
-        run: node --check scripts/seo-auto.mjs
+      - name: Validate automation scripts
+        run: |
+          node --check scripts/seo-auto.mjs
+          node --check scripts/rss-auto.mjs
 
       - name: Run SEO automation
         run: node scripts/seo-auto.mjs
+
+      - name: Generate RSS
+        run: node scripts/rss-auto.mjs
 
       - name: Check generated changes
         run: git diff --check
@@ -46,7 +52,7 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html inheritance.html renunciation.html corporate.html realestate.html family.html posts sitemap.xml data/seo-report.json || true
-          git commit -m "자동 SEO 강화: 관련글·수정일·이미지·오류검사"
+          git add index.html inheritance.html renunciation.html corporate.html realestate.html family.html posts sitemap.xml rss.xml data/seo-report.json || true
+          git commit -m "자동 SEO 강화 및 RSS 갱신"
           git pull --rebase origin main
           git push origin HEAD:main
