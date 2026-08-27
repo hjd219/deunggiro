@@ -1,5 +1,6 @@
 from pathlib import Path
 
+# article design v2 sync trigger
 CSS='<link rel="stylesheet" href="/assets/article-v2.css?v=2">'
 JS='<script src="/assets/article-v2.js?v=2" defer></script>'
 
