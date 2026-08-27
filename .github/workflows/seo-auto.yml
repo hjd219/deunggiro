@@ -1,0 +1,42 @@
+name: SEO Auto Enhance
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'sitemap.xml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: seo-auto-main
+  cancel-in-progress: true
+
+jobs:
+  enhance-seo:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run SEO automation
+        run: node scripts/seo-auto.mjs
+
+      - name: Commit SEO updates
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo "No SEO changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html inheritance.html renunciation.html corporate.html realestate.html family.html posts || true
+          git commit -m "자동 SEO 보강: 최신글·관련글·구조화데이터"
+          git pull --rebase origin main
+          git push origin HEAD:main
