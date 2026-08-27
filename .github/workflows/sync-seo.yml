@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - 'data/posts.json'
+      - 'scripts/sync-seo.py'
+      - '.github/workflows/sync-seo.yml'
   workflow_dispatch:
 
 permissions:
