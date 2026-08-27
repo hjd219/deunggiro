@@ -2711,8 +2711,11 @@ async function publishPost(){
 
     // 2) 목록 저장
     const updatedPosts=await updatePostsJson(list=>{
+      const originalIndex=list.findIndex(x=>String(x.slug||'').replace(/\.html$/i,'')===p.slug);
       const clean=list.filter(x=>String(x.slug||'').replace(/\.html$/i,'')!==p.slug);
-      clean.unshift({...p});
+      if(isEdit&&originalIndex>=0) clean.splice(Math.min(originalIndex,clean.length),0,{...p});
+      else clean.unshift({...p});
+      clean.sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
       return clean;
     },(isEdit?'게시글 목록 수정: ':'게시글 목록 업데이트: ')+p.title);
 

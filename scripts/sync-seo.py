@@ -127,7 +127,7 @@ def sync_sitemap(posts):
 
 
 def main():
-    posts = load_posts()
+    posts = sorted(load_posts(), key=lambda p: str(p.get("date", "")), reverse=True)
     sync_posts_html(posts)
     sync_sitemap(posts)
     print(f"Synced {len(posts)} posts")
