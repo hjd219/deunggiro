@@ -1,11 +1,13 @@
 from pathlib import Path
+import re
 
-# article design v2 sync trigger
-CSS='<link rel="stylesheet" href="/assets/article-v2.css?v=2">'
-JS='<script src="/assets/article-v2.js?v=2" defer></script>'
+CSS='<link rel="stylesheet" href="/assets/article-v2.css?v=3">'
+JS='<script src="/assets/article-v2.js?v=3" defer></script>'
 
 
 def inject_html(text: str) -> str:
+    text=re.sub(r'<link rel="stylesheet" href="/assets/article-v2\.css\?v=\d+">',CSS,text)
+    text=re.sub(r'<script src="/assets/article-v2\.js\?v=\d+" defer></script>',JS,text)
     if CSS not in text:
         text=text.replace('</head>',CSS+'</head>',1)
     if JS not in text:
@@ -32,13 +34,7 @@ def update_admin():
     if end<0:
         raise RuntimeError('makeArticle template end not found')
     region=text[start:end]
-    if CSS not in region:
-        region=region.replace('</head><body>',CSS+'</head><body>',1)
-    if JS not in region:
-        pos=region.rfind('</body></html>')
-        if pos<0:
-            raise RuntimeError('article template closing tags not found')
-        region=region[:pos]+JS+region[pos:]
+    region=inject_html(region)
     new=text[:start]+region+text[end:]
     if new!=text:
         path.write_text(new,encoding='utf-8')
