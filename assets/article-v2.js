@@ -1,6 +1,34 @@
 document.addEventListener('DOMContentLoaded',()=>{
   document.body.classList.add('article-v2');
 
+  if(!document.getElementById('article-nav-style')){
+    const style=document.createElement('style');
+    style.id='article-nav-style';
+    style.textContent=`
+      body.article-v2 .article-prev-next{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:10px;align-items:stretch;margin-top:38px;padding-top:28px;border-top:1px solid #e7edf3}
+      body.article-v2 .article-nav-item,body.article-v2 .article-nav-list{min-height:92px;border:1px solid #dce5ef;border-radius:12px;background:#f8fbfe;text-decoration:none!important;transition:.18s}
+      body.article-v2 .article-nav-item{display:flex;flex-direction:column;justify-content:center;padding:15px 17px;min-width:0}
+      body.article-v2 .article-nav-item strong{display:block;font-size:13px;line-height:1.5;color:#263442;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+      body.article-v2 .article-nav-kicker{display:block;margin-bottom:5px;color:#36a9e1;font-size:11px;font-weight:900}
+      body.article-v2 .article-nav-next{text-align:right}
+      body.article-v2 .article-nav-list{display:flex;align-items:center;justify-content:center;padding:0 18px;color:#172840!important;font-size:13px;font-weight:900;white-space:nowrap;background:#fff}
+      body.article-v2 a.article-nav-item:hover,body.article-v2 .article-nav-list:hover{background:#36a9e1!important;border-color:#36a9e1!important;color:#fff!important;transform:translateY(-2px)}
+      body.article-v2 a.article-nav-item:hover *,body.article-v2 .article-nav-list:hover{color:#fff!important}
+      body.article-v2 .article-nav-disabled{opacity:.48;background:#f7f8fa;cursor:default}
+      body.article-v2 .article-prev-next + .related{margin-top:14px!important;padding-top:0!important;border-top:0!important;justify-content:center!important}
+      @media(max-width:700px){
+        body.article-v2 .article-prev-next{grid-template-columns:1fr;gap:8px;margin-top:30px;padding-top:22px}
+        body.article-v2 .article-nav-item,body.article-v2 .article-nav-list{min-height:66px}
+        body.article-v2 .article-nav-item{padding:12px 14px}
+        body.article-v2 .article-nav-next{text-align:left}
+        body.article-v2 .article-nav-list{order:2;min-height:48px}
+        body.article-v2 .article-nav-prev{order:1}
+        body.article-v2 .article-nav-next{order:3}
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
   const oldHeader=document.querySelector('header.header');
   if(oldHeader){
     oldHeader.outerHTML=`<header class="header"><div class="container header-inner"><a class="logo" href="/"><span>등기로</span><small>현재두 법무사 사무소 · 인천</small></a><nav class="nav"><a href="/">홈</a><a href="/inheritance.html">상속등기</a><a href="/renunciation.html">상속포기·한정승인</a><a href="/corporate.html">법인등기</a><a href="/realestate.html">부동산등기</a><a href="/family.html">가사</a><a href="/posts.html" aria-current="page">법률정보</a></nav><button type="button" class="mobile-menu-btn" id="article-mobile-menu-btn" aria-expanded="false">☰ 메뉴</button><a class="mobile-only" href="tel:0324251500">전화상담</a></div></header><div class="mobile-menu-panel" id="article-mobile-menu-panel" aria-hidden="true"><div class="mobile-menu-grid"><a href="/">홈</a><a href="/inheritance.html">상속등기</a><a href="/renunciation.html">상속포기·한정승인</a><a href="/corporate.html">법인등기</a><a href="/realestate.html">부동산등기</a><a href="/family.html">가사</a><a href="/posts.html">법률정보</a></div><button type="button" class="mobile-menu-close" id="article-mobile-menu-close">메뉴 닫기 ↑</button></div>`;
@@ -32,7 +60,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
 
   function escText(v){
-    return String(v||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+    return String(v||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#039;'}[m]));
   }
 
   async function buildArticleNavigation(){
@@ -52,7 +80,6 @@ document.addEventListener('DOMContentLoaded',()=>{
       const index=posts.findIndex(p=>String(p.slug||'').replace(/\.html$/i,'')===currentSlug);
       if(index<0)return;
 
-      /* posts.json은 최신 글이 앞쪽. 왼쪽 이전 글=시간상 이전(더 오래된 글), 오른쪽 다음 글=더 최근 글 */
       const older=posts[index+1]||null;
       const newer=posts[index-1]||null;
 
