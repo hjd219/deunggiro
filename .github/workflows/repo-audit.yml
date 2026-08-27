@@ -21,6 +21,7 @@ jobs:
       - name: Run static audit
         shell: bash
         run: |
+          # full-repo static verification
           python - <<'PY'
           from pathlib import Path
           import json, re, sys, subprocess, tempfile
@@ -34,7 +35,6 @@ jobs:
           def warn(x): warnings.append(x)
           def inf(x): info.append(x)
 
-          # Core data parsing
           try:
               posts=json.loads(Path('data/posts.json').read_text(encoding='utf-8'))
               if not isinstance(posts,list): raise ValueError('root is not array')
@@ -57,7 +57,6 @@ jobs:
           if missing_files: err('posts.json entries missing HTML: '+', '.join(missing_files))
           if orphan_files: warn('post HTML not present in posts.json: '+', '.join(orphan_files))
 
-          # Sitemap consistency
           sitemap_post_slugs=[]
           for u in sitemap_locs:
               m=re.search(r'/posts/([^/?#]+)\.html$',u)
@@ -68,14 +67,12 @@ jobs:
           if extra_sitemap: warn('sitemap post URLs absent from posts.json: '+', '.join(extra_sitemap))
           if len(sitemap_locs)!=len(set(sitemap_locs)): err('duplicate URLs in sitemap.xml')
 
-          # thumbnails
           for p in posts:
               thumb=str(p.get('thumbnail','')).strip()
               if thumb and thumb.startswith('/'):
                   fp=Path(thumb.lstrip('/').split('?',1)[0])
                   if not fp.exists(): err(f"missing thumbnail for {p.get('slug')}: {thumb}")
 
-          # robots/CNAME
           if Path('robots.txt').exists():
               rt=Path('robots.txt').read_text(encoding='utf-8',errors='replace')
               if 'Sitemap:' not in rt: warn('robots.txt has no Sitemap directive')
@@ -83,7 +80,6 @@ jobs:
           if not Path('CNAME').exists(): err('CNAME missing')
           elif Path('CNAME').read_text().strip()!='www.deunggiro.kr': warn('CNAME is not www.deunggiro.kr')
 
-          # HTML parser + local link existence
           class P(HTMLParser):
               def __init__(self): super().__init__(convert_charrefs=True); self.refs=[]; self.ids=[]; self.canonical=[]; self.meta={}; self.scripts=[]; self._in_script=False; self._script=''
               def handle_starttag(self,tag,attrs):
@@ -106,9 +102,10 @@ jobs:
               parser=P()
               try: parser.feed(text); parser.close()
               except Exception as e: err(f'{f}: HTML parser exception: {e}')
-              dup_ids=sorted({x for x in parser.ids if parser.ids.count(x)>1})
+              counts={}
+              for x in parser.ids: counts[x]=counts.get(x,0)+1
+              dup_ids=sorted(x for x,n in counts.items() if n>1)
               if dup_ids: warn(f'{f}: duplicate ids: '+', '.join(dup_ids[:8]))
-              # local refs
               for kind,ref in parser.refs:
                   if not ref or ref.startswith(('#','tel:','mailto:','javascript:','data:','blob:','http://','https://','//')): continue
                   clean=urlsplit(ref).path
@@ -117,11 +114,9 @@ jobs:
                   try: target=target.resolve()
                   except Exception: continue
                   if not target.exists(): warn(f'{f}: broken local {kind} -> {ref}')
-              # public root shell includes
               if f.parent==root and f.name in public_root:
                   if '/assets/site-shell.css' not in text: err(f'{f}: missing site-shell.css')
                   if '/assets/site-shell.js' not in text: err(f'{f}: missing site-shell.js')
-              # post invariants
               if f.parent.name=='posts':
                   slug=f.stem
                   expected=f'https://www.deunggiro.kr/posts/{slug}.html'
@@ -131,13 +126,11 @@ jobs:
                       if not parser.meta.get(key): err(f'{f}: missing meta {key}')
                   for needed in ('/assets/article-v2.css','/assets/article-v2.js','/assets/site-shell.css','/assets/site-shell.js'):
                       if needed not in text: err(f'{f}: missing {needed}')
-                  # old pasted layout residues likely to break rendering
                   bodypos=text.find('class="article-body"')
                   bodytxt=text[bodypos:] if bodypos>=0 else text
                   if re.search(r'width\s*:\s*(?:9\d\d|[1-9]\d{3,})px',bodytxt,re.I): warn(f'{f}: large fixed width remains inside article body')
                   if re.search(r'<img[^>]+margin\s*:\s*[^;\"]*auto',bodytxt,re.I): warn(f'{f}: inline auto-margin image remains in article body')
                   if len(text)>500_000: warn(f'{f}: HTML size {len(text)//1024} KB (very large)')
-              # inline JS syntax
               for i,js in enumerate(parser.scripts,1):
                   if not js.strip(): continue
                   with tempfile.NamedTemporaryFile('w',suffix='.js',delete=False,encoding='utf-8') as tf:
@@ -146,12 +139,10 @@ jobs:
                   Path(temp).unlink(missing_ok=True)
                   if cp.returncode!=0: err(f'{f}: inline script #{i} syntax error: '+cp.stderr.strip().splitlines()[-1])
 
-          # standalone JS syntax
           for jsf in sorted(root.rglob('*.js')):
               cp=subprocess.run(['node','--check',str(jsf)],capture_output=True,text=True)
               if cp.returncode!=0: err(f'{jsf}: JS syntax error: '+cp.stderr.strip().splitlines()[-1])
 
-          # posts.html static SEO list should cover all posts
           ph=Path('posts.html').read_text(encoding='utf-8',errors='replace') if Path('posts.html').exists() else ''
           static=set(re.findall(r'href="/posts/([^"/?#]+)\.html"',ph))
           missing_static=sorted(set(data_slugs)-static)
@@ -159,7 +150,6 @@ jobs:
           if missing_static: warn('posts.html static SEO list missing: '+', '.join(missing_static))
           if extra_static: warn('posts.html static SEO list has stale entries: '+', '.join(extra_static))
 
-          # admin expected publishing hooks
           if Path('admin.html').exists():
               ad=Path('admin.html').read_text(encoding='utf-8',errors='replace')
               for needle,label in [('data/posts.json','posts.json update'),('sitemap.xml','sitemap update'),('/posts/','individual post path'),('<\\/script>','escaped closing script in template')]:
