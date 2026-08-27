@@ -21,6 +21,10 @@ function replaceMarked(html,name,block,before){
   return html.slice(0,idx)+marked+'\n'+html.slice(idx);
 }
 
+function removeLegacyLegalInfoSection(html){
+  return html.replace(/<section class="section white">[\s\S]*?<h2 class="title">등기로 법률정보<\/h2>[\s\S]*?<\/section>\s*(?=<!-- SEO_LATEST_START -->)/m,'');
+}
+
 function latestCards(list,limit=6){
   return sortPosts(list).slice(0,limit).map(p=>`<a href="/posts/${esc(p.slug)}.html" style="display:block;padding:15px 16px;border:1px solid #d9e0ea;border-radius:10px;background:#fff;text-decoration:none;color:#20242b"><small style="display:block;color:#36a9e1;font-weight:800;margin-bottom:5px">${esc(p.category)} · ${esc(p.date)}</small><strong style="display:block;line-height:1.45">${esc(p.title)}</strong></a>`).join('\n');
 }
@@ -32,6 +36,7 @@ function buildLatestSection(list,title='최신 법률정보'){
 const indexPath=path.join(root,'index.html');
 if(fs.existsSync(indexPath)){
   let html=fs.readFileSync(indexPath,'utf8');
+  html=removeLegacyLegalInfoSection(html);
   html=replaceMarked(html,'SEO_LATEST',buildLatestSection(posts),'\n<section class="contact"');
   fs.writeFileSync(indexPath,html);
 }
