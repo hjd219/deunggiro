@@ -1085,7 +1085,7 @@ function slugify(s){
   let base=[...new Set(words.join('-').split('-').filter(Boolean))].join('-');
   if(!base){
     const cat=($('category')?.value||'legal').toLowerCase();
-    const catMap={'상속':'inheritance','법인':'corporate','부동산':'real-estate','한정승인·상속포기':'inheritance','가사':'family','기타':'legal'};
+    const catMap={'상속':'inheritance','상속등기':'inheritance-registration','상속포기·한정승인':'inheritance-renunciation','상속재산분할':'inheritance-partition','법인':'corporate','법인등기':'corporate-registration','부동산':'real-estate','부동산등기':'real-estate-registration','한정승인·상속포기':'inheritance','가사':'family','기타':'legal'};
     base=catMap[cat]||'legal';
   }
   base=base.replace(/-+/g,'-').replace(/^-|-$/g,'').slice(0,62);
