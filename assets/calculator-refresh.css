@@ -1,0 +1,58 @@
+/* 등기로 계산기 공통 디자인 */
+body.calculator-page{--calc-primary:#36a9e1;--calc-primary-dark:#168dca;--calc-navy:#172840;--calc-ink:#20242b;--calc-muted:#6b7280;--calc-line:#dfe7ef;--calc-soft:#f5f9fc;background:#f5f8fb!important;color:var(--calc-ink)!important}
+body.calculator-page .hero{padding:54px 0 42px!important;background:linear-gradient(135deg,#fbfdff 0%,#f2f8fc 58%,#eef7fb 100%)!important;border-bottom:1px solid #e6edf3!important;position:relative!important;overflow:hidden!important}
+body.calculator-page .hero:after{content:""!important;position:absolute!important;width:320px!important;height:320px!important;border-radius:50%!important;right:-90px!important;top:-120px!important;background:rgba(54,169,225,.08)!important;pointer-events:none!important}
+body.calculator-page .hero .container{position:relative!important;z-index:1!important}
+body.calculator-page .hero-label,body.calculator-page .label{color:var(--calc-primary-dark)!important}
+body.calculator-page .hero h1{font-size:clamp(34px,5vw,52px)!important;line-height:1.2!important;letter-spacing:-2.5px!important;margin:8px 0 12px!important;color:var(--calc-navy)!important}
+body.calculator-page .hero p{font-size:16px!important;line-height:1.75!important;color:#657286!important;max-width:760px!important;margin:0!important}
+body.calculator-page .section{padding:46px 0 70px!important}
+body.calculator-page #calculator .container{max-width:1060px!important}
+body.calculator-page #calculator .title{font-size:28px!important;letter-spacing:-1.2px!important;margin-bottom:7px!important;color:var(--calc-navy)!important}
+body.calculator-page #calculator .desc{font-size:14px!important;color:var(--calc-muted)!important;margin-bottom:22px!important}
+body.calculator-page #calculator .calculator{background:#fff!important;border:1px solid var(--calc-line)!important;border-radius:18px!important;overflow:hidden!important;box-shadow:0 18px 48px rgba(23,40,64,.08)!important}
+body.calculator-page #calculator .calc-tabs{background:#eef4f8!important;border-bottom:1px solid var(--calc-line)!important;gap:0!important}
+body.calculator-page #calculator .calc-tab{min-height:58px!important;padding:13px 16px!important;background:transparent!important;color:#536273!important;border:0!important;border-right:1px solid #dce5ec!important;font-size:14px!important;font-weight:900!important;transition:.18s!important}
+body.calculator-page #calculator .calc-tab:last-child{border-right:0!important}
+body.calculator-page #calculator .calc-tab:hover{background:#e4f3fb!important;color:var(--calc-primary-dark)!important}
+body.calculator-page #calculator .calc-tab.active{background:var(--calc-primary)!important;color:#fff!important;box-shadow:inset 0 -3px 0 rgba(0,0,0,.08)!important}
+body.calculator-page #calculator .calc-body{padding:30px!important;background:#fff!important}
+body.calculator-page #calculator .form-grid{gap:15px 16px!important}
+body.calculator-page #calculator .form-group{margin-bottom:4px!important}
+body.calculator-page #calculator .form-group label{font-size:13px!important;color:#344054!important;margin-bottom:7px!important}
+body.calculator-page #calculator input,body.calculator-page #calculator select{height:50px!important;border:1px solid #d4dee8!important;border-radius:10px!important;padding:0 13px!important;background:#fbfdff!important;color:#20242b!important;box-shadow:0 1px 2px rgba(16,24,40,.02)!important;transition:.18s!important}
+body.calculator-page #calculator input:focus,body.calculator-page #calculator select:focus{outline:0!important;border-color:var(--calc-primary)!important;box-shadow:0 0 0 3px rgba(54,169,225,.13)!important;background:#fff!important}
+body.calculator-page #calculator .btn,body.calculator-page #calculator button.btn{min-height:50px!important;border-radius:10px!important;font-size:14px!important;font-weight:900!important}
+body.calculator-page #calculator .btn-primary{background:var(--calc-primary)!important;color:#fff!important;box-shadow:0 8px 18px rgba(54,169,225,.20)!important}
+body.calculator-page #calculator .btn-primary:hover{background:var(--calc-primary-dark)!important;transform:translateY(-1px)!important}
+body.calculator-page #calculator .notice{margin-top:18px!important;padding:14px 16px!important;border:1px solid #d9e7f0!important;border-radius:11px!important;background:#f4f9fc!important;color:#526272!important;font-size:12px!important;line-height:1.7!important}
+body.calculator-page #calculator .result{margin-top:24px!important;padding:22px!important;border:1px solid #dce7ef!important;border-radius:14px!important;background:linear-gradient(180deg,#fbfdff,#f6fafc)!important;box-shadow:none!important}
+body.calculator-page #calculator .result:before{content:"계산 결과";display:block;margin-bottom:10px;color:var(--calc-primary-dark);font-size:12px;font-weight:900;letter-spacing:1px}
+body.calculator-page #calculator .result-row{padding:10px 0!important;border-bottom:1px solid #e9eef3!important;font-size:14px!important;align-items:center!important}
+body.calculator-page #calculator .result-row:last-of-type{border-bottom:0!important}
+body.calculator-page #calculator .result-row strong,body.calculator-page #calculator .result-row b{color:#26384b!important}
+body.calculator-page #calculator .result-total{margin-top:14px!important;padding-top:16px!important;border-top:2px solid var(--calc-navy)!important;color:var(--calc-primary-dark)!important;font-size:21px!important;font-weight:900!important}
+body.calculator-page .cta{background:var(--calc-navy)!important;padding:46px 20px!important}
+body.calculator-page .cta h2{font-size:28px!important;letter-spacing:-1px!important}
+body.calculator-page .cta .phone{font-size:30px!important}
+/* 취득세 계산기는 세금 유형 선택이 많아 탭을 더 가볍게 */
+body.acquisition-calculator-page #calculator .calc-tabs{grid-auto-flow:column!important;grid-auto-columns:minmax(120px,1fr)!important;overflow-x:auto!important;-webkit-overflow-scrolling:touch!important}
+/* 법인 계산기는 선택·결과를 더 또렷하게 */
+body.corporate-calculator-page #calculator .calculator{border-top:4px solid var(--calc-primary)!important}
+@media(max-width:800px){
+ body.calculator-page .hero{padding:34px 0 28px!important}
+ body.calculator-page .hero h1{font-size:30px!important;letter-spacing:-1.5px!important}
+ body.calculator-page .hero p{font-size:14px!important}
+ body.calculator-page .section{padding:30px 0 48px!important}
+ body.calculator-page #calculator .container{padding-left:13px!important;padding-right:13px!important}
+ body.calculator-page #calculator .calculator{border-radius:13px!important}
+ body.calculator-page #calculator .calc-tabs{display:flex!important;overflow-x:auto!important;scrollbar-width:none!important}
+ body.calculator-page #calculator .calc-tabs::-webkit-scrollbar{display:none!important}
+ body.calculator-page #calculator .calc-tab{flex:0 0 auto!important;min-width:132px!important;min-height:52px!important;padding:11px 13px!important;font-size:13px!important}
+ body.calculator-page #calculator .calc-body{padding:18px 15px 20px!important}
+ body.calculator-page #calculator .form-grid{grid-template-columns:1fr!important;gap:10px!important}
+ body.calculator-page #calculator input,body.calculator-page #calculator select{height:48px!important}
+ body.calculator-page #calculator .result{padding:17px!important;margin-top:18px!important}
+ body.calculator-page #calculator .result-row{font-size:13px!important;gap:12px!important;align-items:flex-start!important}
+ body.calculator-page #calculator .result-total{font-size:19px!important}
+}
