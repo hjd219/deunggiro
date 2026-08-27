@@ -1,172 +1,49 @@
-<!doctype html><html lang="ko"><head><link rel="icon" type="image/png" href="/favicon.png?v=4"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>법률정보 | 등기로</title><meta name="description" content="인천 상속등기, 상속포기, 한정승인, 상속재산분할, 법인등기, 부동산등기 관련 법률정보">
-<link rel="canonical" href="https://www.deunggiro.kr/posts.html"><style>
-:root{
-  --primary:#36a9e1; --primary-dark:#168dca; --ink:#20242b; --muted:#6b7280;
-  --line:#e5e7eb; --bg:#f6f7f9; --card:#fff; --soft:#eef3fb; --max:1180px;
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR","Malgun Gothic",sans-serif;color:var(--ink);background:var(--bg);line-height:1.7}
-a{text-decoration:none;color:inherit}
-button,input,select,textarea{font:inherit}
-.container{width:100%;max-width:var(--max);margin:auto;padding:0 22px}
-.header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.97);border-bottom:1px solid var(--line);backdrop-filter:blur(10px)}
-.header-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:20px}
-.logo{font-size:20px;font-weight:900;letter-spacing:-1px}.logo small{display:block;font-size:11px;color:#777;font-weight:500}
-.nav{display:flex;gap:22px;font-size:14px;font-weight:800;align-items:center}.nav a:hover{color:var(--primary)}
-.hero{background:linear-gradient(135deg,#f1f5fb,#fff);padding:92px 0 80px}
-.hero-label,.label{color:var(--primary);font-size:12px;font-weight:900;letter-spacing:1.4px}
-.hero h1{font-size:clamp(40px,6vw,68px);line-height:1.18;letter-spacing:-4px;margin:10px 0 20px;font-weight:900}
-.hero h1 span{color:var(--primary)}
-.hero p{max-width:760px;color:#646b76;font-size:18px;margin-bottom:30px}
-.buttons{display:flex;flex-wrap:wrap;gap:10px}
-.btn{border:0;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 22px;border-radius:7px;font-weight:900}
-.btn-primary{background:var(--primary);color:#fff}.btn-dark{background:#222;color:#fff}.btn-border{background:#fff;border:1px solid #d7dbe2}.btn-soft{background:var(--soft);color:var(--primary)}
-.section{padding:76px 0}.section.white{background:#fff}.section.soft{background:#eef1f5}
-.title{font-size:36px;line-height:1.3;letter-spacing:-2px;margin:7px 0 10px;font-weight:900}.desc{color:var(--muted);margin:0 0 34px}
-.quick{margin-top:-28px;position:relative}.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:0 10px 35px rgba(0,0,0,.06)}
-.quick-item{padding:24px 15px;text-align:center;border-right:1px solid #eee}.quick-item:last-child{border-right:0}.quick-item strong{color:var(--primary);font-size:12px}.quick-item h3{font-size:17px;margin:4px 0}.quick-item p{font-size:12px;color:#888;margin:0}
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:28px}.card h3{margin:6px 0 10px}.card p{color:var(--muted);font-size:14px;margin:0}.num{font-weight:900;color:var(--primary);font-size:13px}
-.calculator{background:#fff;border:1px solid #ddd;border-radius:12px;overflow:hidden}.calc-tabs{display:grid;grid-template-columns:1fr 1fr}.calc-tab{border:0;padding:18px;background:#e8edf4;font-weight:900;cursor:pointer}.calc-tab.active{background:var(--primary);color:#fff}.calc-body{padding:30px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.form-group{margin-bottom:13px}.form-group.full{grid-column:1/-1}.form-group label{display:block;font-size:13px;font-weight:900;margin-bottom:6px}
-input,select,textarea{width:100%;border:1px solid #cfd4dc;border-radius:7px;background:#fff;padding:11px 12px}input,select{height:47px}textarea{min-height:160px;resize:vertical}
-.result{margin-top:18px;padding:20px;border:1px solid #ddd;border-radius:8px;background:#fafbfc}.result-row{display:flex;justify-content:space-between;gap:20px;padding:6px 0}.result-total{border-top:2px solid #ddd;margin-top:10px;padding-top:13px;color:var(--primary);font-weight:900;font-size:20px}
-.post-toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:20px}.search-wrap{display:flex;gap:8px;flex:1;min-width:260px}.search-wrap input{flex:1}.category-tabs{display:flex;gap:8px;flex-wrap:wrap}.chip{border:1px solid #d6dbe3;background:#fff;border-radius:999px;padding:8px 14px;font-size:13px;font-weight:800;cursor:pointer}.chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-.post-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.post-card{display:grid;grid-template-columns:150px minmax(0,1fr);gap:18px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px;overflow:hidden;transition:.2s}.post-card:hover{transform:translateY(-2px);border-color:#b9c8df}.post-thumb{display:block;width:150px;height:150px;object-fit:cover;border-radius:8px;background:#eef1f5}.post-content{min-width:0}.post-card.no-thumb{display:block;padding:24px}.post-card.no-thumb .post-content{min-height:100%}.post-meta{font-size:12px;color:#7b8490;margin-bottom:7px}.badge{display:inline-block;padding:3px 8px;border-radius:999px;background:var(--soft);color:var(--primary);font-size:11px;font-weight:900;margin-right:7px}.post-card h3{font-size:20px;line-height:1.45;letter-spacing:-.6px;margin:8px 0}.post-card p{font-size:14px;color:var(--muted);margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.empty{padding:50px 10px;text-align:center;color:#777}
-.pagination{display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap;margin-top:34px}.page-btn{min-width:40px;height:40px;padding:0 12px;border:1px solid #d6dbe3;border-radius:7px;background:#fff;color:#374151;font-weight:800;cursor:pointer}.page-btn:hover{border-color:var(--primary);color:var(--primary)}.page-btn.active{background:var(--primary);border-color:var(--primary);color:#fff}.page-btn:disabled{opacity:.38;cursor:default}.page-dots{padding:0 3px;color:#8b93a0}
-.article-wrap{max-width:850px;margin:auto}.article{background:#fff;border:1px solid var(--line);border-radius:12px;padding:clamp(24px,5vw,54px)}.article h1{font-size:clamp(30px,5vw,46px);line-height:1.35;letter-spacing:-2px;margin:12px 0 14px}.article-body{font-size:17px}.article-body h2{font-size:28px;margin:44px 0 12px;letter-spacing:-1px}.article-body h3{font-size:22px;margin:32px 0 10px}.article-body p{margin:0 0 18px}.article-body ul,.article-body ol{padding-left:24px}.article-body blockquote{margin:24px 0;padding:16px 20px;border-left:4px solid var(--primary);background:#f6f8fb;color:#4b5563}.article-body img{max-width:100%;height:auto}.article-body a{color:var(--primary);text-decoration:underline}.related{margin-top:28px}
-.cta{background:var(--primary);color:#fff;text-align:center;padding:55px 20px}.cta h2{margin:0 0 10px;font-size:32px}.cta p{color:rgba(255,255,255,.84)}.phone{font-size:36px;font-weight:900;margin:16px 0}
-.footer{background:#171717;color:#999;padding:38px 0;font-size:13px}.footer strong{color:#fff}
-.admin-shell{max-width:1040px;margin:35px auto;padding:0 20px}.admin-panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px;margin-bottom:18px}.admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.admin-help{font-size:13px;color:#6b7280}.editor-toolbar{display:flex;gap:6px;flex-wrap:wrap;padding:10px;border:1px solid #d5dae2;border-bottom:0;border-radius:8px 8px 0 0;background:#f7f8fa}.editor-toolbar button{border:1px solid #d7dce3;background:#fff;border-radius:5px;padding:6px 10px;cursor:pointer;font-weight:800}.editor{min-height:420px;background:#fff;border:1px solid #d5dae2;border-radius:0 0 8px 8px;padding:22px;outline:none}.status{display:none;margin-top:14px;padding:12px 14px;border-radius:7px}.status.show{display:block}.status.ok{background:#eaf7ee;color:#176c35}.status.err{background:#fff0f0;color:#9b2020}.preview-box{border:1px dashed #c9ced7;border-radius:8px;padding:16px;background:#fafbfc}
-.notice{background:#fff9e9;border:1px solid #f0dfaa;border-radius:8px;padding:14px;color:#6e5b20;font-size:13px}
-.admin-top{display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap}
-.mobile-only{display:none}
-@media(max-width:800px){
- .nav{display:none}.mobile-only{display:inline-flex}.hero{padding:70px 0 66px}.hero h1{letter-spacing:-2.5px}
- .quick-grid,.cards,.post-grid,.form-grid,.admin-grid{grid-template-columns:1fr}.quick-item{border-right:0;border-bottom:1px solid #eee}.quick-item:last-child{border-bottom:0}
- .section{padding:58px 0}.title{font-size:30px}.article{border-left:0;border-right:0;border-radius:0}.container{padding:0 16px}
- .post-card{grid-template-columns:105px minmax(0,1fr);gap:12px;padding:12px}.post-thumb{width:105px;height:105px}.post-card h3{font-size:16px;margin:5px 0}.post-card p{font-size:12px}.post-meta{font-size:11px}.post-card.no-thumb{padding:20px}
-}
-
-.seo-link-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px}.seo-link-grid a{display:block;padding:13px 15px;border:1px solid var(--line);border-radius:9px;background:#fff;font-size:13px;font-weight:800;line-height:1.5;transition:.18s}.seo-link-grid a:hover{border-color:var(--primary);color:var(--primary);transform:translateY(-1px)}@media(max-width:800px){.seo-link-grid{grid-template-columns:1fr}}
-
-/* unified detail layout */
-.subhero-related-grid{display:grid;grid-template-columns:minmax(0,1fr) 430px;gap:52px;align-items:start}
-.subhero-copy{min-width:0}
-.related-posts-panel{background:#fff;border:1px solid #dbe3ee;border-radius:16px;box-shadow:0 16px 42px rgba(25,41,68,.08);overflow:hidden}
-.related-posts-head{padding:20px 21px 16px;background:linear-gradient(135deg,#f8fbff,#eef4fb);border-bottom:1px solid #e5ebf2}
-.related-posts-head h2{font-size:20px;margin:5px 0 3px;letter-spacing:-.7px}
-.related-posts-head p{font-size:12px;color:#6b7280;margin:0}
-.related-posts-list a{display:grid;grid-template-columns:58px minmax(0,1fr) 18px;gap:10px;align-items:center;padding:13px 16px;border-bottom:1px solid #edf0f4;transition:.18s}
-.related-posts-list a:hover{background:#f8fbff}
-.related-badge{display:inline-flex;justify-content:center;align-items:center;height:24px;border-radius:999px;background:#eaf2ff;color:#36a9e1;border:1px solid #cdddf3;font-size:10px;font-weight:900}
-.related-title{font-size:12px;line-height:1.45;font-weight:800}.related-arrow{color:#9aa4b2}
-.related-posts-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:13px}
-.related-posts-actions a{display:flex;justify-content:center;align-items:center;min-height:38px;border:1px solid #d7e0eb;border-radius:8px;font-size:11px;font-weight:900;color:#36a9e1;background:#fff}
-.related-posts-actions a:hover{background:#36a9e1;color:#fff;border-color:#36a9e1}
-.docs-section{background:#eef1f5}.docs-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-.docs-card{background:#fff;border:1px solid #dde3eb;border-radius:12px;padding:22px 24px}.docs-card h3{margin:0 0 12px;font-size:18px;letter-spacing:-.5px}
-.docs-card ul{margin:0;padding-left:18px;color:#5f6875;font-size:13px;line-height:1.8}.docs-card li+li{margin-top:3px}.docs-note{margin-top:16px;color:#7b8490;font-size:12px}
-.contact{background:#172840;color:#fff;padding:54px 0}.contact-grid{display:grid;grid-template-columns:1fr auto;gap:30px;align-items:center}.contact h2{font-size:34px;margin:5px 0 10px}.contact p{color:#cbd5e1;margin:0}.contact .phone{font-size:31px;font-weight:900;color:#fff}
-.footer{background:#172840!important;color:#c9d5e7!important;border-top:1px solid rgba(255,255,255,.1);padding:38px 0 44px!important;font-size:13px}.footer-brand{font-size:24px;color:#fff;font-weight:900;margin-bottom:5px}.footer-office{font-size:16px;color:#e8eef8;font-weight:800;margin-bottom:17px}.footer-info{font-size:14px;line-height:2}.footer-info strong{display:inline-block;width:44px;color:#fff}
-.footer-social{display:inline-flex;align-items:center;gap:5px;color:inherit}.footer-social-icon{width:18px;height:18px;border-radius:5px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;line-height:1}.footer-social .naver-icon{background:#03c75a;color:#fff}.footer-social .youtube-icon{background:#ff0033;color:#fff;font-size:8px}.footer-social-dot{margin:0 3px}
-.footer-route-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(360px,.85fr);gap:72px;align-items:start}.footer-channel-row{margin-top:14px;font-size:14px}.footer-route{padding-left:34px;border-left:1px solid rgba(255,255,255,.13)}.footer-route-title{color:#fff;font-size:21px;font-weight:900;letter-spacing:-.7px;margin-bottom:3px}.footer-route-sub{color:#9fb9df;font-size:12px;font-weight:800;margin-bottom:16px}.footer-route-list{display:grid;gap:9px;font-size:13px;line-height:1.55}.footer-route-list>div{display:grid;grid-template-columns:24px 1fr;gap:7px;align-items:start}.footer-route-list b{color:#fff;margin-right:7px}.footer-route-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:17px}.footer-route-actions a{display:inline-flex;align-items:center;min-height:37px;padding:0 12px;border:1px solid rgba(255,255,255,.22);border-radius:7px;color:#fff;font-size:11px;font-weight:900;background:rgba(255,255,255,.045)}.footer-route-actions a:hover{background:#fff;color:#172840}
-@media(max-width:1000px){.subhero-related-grid{grid-template-columns:1fr;gap:28px}}
-@media(max-width:900px){.contact-grid{grid-template-columns:1fr;gap:18px}.footer-route-grid{grid-template-columns:1fr;gap:28px}.footer-route{padding-left:0;padding-top:24px;border-left:0;border-top:1px solid rgba(255,255,255,.13)}}
-@media(max-width:800px){.contact{padding:36px 0}.contact h2{font-size:25px;line-height:1.4;letter-spacing:-1px}.contact p{font-size:13px;line-height:1.65}.contact .phone{font-size:24px;display:inline-block}.footer{padding:28px 0 32px!important}.footer-brand{font-size:21px}.footer-office{font-size:14px;margin-bottom:12px}.footer-info{font-size:12px;line-height:1.8;word-break:keep-all}.footer-info div{margin-bottom:5px}.footer-info strong{width:auto;margin-right:8px}}
-@media(max-width:700px){.docs-grid{grid-template-columns:1fr}.docs-card{padding:19px}}
-@media(max-width:480px){.related-posts-actions{grid-template-columns:1fr}.footer-route-title{font-size:19px}.footer-route-list{font-size:12px}.footer-route-actions{display:grid;grid-template-columns:1fr}.footer-route-actions a{justify-content:center}}
-
-</style>
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" type="image/png" href="/favicon.png?v=4">
+<title>법률정보 | 등기로</title>
+<meta name="description" content="인천 상속등기, 상속포기, 한정승인, 상속재산분할, 법인등기, 부동산등기 관련 법률정보">
+<link rel="canonical" href="https://www.deunggiro.kr/posts.html">
 <style>
-/* MOBILE_STICKY_MENU_V1 */
-@media(max-width:800px){
-  .header{position:sticky!important;top:0!important;z-index:999!important;background:#fff!important;}
-  .header-inner{min-height:64px!important;height:64px!important;padding-top:0!important;padding-bottom:0!important;gap:8px!important;}
-  .header .logo{margin-right:auto!important;min-width:0!important;}
-  .header .logo span{font-size:24px!important;line-height:1!important;}
-  .header .logo small{display:none!important;}
-  .header .nav{display:none!important;}
-  .header .mobile-only{display:inline-flex!important;height:40px!important;min-height:40px!important;padding:0 13px!important;border-radius:9px!important;font-size:14px!important;}
-  .mobile-menu-btn{display:inline-flex!important;align-items:center;justify-content:center;height:40px;padding:0 12px;border:0;border-radius:9px;background:#eef3f8;color:#1f2937;font-size:14px;font-weight:900;cursor:pointer;}
-  .mobile-menu-panel{display:none;position:fixed;top:64px;left:0;right:0;z-index:998;background:#fff;border-bottom:1px solid #dfe4ea;box-shadow:0 12px 24px rgba(20,35,55,.14);padding:12px 16px 16px;}
-  .mobile-menu-panel.open{display:block;}
-  .mobile-menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-  .mobile-menu-grid a{display:flex;align-items:center;min-height:44px;padding:0 12px;border:1px solid #e1e7ee;border-radius:10px;background:#f6f8fb;color:#17202d;font-size:13px;font-weight:850;text-decoration:none;}
-  .mobile-menu-grid a:first-child{grid-column:1/-1;background:#eef4ff;color:#2459a7;}
-  .mobile-menu-close{width:100%;height:38px;margin-top:10px;border:0;background:transparent;color:#667384;font-size:13px;font-weight:800;cursor:pointer;}
-  body.mobile-menu-open{overflow:hidden;}
-}
-@media(min-width:801px){.mobile-menu-btn,.mobile-menu-panel{display:none!important;}}
+:root{--primary:#36a9e1;--ink:#20242b;--muted:#6b7280;--line:#e5e7eb;--bg:#f6f7f9;--max:1180px}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR","Malgun Gothic",sans-serif;color:var(--ink);background:var(--bg);line-height:1.7}a{text-decoration:none;color:inherit}.container{width:100%;max-width:var(--max);margin:auto;padding:0 22px}.header{position:sticky;top:0;z-index:50;background:#fff;border-bottom:4px solid #82cef1}.header-inner{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:20px}.logo{font-size:20px;font-weight:900}.logo small{display:block;font-size:11px;color:#777;font-weight:500}.nav{display:flex;gap:8px;align-items:center}.nav a{display:inline-flex;align-items:center;min-height:40px;padding:8px 16px;border:1px solid #c5d0dc;border-radius:999px;background:#fff;font-size:14px;font-weight:800}.nav a:hover,.nav a[aria-current="page"]{background:var(--primary);border-color:var(--primary);color:#fff}.mobile-only,.mobile-menu-btn,.mobile-menu-panel{display:none}.section{padding:64px 0}.label{color:var(--primary);font-size:12px;font-weight:900;letter-spacing:1.4px}.title{font-size:36px;line-height:1.3;letter-spacing:-2px;margin:7px 0 10px;font-weight:900}.desc{color:var(--muted);margin:0 0 28px}.post-toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:20px}.search-wrap{display:flex;gap:8px;flex:1;min-width:260px}.search-wrap input{flex:1;height:46px;border:1px solid #cfd4dc;border-radius:8px;padding:0 12px}.btn{border:0;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 20px;border-radius:8px;font-weight:900}.btn-primary{background:var(--primary);color:#fff}.category-tabs{display:flex;gap:8px;flex-wrap:wrap}.chip{border:1px solid #d6dbe3;background:#fff;border-radius:999px;padding:8px 14px;font-size:13px;font-weight:800;cursor:pointer}.chip.active,.chip:hover{background:var(--primary);color:#fff;border-color:var(--primary)}.post-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.post-card{display:grid;grid-template-columns:150px minmax(0,1fr);gap:18px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px;overflow:hidden;transition:.18s}.post-card:hover{transform:translateY(-2px);border-color:var(--primary)}.post-thumb{display:block;width:150px;height:150px;object-fit:cover;border-radius:8px;background:#eef1f5}.post-card.no-thumb{display:block;padding:24px}.post-meta{font-size:12px;color:#7b8490;margin-bottom:7px}.badge{display:inline-block;padding:3px 8px;border-radius:999px;background:#eef3fb;color:var(--primary);font-size:11px;font-weight:900;margin-right:7px}.post-card h3{font-size:20px;line-height:1.45;letter-spacing:-.6px;margin:8px 0}.post-card p{font-size:14px;color:var(--muted);margin:0}.pagination{display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap;margin-top:34px}.page-btn{min-width:40px;height:40px;padding:0 12px;border:1px solid #d6dbe3;border-radius:7px;background:#fff;color:#374151;font-weight:800;cursor:pointer}.page-btn.active,.page-btn:hover{background:var(--primary);border-color:var(--primary);color:#fff}.page-btn:disabled{opacity:.38}.contact{background:#172840;color:#fff;padding:50px 0}.contact-grid{display:grid;grid-template-columns:1fr auto;gap:30px;align-items:center}.contact h2{font-size:30px;margin:5px 0 10px}.contact p{color:#cbd5e1;margin:0}.phone{font-size:31px;font-weight:900;color:#fff}.footer{background:#172840;color:#c9d5e7;border-top:1px solid rgba(255,255,255,.1);padding:34px 0;font-size:13px}.footer-brand{font-size:24px;color:#fff;font-weight:900}.footer-office{font-size:16px;color:#e8eef8;font-weight:800;margin-bottom:12px}.footer-info{line-height:1.9}.footer-info strong{color:#fff;margin-right:8px}.seo-note{font-size:12px;color:#8a94a3;margin-top:20px}
+@media(max-width:800px){.nav{display:none}.mobile-only{display:inline-flex}.header-inner{min-height:64px}.logo{font-size:24px}.logo small{display:none}.container{padding:0 12px}.section{padding:34px 0}.title{font-size:30px}.post-grid{grid-template-columns:1fr}.post-card{grid-template-columns:105px minmax(0,1fr);gap:12px;padding:12px}.post-thumb{width:105px;height:105px}.post-card h3{font-size:16px;margin:5px 0}.post-card p{font-size:12px}.contact-grid{grid-template-columns:1fr;gap:16px}.phone{font-size:24px}}
 </style>
-
-<style>
-/* UNIFIED_SKYBLUE_HOVER_V1 */
-:root{--primary:#36a9e1!important;--primary-dark:#168dca!important;}
-@media (min-width:801px){.header{border-bottom:4px solid #82cef1!important}.header .nav{gap:8px!important}.header .nav a{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-height:40px!important;padding:8px 16px!important;border:1px solid #c5d0dc!important;border-radius:999px!important;background:#fff!important;color:#263442!important;transition:.16s!important}.header .nav a:hover,.header .nav a:focus-visible,.header .nav a.active,.header .nav a.current,.header .nav a[aria-current="page"]{background:#36a9e1!important;border-color:#36a9e1!important;color:#fff!important}}
-@media (max-width:800px){body.home .mobile-header button,body.home .mobile-header .active,body.home .mobile-menu .active,body.home .mobile-nav .active,body.home .btn-primary,body.home .primary-btn,body.home .cta-btn{background:#36a9e1!important;background-image:none!important;border-color:#36a9e1!important;color:#fff!important}}
-@media (hover:hover) and (pointer:fine){.quick-item:hover,.calc-card:hover,.calc-launch:hover,.card[href]:hover,.info-box[href]:hover,.post-card:hover,.seo-link-grid a:hover,.related-posts-list a:hover,#auto-related-posts a:hover,.related-posts-actions a:hover,.feature-item[href]:hover,.feature-panel[href]:hover,.legal-item:hover,.law-item:hover,.document-item[href]:hover,.doc-item[href]:hover,.service-card:hover,.service-item:hover,.topic-card:hover,.guide-card:hover{background:#36a9e1!important;background-image:none!important;border-color:#36a9e1!important;color:#fff!important}.quick-item:hover *,.calc-card:hover *,.calc-launch:hover *,.card[href]:hover *,.info-box[href]:hover *,.post-card:hover *,.seo-link-grid a:hover *,.related-posts-list a:hover *,#auto-related-posts a:hover *,.related-posts-actions a:hover *{color:#fff!important}.btn:hover,.btn-primary:hover,.btn-dark:hover,.btn-border:hover,.btn-soft:hover,.page-btn:hover,.chip:hover{background:#36a9e1!important;border-color:#36a9e1!important;color:#fff!important}}
-.nav .active,.nav .current,.nav [aria-current="page"],.category-tabs .active,.chip.active,.page-btn.active,.tab.active,.tabs .active{background:#36a9e1!important;background-image:none!important;border-color:#36a9e1!important;color:#fff!important}
-.related-posts-list .related-badge,#auto-related-posts .related-badge,.related-badge,.post-card .badge{background:#fff!important;border:1px solid rgba(255,255,255,.9)!important;color:#36a9e1!important;font-weight:800!important}
-.related-posts-list a:hover .related-badge,#auto-related-posts a:hover .related-badge,.post-card:hover .badge{background:#fff!important;border-color:#fff!important;color:#36a9e1!important}
-</style>
-</head><body>
-
-<header class="header">
-  <div class="container header-inner">
-    <a class="logo" href="/"><span>등기로</span><small>현재두 법무사 사무소 · 인천</small></a>
-    <nav class="nav">
-      <a href="/#services">업무안내</a>
-      <a href="/#inheritance">상속</a>
-      <a href="/#corporate">법인</a>
-      <a href="/#realestate">부동산</a>
-      <a href="/#renunciation">한정승인·상속포기</a>
-      <a href="/#family">가사</a>
-      <a href="/posts.html">법률정보</a>
-      <a href="/#contact">상담안내</a>
-    </nav>
-    <button type="button" class="mobile-menu-btn" id="mobile-menu-btn" aria-controls="mobile-menu-panel" aria-expanded="false">☰ 메뉴</button><a class="btn btn-primary mobile-only" href="tel:0324251500">전화상담</a>
-  </div>
-</header><div class="mobile-menu-panel" id="mobile-menu-panel" aria-hidden="true"><div class="mobile-menu-grid"><a href="/">홈</a><a href="/inheritance.html">상속등기</a><a href="/renunciation.html">상속포기·한정승인</a><a href="/corporate.html">법인등기</a><a href="/realestate.html">부동산등기</a><a href="/family.html">가사</a><a href="/posts.html">법률정보</a></div><button type="button" class="mobile-menu-close" id="mobile-menu-close">메뉴 닫기 ↑</button></div>
-
-<section class="section"><div class="container"><div class="label">LEGAL INFORMATION</div><h1 class="title">법률정보</h1><p class="desc">상속·법인·부동산등기 관련 실무 정보를 정리합니다.</p>
-<div class="post-toolbar"><div class="search-wrap"><input id="q" placeholder="제목·내용 검색"><button class="btn btn-primary" onclick="searchPosts()">검색</button></div><div id="cats" class="category-tabs"></div></div>
-<div id="posts" class="post-grid"><div class="empty">게시글을 불러오는 중입니다.</div></div>
-<div id="pagination" class="pagination" aria-label="게시글 페이지"></div>
-</div></section>
-
-<section class="contact" id="contact"><div class="container contact-grid"><div><div class="label" style="color:#9fb9df">CONSULTATION</div><h2>복잡한 등기절차, 등기로에서 확인하세요.</h2><p>상속 · 법인 · 부동산 등 필요한 절차와 준비서류를 확인할 수 있습니다.</p></div><a class="phone" href="tel:0324251500">032-425-1500</a></div></section>
-<footer class="footer"><div class="container footer-route-grid"><div><div class="footer-brand">등기로</div><div class="footer-office">현재두 법무사 사무소</div><div class="footer-info"><div><strong>주소</strong> 인천 미추홀구 경원대로 873, 201호(주안동, 인성빌딩) · 인천가정법원 옆</div><div><strong>전화</strong> <a href="tel:0324251500" style="color:#fff;font-weight:800">032-425-1500</a></div></div><div class="footer-channel-row"><a class="footer-social" href="https://blog.naver.com/hjd21" target="_blank" rel="noopener noreferrer"><span class="footer-social-icon naver-icon">N</span>네이버 블로그</a><span class="footer-social-dot">·</span><a class="footer-social" href="https://youtube.com/channel/UCHs3WtBFAiV8bOsQUB-n-Ew?si=tTUgTZWRKg98bvYa" target="_blank" rel="noopener noreferrer"><span class="footer-social-icon youtube-icon">▶</span>유튜브</a></div></div><div class="footer-route"><div class="footer-route-title">찾아오시는 길</div><div class="footer-route-sub">인천가정법원 옆 · 인성빌딩 2층</div><div class="footer-route-list"><div><span>🚇</span><span><b>1호선</b> 주안역·간석역 1번 출구 도보 이용</span></div><div><span>🚇</span><span><b>인천지하철 2호선</b> 석바위시장역 하차 후 석바위 지하상가 5번 출구 도보 이용</span></div><div><span>⏱</span><span><b>도보시간</b> 간석역 약 15분 · 주안역 약 19분 · 석바위시장역 약 12분</span></div></div><div class="footer-route-actions"><a href="https://map.naver.com/p/search/%EC%9D%B8%EC%B2%9C%20%EB%AF%B8%EC%B6%94%ED%99%80%EA%B5%AC%20%EA%B2%BD%EC%9B%90%EB%8C%80%EB%A1%9C%20873" target="_blank" rel="noopener noreferrer">네이버 지도에서 보기 →</a><a href="tel:0324251500">방문문의 032-425-1500</a></div></div></div></footer>
-
-
+</head>
+<body>
+<header class="header"><div class="container header-inner"><a class="logo" href="/"><span>등기로</span><small>현재두 법무사 사무소 · 인천</small></a><nav class="nav"><a href="/">홈</a><a href="/inheritance.html">상속등기</a><a href="/renunciation.html">상속포기·한정승인</a><a href="/corporate.html">법인등기</a><a href="/realestate.html">부동산등기</a><a href="/family.html">가사</a><a href="/posts.html" aria-current="page">법률정보</a></nav><a class="btn btn-primary mobile-only" href="tel:0324251500">전화상담</a></div></header>
+<section class="section"><div class="container"><div class="label">LEGAL INFORMATION</div><h1 class="title">법률정보</h1><p class="desc">상속·법인·부동산등기 관련 실무 정보를 정리합니다.</p><div class="post-toolbar"><div class="search-wrap"><input id="q" placeholder="제목·내용 검색"><button class="btn btn-primary" onclick="searchPosts()">검색</button></div><div id="cats" class="category-tabs"><button class="chip active">전체</button></div></div>
+<div id="posts" class="post-grid">
+<a class="post-card no-thumb" href="/posts/inheritance-renunciation-procedure-g8cmkc.html"><div><div class="post-meta"><span class="badge">상속포기·한정승인</span>2026-08-27</div><h3>미혼인 형·언니·동생 사망 후 상속절차, 상속포기는 어디까지 해야 하나요?</h3><p>미혼 형제자매 사망 후 상속절차와 상속포기 범위를 정리합니다.</p></div></a>
+<a class="post-card no-thumb" href="/posts/inheritance-renunciation-limited-acceptance-incheon-guide-u5n9so.html"><div><div class="post-meta"><span class="badge">상속포기·한정승인</span>2026-08-26</div><h3>[인천 상속] 남편 사망 후 상속포기·한정승인 시 보험금·해지환급금·유족연금·퇴직금·주식·예금 처리방법</h3></div></a>
+<a class="post-card no-thumb" href="/posts/corporate-incheon-documents-1-158nty.html"><div><div class="post-meta"><span class="badge">법인등기</span>2026-08-25</div><h3>[인천 1인법인 설립] 조사보고인 선임부터 감사 사임·필요서류까지 총정리</h3></div></a>
+<a class="post-card no-thumb" href="/posts/inheritance-incheon-29s7ds.html"><div><div class="post-meta"><span class="badge">상속등기</span>2026-08-25</div><h3>[인천 상속] 부모님보다 자녀가 먼저 사망한 경우 대습상속인·배우자 재혼·상속지분 총정리</h3></div></a>
+<a class="post-card no-thumb" href="/posts/incheon-procedure-documents-c8y2vn.html"><div><div class="post-meta"><span class="badge">법인등기</span>2026-08-24</div><h3>[인천 유한회사 설립] 유한회사 뜻·특징·설립절차·필요서류·주식회사와 차이점 총정리</h3></div></a>
+<a class="post-card no-thumb" href="/posts/inheritance-partition-registration-guide-documents-cwfz1z.html"><div><div class="post-meta"><span class="badge">상속등기</span>2026-08-24</div><h3>부모님 사망 후 협의분할 상속등기 | 상속재산분할협의서 작성방법·양식·필요서류 총정리</h3></div></a>
+<a class="post-card no-thumb" href="/posts/ceo-corporate-procedure-1-o1kz7e.html"><div><div class="post-meta"><span class="badge">법인등기</span>2026-08-21</div><h3>[1인 법인 대표이사 변경] 임기만료·주소변경·사임·중임 등기절차 총정리</h3></div></a>
+<a class="post-card no-thumb" href="/posts/inheritance-partition-registration-procedure-guide-caution-1w5ku0.html"><div><div class="post-meta"><span class="badge">상속등기</span>2026-08-21</div><h3>[상속] 부모님 사망 후 일부 상속인 연락두절·협조거부 시 상속등기 해결방법</h3></div></a>
+<a class="post-card no-thumb" href="/posts/real-estate-provisional-seizure-incheon-procedure-6069xy.html"><div><div class="post-meta"><span class="badge">기타</span>2026-08-21</div><h3>[인천 부동산 가압류] 가압류 신청 및 말소 절차 총정리</h3></div></a>
+<a class="post-card no-thumb" href="/posts/inheritance-registration-acquisition-tax-incheon-procedure-doc-v9aban.html"><div><div class="post-meta"><span class="badge">상속등기</span>2026-08-21</div><h3>[인천 상속등기] 부모님 사망 후 상속등기 절차·필요서류·취득세 총정리</h3></div></a>
+<a class="post-card no-thumb" href="/posts/inheritance-renunciation-limited-acceptance-incheon-procedure-1podzk.html"><div><div class="post-meta"><span class="badge">상속포기·한정승인</span>2026-08-21</div><h3>[인천 상속포기·한정승인] 부모·배우자 사망 후 상속절차와 3개월 기한 총정리</h3></div></a>
+<a class="post-card no-thumb" href="/posts/inheritance-renunciation-incheon-procedure-documents-1ifftk.html"><div><div class="post-meta"><span class="badge">상속포기·한정승인</span>2026-08-21</div><h3>[인천 상속포기] 부모님 사망 후 상속포기 절차·기간·필요서류 총정리</h3></div></a>
+<a class="post-card no-thumb" href="/posts/inheritance-renunciation-limited-acceptance-incheon-procedure-1rigsk.html"><div><div class="post-meta"><span class="badge">상속포기·한정승인</span>2026-08-21</div><h3>배우자 사망 후 사망신고 전 예금 인출 가능할까? | 장례비·병원비 사용 시 주의사항</h3></div></a>
+<a class="post-card no-thumb" href="/posts/sale-real-estate-guide-bvcdri.html"><div><div class="post-meta"><span class="badge">기타</span>2026-08-21</div><h3>부동산 등기권리증 분실 시 해결방법 총정리 | 등기필증 없어도 매매 가능할까?</h3></div></a>
+<a class="post-card no-thumb" href="/posts/corporate-cost-3-1f4kd9.html"><div><div class="post-meta"><span class="badge">법인등기</span>2026-08-20</div><h3>[법인주소이전] 관내이전·관외이전 비용, 등록면허세 3배 중과까지 총정리</h3></div></a>
+<a class="post-card no-thumb" href="/posts/inheritance-gift-real-estate-acquisition-tax-property-division-1xfulg.html"><div><div class="post-meta"><span class="badge">부동산등기</span>2026-08-20</div><h3>[부동산취득세] 증여·상속·이혼 재산분할 부동산 이전절차 및 취득세 총정리</h3></div></a>
+<a class="post-card no-thumb" href="/posts/inheritance-registration-acquisition-tax-g2aqja.html"><div><div class="post-meta"><span class="badge">상속등기</span>2026-08-20</div><h3>[상속등기] 부모님 사망 후 상속등기 기간·취득세 신고기한·무주택 감면 총정리</h3></div></a>
+<a class="post-card no-thumb" href="/posts/inheritance-renunciation-caution-1cgaqh.html"><div><div class="post-meta"><span class="badge">상속포기·한정승인</span>2026-08-20</div><h3>[상속포기 전 주의사항] 부모 또는 배우자 사망 시 장례비·병원비·통장예금·사망보험금</h3></div></a>
+<a class="post-card no-thumb" href="/posts/name-change-incheon-procedure-guide-documents-4lfyb2.html"><div><div class="post-meta"><span class="badge">가사</span>2026-08-20</div><h3>[인천 개명] 이름 개명 허가 절차 총정리</h3></div></a>
+<a class="post-card no-thumb" href="/posts/gift-real-estate-acquisition-tax-property-division-incheon-pro-aga3r7.html"><div><div class="post-meta"><span class="badge">부동산등기</span>2026-08-20</div><h3>[인천 이혼 재산분할등기] 부동산 이전 절차 총정리</h3></div></a>
+<a class="post-card no-thumb" href="/posts/divorce-agreement-property-division-procedure-18044u.html"><div><div class="post-meta"><span class="badge">가사</span>2026-08-20</div><h3>[협의이혼] 협의이혼 절차·관할·기간 총정리</h3></div></a>
+<a class="post-card no-thumb" href="/posts/corporate-formation-procedure-cost-documents-u9jgv1.html"><div><div class="post-meta"><span class="badge">법인등기</span>2026-08-19</div><h3>[법인설립] 주식회사 설립절차·필요서류·비용·과밀억제권역 총정리</h3></div></a>
+</div><div id="pagination" class="pagination" aria-label="게시글 페이지"></div><p class="seo-note">이 페이지의 게시글 링크는 HTML에 직접 포함되어 검색엔진이 자바스크립트 실행 없이도 개별 법률정보 글을 찾을 수 있습니다.</p></div></section>
+<section class="contact"><div class="container contact-grid"><div><div class="label" style="color:#9fb9df">CONSULTATION</div><h2>복잡한 등기절차, 등기로에서 확인하세요.</h2><p>상속 · 법인 · 부동산 등 필요한 절차와 준비서류를 확인할 수 있습니다.</p></div><a class="phone" href="tel:0324251500">032-425-1500</a></div></section>
+<footer class="footer"><div class="container"><div class="footer-brand">등기로</div><div class="footer-office">현재두 법무사 사무소</div><div class="footer-info"><div><strong>주소</strong> 인천 미추홀구 경원대로 873, 201호(주안동, 인성빌딩) · 인천가정법원 옆</div><div><strong>전화</strong> <a href="tel:0324251500" style="color:#fff;font-weight:800">032-425-1500</a></div></div></div></footer>
 <script>
-let all=[], active='전체', page=1;const pageSize=10;
-function esc(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
-async function init(){try{const r=await fetch('/data/posts.json?'+Date.now());all=await r.json();const cs=['전체',...new Set(all.map(x=>x.category))];document.getElementById('cats').innerHTML=cs.map(c=>`<button class="chip ${c==='전체'?'active':''}" onclick="setCat('${esc(c)}',this)">${esc(c)}</button>`).join('');render()}catch(e){document.getElementById('posts').innerHTML='<div class="empty">게시글을 불러오지 못했습니다.</div>'}}
-function setCat(c,btn){active=c;page=1;document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));btn.classList.add('active');render()}
-function searchPosts(){page=1;render()}
-function pageItems(total,current){const out=[];for(let n=1;n<=total;n++){if(n===1||n===total||Math.abs(n-current)<=2)out.push(n);else if(out[out.length-1]!=='…')out.push('…')}return out}
-function goPage(n){const total=Math.max(1,Math.ceil(filteredPosts().length/pageSize));page=Math.min(total,Math.max(1,n));render();document.querySelector('.post-toolbar').scrollIntoView({behavior:'smooth',block:'start'})}
-function filteredPosts(){const q=document.getElementById('q').value.trim().toLowerCase();return all.filter(p=>(active==='전체'||p.category===active)&&(!q||(p.title+' '+(p.summary||'')+' '+(p.keywords||'')).toLowerCase().includes(q)))}
-function render(){const list=filteredPosts(),total=Math.ceil(list.length/pageSize);if(total&&page>total)page=total;const shown=list.slice((page-1)*pageSize,page*pageSize);document.getElementById('posts').innerHTML=shown.length?shown.map(p=>`<a class="post-card ${p.thumbnail?'':'no-thumb'}" href="/posts/${p.slug}.html">${p.thumbnail?`<img class="post-thumb" src="${esc(p.thumbnail)}" alt="${esc(p.title)}" loading="lazy">`:''}<div class="post-content"><div class="post-meta"><span class="badge">${esc(p.category)}</span>${esc(p.date)}</div><h3>${esc(p.title)}</h3><p>${esc(p.summary||'')}</p></div></a>`).join(''):'<div class="empty">검색 결과가 없습니다.</div>';const box=document.getElementById('pagination');box.innerHTML=total>1?`<button class="page-btn" onclick="goPage(${page-1})" ${page===1?'disabled':''}>이전</button>`+pageItems(total,page).map(n=>n==='…'?'<span class="page-dots">…</span>':`<button class="page-btn ${n===page?'active':''}" onclick="goPage(${n})" aria-label="${n}페이지">${n}</button>`).join('')+`<button class="page-btn" onclick="goPage(${page+1})" ${page===total?'disabled':''}>다음</button>`:''}
-document.getElementById('q').addEventListener('keydown',e=>{if(e.key==='Enter')searchPosts()});init()
-</script><script>
-/* MOBILE_STICKY_MENU_V1 */
-(function(){
-  const btn=document.getElementById('mobile-menu-btn');
-  const panel=document.getElementById('mobile-menu-panel');
-  const close=document.getElementById('mobile-menu-close');
-  if(!btn||!panel) return;
-  function setOpen(open){
-    panel.classList.toggle('open',open);
-    panel.setAttribute('aria-hidden',open?'false':'true');
-    btn.setAttribute('aria-expanded',open?'true':'false');
-    document.body.classList.toggle('mobile-menu-open',open);
-  }
-  btn.addEventListener('click',()=>setOpen(!panel.classList.contains('open')));
-  if(close) close.addEventListener('click',()=>setOpen(false));
-  panel.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setOpen(false)));
-  document.addEventListener('keydown',e=>{if(e.key==='Escape') setOpen(false);});
-})();
+let all=[],active='전체',page=1;const pageSize=10;function esc(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}async function init(){try{const r=await fetch('/data/posts.json?'+Date.now());all=await r.json();const cs=['전체',...new Set(all.map(x=>x.category))];document.getElementById('cats').innerHTML=cs.map(c=>`<button class="chip ${c==='전체'?'active':''}" onclick="setCat('${esc(c)}',this)">${esc(c)}</button>`).join('');render()}catch(e){console.warn('posts.json load failed; static HTML remains available',e)}}function setCat(c,btn){active=c;page=1;document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));btn.classList.add('active');render()}function searchPosts(){page=1;render()}function filteredPosts(){const q=document.getElementById('q').value.trim().toLowerCase();return all.filter(p=>(active==='전체'||p.category===active)&&(!q||(p.title+' '+(p.summary||'')+' '+(p.keywords||'')).toLowerCase().includes(q)))}function goPage(n){const total=Math.max(1,Math.ceil(filteredPosts().length/pageSize));page=Math.min(total,Math.max(1,n));render();document.querySelector('.post-toolbar').scrollIntoView({behavior:'smooth',block:'start'})}function pageItems(total,current){const out=[];for(let n=1;n<=total;n++){if(n===1||n===total||Math.abs(n-current)<=2)out.push(n);else if(out[out.length-1]!=='…')out.push('…')}return out}function render(){if(!all.length)return;const list=filteredPosts(),total=Math.ceil(list.length/pageSize);if(total&&page>total)page=total;const shown=list.slice((page-1)*pageSize,page*pageSize);document.getElementById('posts').innerHTML=shown.length?shown.map(p=>`<a class="post-card ${p.thumbnail?'':'no-thumb'}" href="/posts/${p.slug}.html">${p.thumbnail?`<img class="post-thumb" src="${esc(p.thumbnail)}" alt="${esc(p.title)}" loading="lazy">`:''}<div><div class="post-meta"><span class="badge">${esc(p.category)}</span>${esc(p.date)}</div><h3>${esc(p.title)}</h3><p>${esc(p.summary||'')}</p></div></a>`).join(''):'<div>검색 결과가 없습니다.</div>';document.getElementById('pagination').innerHTML=total>1?`<button class="page-btn" onclick="goPage(${page-1})" ${page===1?'disabled':''}>이전</button>`+pageItems(total,page).map(n=>n==='…'?'<span>…</span>':`<button class="page-btn ${n===page?'active':''}" onclick="goPage(${n})">${n}</button>`).join('')+`<button class="page-btn" onclick="goPage(${page+1})" ${page===total?'disabled':''}>다음</button>`:''}document.getElementById('q').addEventListener('keydown',e=>{if(e.key==='Enter')searchPosts()});init();
 </script>
-</body></html>
+</body>
+</html>
