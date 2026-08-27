@@ -12,6 +12,14 @@ document.addEventListener('DOMContentLoaded',()=>{
   replaceFirst(['section.contact','section.cta','section.dg-shell-contact'],contact);
   replaceFirst(['footer.footer','footer.dg-shell-footer'],footer);
 
+  if(current==='/renunciation.html'){
+    const h1=document.querySelector('.service-hero h1,.subhero h1,.hero h1');
+    if(h1){h1.style.fontSize='clamp(38px,4.6vw,56px)';h1.style.letterSpacing='-3px';h1.style.whiteSpace='nowrap'}
+    const mobile=document.createElement('style');
+    mobile.textContent='@media(max-width:700px){.service-hero h1,.subhero h1,.hero h1{font-size:clamp(30px,8vw,40px)!important;letter-spacing:-2px!important;white-space:normal!important}}';
+    document.head.appendChild(mobile);
+  }
+
   const btn=document.getElementById('dg-shell-menu-btn'),panel=document.getElementById('dg-shell-mobile-panel'),close=document.getElementById('dg-shell-menu-close');
   if(btn&&panel){const setOpen=o=>{panel.classList.toggle('open',o);panel.setAttribute('aria-hidden',o?'false':'true');btn.setAttribute('aria-expanded',o?'true':'false')};btn.addEventListener('click',()=>setOpen(!panel.classList.contains('open')));close?.addEventListener('click',()=>setOpen(false));panel.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setOpen(false)));document.addEventListener('keydown',e=>{if(e.key==='Escape')setOpen(false)})}
 });
