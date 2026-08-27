@@ -1,0 +1,40 @@
+name: Apply shared site shell
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'assets/site-shell.css'
+      - 'assets/site-shell.js'
+      - 'scripts/apply-site-shell.py'
+      - '.github/workflows/apply-site-shell.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Inject shared shell into public pages and article template
+        run: python scripts/apply-site-shell.py
+      - name: Commit shared shell links
+        run: |
+          if git diff --quiet -- '*.html' 'posts/*.html'; then
+            echo "No shell link changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html inheritance.html renunciation.html corporate.html realestate.html family.html posts.html acquisition-calculator.html corporate-calculator.html divorce-calculator.html admin.html posts/*.html
+          git commit -m "자동 반영: 공통 헤더 상담 푸터 연결"
+          git push
