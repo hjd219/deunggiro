@@ -38,33 +38,45 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install Korean fonts and Pillow
+      - name: Install Korean and color emoji fonts plus Pillow
         run: |
           sudo apt-get update
-          sudo apt-get install -y fonts-noto-cjk
+          sudo apt-get install -y fonts-noto-cjk fonts-noto-color-emoji
           python -m pip install --upgrade pip
           pip install pillow
 
-      - name: Generate all thumbnails
-        run: python scripts/generate_thumbnails.py
-
-      - name: Apply real favicon logo
-        run: python scripts/fix_thumbnail_logo.py
-
-      - name: Apply latest post cards
-        run: python scripts/apply_latest_cards.py
-
-      - name: Validate generated files
+      - name: Generate and publish thumbnails from latest main
+        shell: bash
         run: |
-          python -m py_compile scripts/generate_thumbnails.py scripts/fix_thumbnail_logo.py scripts/apply_latest_cards.py
-          python - <<'PY'
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Other SEO workflows may update the same post immediately after publishing.
+          # Always regenerate from the newest main instead of rebasing generated HTML later.
+          for attempt in 1 2 3; do
+            echo "Thumbnail publish attempt $attempt"
+            git fetch origin main
+            git reset --hard origin/main
+
+            python scripts/generate_thumbnails.py
+            python scripts/fix_thumbnail_logo.py
+            python scripts/apply_latest_cards.py
+
+            python -m py_compile scripts/generate_thumbnails.py scripts/fix_thumbnail_logo.py scripts/apply_latest_cards.py
+            python - <<'PY'
           import json
           from pathlib import Path
           posts=json.loads(Path('data/posts.json').read_text(encoding='utf-8'))
           missing=[]
           for p in posts:
-              f=Path(p['thumbnail'].lstrip('/'))
-              if not f.exists(): missing.append(str(f))
+              thumb=(p.get('thumbnail') or '').strip()
+              if not thumb:
+                  missing.append(p.get('slug','(no slug)')+': empty thumbnail')
+                  continue
+              f=Path(thumb.lstrip('/'))
+              if not f.exists():
+                  missing.append(str(f))
           if missing:
               raise SystemExit('Missing thumbnails: '+', '.join(missing[:10]))
           for f in ['index.html','inheritance.html','renunciation.html','corporate.html','realestate.html','family.html']:
@@ -73,18 +85,24 @@ jobs:
                   raise SystemExit('Latest cards not injected: '+f)
           print('validated', len(posts), 'thumbnails and latest-card pages')
           PY
-          git diff --check
+            git diff --check
 
-      - name: Commit generated updates
-        shell: bash
-        run: |
-          if git diff --quiet && [ -z "$(git status --porcelain --untracked-files=normal assets/posts)" ]; then
-            echo "No generated changes"
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/posts.json posts assets/posts index.html inheritance.html renunciation.html corporate.html realestate.html family.html
-          git commit -m "실제 파비콘 로고로 썸네일 전체 수정"
-          git pull --rebase origin main
-          git push origin HEAD:main
+            if git diff --quiet && [ -z "$(git status --porcelain --untracked-files=normal assets/posts)" ]; then
+              echo "No generated changes"
+              exit 0
+            fi
+
+            git add data/posts.json posts assets/posts index.html inheritance.html renunciation.html corporate.html realestate.html family.html
+            git commit -m "게시글 썸네일 자동 생성 및 최신글 반영"
+
+            if git push origin HEAD:main; then
+              echo "Thumbnail updates published"
+              exit 0
+            fi
+
+            echo "Main changed during generation; retrying from latest main"
+            sleep 2
+          done
+
+          echo "Failed to publish thumbnail updates after 3 attempts"
+          exit 1
