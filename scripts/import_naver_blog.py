@@ -9,7 +9,8 @@ from bs4 import BeautifulSoup, NavigableString, Tag
 ROOT=Path(__file__).resolve().parents[1];POSTS_JSON=ROOT/'data'/'posts.json';POSTS_DIR=ROOT/'posts';MEDIA_ROOT=ROOT/'assets'/'naver-images';BLOG_ID='hjd21';RSS_URL=f'https://rss.blog.naver.com/{BLOG_ID}.xml';BASE='https://www.deunggiro.kr';MAX_IMPORT=3
 CATEGORY_RULES=[('상속포기·한정승인',('상속포기','한정승인','특별한정승인','상속채무','망인 예금','보험금','해지환급금')),('상속재산분할',('상속재산분할','상속분쟁','기여분','특별수익','협조거부','연락두절')),('법인등기',('법인','주식회사','유한회사','대표이사','이사','감사','주주','본점이전','자본금','증자','감자','상호변경','목적변경','해산','청산')),('가사',('협의이혼','재판이혼','이혼','개명','성년후견','한정후견','친권','양육비')),('부동산등기',('근저당','가압류','등기권리증','등기필증','매매','증여','전세권','소유권이전','부동산','재산분할등기','신탁등기')),('상속등기',('상속등기','대습상속','상속취득세','상속인','상속지분','상속재산','유언','부모님 사망','가족 사망'))]
 FOOTER_IMAGE_MARKERS=('현재두법무사','현재두 법무사','032-425-1500','경원대로 873','상담 안내','상담안내')
-UA={'User-Agent':'Mozilla/5.0 (compatible; DeunggiroBlogImporter/1.6; +https://www.deunggiro.kr/)'}
+THUMBNAIL_MARKERS=('thumbnail','oglink','link-preview','link_preview','se-oglink')
+UA={'User-Agent':'Mozilla/5.0 (compatible; DeunggiroBlogImporter/1.7; +https://www.deunggiro.kr/)'}
 def get(url):
  r=requests.get(url,headers=UA,timeout=25);r.raise_for_status()
  try:r.content.decode('utf-8');r.encoding='utf-8'
@@ -56,6 +57,22 @@ def inline_html(el):
    return inner
   return inner
  return re.sub(r'[ \t]+',' ',' '.join(walk(c) for c in el.children)).strip()
+def is_thumbnail_image(el):
+ node=el
+ for _ in range(5):
+  if not isinstance(node,Tag):break
+  marker=' '.join([str(node.get('id') or ''),' '.join(node.get('class') or [])]).lower()
+  if any(x in marker for x in THUMBNAIL_MARKERS):return True
+  node=node.parent
+ return False
+def has_substantive_text_after(blocks,index):
+ for nxt in blocks[index+1:]:
+  if nxt.name in ('img','hr'):continue
+  txt=' '.join(nxt.stripped_strings).strip()
+  if not txt:continue
+  if any(marker in txt for marker in FOOTER_IMAGE_MARKERS):continue
+  return True
+ return False
 def clean_article(url,slug=''):
  view=resolve_post_view(url);r=get(view);soup=BeautifulSoup(r.text,'html.parser');root=soup.select_one('.se-main-container') or soup.select_one('#postViewArea') or soup.select_one('.post-view')
  if root is None:raise RuntimeError('네이버 본문 영역을 찾지 못했습니다.')
@@ -65,11 +82,12 @@ def clean_article(url,slug=''):
   if el.find_parent(['p','blockquote','ul','ol']) and el.name!='img':continue
   blocks.append(el)
  image_no=0;footer_zone=False;parts=[]
- for el in blocks:
+ for idx,el in enumerate(blocks):
   txt=' '.join(el.stripped_strings).strip() if el.name!='img' else ''
   if txt and any(marker in txt for marker in FOOTER_IMAGE_MARKERS):footer_zone=True
   if el.name=='img':
-   if footer_zone:continue
+   # 하단 상담 이미지, 링크 미리보기 썸네일, 글 맨 끝의 대표/썸네일 이미지는 수집하지 않는다.
+   if footer_zone or is_thumbnail_image(el) or not has_substantive_text_after(blocks,idx):continue
    src=el.get('data-lazy-src') or el.get('data-src') or el.get('src') or '';src=('https:'+src) if src.startswith('//') else src
    if not src:continue
    if slug:image_no+=1;src=save_image(src,slug,image_no)
