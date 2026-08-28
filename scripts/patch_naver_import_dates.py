@@ -1,5 +1,6 @@
 import json
 import re
+import subprocess
 from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -8,6 +9,28 @@ ROOT = Path(__file__).resolve().parents[1]
 POSTS_JSON = ROOT / 'data' / 'posts.json'
 POSTS_DIR = ROOT / 'posts'
 TODAY = datetime.now(ZoneInfo('Asia/Seoul')).strftime('%Y-%m-%d')
+
+
+def first_git_date(path: Path) -> str:
+    """해당 상세페이지가 Git에 처음 추가된 날짜를 홈페이지 최초 작성일로 사용한다."""
+    try:
+        rel = path.relative_to(ROOT).as_posix()
+        out = subprocess.check_output(
+            [
+                'git', 'log', '--diff-filter=A', '--format=%ad', '--date=short',
+                '--reverse', '--', rel,
+            ],
+            cwd=ROOT,
+            text=True,
+            stderr=subprocess.DEVNULL,
+        ).strip()
+        if out:
+            date = out.splitlines()[0].strip()
+            if re.fullmatch(r'\d{4}-\d{2}-\d{2}', date):
+                return date
+    except Exception:
+        pass
+    return ''
 
 
 def patch_html(path: Path, date: str):
@@ -34,23 +57,36 @@ def patch_html(path: Path, date: str):
 def main():
     posts = json.loads(POSTS_JSON.read_text(encoding='utf-8'))
     changed = 0
+    restored = 0
+
     for post in posts:
         if post.get('source') != 'naver-blog':
             continue
-        # 최초 홈페이지 수집일을 한 번만 기록하고 이후 재수집 때는 날짜를 유지한다.
-        website_date = str(post.get('website_date') or '').strip()
-        if not website_date:
-            website_date = TODAY
+
+        slug = str(post.get('slug') or '').replace('.html', '')
+        page = POSTS_DIR / f'{slug}.html' if slug else None
+
+        # 기존 수집글은 Git 커밋 기록상 상세페이지가 최초 생성된 날짜를 복원한다.
+        # 새로 수집되어 아직 커밋되지 않은 글은 오늘 날짜를 최초 작성일로 고정한다.
+        git_date = first_git_date(page) if page else ''
+        current_website_date = str(post.get('website_date') or '').strip()
+        website_date = git_date or current_website_date or TODAY
+
+        if git_date and current_website_date != git_date:
+            restored += 1
+
+        if post.get('website_date') != website_date:
             post['website_date'] = website_date
+            changed += 1
         if post.get('date') != website_date:
             post['date'] = website_date
             changed += 1
-        slug = str(post.get('slug') or '').replace('.html', '')
-        if slug:
-            patch_html(POSTS_DIR / f'{slug}.html', website_date)
+
+        if page:
+            patch_html(page, website_date)
 
     POSTS_JSON.write_text(json.dumps(posts, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-    print(f'naver website dates fixed: {changed}, today={TODAY}')
+    print(f'naver website dates fixed: changed={changed}, restored_from_git={restored}, today={TODAY}')
 
 
 if __name__ == '__main__':
