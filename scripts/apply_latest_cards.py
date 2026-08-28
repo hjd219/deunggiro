@@ -4,8 +4,9 @@ ROOT=Path(__file__).resolve().parents[1]
 TOP=['index.html','inheritance.html','renunciation.html','corporate.html','realestate.html','family.html']
 CSS='<link rel="stylesheet" href="/assets/latest-posts.css">'
 JS='<script src="/assets/latest-posts.js" defer></script>'
+ARTICLE_CTA_JS='<script src="/assets/article-cta.js" defer></script>'
 
-def patch(path:Path):
+def patch(path:Path, article=False):
     if not path.exists(): return False
     s=path.read_text(encoding='utf-8')
     old=s
@@ -16,6 +17,10 @@ def patch(path:Path):
         pos=s.lower().rfind('</body>')
         if pos!=-1: s=s[:pos]+JS+'\n'+s[pos:]
         else: s+=JS+'\n'
+    if article and '/assets/article-cta.js' not in s:
+        pos=s.lower().rfind('</body>')
+        if pos!=-1: s=s[:pos]+ARTICLE_CTA_JS+'\n'+s[pos:]
+        else: s+=ARTICLE_CTA_JS+'\n'
     if s!=old:
         path.write_text(s,encoding='utf-8')
         return True
@@ -29,7 +34,7 @@ def main():
     posts=ROOT/'posts'
     if posts.exists():
         for p in posts.glob('*.html'):
-            if patch(p): changed.append(str(p.relative_to(ROOT)))
-    print('latest-card patched',len(changed),'files')
+            if patch(p,article=True): changed.append(str(p.relative_to(ROOT)))
+    print('latest-card / article-cta patched',len(changed),'files')
 
 if __name__=='__main__': main()
