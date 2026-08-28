@@ -1,0 +1,63 @@
+name: One-time unify detail brand colors
+
+on:
+  push:
+    paths:
+      - '.github/workflows/one-time-unify-detail-brand-colors.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  unify-colors:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Apply Deunggiro brand palette to detail pages
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          targets = [
+              Path('inheritance.html'),
+              Path('renunciation.html'),
+              Path('corporate.html'),
+              Path('realestate.html'),
+              Path('family.html'),
+          ]
+
+          replacements = {
+              '#2457a6': '#36a9e1',
+              '#36547e': '#168dca',
+              '#a38446': '#36a9e1',
+              'rgba(36,87,166,': 'rgba(54,169,225,',
+              'rgba(163,132,70,': 'rgba(54,169,225,',
+              '#18243a': '#172840',
+              '#171717': '#172840',
+          }
+
+          for path in targets:
+              text = path.read_text(encoding='utf-8')
+              old = text
+              for src, dst in replacements.items():
+                  text = text.replace(src, dst)
+              if text != old:
+                  path.write_text(text, encoding='utf-8')
+                  print(f'updated {path}')
+              else:
+                  print(f'no changes {path}')
+          PY
+      - name: Commit changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add inheritance.html renunciation.html corporate.html realestate.html family.html
+          if git diff --cached --quiet; then
+            echo 'No changes to commit'
+          else
+            git commit -m 'Unify detail pages with Deunggiro colors'
+            git push origin main
+          fi
