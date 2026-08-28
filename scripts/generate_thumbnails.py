@@ -40,6 +40,8 @@ def draw_logo(img,d,category):
   except:pass
  d.text((202,68),'등기로',font=font(56,True),fill=BLUE);d.text((204,136),category or '법률정보',font=font(30,True),fill=INK)
 def pick_icon(t,category):
+ # Pick the most specific subject first; use one native color emoji, never a drawn icon.
+ if any(k in t for k in ['보험금','보험','해지환급금']):return '☂️'
  if any(k in t for k in ['상속재산분할','재산분할심판','상속분쟁','분할심판','심판청구']):return '🏛️'
  if any(k in t for k in ['상속순위','대습상속','상속인 순위']):return '👨‍👩‍👧‍👦'
  if '상속포기' in t:return '✋'
@@ -52,7 +54,6 @@ def pick_icon(t,category):
  if any(k in t for k in ['증자','자본금']):return '📈'
  if any(k in t for k in ['근저당','담보']):return '🏦'
  if any(k in t for k in ['주주','서면결의','주주총회','결의']):return '🗳️'
- if any(k in t for k in ['보험금','보험','해지환급금']):return '☂️'
  if any(k in t for k in ['예금','금융','퇴직금','주식']):return '💵'
  if any(k in t for k in ['조회','찾기','확인']):return '🔍'
  if any(k in t for k in ['임기','임기만료','날짜']):return '📅'
@@ -85,9 +86,7 @@ def patch_article(post,thumb):
  title=post.get('title','').strip();summary=post.get('summary','').strip();date=post.get('date','').strip()
  if re.search(r'<meta\s+name=["\']dg-thumbnail["\']',s,re.I):s=re.sub(r'<meta\s+name=["\']dg-thumbnail["\']\s+content=["\'][^"\']*["\']\s*/?>',f'<meta name="dg-thumbnail" content="{rel}">',s,flags=re.I)
  else:s=s.replace('</head>',f'<meta name="dg-thumbnail" content="{rel}">\n</head>',1)
- meta_tags=[
-  ('property','og:image',absu),('property','og:image:secure_url',absu),('property','og:image:width','1080'),('property','og:image:height','1080'),('property','og:image:type','image/png'),
-  ('name','twitter:image',absu),('name','twitter:card','summary_large_image')]
+ meta_tags=[('property','og:image',absu),('property','og:image:secure_url',absu),('property','og:image:width','1080'),('property','og:image:height','1080'),('property','og:image:type','image/png'),('name','twitter:image',absu),('name','twitter:card','summary_large_image')]
  for attr,key,val in meta_tags:
   pat=rf'<meta\s+{attr}=["\']{re.escape(key)}["\']\s+content=["\'][^"\']*["\']\s*/?>';tag=f'<meta {attr}="{key}" content="{val}">'
   if re.search(pat,s,re.I):s=re.sub(pat,tag,s,flags=re.I)
@@ -118,5 +117,5 @@ def main():
   slug=post.get('slug')
   if not slug:continue
   out=OUT_DIR/f'{slug}-thumbnail.png';create_thumbnail(post,out);post['thumbnail']='/assets/posts/'+out.name;patch_article(post,out.relative_to(ROOT))
- POSTS_JSON.write_text(json.dumps(posts,ensure_ascii=False,indent=2)+'\n',encoding='utf-8');print('generated',len(posts),'thumbnails with image SEO markup')
+ POSTS_JSON.write_text(json.dumps(posts,ensure_ascii=False,indent=2)+'\n',encoding='utf-8');print('generated',len(posts),'thumbnails with topic-specific color emoji and image SEO markup')
 if __name__=='__main__':main()
