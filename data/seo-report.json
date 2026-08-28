@@ -1,9 +1,21 @@
 {
-  "generatedAt": "2026-08-28T03:52:46.114Z",
-  "totalPosts": 24,
-  "ok": 24,
+  "generatedAt": "2026-08-28T03:53:09.599Z",
+  "totalPosts": 25,
+  "ok": 25,
   "warnings": 0,
   "items": [
+    {
+      "slug": "inheritance-registration-renunciation-limited-acceptance-inche-15yen8",
+      "status": "ok",
+      "issues": [],
+      "modified": "2026-08-28",
+      "related": [
+        "inheritance-incheon-29s7ds",
+        "inheritance-partition-registration-procedure-guide-caution-1w5ku0",
+        "inheritance-registration-acquisition-tax-incheon-procedure-doc-v9aban",
+        "inheritance-partition-registration-guide-documents-cwfz1z"
+      ]
+    },
     {
       "slug": "ceo-company-name-change-business-purpose-capital-increase-corp-17kgzb",
       "status": "ok",
@@ -70,10 +82,10 @@
       "issues": [],
       "modified": "2026-08-28",
       "related": [
+        "inheritance-registration-renunciation-limited-acceptance-inche-15yen8",
         "inheritance-partition-registration-procedure-guide-caution-1w5ku0",
         "inheritance-registration-acquisition-tax-incheon-procedure-doc-v9aban",
-        "inheritance-partition-registration-guide-documents-cwfz1z",
-        "inheritance-registration-acquisition-tax-g2aqja"
+        "inheritance-partition-registration-guide-documents-cwfz1z"
       ]
     },
     {
@@ -97,7 +109,7 @@
         "inheritance-partition-registration-procedure-guide-caution-1w5ku0",
         "inheritance-registration-acquisition-tax-incheon-procedure-doc-v9aban",
         "inheritance-registration-acquisition-tax-g2aqja",
-        "inheritance-incheon-29s7ds"
+        "inheritance-registration-renunciation-limited-acceptance-inche-15yen8"
       ]
     },
     {
@@ -119,9 +131,9 @@
       "modified": "2026-08-28",
       "related": [
         "inheritance-partition-registration-guide-documents-cwfz1z",
+        "inheritance-registration-renunciation-limited-acceptance-inche-15yen8",
         "inheritance-registration-acquisition-tax-incheon-procedure-doc-v9aban",
-        "inheritance-registration-acquisition-tax-g2aqja",
-        "inheritance-incheon-29s7ds"
+        "inheritance-registration-acquisition-tax-g2aqja"
       ]
     },
     {
@@ -144,8 +156,8 @@
       "related": [
         "inheritance-partition-registration-guide-documents-cwfz1z",
         "inheritance-registration-acquisition-tax-g2aqja",
-        "inheritance-partition-registration-procedure-guide-caution-1w5ku0",
-        "inheritance-incheon-29s7ds"
+        "inheritance-registration-renunciation-limited-acceptance-inche-15yen8",
+        "inheritance-partition-registration-procedure-guide-caution-1w5ku0"
       ]
     },
     {
@@ -229,7 +241,7 @@
         "inheritance-registration-acquisition-tax-incheon-procedure-doc-v9aban",
         "inheritance-partition-registration-guide-documents-cwfz1z",
         "inheritance-partition-registration-procedure-guide-caution-1w5ku0",
-        "inheritance-incheon-29s7ds"
+        "inheritance-registration-renunciation-limited-acceptance-inche-15yen8"
       ]
     },
     {
