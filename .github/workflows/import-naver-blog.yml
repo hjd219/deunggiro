@@ -38,21 +38,18 @@ jobs:
           git reset --hard origin/main
 
           python scripts/import_naver_blog.py
-          # SmartEditor 실제 본문 구조를 다시 읽어 본문 누락과 잘못된 카테고리를 교정
           python scripts/repair_naver_posts.py
-          # 네이버 원문 게시일이 아니라 등기로 홈페이지에 실제 수집·작성된 날짜를 최초 1회 고정
           python scripts/patch_naver_import_dates.py
-
           python scripts/patch_admin_seo.py
           python scripts/patch_admin_category.py
           python scripts/site_maintenance.py
-          # 같은 카테고리·제목 유사도를 기준으로 자동작성글에 내부 관련글 3개 삽입
           python scripts/inject_internal_links.py
           python scripts/generate_thumbnails.py
           python scripts/fix_thumbnail_logo.py
-          # 내부 대표 썸네일은 개별글 제목 아래에 유지
           python scripts/site_maintenance.py
           python scripts/apply_latest_cards.py
+          # data/posts.json과 실제 상세 HTML을 기준으로 모든 개별글 URL을 사이트맵에 자동 반영
+          python scripts/generate_sitemap.py
 
           python -m py_compile \
             scripts/import_naver_blog.py \
@@ -64,7 +61,8 @@ jobs:
             scripts/inject_internal_links.py \
             scripts/generate_thumbnails.py \
             scripts/fix_thumbnail_logo.py \
-            scripts/apply_latest_cards.py
+            scripts/apply_latest_cards.py \
+            scripts/generate_sitemap.py
 
           python - <<'PY'
           import json
@@ -80,7 +78,15 @@ jobs:
                   missing.append(thumb)
           if missing:
               raise SystemExit('Missing thumbnails: '+', '.join(missing[:20]))
-          print('validated',len(posts),'posts with thumbnails')
+          sitemap=Path('sitemap.xml').read_text(encoding='utf-8')
+          missing_urls=[]
+          for p in posts:
+              slug=(p.get('slug') or '').replace('.html','')
+              if slug and Path('posts',slug+'.html').exists() and f'/posts/{slug}.html' not in sitemap:
+                  missing_urls.append(slug)
+          if missing_urls:
+              raise SystemExit('Missing sitemap URLs: '+', '.join(missing_urls[:20]))
+          print('validated',len(posts),'posts with thumbnails and sitemap URLs')
           PY
 
           git diff --check
@@ -89,6 +95,6 @@ jobs:
             exit 0
           fi
 
-          git add admin.html data/posts.json posts posts.html assets/posts assets/naver-images index.html inheritance.html renunciation.html corporate.html realestate.html family.html
-          git commit -m "네이버 본문·분류·작성일·썸네일·내부링크 자동반영"
+          git add admin.html data/posts.json posts posts.html assets/posts assets/naver-images index.html inheritance.html renunciation.html corporate.html realestate.html family.html sitemap.xml
+          git commit -m "네이버 본문·SEO·내부링크·사이트맵 자동반영"
           git push origin HEAD:main
