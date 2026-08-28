@@ -16,6 +16,18 @@ CATEGORY_RULES = [
     ('상속등기', ('상속등기','대습상속','상속취득세','상속인','상속지분','상속재산','유언','사망 후 상속','부모님 사망')),
 ]
 
+COMMON_CSS = [
+    '<link rel="stylesheet" href="/assets/article-v2.css?v=4">',
+    '<link rel="stylesheet" href="/assets/site-shell.css">',
+    '<link rel="stylesheet" href="/assets/latest-posts.css">',
+]
+COMMON_JS = [
+    '<script src="/assets/site-shell.js" defer></script>',
+    '<script src="/assets/article-v2.js?v=4" defer></script>',
+    '<script src="/assets/latest-posts.js" defer></script>',
+    '<script src="/assets/article-cta.js" defer></script>',
+]
+
 
 def infer_category(title: str, current: str = '') -> str:
     current = (current or '').strip()
@@ -29,11 +41,9 @@ def infer_category(title: str, current: str = '') -> str:
 
 
 def dedupe_se_ids(text: str):
-    """네이버 복붙에서 생긴 중복 SE-* id만 안전하게 유일값으로 바꾼다."""
     seen = {}
     changed = 0
     pat = re.compile(r'\bid=(["\'])(SE-[^"\']+)\1', re.I)
-
     def repl(m):
         nonlocal changed
         quote, value = m.group(1), m.group(2)
@@ -42,27 +52,37 @@ def dedupe_se_ids(text: str):
             return m.group(0)
         changed += 1
         return f'id={quote}{value}-{seen[value]}{quote}'
-
     return pat.sub(repl, text), changed
 
 
 def clear_legacy_related_actions(text: str):
-    """새 상담 CTA와 중복되는 예전 하단 버튼을 없애되 SEO 관련글 삽입 앵커는 유지한다."""
     changed = 0
     pat = re.compile(r'<div\s+class=["\']related["\'][^>]*>([\s\S]*?)</div>', re.I)
-
     def repl(m):
         nonlocal changed
-        inner = m.group(1)
-        plain = re.sub(r'<[^>]+>', ' ', inner)
+        plain = re.sub(r'<[^>]+>', ' ', m.group(1))
         plain = re.sub(r'\s+', ' ', html.unescape(plain)).strip()
-        # 기존 템플릿의 "○○ 법률정보 목록" + "032-425-1500 상담" 버튼 영역만 비운다.
-        if '032-425-1500' in plain or '법률정보 목록' in plain:
+        if not plain or '032-425-1500' in plain or '법률정보 목록' in plain:
             changed += 1
-            return '<div class="related"></div>'
+            return ''
         return m.group(0)
-
     return pat.sub(repl, text), changed
+
+
+def ensure_common_assets(text: str):
+    original = text
+    for href in COMMON_CSS:
+        path = re.search(r'href="([^"]+)"', href).group(1).split('?')[0]
+        text = re.sub(rf'<link[^>]+href=["\']{re.escape(path)}(?:\?[^"\']*)?["\'][^>]*>', '', text, flags=re.I)
+    css = ''.join(COMMON_CSS)
+    text = text.replace('</head>', css + '</head>', 1)
+
+    for src_tag in COMMON_JS:
+        path = re.search(r'src="([^"]+)"', src_tag).group(1).split('?')[0]
+        text = re.sub(rf'<script[^>]+src=["\']{re.escape(path)}(?:\?[^"\']*)?["\'][^>]*>\s*</script>', '', text, flags=re.I)
+    js = ''.join(COMMON_JS)
+    text = text.replace('</body>', js + '</body>', 1)
+    return text, text != original
 
 
 def sync_category_meta(text: str, category: str) -> str:
@@ -115,6 +135,7 @@ def main():
     category_changes = []
     duplicate_id_fixes = 0
     legacy_related_clears = 0
+    common_asset_fixes = 0
 
     for post in posts:
         slug = str(post.get('slug','')).strip().replace('.html','')
@@ -135,16 +156,17 @@ def main():
         text2, cleared = clear_legacy_related_actions(text2)
         legacy_related_clears += cleared
         text2 = sync_category_meta(text2, post.get('category') or new)
+        text2, asset_changed = ensure_common_assets(text2)
+        common_asset_fixes += 1 if asset_changed else 0
         if text2 != text:
             p.write_text(text2, encoding='utf-8')
 
     POSTS_JSON.write_text(json.dumps(posts, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     rebuilt = rebuild_posts_page(posts)
     print('category changes:', len(category_changes))
-    for slug, old, new in category_changes:
-        print(' category', slug, old, '->', new)
     print('duplicate SE id fixes:', duplicate_id_fixes)
     print('legacy related button blocks cleared:', legacy_related_clears)
+    print('common article shell assets fixed:', common_asset_fixes)
     print('posts.html static cards rebuilt:', rebuilt)
 
 
