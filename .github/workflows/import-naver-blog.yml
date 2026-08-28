@@ -7,7 +7,8 @@ on:
       - 'scripts/import_naver_blog.py'
       - '.github/workflows/import-naver-blog.yml'
   schedule:
-    - cron: '17 * * * *'
+    # 매일 오전 9시 17분(KST)에 홈페이지에 없는 네이버 블로그 글을 최대 3개 자동 반영
+    - cron: '17 0 * * *'
   workflow_dispatch:
 
 permissions:
@@ -31,7 +32,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests beautifulsoup4 lxml
 
-      - name: Import new Naver blog posts
+      - name: Import up to 3 missing Naver blog posts
         shell: bash
         run: |
           set -e
@@ -44,10 +45,10 @@ jobs:
           python -m py_compile scripts/import_naver_blog.py
 
           if git diff --quiet && [ -z "$(git status --porcelain --untracked-files=normal posts data/posts.json)" ]; then
-            echo "No new Naver blog posts"
+            echo "No missing Naver blog posts"
             exit 0
           fi
 
           git add data/posts.json posts
-          git commit -m "네이버 블로그 새글 홈페이지 자동반영"
+          git commit -m "네이버 블로그 미반영 글 하루 최대 3개 홈페이지 자동반영"
           git push origin HEAD:main
