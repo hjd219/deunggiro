@@ -29,13 +29,21 @@ CATEGORY_RULES = [
     ('상속등기', ('상속등기','대습상속','상속취득세','상속인','상속지분','상속재산','유언','부모님 사망','가족 사망')),
 ]
 
-UA = {'User-Agent': 'Mozilla/5.0 (compatible; DeunggiroBlogImporter/1.0; +https://www.deunggiro.kr/)'}
+UA = {'User-Agent': 'Mozilla/5.0 (compatible; DeunggiroBlogImporter/1.1; +https://www.deunggiro.kr/)'}
 
 
 def get(url: str) -> requests.Response:
     r = requests.get(url, headers=UA, timeout=25)
     r.raise_for_status()
-    r.encoding = r.apparent_encoding or r.encoding
+    # 네이버 페이지는 UTF-8인데 apparent_encoding이 ISO-8859-1/Windows 계열로
+    # 잘못 추정되는 경우가 있어 한글이 ë²•ì... 형태로 깨질 수 있다.
+    # 실제 바이트가 UTF-8로 정상 해석되면 UTF-8을 우선 사용한다.
+    try:
+        r.content.decode('utf-8')
+        r.encoding = 'utf-8'
+    except UnicodeDecodeError:
+        if not r.encoding:
+            r.encoding = r.apparent_encoding or 'utf-8'
     return r
 
 
@@ -94,10 +102,9 @@ def clean_article(url: str) -> tuple[str, str]:
         else:
             tag.attrs = {}
 
-    # 네이버 에디터의 과도한 래퍼를 줄이고 문단/제목/이미지 중심으로 재구성
     parts = []
     for el in root.find_all(['h2','h3','p','blockquote','ul','ol','img'], recursive=True):
-        if el.find_parent(['p','blockquote','ul','ol']) and el.name not in ['img']:
+        if el.find_parent(['p','blockquote','ul','ol']) and el.name != 'img':
             continue
         if el.name == 'img':
             src = el.get('src') or ''
@@ -119,8 +126,8 @@ def clean_article(url: str) -> tuple[str, str]:
             parts.append(f'<p>{html.escape(txt)}</p>')
 
     body = '\n'.join(parts)
-    text = ' '.join(root.stripped_strings)
-    return body, re.sub(r'\s+', ' ', text).strip()
+    text = re.sub(r'\s+', ' ', ' '.join(root.stripped_strings)).strip()
+    return body, text
 
 
 def summary_from(text: str, title: str) -> str:
@@ -137,7 +144,8 @@ def build_html(post: dict, body: str) -> str:
     date = html.escape(post['date'])
     slug = html.escape(post['slug'], quote=True)
     source = html.escape(post['source_url'], quote=True)
-    intro = html.escape(f"이 글에서는 {re.sub(r'^\\s*\\[[^\\]]+\\]\\s*','',post['title'])}에 관해 핵심 절차와 준비사항을 홈페이지용으로 정리합니다.")
+    intro_title = re.sub(r'^\s*\[[^\]]+\]\s*', '', post['title'])
+    intro = html.escape(f'이 글에서는 {intro_title}에 관해 핵심 절차와 준비사항을 홈페이지용으로 정리합니다.')
     return f'''<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{title} | 현재두 법무사 사무소</title><meta name="description" content="{summary}"><meta name="keywords" content="{title}">
 <meta property="og:type" content="article"><meta property="og:title" content="{title}"><meta property="og:description" content="{summary}"><meta property="og:url" content="{BASE}/posts/{slug}.html">
@@ -172,9 +180,44 @@ def fetch_feed_items() -> list[dict]:
     return out
 
 
+def looks_mojibake(text: str) -> bool:
+    if not text:
+        return False
+    markers = ('ë','ì','í','â€','Â','�')
+    score = sum(text.count(m) for m in markers)
+    return score >= 4
+
+
+def repair_existing_imports(posts: list[dict]) -> int:
+    repaired = 0
+    for post in posts:
+        if post.get('source') != 'naver-blog' or not post.get('source_url'):
+            continue
+        slug = str(post.get('slug','')).replace('.html','')
+        page = POSTS_DIR / f'{slug}.html'
+        page_text = page.read_text(encoding='utf-8', errors='ignore') if page.exists() else ''
+        if not (looks_mojibake(str(post.get('summary',''))) or looks_mojibake(page_text)):
+            continue
+        try:
+            body, text = clean_article(post['source_url'])
+        except Exception as e:
+            print('REPAIR_SKIP', slug, e, file=sys.stderr)
+            continue
+        if len(text) < 80 or looks_mojibake(text):
+            print('REPAIR_SKIP_BAD_TEXT', slug, file=sys.stderr)
+            continue
+        post['summary'] = summary_from(text, post.get('title',''))
+        post['category'] = infer_category(post.get('title','') + ' ' + text[:500])
+        page.write_text(build_html(post, body), encoding='utf-8')
+        repaired += 1
+        print('REPAIRED', slug, post.get('title',''))
+    return repaired
+
+
 def main():
     POSTS_DIR.mkdir(exist_ok=True)
     posts = load_posts()
+    repaired = repair_existing_imports(posts)
     existing_titles = {norm_title(p.get('title','')) for p in posts}
     existing_sources = {str(p.get('source_url','')).strip() for p in posts if p.get('source_url')}
     imported = 0
@@ -192,7 +235,7 @@ def main():
         except Exception as e:
             print('SKIP', item['link'], e, file=sys.stderr)
             continue
-        if len(text) < 80:
+        if len(text) < 80 or looks_mojibake(text):
             continue
         slug = f'naver-{log_no}'
         if any(str(p.get('slug','')).replace('.html','') == slug for p in posts):
@@ -214,9 +257,10 @@ def main():
         imported += 1
         print('IMPORTED', slug, post['title'])
 
-    if imported:
+    if imported or repaired:
         POSTS_JSON.write_text(json.dumps(posts, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     print('NAVER_IMPORT_COUNT', imported)
+    print('NAVER_REPAIR_COUNT', repaired)
 
 
 if __name__ == '__main__':
