@@ -6,6 +6,7 @@ on:
     paths:
       - 'data/posts.json'
       - 'posts/**'
+      - 'posts.html'
       - 'index.html'
       - 'inheritance.html'
       - 'renunciation.html'
@@ -14,10 +15,13 @@ on:
       - 'family.html'
       - 'assets/latest-posts.css'
       - 'assets/latest-posts.js'
+      - 'assets/article-cta.js'
       - 'scripts/generate_thumbnails.py'
       - 'scripts/fix_thumbnail_logo.py'
       - 'scripts/apply_latest_cards.py'
       - 'scripts/patch_admin_seo.py'
+      - 'scripts/patch_admin_category.py'
+      - 'scripts/site_maintenance.py'
       - 'favicon.png'
       - '.github/workflows/auto-thumbnails.yml'
   workflow_dispatch:
@@ -39,48 +43,63 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install Korean and color emoji fonts plus Pillow
+      - name: Install Korean fonts and Pillow
         run: |
           sudo apt-get update
-          sudo apt-get install -y fonts-noto-cjk fonts-noto-color-emoji
+          sudo apt-get install -y fonts-noto-cjk
           python -m pip install --upgrade pip
           pip install pillow
 
-      - name: Generate and publish thumbnails from latest main
+      - name: Generate and publish automated site updates from latest main
         shell: bash
         run: |
           set -e
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # Other SEO workflows may update the same post immediately after publishing.
-          # Always regenerate from the newest main instead of rebasing generated HTML later.
           for attempt in 1 2 3; do
-            echo "Thumbnail publish attempt $attempt"
+            echo "Automated site publish attempt $attempt"
             git fetch origin main
             git reset --hard origin/main
 
             python scripts/patch_admin_seo.py
+            python scripts/patch_admin_category.py
+            python scripts/site_maintenance.py
             python scripts/generate_thumbnails.py
             python scripts/fix_thumbnail_logo.py
+            python scripts/site_maintenance.py
             python scripts/apply_latest_cards.py
 
-            python -m py_compile scripts/patch_admin_seo.py scripts/generate_thumbnails.py scripts/fix_thumbnail_logo.py scripts/apply_latest_cards.py
+            python -m py_compile scripts/patch_admin_seo.py scripts/patch_admin_category.py scripts/site_maintenance.py scripts/generate_thumbnails.py scripts/fix_thumbnail_logo.py scripts/apply_latest_cards.py
+            node --check assets/latest-posts.js
+            node --check assets/article-cta.js
+
             python - <<'PY'
-          import json
+          import json,re
           from pathlib import Path
           posts=json.loads(Path('data/posts.json').read_text(encoding='utf-8'))
           missing=[]
+          duplicate_ids=[]
           for p in posts:
+              slug=(p.get('slug') or '').replace('.html','')
               thumb=(p.get('thumbnail') or '').strip()
               if not thumb:
-                  missing.append(p.get('slug','(no slug)')+': empty thumbnail')
-                  continue
-              f=Path(thumb.lstrip('/'))
-              if not f.exists():
-                  missing.append(str(f))
+                  missing.append(slug+': empty thumbnail')
+              elif not Path(thumb.lstrip('/')).exists():
+                  missing.append(thumb)
+              hp=Path('posts')/f'{slug}.html'
+              if not hp.exists():
+                  missing.append(str(hp));continue
+              text=hp.read_text(encoding='utf-8')
+              ids=re.findall(r'\bid=["\'](SE-[^"\']+)["\']',text,re.I)
+              dup=sorted({x for x in ids if ids.count(x)>1})
+              if dup: duplicate_ids.append(slug+': '+','.join(dup[:3]))
+              if '/assets/article-cta.js' not in text:
+                  missing.append(slug+': article CTA script missing')
           if missing:
-              raise SystemExit('Missing thumbnails: '+', '.join(missing[:10]))
+              raise SystemExit('Missing generated resources: '+', '.join(missing[:12]))
+          if duplicate_ids:
+              raise SystemExit('Duplicate SE ids remain: '+', '.join(duplicate_ids[:10]))
           for f in ['index.html','inheritance.html','renunciation.html','corporate.html','realestate.html','family.html']:
               text=Path(f).read_text(encoding='utf-8')
               if '/assets/latest-posts.js' not in text or '/assets/latest-posts.css' not in text:
@@ -88,8 +107,14 @@ jobs:
           admin=Path('admin.html').read_text(encoding='utf-8')
           if 'SEO 자동생성: 검색 키워드 + 검색결과 설명/목록 요약' not in admin:
               raise SystemExit('Admin SEO autofill not injected')
-          print('validated', len(posts), 'thumbnails, latest-card pages, and admin SEO autofill')
+          if '카테고리 자동분류: 제목 기준' not in admin:
+              raise SystemExit('Admin category automation not injected')
+          listing=Path('posts.html').read_text(encoding='utf-8')
+          if 'SEO_STATIC_POSTS_START' not in listing or 'post-thumb' not in listing:
+              raise SystemExit('posts.html static thumbnail cards missing')
+          print('validated',len(posts),'posts, thumbnails, categories, CTA, latest cards and admin automation')
           PY
+
             git diff --check
 
             if git diff --quiet && [ -z "$(git status --porcelain --untracked-files=normal assets/posts)" ]; then
@@ -97,11 +122,11 @@ jobs:
               exit 0
             fi
 
-            git add admin.html data/posts.json posts assets/posts index.html inheritance.html renunciation.html corporate.html realestate.html family.html
-            git commit -m "게시글 썸네일·SEO 자동 생성 및 최신글 반영"
+            git add admin.html data/posts.json posts posts.html assets/posts index.html inheritance.html renunciation.html corporate.html realestate.html family.html
+            git commit -m "게시글 썸네일·분류·상담CTA·목록 자동 반영"
 
             if git push origin HEAD:main; then
-              echo "Thumbnail and SEO updates published"
+              echo "Automated site updates published"
               exit 0
             fi
 
@@ -109,5 +134,5 @@ jobs:
             sleep 2
           done
 
-          echo "Failed to publish thumbnail/SEO updates after 3 attempts"
+          echo "Failed to publish automated site updates after 3 attempts"
           exit 1
