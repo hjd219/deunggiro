@@ -28,7 +28,7 @@ def resolve_post_view(url):
  if iframe and iframe.get('src'):return urljoin('https://blog.naver.com/',iframe['src'])
  n=log_no_from_url(url);return f'https://blog.naver.com/PostView.naver?blogId={BLOG_ID}&logNo={n}&redirect=Dlog&widgetTypeCall=true&directAccess=false' if n else url
 def heading_like(txt):
- """1.부터 99.까지 번호형 문단 제목과 이모지/원문자 번호를 대제목으로 인식."""
+ """1.부터 99.까지 번호형 문단 제목과 이모지/원문자 번호를 소제목으로 인식."""
  t=re.sub(r'\s+',' ',txt).strip()
  numbered=bool(re.match(r'^(?:[1-9]|[1-9][0-9])[.)]\s*\S',t))
  keycap=bool(re.match(r'^(?:[1-9]|[1-9][0-9])️⃣\s*\S',t))
@@ -54,7 +54,7 @@ def clean_article(url):
   txt=' '.join(el.stripped_strings)
   if not txt:continue
   if el.name in ('h2','h3') or (el.name=='p' and heading_like(txt)):
-   level='h2' if el.name=='h2' or heading_like(txt) else 'h3';parts.append(f'<{level}>{html.escape(txt)}</{level}>')
+   level='h2' if el.name=='h2' else 'h3';parts.append(f'<{level}>{html.escape(txt)}</{level}>')
   elif el.name=='blockquote':parts.append(f'<blockquote>{html.escape(txt)}</blockquote>')
   elif el.name in ('ul','ol'):
    lis=[' '.join(li.stripped_strings) for li in el.find_all('li',recursive=False)]
@@ -67,7 +67,7 @@ def summary_from(text,title):
  return f'{clean}의 핵심 절차와 준비사항을 간단히 정리합니다.'[:82].rstrip(' ,·:-')
 def build_html(post,body):
  title=html.escape(post['title']);summary=html.escape(post['summary']);cat=html.escape(post['category']);date=html.escape(post['date']);slug=html.escape(post['slug'],quote=True);source=html.escape(post['source_url'],quote=True);intro_title=re.sub(r'^\s*\[[^\]]+\]\s*','',post['title']);intro=html.escape(f'{intro_title}에서 꼭 확인해야 할 핵심 내용을 순서대로 살펴보겠습니다.')
- return f'''<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{title} | 현재두 법무사 사무소</title><meta name="description" content="{summary}"><meta name="keywords" content="{title}"><meta property="og:type" content="article"><meta property="og:title" content="{title}"><meta property="og:description" content="{summary}"><meta property="og:url" content="{BASE}/posts/{slug}.html"><link rel="canonical" href="{BASE}/posts/{slug}.html"><meta name="dg-title" content="{title}"><meta name="dg-category" content="{cat}"><meta name="dg-date" content="{date}"><meta name="dg-summary" content="{summary}"><link rel="stylesheet" href="/assets/article-v2.css?v=6"><link rel="stylesheet" href="/assets/site-shell.css"><link rel="stylesheet" href="/assets/latest-posts.css"></head><body class="article-v2"><header class="header"></header><main class="section"><div class="container article-wrap"><article class="article"><div class="post-meta"><span class="badge">{cat}</span>{date}</div><h1>{title}</h1><p class="desc">{summary}</p><div class="article-body"><p class="article-intro"><strong>{intro}</strong></p>{body}<p class="source-note">네이버 블로그에 작성한 내용을 등기로 홈페이지 형식에 맞게 정리했습니다. <a href="{source}" target="_blank" rel="noopener noreferrer">원문 보기</a></p></div><!-- SEO_RELATED_POSTS_START --><!-- SEO_RELATED_POSTS_END --></article></div></main><section class="contact"></section><footer class="footer"></footer><script src="/assets/site-shell.js" defer></script><script src="/assets/article-v2.js" defer></script><script src="/assets/latest-posts.js" defer></script><script src="/assets/article-cta.js" defer></script></body></html>'''
+ return f'''<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{title} | 현재두 법무사 사무소</title><meta name="description" content="{summary}"><meta name="keywords" content="{title}"><meta property="og:type" content="article"><meta property="og:title" content="{title}"><meta property="og:description" content="{summary}"><meta property="og:url" content="{BASE}/posts/{slug}.html"><link rel="canonical" href="{BASE}/posts/{slug}.html"><meta name="dg-title" content="{title}"><meta name="dg-category" content="{cat}"><meta name="dg-date" content="{date}"><meta name="dg-summary" content="{summary}"><link rel="stylesheet" href="/assets/article-v2.css?v=7"><link rel="stylesheet" href="/assets/site-shell.css"><link rel="stylesheet" href="/assets/latest-posts.css"></head><body class="article-v2"><header class="header"></header><main class="section"><div class="container article-wrap"><article class="article"><div class="post-meta"><span class="badge">{cat}</span>{date}</div><h1>{title}</h1><p class="desc">{summary}</p><div class="article-body"><p class="article-intro"><strong>{intro}</strong></p>{body}<p class="source-note">네이버 블로그에 작성한 내용을 등기로 홈페이지 형식에 맞게 정리했습니다. <a href="{source}" target="_blank" rel="noopener noreferrer">원문 보기</a></p></div><!-- SEO_RELATED_POSTS_START --><!-- SEO_RELATED_POSTS_END --></article></div></main><section class="contact"></section><footer class="footer"></footer><script src="/assets/site-shell.js" defer></script><script src="/assets/article-v2.js" defer></script><script src="/assets/latest-posts.js" defer></script><script src="/assets/article-cta.js" defer></script></body></html>'''
 def load_posts():return json.loads(POSTS_JSON.read_text(encoding='utf-8'))
 def fetch_feed_items():
  r=get(RSS_URL);soup=BeautifulSoup(r.content,'xml');out=[]
