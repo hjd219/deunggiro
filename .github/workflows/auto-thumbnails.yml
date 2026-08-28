@@ -15,7 +15,9 @@ on:
       - 'assets/latest-posts.css'
       - 'assets/latest-posts.js'
       - 'scripts/generate_thumbnails.py'
+      - 'scripts/fix_thumbnail_logo.py'
       - 'scripts/apply_latest_cards.py'
+      - 'favicon.png'
       - '.github/workflows/auto-thumbnails.yml'
   workflow_dispatch:
 
@@ -46,12 +48,15 @@ jobs:
       - name: Generate all thumbnails
         run: python scripts/generate_thumbnails.py
 
+      - name: Apply real favicon logo
+        run: python scripts/fix_thumbnail_logo.py
+
       - name: Apply latest post cards
         run: python scripts/apply_latest_cards.py
 
       - name: Validate generated files
         run: |
-          python -m py_compile scripts/generate_thumbnails.py scripts/apply_latest_cards.py
+          python -m py_compile scripts/generate_thumbnails.py scripts/fix_thumbnail_logo.py scripts/apply_latest_cards.py
           python - <<'PY'
           import json
           from pathlib import Path
@@ -80,6 +85,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/posts.json posts assets/posts index.html inheritance.html renunciation.html corporate.html realestate.html family.html
-          git commit -m "최신글 4개 한줄 및 새 자동 썸네일 전체 적용"
+          git commit -m "실제 파비콘 로고로 썸네일 전체 수정"
           git pull --rebase origin main
           git push origin HEAD:main
