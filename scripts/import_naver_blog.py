@@ -28,10 +28,11 @@ def resolve_post_view(url):
  if iframe and iframe.get('src'):return urljoin('https://blog.naver.com/',iframe['src'])
  n=log_no_from_url(url);return f'https://blog.naver.com/PostView.naver?blogId={BLOG_ID}&logNo={n}&redirect=Dlog&widgetTypeCall=true&directAccess=false' if n else url
 def heading_like(txt):
- """1.부터 99.까지 숫자형 문단만 소제목으로 인식. ①②③ 및 키캡 번호는 일반 본문으로 유지."""
+ """1.부터 99.까지 숫자형 및 1️⃣ 2️⃣ 3️⃣ 키캡 번호는 소제목으로 인식. ①②③ 원문자는 일반 본문 유지."""
  t=re.sub(r'\s+',' ',txt).strip()
  numbered=bool(re.match(r'^(?:[1-9]|[1-9][0-9])[.)]\s*\S',t))
- return numbered and len(t)<=100
+ keycap=bool(re.match(r'^(?:[1-9]|[1-9][0-9])️⃣\s*\S',t))
+ return (numbered or keycap) and len(t)<=100
 def clean_article(url):
  view=resolve_post_view(url);r=get(view);soup=BeautifulSoup(r.text,'html.parser');root=soup.select_one('.se-main-container') or soup.select_one('#postViewArea') or soup.select_one('.post-view')
  if root is None:raise RuntimeError('네이버 본문 영역을 찾지 못했습니다.')
@@ -52,8 +53,7 @@ def clean_article(url):
   txt=' '.join(el.stripped_strings)
   if not txt:continue
   circled=bool(re.match(r'^[①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳]\s*\S',txt))
-  keycap=bool(re.match(r'^(?:[1-9]|[1-9][0-9])️⃣\s*\S',txt))
-  if el.name=='p' and (circled or keycap):parts.append(f'<p class="circled-number">{html.escape(txt)}</p>')
+  if el.name=='p' and circled:parts.append(f'<p class="circled-number">{html.escape(txt)}</p>')
   elif el.name in ('h2','h3') or (el.name=='p' and heading_like(txt)):
    level='h2' if el.name=='h2' else 'h3';parts.append(f'<{level}>{html.escape(txt)}</{level}>')
   elif el.name=='blockquote':parts.append(f'<blockquote>{html.escape(txt)}</blockquote>')
