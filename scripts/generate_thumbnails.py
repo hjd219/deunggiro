@@ -20,27 +20,20 @@ def short_title(t):
   if len(head)>=12:return head
  return t.strip()
 def pick_point(t,category=''):
- # Pick one exact word/phrase from every title automatically; no topic keyword list.
  text=clean_title(t)
  generic={'총정리','완벽정리','정리','절차','방법','필요서류','서류','비용','기간','관할','기준','주의사항','주의','해결방법','해결','어떻게','하나요','해야','하는','경우','관련','최신','안내','가이드','신청','말소','설정','변경','이전','허가','신고','분실','총정리'}
  category_words=set(re.findall(r'[가-힣A-Za-z0-9]{2,}',category or ''))
- # Exact tokens preserve a substring that can be colored reliably on a rendered line.
- tokens=re.findall(r'[가-힣A-Za-z0-9]{2,}',text)
- candidates=[]
+ tokens=re.findall(r'[가-힣A-Za-z0-9]{2,}',text);candidates=[]
  for idx,w in enumerate(tokens):
   if w in generic or w in category_words:continue
   if w in {'부동산','법인','상속','가사','인천'} and len(tokens)>1:continue
-  score=0
-  # Prefer compact compound nouns; avoid overly long sentence-like pieces.
-  score+=min(len(w),10)*3
+  score=min(len(w),10)*3
   if 3<=len(w)<=8:score+=12
   if len(w)>=4:score+=6
   score-=idx*1.5
   if re.search(r'(권|등기|분할|포기|승인|이혼|개명|가압류|증여|상속|보험금|취득세|과태료)$',w):score+=8
   candidates.append((score,idx,w))
- if candidates:
-  return max(candidates,key=lambda x:(x[0],-x[1]))[2]
- # Fallback guarantees a highlight for nearly every non-empty title.
+ if candidates:return max(candidates,key=lambda x:(x[0],-x[1]))[2]
  for w in tokens:
   if w not in generic:return w
  return tokens[0] if tokens else ''
@@ -97,7 +90,8 @@ def patch_article(post,thumb):
  if re.search(r'<script[^>]+id=["\']dg-article-schema["\'][^>]*>.*?</script>',s,re.I|re.S):s=re.sub(r'<script[^>]+id=["\']dg-article-schema["\'][^>]*>.*?</script>',schema_tag,s,count=1,flags=re.I|re.S)
  else:s=s.replace('</head>',schema_tag+'\n</head>',1)
  hero=f'<figure id="dg-post-hero-image" class="dg-post-hero-image"><img src="{rel}" alt="{title.replace("&","&amp;").replace(chr(34),"&quot;")}" width="1080" height="1080" loading="eager" fetchpriority="high" decoding="async"></figure>'
- hero_style='<style id="dg-post-hero-style">.dg-post-hero-image{width:100%;max-width:550px;margin:24px auto 32px}.dg-post-hero-image img{display:block;width:100%;height:auto;border-radius:18px}@media(max-width:600px){.dg-post-hero-image{max-width:100%;margin:18px auto 26px}}</style>'
+ # 내부 대표 썸네일은 목록/검색용 메타와 별개로 개별글 제목 아래에 항상 1개 표시한다.
+ hero_style='<style id="dg-post-hero-style">.dg-post-hero-image{display:block!important;width:100%;max-width:550px;margin:24px auto 32px}.dg-post-hero-image img{display:block!important;width:100%;height:auto;border-radius:18px}@media(max-width:600px){.dg-post-hero-image{display:block!important;max-width:100%;margin:18px auto 26px}}</style>'
  if re.search(r'<style[^>]+id=["\']dg-post-hero-style["\'][^>]*>.*?</style>',s,re.I|re.S):s=re.sub(r'<style[^>]+id=["\']dg-post-hero-style["\'][^>]*>.*?</style>',hero_style,s,count=1,flags=re.I|re.S)
  else:s=s.replace('</head>',hero_style+'\n</head>',1)
  if re.search(r'<figure[^>]+id=["\']dg-post-hero-image["\'][^>]*>.*?</figure>',s,re.I|re.S):s=re.sub(r'<figure[^>]+id=["\']dg-post-hero-image["\'][^>]*>.*?</figure>',hero,s,count=1,flags=re.I|re.S)
