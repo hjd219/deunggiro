@@ -1,0 +1,53 @@
+name: Import Naver Blog Posts
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/import_naver_blog.py'
+      - '.github/workflows/import-naver-blog.yml'
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: import-naver-blog-main
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install importer dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests beautifulsoup4 lxml
+
+      - name: Import new Naver blog posts
+        shell: bash
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+          git reset --hard origin/main
+
+          python scripts/import_naver_blog.py
+          python -m py_compile scripts/import_naver_blog.py
+
+          if git diff --quiet && [ -z "$(git status --porcelain --untracked-files=normal posts data/posts.json)" ]; then
+            echo "No new Naver blog posts"
+            exit 0
+          fi
+
+          git add data/posts.json posts
+          git commit -m "네이버 블로그 새글 홈페이지 자동반영"
+          git push origin HEAD:main
