@@ -4,7 +4,15 @@ on:
   push:
     branches: [main]
     paths:
-      - '.github/workflows/repo-audit.yml'
+      - '**/*.html'
+      - 'assets/**/*.js'
+      - 'assets/**/*.css'
+      - 'scripts/**'
+      - 'tools/**'
+      - 'data/**'
+      - 'sitemap.xml'
+      - 'rss.xml'
+      - '.github/workflows/**'
   workflow_dispatch:
 
 permissions:
@@ -71,13 +79,12 @@ jobs:
           from urllib.parse import urlsplit, unquote
           import json, re
 
-          root=Path('.').resolve()
-          errors=[]; warnings=[]
+          errors=[]
           skip_prefixes=('mailto:','tel:','javascript:','data:','#')
 
           class P(HTMLParser):
-              def __init__(self, path):
-                  super().__init__(convert_charrefs=True); self.path=path; self.ids=[]; self.refs=[]
+              def __init__(self):
+                  super().__init__(convert_charrefs=True); self.ids=[]; self.refs=[]
               def handle_starttag(self, tag, attrs):
                   a=dict(attrs)
                   if a.get('id'): self.ids.append(a['id'])
@@ -89,7 +96,7 @@ jobs:
           for p in htmls:
               if '.git' in p.parts: continue
               text=p.read_text(encoding='utf-8',errors='replace')
-              parser=P(p)
+              parser=P()
               try: parser.feed(text)
               except Exception as e: errors.append(f'HTML parse {p}: {e}'); continue
               dup=sorted({x for x in parser.ids if parser.ids.count(x)>1})
@@ -97,13 +104,13 @@ jobs:
               for tag,key,ref in parser.refs:
                   ref=ref.strip()
                   if not ref or ref.startswith(skip_prefixes) or ref.startswith('//') or re.match(r'^https?://',ref,re.I): continue
-                  path=urlsplit(ref).path
-                  if not path: continue
-                  if path.startswith('/'):
-                      target=Path('.') / unquote(path.lstrip('/'))
+                  url_path=urlsplit(ref).path
+                  if not url_path: continue
+                  if url_path.startswith('/'):
+                      target=Path('.') / unquote(url_path.lstrip('/'))
                   else:
-                      target=p.parent / unquote(path)
-                  if path.endswith('/'):
+                      target=p.parent / unquote(url_path)
+                  if url_path.endswith('/'):
                       target=target/'index.html'
                   if not target.exists():
                       errors.append(f'Missing local ref {p}: {ref} -> {target}')
@@ -131,8 +138,6 @@ jobs:
           print('HTML files:',len(htmls))
           print('ERRORS:',len(errors))
           for x in errors: print('ERROR:',x)
-          print('WARNINGS:',len(warnings))
-          for x in warnings: print('WARN:',x)
           if errors: raise SystemExit(1)
           PY
 
