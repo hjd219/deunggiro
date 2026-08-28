@@ -43,7 +43,7 @@ def pick_icon(t,category):
  if any(k in t for k in ['보험금','보험','해지환급금']):return 'umbrella'
  if any(k in t for k in ['상속재산분할','재산분할심판','상속분쟁','분할심판','심판청구']):return 'court'
  if any(k in t for k in ['상속순위','대습상속','상속인 순위']):return 'family'
- if '상속포기' in t:return 'reject'
+ if '상속포기' in t:return 'hand'
  if '한정승인' in t:return 'shield'
  if any(k in t for k in ['3개월','기간','기한']):return 'hourglass'
  if any(k in t for k in ['본점이전','본점 이전','주소변경','주소 변경']):return 'truck'
@@ -61,9 +61,12 @@ def pick_icon(t,category):
 def draw_icon(img,key):
  d=ImageDraw.Draw(img); cx,cy=540,885; b=BLUE; n=NAVY; p=PALE; w=18
  if key=='umbrella':
-  d.pieslice((425,790,655,970),180,360,fill=p,outline=b,width=14)
-  d.polygon([(425,880),(465,845),(505,880),(540,835),(575,880),(615,845),(655,880)],fill=b)
-  d.line((540,875,540,950),fill=n,width=16);d.arc((520,925,580,985),0,105,fill=n,width=16)
+  d.pieslice((425,790,655,970),180,360,fill=p,outline=b,width=14);d.polygon([(425,880),(465,845),(505,880),(540,835),(575,880),(615,845),(655,880)],fill=b);d.line((540,875,540,950),fill=n,width=16);d.arc((520,925,580,985),0,105,fill=n,width=16)
+ elif key=='hand':
+  # Open palm: inheritance renunciation without prohibition/X symbolism.
+  d.rounded_rectangle((485,845,605,970),35,fill=p,outline=b,width=12)
+  for box in [(460,790,492,900),(495,770,527,880),(530,765,562,880),(565,785,597,895)]:d.rounded_rectangle(box,15,fill=p,outline=b,width=10)
+  d.rounded_rectangle((430,860,505,900),18,fill=p,outline=b,width=10);d.line((452,875,500,925),fill=b,width=12);d.arc((500,905,590,985),10,170,fill=n,width=12)
  elif key=='family':
   for x,y,r in [(480,845,34),(540,825,39),(600,845,34)]:d.ellipse((x-r,y-r,x+r,y+r),fill=p,outline=b,width=12)
   d.rounded_rectangle((435,890,645,970),30,fill=p,outline=b,width=12);d.line((540,866,540,950),fill=b,width=12)
@@ -71,8 +74,6 @@ def draw_icon(img,key):
   d.polygon([(430,845),(540,790),(650,845)],fill=b);d.rectangle((440,850,640,875),fill=n)
   for x in [465,520,575,630]:d.rectangle((x-12,875,x+12,950),fill=b)
   d.rectangle((425,950,655,975),fill=n)
- elif key=='reject':
-  d.ellipse((450,795,630,975),fill=p,outline=b,width=18);d.line((480,945,600,825),fill=b,width=24)
  elif key=='shield':
   d.polygon([(540,790),(635,825),(620,915),(540,980),(460,915),(445,825)],fill=p,outline=b);d.line((540,815,540,945),fill=b,width=16);d.line((500,885,530,915,585,850),fill=n,width=15,joint='curve')
  elif key=='hourglass':
