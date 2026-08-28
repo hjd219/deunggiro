@@ -17,6 +17,7 @@ on:
       - 'scripts/generate_thumbnails.py'
       - 'scripts/fix_thumbnail_logo.py'
       - 'scripts/apply_latest_cards.py'
+      - 'scripts/patch_admin_seo.py'
       - 'favicon.png'
       - '.github/workflows/auto-thumbnails.yml'
   workflow_dispatch:
@@ -59,11 +60,12 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
 
+            python scripts/patch_admin_seo.py
             python scripts/generate_thumbnails.py
             python scripts/fix_thumbnail_logo.py
             python scripts/apply_latest_cards.py
 
-            python -m py_compile scripts/generate_thumbnails.py scripts/fix_thumbnail_logo.py scripts/apply_latest_cards.py
+            python -m py_compile scripts/patch_admin_seo.py scripts/generate_thumbnails.py scripts/fix_thumbnail_logo.py scripts/apply_latest_cards.py
             python - <<'PY'
           import json
           from pathlib import Path
@@ -83,7 +85,10 @@ jobs:
               text=Path(f).read_text(encoding='utf-8')
               if '/assets/latest-posts.js' not in text or '/assets/latest-posts.css' not in text:
                   raise SystemExit('Latest cards not injected: '+f)
-          print('validated', len(posts), 'thumbnails and latest-card pages')
+          admin=Path('admin.html').read_text(encoding='utf-8')
+          if 'SEO 자동생성: 검색 키워드 + 검색결과 설명/목록 요약' not in admin:
+              raise SystemExit('Admin SEO autofill not injected')
+          print('validated', len(posts), 'thumbnails, latest-card pages, and admin SEO autofill')
           PY
             git diff --check
 
@@ -92,11 +97,11 @@ jobs:
               exit 0
             fi
 
-            git add data/posts.json posts assets/posts index.html inheritance.html renunciation.html corporate.html realestate.html family.html
-            git commit -m "게시글 썸네일 자동 생성 및 최신글 반영"
+            git add admin.html data/posts.json posts assets/posts index.html inheritance.html renunciation.html corporate.html realestate.html family.html
+            git commit -m "게시글 썸네일·SEO 자동 생성 및 최신글 반영"
 
             if git push origin HEAD:main; then
-              echo "Thumbnail updates published"
+              echo "Thumbnail and SEO updates published"
               exit 0
             fi
 
@@ -104,5 +109,5 @@ jobs:
             sleep 2
           done
 
-          echo "Failed to publish thumbnail updates after 3 attempts"
+          echo "Failed to publish thumbnail/SEO updates after 3 attempts"
           exit 1
