@@ -40,21 +40,22 @@ jobs:
           python scripts/import_naver_blog.py
           # SmartEditor 실제 본문 구조를 다시 읽어 본문 누락과 잘못된 카테고리를 교정
           python scripts/repair_naver_posts.py
+          # 네이버 원문 게시일이 아니라 등기로 홈페이지에 실제 수집·작성된 날짜를 최초 1회 고정
+          python scripts/patch_naver_import_dates.py
 
           python scripts/patch_admin_seo.py
           python scripts/patch_admin_category.py
           python scripts/site_maintenance.py
           python scripts/generate_thumbnails.py
           python scripts/fix_thumbnail_logo.py
-          # 자동 썸네일은 목록/검색용으로만 두고 네이버 수집글 본문에서는 제거
-          python scripts/strip_naver_article_hero.py
+          # 내부 대표 썸네일은 개별글 제목 아래에 유지
           python scripts/site_maintenance.py
           python scripts/apply_latest_cards.py
 
           python -m py_compile \
             scripts/import_naver_blog.py \
             scripts/repair_naver_posts.py \
-            scripts/strip_naver_article_hero.py \
+            scripts/patch_naver_import_dates.py \
             scripts/patch_admin_seo.py \
             scripts/patch_admin_category.py \
             scripts/site_maintenance.py \
@@ -86,5 +87,5 @@ jobs:
           fi
 
           git add admin.html data/posts.json posts posts.html assets/posts assets/naver-images index.html inheritance.html renunciation.html corporate.html realestate.html family.html
-          git commit -m "네이버 본문·분류·이미지 자동복구"
+          git commit -m "네이버 본문·분류·작성일·썸네일 자동반영"
           git push origin HEAD:main
