@@ -20,9 +20,36 @@ def short_title(t):
   if len(head)>=12:return head
  return t.strip()
 def pick_point(t):
- for k in ['상속순위','대습상속','3개월','임기만료','본점이전','본점 이전','상속재산','예금','보험금','주주전원','서면결의','대표이사','상속포기','한정승인','상속등기','취득세','증자','자본금','상호변경','목적변경','재산분할','근저당','담보']:
-  if k in t:return k
- return ''
+ # Automatic phrase extraction: no per-topic keyword list is required.
+ text=re.sub(r'[\[\](){}]',' ',t);text=re.sub(r'\s+',' ',text).strip()
+ stop={'총정리','완벽정리','한눈에','정리','절차','방법','필요서류','서류','비용','기간','관할','기준','주의사항','해야','할','일','후','시','경우','어떻게','하나요','부터','까지','관련','최신','글','인천'}
+ # Prefer meaningful Korean noun phrases immediately before common legal/action words.
+ patterns=[
+  r'([가-힣A-Za-z0-9]{2,12}\s*[가-힣A-Za-z0-9]{0,8})(변경등기|변경|이전|말소|설정|설립|증자|감자|해임|선임|사임|포기|승인|등기|분할|심판|신청|허가|신고)',
+  r'([가-힣A-Za-z0-9]{2,16})(보험금|해지환급금|유족연금|퇴직금|취득세|과태료)',
+ ]
+ for pat in patterns:
+  m=re.search(pat,text)
+  if m:
+   phrase=''.join(x for x in m.groups() if x).strip()
+   phrase=re.sub(r'^(부모님|부모|남편|아내|배우자|가족)\s+(사망\s+후\s+)?','',phrase).strip()
+   if 2<=len(phrase)<=18:return phrase
+ # Score chunks from the title and choose a compact subject phrase.
+ chunks=[c.strip() for c in re.split(r'[·,|:/?！!]|\s+-\s+',text) if c.strip()]
+ candidates=[]
+ for c in chunks:
+  words=[w for w in c.split() if w not in stop and len(w)>1]
+  if not words:continue
+  for n in (2,1):
+   for i in range(max(0,len(words)-n+1)):
+    p=' '.join(words[i:i+n]).strip()
+    if 2<=len(p)<=16:
+     score=len(p)+(5 if n==2 else 0)
+     if any(s in p for s in ['총정리','절차','방법','서류','기간','관할']):score-=8
+     candidates.append((score,p))
+ if candidates:return max(candidates,key=lambda x:x[0])[1]
+ words=[w for w in text.split() if w not in stop and len(w)>1]
+ return words[0] if words else ''
 def wrap_text(d,text,f,max_width):
  words=re.split(r'(\s+|·|,|\?|!)',text);lines=[];cur=''
  for token in words:
@@ -91,5 +118,5 @@ def main():
   slug=post.get('slug')
   if not slug:continue
   out=OUT_DIR/f'{slug}-thumbnail.png';create_thumbnail(post,out);post['thumbnail']='/assets/posts/'+out.name;patch_article(post,out.relative_to(ROOT))
- POSTS_JSON.write_text(json.dumps(posts,ensure_ascii=False,indent=2)+'\n',encoding='utf-8');print('generated',len(posts),'thumbnails without icons and with improved title summaries')
+ POSTS_JSON.write_text(json.dumps(posts,ensure_ascii=False,indent=2)+'\n',encoding='utf-8');print('generated',len(posts),'thumbnails without icons and with automatic highlight phrases')
 if __name__=='__main__':main()
