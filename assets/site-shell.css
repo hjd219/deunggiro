@@ -1,8 +1,10 @@
 /* 등기로 공통 헤더 · 상담 · 푸터 */
 :root{--dg-primary:#36a9e1;--dg-primary-dark:#168dca;--dg-navy:#172840;--dg-max:1180px}
+/* 메인/상세 공통 로고 색상 */
+.header .logo>span,.dg-shell-logo{color:var(--dg-primary)!important}.header .logo small,.dg-shell-logo small{color:#20242b!important}
 .dg-shell-header{position:sticky!important;top:0!important;z-index:1200!important;background:rgba(255,255,255,.98)!important;border-bottom:3px solid var(--dg-primary)!important;box-shadow:0 2px 8px rgba(54,169,225,.08)!important;backdrop-filter:blur(10px)!important}
 .dg-shell-header .dg-shell-inner{width:100%;max-width:var(--dg-max);margin:auto;padding:0 22px;min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:22px}
-.dg-shell-logo{font-size:28px;font-weight:900;letter-spacing:-1.5px;color:var(--dg-primary)!important;text-decoration:none!important;line-height:1.15}.dg-shell-logo small{display:block;font-size:11px;color:#20242b!important;font-weight:500;margin-top:2px;letter-spacing:0}
+.dg-shell-logo{font-size:28px;font-weight:900;letter-spacing:-1.5px;text-decoration:none!important;line-height:1.15}.dg-shell-logo small{display:block;font-size:11px;font-weight:500;margin-top:2px;letter-spacing:0}
 .dg-shell-nav{display:flex;gap:20px;align-items:center;font-size:14px;font-weight:800}.dg-shell-nav a{color:#20242b!important;text-decoration:none!important;white-space:nowrap}.dg-shell-nav a:hover,.dg-shell-nav a[aria-current="page"]{color:var(--dg-primary)!important}
 .dg-shell-mobile-menu-btn,.dg-shell-mobile-call,.dg-shell-mobile-panel{display:none}
 body.article-v2 .article-body img,.article .article-body img{display:block!important;margin-left:0!important;margin-right:auto!important;max-width:100%!important;height:auto!important}
