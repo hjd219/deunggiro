@@ -1,3 +1,4 @@
+# Repository-wide validation for the current published site
 name: Full repository audit
 
 on:
