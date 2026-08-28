@@ -40,6 +40,7 @@ def draw_logo(img,d,category):
   except:pass
  d.text((202,68),'등기로',font=font(56,True),fill=BLUE);d.text((204,136),category or '법률정보',font=font(30,True),fill=INK)
 def pick_icon(t,category):
+ if any(k in t for k in ['보험금','보험','해지환급금']):return 'umbrella'
  if any(k in t for k in ['상속재산분할','재산분할심판','상속분쟁','분할심판','심판청구']):return 'court'
  if any(k in t for k in ['상속순위','대습상속','상속인 순위']):return 'family'
  if '상속포기' in t:return 'reject'
@@ -52,14 +53,18 @@ def pick_icon(t,category):
  if any(k in t for k in ['증자','자본금']):return 'stock'
  if any(k in t for k in ['근저당','담보']):return 'bank'
  if any(k in t for k in ['주주','서면결의','주주총회','결의']):return 'vote'
- if any(k in t for k in ['예금','보험금','금융','퇴직금','주식']):return 'money'
+ if any(k in t for k in ['예금','금융','퇴직금','주식']):return 'money'
  if any(k in t for k in ['조회','찾기','확인']):return 'search'
  if any(k in t for k in ['임기','임기만료','날짜']):return 'calendar'
  if category=='부동산등기' or any(k in t for k in ['부동산등기','상속등기','소유권이전']):return 'house'
  return 'search'
 def draw_icon(img,key):
  d=ImageDraw.Draw(img); cx,cy=540,885; b=BLUE; n=NAVY; p=PALE; w=18
- if key=='family':
+ if key=='umbrella':
+  d.pieslice((425,790,655,970),180,360,fill=p,outline=b,width=14)
+  d.polygon([(425,880),(465,845),(505,880),(540,835),(575,880),(615,845),(655,880)],fill=b)
+  d.line((540,875,540,950),fill=n,width=16);d.arc((520,925,580,985),0,105,fill=n,width=16)
+ elif key=='family':
   for x,y,r in [(480,845,34),(540,825,39),(600,845,34)]:d.ellipse((x-r,y-r,x+r,y+r),fill=p,outline=b,width=12)
   d.rounded_rectangle((435,890,645,970),30,fill=p,outline=b,width=12);d.line((540,866,540,950),fill=b,width=12)
  elif key=='court':
