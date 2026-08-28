@@ -1,0 +1,118 @@
+name: Patch admin SEO autofill
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.event.head_commit.message == 'Add one-time admin SEO autofill patch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Add automatic keyword and summary generation
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('admin.html')
+          s=p.read_text(encoding='utf-8')
+
+          s=s.replace(
+            '<div class="form-group"><label>검색 키워드</label><input id="keywords" placeholder="인천상속등기, 상속등기, 상속재산분할협의"></div>',
+            '<div class="form-group"><label>검색 키워드 <span style="color:#2457a6;font-size:12px">자동생성</span></label><input id="keywords" placeholder="제목·카테고리·본문에서 자동 생성됩니다"><div class="admin-help">새 글은 자동 생성되며, 필요할 때만 직접 수정하세요.</div></div>'
+          )
+          s=s.replace(
+            '<div class="form-group full"><label>검색결과 설명·목록 요약</label><textarea id="summary" style="min-height:100px" maxlength="220" placeholder="글의 핵심 내용을 80~160자 정도로 작성"></textarea></div>',
+            '<div class="form-group full"><label>검색결과 설명·목록 요약 <span style="color:#2457a6;font-size:12px">자동생성</span></label><textarea id="summary" style="min-height:100px" maxlength="220" placeholder="제목·본문에서 80~160자 정도로 자동 생성됩니다"></textarea><div class="admin-help">본문의 핵심 내용을 자동 요약합니다. 직접 수정한 값은 덮어쓰지 않습니다.</div></div>'
+          )
+
+          marker="$('title').addEventListener('input',updateAutoSlug);\n$('category').addEventListener('change',updateAutoSlug);"
+          addon=r'''$('title').addEventListener('input',updateAutoSlug);
+$('category').addEventListener('change',updateAutoSlug);
+
+/* ===== SEO 자동생성: 검색 키워드 + 검색결과 설명/목록 요약 ===== */
+let seoAutoWriting=false;
+const SEO_STOP=new Set(['총정리','완벽정리','한눈에','정리','절차','방법','필요서류','서류','비용','기간','관할','기준','주의사항','주의','해야','하는','경우','관련','최신','안내','가이드','무엇','어떻게','그리고','또는','대한','위한','부터','까지','사망','사망후','사망시']);
+function seoCleanTitle(v){
+  return String(v||'').replace(/^\s*\[[^\]]+\]\s*/,'').replace(/[|·,:!?()\[\]{}]/g,' ').replace(/\s+/g,' ').trim();
+}
+function seoBodyText(){
+  const ed=$('editor');
+  if(!ed)return '';
+  let t=(ed.innerText||ed.textContent||'').replace(/\s+/g,' ').trim();
+  if(t==='여기에 글을 작성하세요.')return '';
+  return t;
+}
+function seoKeywords(title,category,body){
+  const cleaned=seoCleanTitle(title);
+  const words=(cleaned+' '+String(category||'')+' '+String(body||'').slice(0,500)).match(/[가-힣A-Za-z0-9]{2,}/g)||[];
+  const out=[];
+  const add=v=>{v=String(v||'').trim();if(v&&!SEO_STOP.has(v)&&!out.includes(v))out.push(v)};
+  add(category);
+  if(category && !String(category).startsWith('인천'))add('인천 '+category);
+  const subject=cleaned.split(/\s+(?:절차|방법|총정리|완벽정리|필요서류|비용|기간|관할|기준)\b/)[0].trim();
+  if(subject.length>=2 && subject.length<=24)add(subject);
+  words.forEach(add);
+  return out.slice(0,8).join(', ');
+}
+function seoSummary(title,body){
+  const clean=seoCleanTitle(title);
+  let text=String(body||'').replace(/\s+/g,' ').trim();
+  if(!text)text=clean;
+  if(clean && !text.startsWith(clean))text=clean+'. '+text;
+  text=text.replace(/\s+([,.!?])/g,'$1').trim();
+  if(text.length>160)text=text.slice(0,157).replace(/\s+\S*$/,'').trim()+'…';
+  return text;
+}
+function autoGenerateSeoFields(force=false){
+  if(typeof editingOriginalSlug!=='undefined' && editingOriginalSlug)return;
+  const title=$('title')?.value.trim()||'';
+  const category=$('category')?.value||'';
+  const body=seoBodyText();
+  const k=$('keywords'),m=$('summary');
+  if(!title){
+    if(k && k.dataset.seoManual!=='1')k.value='';
+    if(m && m.dataset.seoManual!=='1')m.value='';
+    return;
+  }
+  seoAutoWriting=true;
+  if(k && k.dataset.seoManual!=='1' && (force || !k.value.trim() || k.dataset.seoAuto==='1')){
+    k.value=seoKeywords(title,category,body);k.dataset.seoAuto='1';
+  }
+  if(m && m.dataset.seoManual!=='1' && (force || !m.value.trim() || m.dataset.seoAuto==='1')){
+    m.value=seoSummary(title,body);m.dataset.seoAuto='1';
+  }
+  seoAutoWriting=false;
+}
+$('keywords')?.addEventListener('input',e=>{if(!seoAutoWriting && e.isTrusted){e.currentTarget.dataset.seoManual='1';e.currentTarget.dataset.seoAuto='0'}});
+$('summary')?.addEventListener('input',e=>{if(!seoAutoWriting && e.isTrusted){e.currentTarget.dataset.seoManual='1';e.currentTarget.dataset.seoAuto='0'}});
+$('title')?.addEventListener('input',()=>autoGenerateSeoFields());
+$('category')?.addEventListener('change',()=>autoGenerateSeoFields());
+$('editor')?.addEventListener('input',()=>autoGenerateSeoFields());
+$('editor')?.addEventListener('paste',()=>setTimeout(()=>autoGenerateSeoFields(),40));
+$('publishBtn')?.addEventListener('click',()=>autoGenerateSeoFields(true),true);
+setTimeout(()=>autoGenerateSeoFields(),0);'''
+          if marker not in s:
+            raise SystemExit('JS insertion marker not found')
+          if 'SEO 자동생성: 검색 키워드 + 검색결과 설명/목록 요약' not in s:
+            s=s.replace(marker,addon,1)
+
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Verify patch
+        run: |
+          grep -q 'SEO 자동생성: 검색 키워드' admin.html
+          grep -q '검색 키워드 <span' admin.html
+          grep -q '검색결과 설명·목록 요약 <span' admin.html
+      - name: Commit patched admin
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add admin.html
+          git commit -m 'Automate admin SEO keywords and summary [auto-seo-admin]'
+          git push
