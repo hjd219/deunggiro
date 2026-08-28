@@ -2,7 +2,7 @@
   const path=location.pathname;
   if(!path.startsWith('/posts/'))return;
 
-  const esc=v=>String(v||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+  const esc=v=>String(v||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#039;'}[m]));
   const normalize=c=>{
     c=String(c||'').trim();
     if(c.includes('상속포기')||c.includes('한정승인'))return '상속포기·한정승인';
@@ -23,7 +23,27 @@
     '법률정보':['관련 절차와 준비서류를 확인해드립니다.','현재 상황에 맞는 진행방법과 필요한 서류를 확인하세요.']
   };
 
+  function removeLegacyDuplicateActions(article){
+    article.querySelectorAll('.related').forEach(related=>{
+      const text=(related.textContent||'').replace(/\s+/g,' ');
+      const hasPhone=text.includes('032-425-1500');
+      const hasList=text.includes('법률정보 목록');
+      const hasPrevNext=text.includes('이전 ')||text.includes('다음 ');
+      if(hasPhone&&hasList&&!hasPrevNext)related.remove();
+    });
+    article.querySelectorAll('a').forEach(a=>{
+      const text=(a.textContent||'').trim();
+      if(text==='032-425-1500 상담' || /법률정보 목록$/.test(text)){
+        const wrap=a.closest('.related');
+        if(wrap && !(wrap.textContent||'').includes('이전 ') && !(wrap.textContent||'').includes('다음 ')) wrap.remove();
+      }
+    });
+  }
+
   async function run(){
+    const article=document.querySelector('.article');
+    if(!article)return;
+    removeLegacyDuplicateActions(article);
     if(document.querySelector('.dg-topic-cta'))return;
     const match=path.match(/\/posts\/([^/]+)\.html$/i);if(!match)return;
     let category='법률정보';
@@ -50,8 +70,6 @@
     box.setAttribute('aria-label','상담 안내');
     box.innerHTML=`<div class="dg-topic-cta-kicker">CONSULTATION</div><h2>${esc(title)}</h2><p>${esc(desc)}</p><div class="dg-topic-cta-actions"><a class="dg-topic-call" href="tel:0324251500">032-425-1500 전화상담</a><a class="dg-topic-list" href="/posts.html?category=${encodeURIComponent(category)}">같은 분야 글 보기</a></div>`;
 
-    const article=document.querySelector('.article');
-    if(!article)return;
     const related=article.querySelector('.related');
     if(related)related.parentNode.insertBefore(box,related);
     else article.appendChild(box);
