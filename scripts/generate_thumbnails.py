@@ -20,23 +20,15 @@ def short_title(t):
   if len(head)>=12:return head
  return t.strip()
 def pick_point(t):
- # Automatic phrase extraction: no per-topic keyword list is required.
  text=re.sub(r'[\[\](){}]',' ',t);text=re.sub(r'\s+',' ',text).strip()
  stop={'총정리','완벽정리','한눈에','정리','절차','방법','필요서류','서류','비용','기간','관할','기준','주의사항','해야','할','일','후','시','경우','어떻게','하나요','부터','까지','관련','최신','글','인천'}
- # Prefer meaningful Korean noun phrases immediately before common legal/action words.
- patterns=[
-  r'([가-힣A-Za-z0-9]{2,12}\s*[가-힣A-Za-z0-9]{0,8})(변경등기|변경|이전|말소|설정|설립|증자|감자|해임|선임|사임|포기|승인|등기|분할|심판|신청|허가|신고)',
-  r'([가-힣A-Za-z0-9]{2,16})(보험금|해지환급금|유족연금|퇴직금|취득세|과태료)',
- ]
+ patterns=[r'([가-힣A-Za-z0-9]{2,12}\s*[가-힣A-Za-z0-9]{0,8})(변경등기|변경|이전|말소|설정|설립|증자|감자|해임|선임|사임|포기|승인|등기|분할|심판|신청|허가|신고)',r'([가-힣A-Za-z0-9]{2,16})(보험금|해지환급금|유족연금|퇴직금|취득세|과태료)']
  for pat in patterns:
   m=re.search(pat,text)
   if m:
-   phrase=''.join(x for x in m.groups() if x).strip()
-   phrase=re.sub(r'^(부모님|부모|남편|아내|배우자|가족)\s+(사망\s+후\s+)?','',phrase).strip()
+   phrase=''.join(x for x in m.groups() if x).strip();phrase=re.sub(r'^(부모님|부모|남편|아내|배우자|가족)\s+(사망\s+후\s+)?','',phrase).strip()
    if 2<=len(phrase)<=18:return phrase
- # Score chunks from the title and choose a compact subject phrase.
- chunks=[c.strip() for c in re.split(r'[·,|:/?！!]|\s+-\s+',text) if c.strip()]
- candidates=[]
+ chunks=[c.strip() for c in re.split(r'[·,|:/?！!]|\s+-\s+',text) if c.strip()];candidates=[]
  for c in chunks:
   words=[w for w in c.split() if w not in stop and len(w)>1]
   if not words:continue
@@ -48,8 +40,7 @@ def pick_point(t):
      if any(s in p for s in ['총정리','절차','방법','서류','기간','관할']):score-=8
      candidates.append((score,p))
  if candidates:return max(candidates,key=lambda x:x[0])[1]
- words=[w for w in text.split() if w not in stop and len(w)>1]
- return words[0] if words else ''
+ words=[w for w in text.split() if w not in stop and len(w)>1];return words[0] if words else ''
 def wrap_text(d,text,f,max_width):
  words=re.split(r'(\s+|·|,|\?|!)',text);lines=[];cur=''
  for token in words:
@@ -83,8 +74,7 @@ def create_thumbnail(post,path):
 def patch_article(post,thumb):
  slug=post.get('slug');p=ROOT/'posts'/f'{slug}.html'
  if not p.exists():return
- s=p.read_text(encoding='utf-8');rel='/'+thumb.as_posix().lstrip('/');absu='https://www.deunggiro.kr'+rel;pageu=f'https://www.deunggiro.kr/posts/{slug}.html'
- title=post.get('title','').strip();summary=post.get('summary','').strip();date=post.get('date','').strip()
+ s=p.read_text(encoding='utf-8');rel='/'+thumb.as_posix().lstrip('/');absu='https://www.deunggiro.kr'+rel;pageu=f'https://www.deunggiro.kr/posts/{slug}.html';title=post.get('title','').strip();summary=post.get('summary','').strip();date=post.get('date','').strip()
  if re.search(r'<meta\s+name=["\']dg-thumbnail["\']',s,re.I):s=re.sub(r'<meta\s+name=["\']dg-thumbnail["\']\s+content=["\'][^"\']*["\']\s*/?>',f'<meta name="dg-thumbnail" content="{rel}">',s,flags=re.I)
  else:s=s.replace('</head>',f'<meta name="dg-thumbnail" content="{rel}">\n</head>',1)
  meta_tags=[('property','og:image',absu),('property','og:image:secure_url',absu),('property','og:image:width','1080'),('property','og:image:height','1080'),('property','og:image:type','image/png'),('name','twitter:image',absu),('name','twitter:card','summary_large_image')]
@@ -96,8 +86,7 @@ def patch_article(post,thumb):
   def add_large(m):
    tag=m.group(0);cm=re.search(r'content=["\']([^"\']*)',tag,re.I);content=cm.group(1) if cm else ''
    if 'max-image-preview:' in content:return tag
-   new=(content+', max-image-preview:large').strip(' ,')
-   return re.sub(r'content=["\'][^"\']*["\']',f'content="{new}"',tag,flags=re.I) if cm else tag
+   new=(content+', max-image-preview:large').strip(' ,');return re.sub(r'content=["\'][^"\']*["\']',f'content="{new}"',tag,flags=re.I) if cm else tag
   s=re.sub(r'<meta\s+name=["\']robots["\'][^>]*>',add_large,s,count=1,flags=re.I)
  else:s=s.replace('</head>','<meta name="robots" content="index,follow,max-image-preview:large">\n</head>',1)
  schema={"@context":"https://schema.org","@type":"Article","mainEntityOfPage":{"@type":"WebPage","@id":pageu},"headline":title,"description":summary or title,"image":{"@type":"ImageObject","url":absu,"width":1080,"height":1080},"datePublished":date,"dateModified":date,"author":{"@type":"Organization","name":"현재두 법무사 사무소"},"publisher":{"@type":"Organization","name":"등기로","url":"https://www.deunggiro.kr/"}}
@@ -105,8 +94,9 @@ def patch_article(post,thumb):
  if re.search(r'<script[^>]+id=["\']dg-article-schema["\'][^>]*>.*?</script>',s,re.I|re.S):s=re.sub(r'<script[^>]+id=["\']dg-article-schema["\'][^>]*>.*?</script>',schema_tag,s,count=1,flags=re.I|re.S)
  else:s=s.replace('</head>',schema_tag+'\n</head>',1)
  hero=f'<figure id="dg-post-hero-image" class="dg-post-hero-image"><img src="{rel}" alt="{title.replace("&","&amp;").replace(chr(34),"&quot;")}" width="1080" height="1080" loading="eager" fetchpriority="high" decoding="async"></figure>'
- hero_style='<style id="dg-post-hero-style">.dg-post-hero-image{max-width:720px;margin:24px auto 32px}.dg-post-hero-image img{display:block;width:100%;height:auto;border-radius:18px}</style>'
- if 'id="dg-post-hero-style"' not in s:s=s.replace('</head>',hero_style+'\n</head>',1)
+ hero_style='<style id="dg-post-hero-style">.dg-post-hero-image{width:100%;max-width:550px;margin:24px auto 32px}.dg-post-hero-image img{display:block;width:100%;height:auto;border-radius:18px}@media(max-width:600px){.dg-post-hero-image{max-width:100%;margin:18px auto 26px}}</style>'
+ if re.search(r'<style[^>]+id=["\']dg-post-hero-style["\'][^>]*>.*?</style>',s,re.I|re.S):s=re.sub(r'<style[^>]+id=["\']dg-post-hero-style["\'][^>]*>.*?</style>',hero_style,s,count=1,flags=re.I|re.S)
+ else:s=s.replace('</head>',hero_style+'\n</head>',1)
  if re.search(r'<figure[^>]+id=["\']dg-post-hero-image["\'][^>]*>.*?</figure>',s,re.I|re.S):s=re.sub(r'<figure[^>]+id=["\']dg-post-hero-image["\'][^>]*>.*?</figure>',hero,s,count=1,flags=re.I|re.S)
  else:
   m=re.search(r'</h1>',s,re.I)
