@@ -78,22 +78,45 @@ def create_thumbnail(post,path):
  img=Image.new('RGBA',(SIZE,SIZE),WHITE);d=ImageDraw.Draw(img);d.rounded_rectangle((18,18,SIZE-18,SIZE-18),radius=34,fill=WHITE,outline=SKY,width=12);draw_logo(img,d,post.get('category',''));title=short_title(post.get('title',''));point=pick_point(title);tf,lines=fit_title(d,title,900,3);lh=int(tf.size*1.18);sy=max(285,500-(lh*len(lines))//2)
  for i,line in enumerate(lines):highlighted(d,line,tf,sy+i*lh,point)
  draw_emoji(img,pick_icon(title,post.get('category','')));img.convert('RGB').save(path,'PNG',optimize=True)
-def patch_article(slug,thumb):
- p=ROOT/'posts'/f'{slug}.html'
+def patch_article(post,thumb):
+ slug=post.get('slug');p=ROOT/'posts'/f'{slug}.html'
  if not p.exists():return
- s=p.read_text(encoding='utf-8');rel='/'+thumb.as_posix().lstrip('/');absu='https://www.deunggiro.kr'+rel
+ s=p.read_text(encoding='utf-8');rel='/'+thumb.as_posix().lstrip('/');absu='https://www.deunggiro.kr'+rel;pageu=f'https://www.deunggiro.kr/posts/{slug}.html'
+ title=post.get('title','').strip();summary=post.get('summary','').strip();date=post.get('date','').strip()
  if re.search(r'<meta\s+name=["\']dg-thumbnail["\']',s,re.I):s=re.sub(r'<meta\s+name=["\']dg-thumbnail["\']\s+content=["\'][^"\']*["\']\s*/?>',f'<meta name="dg-thumbnail" content="{rel}">',s,flags=re.I)
  else:s=s.replace('</head>',f'<meta name="dg-thumbnail" content="{rel}">\n</head>',1)
- for prop in ['og:image','twitter:image']:
-  attr='property' if prop=='og:image' else 'name';pat=rf'<meta\s+{attr}=["\']{re.escape(prop)}["\']\s+content=["\'][^"\']*["\']\s*/?>';tag=f'<meta {attr}="{prop}" content="{absu}">'
+ meta_tags=[
+  ('property','og:image',absu),('property','og:image:secure_url',absu),('property','og:image:width','1080'),('property','og:image:height','1080'),('property','og:image:type','image/png'),
+  ('name','twitter:image',absu),('name','twitter:card','summary_large_image')]
+ for attr,key,val in meta_tags:
+  pat=rf'<meta\s+{attr}=["\']{re.escape(key)}["\']\s+content=["\'][^"\']*["\']\s*/?>';tag=f'<meta {attr}="{key}" content="{val}">'
   if re.search(pat,s,re.I):s=re.sub(pat,tag,s,flags=re.I)
   else:s=s.replace('</head>',tag+'\n</head>',1)
+ if re.search(r'<meta\s+name=["\']robots["\']',s,re.I):
+  def add_large(m):
+   tag=m.group(0);cm=re.search(r'content=["\']([^"\']*)',tag,re.I);content=cm.group(1) if cm else ''
+   if 'max-image-preview:' in content:return tag
+   new=(content+', max-image-preview:large').strip(' ,')
+   return re.sub(r'content=["\'][^"\']*["\']',f'content="{new}"',tag,flags=re.I) if cm else tag
+  s=re.sub(r'<meta\s+name=["\']robots["\'][^>]*>',add_large,s,count=1,flags=re.I)
+ else:s=s.replace('</head>','<meta name="robots" content="index,follow,max-image-preview:large">\n</head>',1)
+ schema={"@context":"https://schema.org","@type":"Article","mainEntityOfPage":{"@type":"WebPage","@id":pageu},"headline":title,"description":summary or title,"image":{"@type":"ImageObject","url":absu,"width":1080,"height":1080},"datePublished":date,"dateModified":date,"author":{"@type":"Organization","name":"현재두 법무사 사무소"},"publisher":{"@type":"Organization","name":"등기로","url":"https://www.deunggiro.kr/"}}
+ schema_tag='<script type="application/ld+json" id="dg-article-schema">'+json.dumps(schema,ensure_ascii=False,separators=(',',':'))+'</script>'
+ if re.search(r'<script[^>]+id=["\']dg-article-schema["\'][^>]*>.*?</script>',s,re.I|re.S):s=re.sub(r'<script[^>]+id=["\']dg-article-schema["\'][^>]*>.*?</script>',schema_tag,s,count=1,flags=re.I|re.S)
+ else:s=s.replace('</head>',schema_tag+'\n</head>',1)
+ hero=f'<figure id="dg-post-hero-image" class="dg-post-hero-image"><img src="{rel}" alt="{title.replace("&","&amp;").replace(chr(34),"&quot;")}" width="1080" height="1080" loading="eager" fetchpriority="high" decoding="async"></figure>'
+ hero_style='<style id="dg-post-hero-style">.dg-post-hero-image{max-width:720px;margin:24px auto 32px}.dg-post-hero-image img{display:block;width:100%;height:auto;border-radius:18px}</style>'
+ if 'id="dg-post-hero-style"' not in s:s=s.replace('</head>',hero_style+'\n</head>',1)
+ if re.search(r'<figure[^>]+id=["\']dg-post-hero-image["\'][^>]*>.*?</figure>',s,re.I|re.S):s=re.sub(r'<figure[^>]+id=["\']dg-post-hero-image["\'][^>]*>.*?</figure>',hero,s,count=1,flags=re.I|re.S)
+ else:
+  m=re.search(r'</h1>',s,re.I)
+  if m:s=s[:m.end()]+hero+s[m.end():]
  p.write_text(s,encoding='utf-8')
 def main():
  posts=json.loads(POSTS_JSON.read_text(encoding='utf-8'))
  for post in posts:
   slug=post.get('slug')
   if not slug:continue
-  out=OUT_DIR/f'{slug}-thumbnail.png';create_thumbnail(post,out);post['thumbnail']='/assets/posts/'+out.name;patch_article(slug,out.relative_to(ROOT))
- POSTS_JSON.write_text(json.dumps(posts,ensure_ascii=False,indent=2)+'\n',encoding='utf-8');print('generated',len(posts),'thumbnails with previous icon assets')
+  out=OUT_DIR/f'{slug}-thumbnail.png';create_thumbnail(post,out);post['thumbnail']='/assets/posts/'+out.name;patch_article(post,out.relative_to(ROOT))
+ POSTS_JSON.write_text(json.dumps(posts,ensure_ascii=False,indent=2)+'\n',encoding='utf-8');print('generated',len(posts),'thumbnails with image SEO markup')
 if __name__=='__main__':main()
