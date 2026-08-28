@@ -6,9 +6,9 @@ from pathlib import Path
 from urllib.parse import urljoin,urlparse,parse_qs
 import requests
 from bs4 import BeautifulSoup
-ROOT=Path(__file__).resolve().parents[1];POSTS_JSON=ROOT/'data'/'posts.json';POSTS_DIR=ROOT/'posts';BLOG_ID='hjd21';RSS_URL=f'https://rss.blog.naver.com/{BLOG_ID}.xml';BASE='https://www.deunggiro.kr';MAX_IMPORT=3
+ROOT=Path(__file__).resolve().parents[1];POSTS_JSON=ROOT/'data'/'posts.json';POSTS_DIR=ROOT/'posts';MEDIA_ROOT=ROOT/'assets'/'naver-images';BLOG_ID='hjd21';RSS_URL=f'https://rss.blog.naver.com/{BLOG_ID}.xml';BASE='https://www.deunggiro.kr';MAX_IMPORT=3
 CATEGORY_RULES=[('상속포기·한정승인',('상속포기','한정승인','특별한정승인','상속채무','망인 예금','보험금','해지환급금')),('상속재산분할',('상속재산분할','상속분쟁','기여분','특별수익','협조거부','연락두절')),('법인등기',('법인','주식회사','유한회사','대표이사','이사','감사','주주','본점이전','자본금','증자','감자','상호변경','목적변경','해산','청산')),('가사',('협의이혼','재판이혼','이혼','개명','성년후견','한정후견','친권','양육비')),('부동산등기',('근저당','가압류','등기권리증','등기필증','매매','증여','전세권','소유권이전','부동산','재산분할등기','신탁등기')),('상속등기',('상속등기','대습상속','상속취득세','상속인','상속지분','상속재산','유언','부모님 사망','가족 사망'))]
-UA={'User-Agent':'Mozilla/5.0 (compatible; DeunggiroBlogImporter/1.3; +https://www.deunggiro.kr/)'}
+UA={'User-Agent':'Mozilla/5.0 (compatible; DeunggiroBlogImporter/1.4; +https://www.deunggiro.kr/)'}
 def get(url):
  r=requests.get(url,headers=UA,timeout=25);r.raise_for_status()
  try:r.content.decode('utf-8');r.encoding='utf-8'
@@ -28,18 +28,35 @@ def resolve_post_view(url):
  if iframe and iframe.get('src'):return urljoin('https://blog.naver.com/',iframe['src'])
  n=log_no_from_url(url);return f'https://blog.naver.com/PostView.naver?blogId={BLOG_ID}&logNo={n}&redirect=Dlog&widgetTypeCall=true&directAccess=false' if n else url
 def heading_like(txt):
- """1.부터 99.까지 숫자형 및 1️⃣ 2️⃣ 3️⃣ 키캡 번호는 소제목으로 인식. ①②③ 원문자는 일반 본문 유지."""
- t=re.sub(r'\s+',' ',txt).strip()
- numbered=bool(re.match(r'^(?:[1-9]|[1-9][0-9])[.)]\s*\S',t))
- keycap=bool(re.match(r'^(?:[1-9]|[1-9][0-9])️⃣\s*\S',t))
- return (numbered or keycap) and len(t)<=100
-def clean_article(url):
+ t=re.sub(r'\s+',' ',txt).strip();numbered=bool(re.match(r'^(?:[1-9]|[1-9][0-9])[.)]\s*\S',t));keycap=bool(re.match(r'^(?:[1-9]|[1-9][0-9])️⃣\s*\S',t));return (numbered or keycap) and len(t)<=100
+def image_ext(resp,url):
+ ct=(resp.headers.get('content-type') or '').lower()
+ if 'png' in ct:return '.png'
+ if 'webp' in ct:return '.webp'
+ if 'gif' in ct:return '.gif'
+ if 'jpeg' in ct or 'jpg' in ct:return '.jpg'
+ ext=Path(urlparse(url).path).suffix.lower()
+ return ext if ext in ('.jpg','.jpeg','.png','.gif','.webp') else '.jpg'
+def save_image(src,slug,index):
+ try:
+  r=requests.get(src,headers=UA,timeout=30);r.raise_for_status()
+  if not r.content:return src
+  folder=MEDIA_ROOT/slug;folder.mkdir(parents=True,exist_ok=True)
+  path=folder/f'{index:02d}{image_ext(r,src)}';path.write_bytes(r.content)
+  return '/'+path.relative_to(ROOT).as_posix()
+ except Exception as e:
+  print('IMAGE_SKIP',src,e,file=sys.stderr);return src
+def clean_article(url,slug=''):
  view=resolve_post_view(url);r=get(view);soup=BeautifulSoup(r.text,'html.parser');root=soup.select_one('.se-main-container') or soup.select_one('#postViewArea') or soup.select_one('.post-view')
  if root is None:raise RuntimeError('네이버 본문 영역을 찾지 못했습니다.')
  for bad in root.select('script,style,noscript,iframe,button'):bad.decompose()
+ image_no=0
  for tag in root.find_all(True):
   if tag.name=='img':
-   src=tag.get('data-lazy-src') or tag.get('data-src') or tag.get('src') or '';src=('https:'+src) if src.startswith('//') else src;tag.attrs={'src':src,'alt':''} if src else {}
+   src=tag.get('data-lazy-src') or tag.get('data-src') or tag.get('src') or '';src=('https:'+src) if src.startswith('//') else src
+   if src and slug:
+    image_no+=1;src=save_image(src,slug,image_no)
+   tag.attrs={'src':src,'alt':''} if src else {}
   elif tag.name=='a':
    href=tag.get('href') or '';tag.attrs={'href':href,'target':'_blank','rel':'noopener noreferrer'} if href.startswith('http') else {}
   else:tag.attrs={}
@@ -85,22 +102,22 @@ def refresh_existing_imports(posts):
  for post in posts:
   if post.get('source')!='naver-blog' or not post.get('source_url'):continue
   slug=str(post.get('slug','')).replace('.html','');page=POSTS_DIR/f'{slug}.html'
-  try:body,text=clean_article(post['source_url'])
+  try:body,text=clean_article(post['source_url'],slug)
   except Exception as e:print('REFRESH_SKIP',slug,e,file=sys.stderr);continue
   if len(text)<80 or looks_mojibake(text):continue
   post['summary']=summary_from(text,post.get('title',''));post['category']=infer_category(post.get('title','')+' '+text[:500]);page.write_text(build_html(post,body),encoding='utf-8');refreshed+=1;print('REFRESHED',slug)
  return refreshed
 def main():
- POSTS_DIR.mkdir(exist_ok=True);posts=load_posts();refreshed=refresh_existing_imports(posts);existing_titles={norm_title(p.get('title','')) for p in posts};existing_sources={str(p.get('source_url','')).strip() for p in posts if p.get('source_url')};imported=0
+ POSTS_DIR.mkdir(exist_ok=True);MEDIA_ROOT.mkdir(parents=True,exist_ok=True);posts=load_posts();refreshed=refresh_existing_imports(posts);existing_titles={norm_title(p.get('title','')) for p in posts};existing_sources={str(p.get('source_url','')).strip() for p in posts if p.get('source_url')};imported=0
  for item in fetch_feed_items():
   if imported>=MAX_IMPORT:break
   if item['link'] in existing_sources or norm_title(item['title']) in existing_titles:continue
   n=log_no_from_url(item['link'])
   if not n:continue
-  try:body,text=clean_article(item['link'])
+  slug=f'naver-{n}'
+  try:body,text=clean_article(item['link'],slug)
   except Exception as e:print('SKIP',item['link'],e,file=sys.stderr);continue
   if len(text)<80 or looks_mojibake(text):continue
-  slug=f'naver-{n}'
   if any(str(p.get('slug','')).replace('.html','')==slug for p in posts):continue
   post={'title':item['title'],'category':infer_category(item['title']+' '+text[:500]),'date':item['date'],'slug':slug,'keywords':item['title'],'summary':summary_from(text,item['title']),'source_url':item['link'],'source':'naver-blog'};(POSTS_DIR/f'{slug}.html').write_text(build_html(post,body),encoding='utf-8');posts.insert(0,post);existing_titles.add(norm_title(post['title']));existing_sources.add(item['link']);imported+=1;print('IMPORTED',slug,post['title'])
  if imported or refreshed:POSTS_JSON.write_text(json.dumps(posts,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
