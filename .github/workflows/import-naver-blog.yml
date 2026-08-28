@@ -22,12 +22,14 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install importer dependencies
+      - name: Install importer and thumbnail dependencies
         run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk
           python -m pip install --upgrade pip
-          pip install requests beautifulsoup4 lxml
+          pip install requests beautifulsoup4 lxml pillow
 
-      - name: Import up to 3 missing Naver blog posts
+      - name: Import Naver posts and publish thumbnails immediately
         shell: bash
         run: |
           set -e
@@ -37,13 +39,50 @@ jobs:
           git reset --hard origin/main
 
           python scripts/import_naver_blog.py
-          python -m py_compile scripts/import_naver_blog.py
 
-          if git diff --quiet && [ -z "$(git status --porcelain --untracked-files=normal posts data/posts.json)" ]; then
-            echo "No missing Naver blog posts"
+          # 네이버 자동수집 커밋이 다른 워크플로를 다시 실행시키지 않아도
+          # 같은 실행 안에서 썸네일·목록·메타정보까지 바로 생성한다.
+          python scripts/patch_admin_seo.py
+          python scripts/patch_admin_category.py
+          python scripts/site_maintenance.py
+          python scripts/generate_thumbnails.py
+          python scripts/fix_thumbnail_logo.py
+          python scripts/site_maintenance.py
+          python scripts/apply_latest_cards.py
+
+          python -m py_compile \
+            scripts/import_naver_blog.py \
+            scripts/patch_admin_seo.py \
+            scripts/patch_admin_category.py \
+            scripts/site_maintenance.py \
+            scripts/generate_thumbnails.py \
+            scripts/fix_thumbnail_logo.py \
+            scripts/apply_latest_cards.py
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          posts=json.loads(Path('data/posts.json').read_text(encoding='utf-8'))
+          missing=[]
+          for p in posts:
+              slug=(p.get('slug') or '').replace('.html','')
+              thumb=(p.get('thumbnail') or '').strip()
+              if not thumb:
+                  missing.append(slug+': empty thumbnail')
+              elif not Path(thumb.lstrip('/')).exists():
+                  missing.append(thumb)
+          if missing:
+              raise SystemExit('Missing thumbnails: '+', '.join(missing[:20]))
+          print('validated',len(posts),'posts with thumbnails')
+          PY
+
+          git diff --check
+
+          if git diff --quiet && [ -z "$(git status --porcelain --untracked-files=normal)" ]; then
+            echo "No Naver or generated changes"
             exit 0
           fi
 
-          git add data/posts.json posts
-          git commit -m "네이버 블로그 미반영 글 하루 최대 3개 홈페이지 자동반영"
+          git add admin.html data/posts.json posts posts.html assets/posts index.html inheritance.html renunciation.html corporate.html realestate.html family.html
+          git commit -m "네이버 글·썸네일·목록 자동반영"
           git push origin HEAD:main
