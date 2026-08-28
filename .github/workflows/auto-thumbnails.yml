@@ -1,0 +1,69 @@
+name: Auto Post Thumbnails
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/posts.json'
+      - 'posts/**'
+      - 'scripts/generate_thumbnails.py'
+      - '.github/workflows/auto-thumbnails.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: auto-thumbnails-main
+  cancel-in-progress: true
+
+jobs:
+  generate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Korean fonts and Pillow
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk
+          python -m pip install --upgrade pip
+          pip install pillow
+
+      - name: Generate all thumbnails
+        run: python scripts/generate_thumbnails.py
+
+      - name: Validate generated files
+        run: |
+          python -m py_compile scripts/generate_thumbnails.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          posts=json.loads(Path('data/posts.json').read_text(encoding='utf-8'))
+          missing=[]
+          for p in posts:
+              f=Path(p['thumbnail'].lstrip('/'))
+              if not f.exists(): missing.append(str(f))
+          if missing:
+              raise SystemExit('Missing thumbnails: '+', '.join(missing[:10]))
+          print('validated', len(posts), 'thumbnails')
+          PY
+          git diff --check
+
+      - name: Commit thumbnail updates
+        shell: bash
+        run: |
+          if git diff --quiet && [ -z "$(git status --porcelain --untracked-files=normal assets/posts)" ]; then
+            echo "No thumbnail changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/posts.json posts assets/posts
+          git commit -m "게시글 썸네일 자동 생성 및 기존 글 일괄 적용"
+          git pull --rebase origin main
+          git push origin HEAD:main
