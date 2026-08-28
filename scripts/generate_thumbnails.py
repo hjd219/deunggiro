@@ -15,7 +15,7 @@ def short_title(t):
  if len(t)>38 and len(parts)>1:t=' · '.join(parts[:2])
  return t.strip()
 def pick_point(t):
- for k in ['상속순위','대습상속','3개월','임기만료','본점이전','본점 이전','상속재산','예금','보험금','주주전원','서면결의','대표이사','상속포기','한정승인','상속등기','취득세','증자','상호변경','목적변경','재산분할','근저당']:
+ for k in ['상속순위','대습상속','3개월','임기만료','본점이전','본점 이전','상속재산','예금','보험금','주주전원','서면결의','대표이사','상속포기','한정승인','상속등기','취득세','증자','자본금','상호변경','목적변경','재산분할','근저당','담보']:
   if k in t:return k
  return ''
 def wrap_text(d,text,f,max_width):
@@ -40,16 +40,24 @@ def draw_logo(img,d,category):
   except:pass
  d.text((202,68),'등기로',font=font(56,True),fill=BLUE);d.text((204,136),category or '법률정보',font=font(30,True),fill=INK)
 def pick_icon(t,category):
- if any(k in t for k in ['상속순위','대습상속','상속인 순위']):return '🪜'
+ # Specific legal subjects first so they are not swallowed by generic words.
+ if any(k in t for k in ['상속재산분할','재산분할심판','상속분쟁','분할심판','심판청구']):return '🏛️'
+ if any(k in t for k in ['상속순위','대습상속','상속인 순위']):return '👨‍👩‍👧‍👦'
+ if '상속포기' in t:return '🙅'
+ if '한정승인' in t:return '🛡️'
  if any(k in t for k in ['3개월','기간','기한']):return '⏳'
- if any(k in t for k in ['임기','임기만료','날짜']):return '📅'
- if any(k in t for k in ['본점이전','본점 이전','주소변경','주소 변경']):return '📍'
+ if any(k in t for k in ['본점이전','본점 이전','주소변경','주소 변경']):return '🚚'
+ if '대표이사' in t and any(k in t for k in ['변경','선임','사임','해임']):return '🔄'
+ if any(k in t for k in ['상호변경','상호 변경']):return '🪧'
+ if any(k in t for k in ['목적변경','목적 변경']):return '🧭'
+ if any(k in t for k in ['증자','자본금']):return '📈'
+ if any(k in t for k in ['근저당','담보']):return '🏦'
+ if any(k in t for k in ['주주','서면결의','주주총회','결의']):return '🗳️'
+ if any(k in t for k in ['예금','보험금','금융','퇴직금','주식']):return '💵'
  if any(k in t for k in ['조회','찾기','확인']):return '🔍'
- if any(k in t for k in ['예금','보험금','금융','퇴직금','주식']):return '🏦'
- if any(k in t for k in ['주주','서면결의','주주총회']):return '🗳️'
- if any(k in t for k in ['대표이사','임원','감사','이사']):return '🧑‍💼'
- if category=='법인등기':return '🧑‍💼'
- if category=='상속포기·한정승인':return '⏳'
+ if any(k in t for k in ['임기','임기만료','날짜']):return '📅'
+ if category=='부동산등기' or any(k in t for k in ['부동산등기','상속등기','소유권이전']):return '🏠'
+ # User-selected default for all other unmatched subjects.
  return '🔍'
 def draw_emoji(img,emoji):
  if not os.path.exists(EMOJI_FONT):return
@@ -88,5 +96,5 @@ def main():
   slug=post.get('slug')
   if not slug:continue
   out=OUT_DIR/f'{slug}-thumbnail.png';create_thumbnail(post,out);post['thumbnail']='/assets/posts/'+out.name;patch_article(slug,out.relative_to(ROOT))
- POSTS_JSON.write_text(json.dumps(posts,ensure_ascii=False,indent=2)+'\n',encoding='utf-8');print('generated',len(posts),'thumbnails without ellipsis')
+ POSTS_JSON.write_text(json.dumps(posts,ensure_ascii=False,indent=2)+'\n',encoding='utf-8');print('generated',len(posts),'thumbnails with updated icon mapping')
 if __name__=='__main__':main()
