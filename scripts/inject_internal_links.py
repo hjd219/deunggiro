@@ -64,8 +64,8 @@ def main():
     pat = re.compile(re.escape(START) + r'[\s\S]*?' + re.escape(END), re.M)
     changed = 0
     for post in posts:
-        if post.get('source') != 'naver-blog':
-            continue
+        # 네이버 자동수집글과 관리자에서 수동 작성한 글을 구분하지 않고
+        # data/posts.json에 등록된 모든 상세글을 같은 내부링크 3개 규칙으로 통일한다.
         slug = str(post.get('slug','')).replace('.html','')
         if not slug:
             continue
@@ -82,7 +82,7 @@ def main():
         if new != text:
             path.write_text(new, encoding='utf-8')
             changed += 1
-    print('internal related links injected:', changed)
+    print('internal related links injected for all posts:', changed)
 
 
 if __name__ == '__main__':
