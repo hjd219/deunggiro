@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup, NavigableString, Tag
 ROOT=Path(__file__).resolve().parents[1];POSTS_JSON=ROOT/'data'/'posts.json';POSTS_DIR=ROOT/'posts';MEDIA_ROOT=ROOT/'assets'/'naver-images';BLOG_ID='hjd21';RSS_URL=f'https://rss.blog.naver.com/{BLOG_ID}.xml';BASE='https://www.deunggiro.kr';MAX_IMPORT=3
 CATEGORY_RULES=[('상속포기·한정승인',('상속포기','한정승인','특별한정승인','상속채무','망인 예금','보험금','해지환급금')),('상속재산분할',('상속재산분할','상속분쟁','기여분','특별수익','협조거부','연락두절')),('법인등기',('법인','주식회사','유한회사','대표이사','이사','감사','주주','본점이전','자본금','증자','감자','상호변경','목적변경','해산','청산')),('가사',('협의이혼','재판이혼','이혼','개명','성년후견','한정후견','친권','양육비')),('부동산등기',('근저당','가압류','등기권리증','등기필증','매매','증여','전세권','소유권이전','부동산','재산분할등기','신탁등기')),('상속등기',('상속등기','대습상속','상속취득세','상속인','상속지분','상속재산','유언','부모님 사망','가족 사망'))]
 FOOTER_IMAGE_MARKERS=('현재두법무사','현재두 법무사','032-425-1500','경원대로 873','상담 안내','상담안내')
-UA={'User-Agent':'Mozilla/5.0 (compatible; DeunggiroBlogImporter/1.5; +https://www.deunggiro.kr/)'}
+UA={'User-Agent':'Mozilla/5.0 (compatible; DeunggiroBlogImporter/1.6; +https://www.deunggiro.kr/)'}
 def get(url):
  r=requests.get(url,headers=UA,timeout=25);r.raise_for_status()
  try:r.content.decode('utf-8');r.encoding='utf-8'
@@ -28,27 +28,20 @@ def resolve_post_view(url):
  r=get(url);soup=BeautifulSoup(r.text,'html.parser');iframe=soup.select_one('iframe#mainFrame, iframe[name="mainFrame"]')
  if iframe and iframe.get('src'):return urljoin('https://blog.naver.com/',iframe['src'])
  n=log_no_from_url(url);return f'https://blog.naver.com/PostView.naver?blogId={BLOG_ID}&logNo={n}&redirect=Dlog&widgetTypeCall=true&directAccess=false' if n else url
-def heading_like(txt):
- t=re.sub(r'\s+',' ',txt).strip();numbered=bool(re.match(r'^(?:[1-9]|[1-9][0-9])[.)]\s*\S',t));keycap=bool(re.match(r'^(?:[1-9]|[1-9][0-9])️⃣\s*\S',t));return (numbered or keycap) and len(t)<=120
 def image_ext(resp,url):
  ct=(resp.headers.get('content-type') or '').lower()
  if 'png' in ct:return '.png'
  if 'webp' in ct:return '.webp'
  if 'gif' in ct:return '.gif'
  if 'jpeg' in ct or 'jpg' in ct:return '.jpg'
- ext=Path(urlparse(url).path).suffix.lower()
- return ext if ext in ('.jpg','.jpeg','.png','.gif','.webp') else '.jpg'
+ ext=Path(urlparse(url).path).suffix.lower();return ext if ext in ('.jpg','.jpeg','.png','.gif','.webp') else '.jpg'
 def save_image(src,slug,index):
  try:
   r=requests.get(src,headers=UA,timeout=30);r.raise_for_status()
   if not r.content:return src
-  folder=MEDIA_ROOT/slug;folder.mkdir(parents=True,exist_ok=True)
-  path=folder/f'{index:02d}{image_ext(r,src)}';path.write_bytes(r.content)
-  return '/'+path.relative_to(ROOT).as_posix()
- except Exception as e:
-  print('IMAGE_SKIP',src,e,file=sys.stderr);return src
+  folder=MEDIA_ROOT/slug;folder.mkdir(parents=True,exist_ok=True);path=folder/f'{index:02d}{image_ext(r,src)}';path.write_bytes(r.content);return '/'+path.relative_to(ROOT).as_posix()
+ except Exception as e:print('IMAGE_SKIP',src,e,file=sys.stderr);return src
 def inline_html(el):
- """네이버 문단의 굵게/기울임/밑줄/링크/줄바꿈은 보존하되 불필요한 스타일 속성은 제거한다."""
  def walk(node):
   if isinstance(node,NavigableString):return html.escape(str(node))
   if not isinstance(node,Tag):return ''
@@ -79,16 +72,14 @@ def clean_article(url,slug=''):
    if footer_zone:continue
    src=el.get('data-lazy-src') or el.get('data-src') or el.get('src') or '';src=('https:'+src) if src.startswith('//') else src
    if not src:continue
-   if slug:
-    image_no+=1;src=save_image(src,slug,image_no)
+   if slug:image_no+=1;src=save_image(src,slug,image_no)
    parts.append(f'<p class="media-paragraph"><img src="{html.escape(src,quote=True)}" alt="" loading="lazy" decoding="async"></p>');continue
   if el.name=='hr':parts.append('<hr class="article-divider">');continue
   if not txt:continue
-  circled=bool(re.match(r'^[①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳]\s*\S',txt))
   rich=inline_html(el)
-  if el.name=='p' and circled:parts.append(f'<p class="circled-number">{rich}</p>')
-  elif el.name in ('h2','h3') or (el.name=='p' and heading_like(txt)):
-   level='h2' if el.name=='h2' else 'h3';parts.append(f'<{level} class="naver-section-title">{rich}</{level}>')
+  # 번호 모양으로 임의 재분류하지 않는다. 네이버 원문이 제목이면 제목, 문단이면 문단 그대로 유지한다.
+  if el.name=='h2':parts.append(f'<h2>{rich}</h2>')
+  elif el.name=='h3':parts.append(f'<h3>{rich}</h3>')
   elif el.name=='blockquote':parts.append(f'<blockquote>{rich}</blockquote>')
   elif el.name in ('ul','ol'):
    lis=[]
