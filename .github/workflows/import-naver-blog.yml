@@ -46,6 +46,8 @@ jobs:
           python scripts/patch_admin_seo.py
           python scripts/patch_admin_category.py
           python scripts/site_maintenance.py
+          # 같은 카테고리·제목 유사도를 기준으로 자동작성글에 내부 관련글 3개 삽입
+          python scripts/inject_internal_links.py
           python scripts/generate_thumbnails.py
           python scripts/fix_thumbnail_logo.py
           # 내부 대표 썸네일은 개별글 제목 아래에 유지
@@ -59,6 +61,7 @@ jobs:
             scripts/patch_admin_seo.py \
             scripts/patch_admin_category.py \
             scripts/site_maintenance.py \
+            scripts/inject_internal_links.py \
             scripts/generate_thumbnails.py \
             scripts/fix_thumbnail_logo.py \
             scripts/apply_latest_cards.py
@@ -87,5 +90,5 @@ jobs:
           fi
 
           git add admin.html data/posts.json posts posts.html assets/posts assets/naver-images index.html inheritance.html renunciation.html corporate.html realestate.html family.html
-          git commit -m "네이버 본문·분류·작성일·썸네일 자동반영"
+          git commit -m "네이버 본문·분류·작성일·썸네일·내부링크 자동반영"
           git push origin HEAD:main
