@@ -24,15 +24,19 @@ document.addEventListener('DOMContentLoaded',()=>{
   async function buildArticleNavigation(){
     const article=document.querySelector('.article');if(!article)return;
     removeLegacyActions(article);
-    if(document.querySelector('.article-prev-next'))return;
-    const match=location.pathname.match(/\/posts\/([^/]+)\.html$/i);if(!match)return;
+    const existing=[...article.querySelectorAll('.article-prev-next')];
+    existing.slice(1).forEach(el=>el.remove());
+    if(existing.length)return;
+    if(article.dataset.navBuilding==='1')return;
+    article.dataset.navBuilding='1';
+    const match=location.pathname.match(/\/posts\/([^/]+)\.html$/i);if(!match){delete article.dataset.navBuilding;return;}
     const currentSlug=decodeURIComponent(match[1]);
     try{
       const r=await fetch('/data/posts.json',{cache:'no-store'});if(!r.ok)throw new Error('posts.json '+r.status);
-      const posts=await r.json();if(!Array.isArray(posts)||!posts.length)return;
-      const current=posts.find(p=>String(p.slug||'').replace(/\.html$/i,'')===currentSlug);if(!current)return;
+      const posts=await r.json();if(!Array.isArray(posts)||!posts.length){delete article.dataset.navBuilding;return;}
+      const current=posts.find(p=>String(p.slug||'').replace(/\.html$/i,'')===currentSlug);if(!current){delete article.dataset.navBuilding;return;}
       const category=categoryOf(current.category),same=posts.filter(p=>categoryOf(p.category)===category).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
-      const index=same.findIndex(p=>String(p.slug||'').replace(/\.html$/i,'')===currentSlug);if(index<0)return;
+      const index=same.findIndex(p=>String(p.slug||'').replace(/\.html$/i,'')===currentSlug);if(index<0){delete article.dataset.navBuilding;return;}
       const older=same[index+1]||null,newer=same[index-1]||null;
       const link=p=>`/posts/${encodeURIComponent(String(p.slug||'').replace(/\.html$/i,''))}.html`;
       const nav=document.createElement('nav');nav.className='article-prev-next';nav.setAttribute('aria-label',category+' 법률정보 이전글 다음글');
@@ -40,7 +44,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       const related=article.querySelector('.related');
       if(related)related.parentNode.insertBefore(nav,related);else article.appendChild(nav);
       removeLegacyActions(article);
-    }catch(e){console.warn('이전·다음 글 네비게이션을 불러오지 못했습니다.',e)}
+    }catch(e){delete article.dataset.navBuilding;console.warn('이전·다음 글 네비게이션을 불러오지 못했습니다.',e)}
   }
   buildArticleNavigation();
 });
