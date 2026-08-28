@@ -6,7 +6,16 @@ on:
     paths:
       - 'data/posts.json'
       - 'posts/**'
+      - 'index.html'
+      - 'inheritance.html'
+      - 'renunciation.html'
+      - 'corporate.html'
+      - 'realestate.html'
+      - 'family.html'
+      - 'assets/latest-posts.css'
+      - 'assets/latest-posts.js'
       - 'scripts/generate_thumbnails.py'
+      - 'scripts/apply_latest_cards.py'
       - '.github/workflows/auto-thumbnails.yml'
   workflow_dispatch:
 
@@ -37,9 +46,12 @@ jobs:
       - name: Generate all thumbnails
         run: python scripts/generate_thumbnails.py
 
+      - name: Apply latest post cards
+        run: python scripts/apply_latest_cards.py
+
       - name: Validate generated files
         run: |
-          python -m py_compile scripts/generate_thumbnails.py
+          python -m py_compile scripts/generate_thumbnails.py scripts/apply_latest_cards.py
           python - <<'PY'
           import json
           from pathlib import Path
@@ -50,20 +62,24 @@ jobs:
               if not f.exists(): missing.append(str(f))
           if missing:
               raise SystemExit('Missing thumbnails: '+', '.join(missing[:10]))
-          print('validated', len(posts), 'thumbnails')
+          for f in ['index.html','inheritance.html','renunciation.html','corporate.html','realestate.html','family.html']:
+              text=Path(f).read_text(encoding='utf-8')
+              if '/assets/latest-posts.js' not in text or '/assets/latest-posts.css' not in text:
+                  raise SystemExit('Latest cards not injected: '+f)
+          print('validated', len(posts), 'thumbnails and latest-card pages')
           PY
           git diff --check
 
-      - name: Commit thumbnail updates
+      - name: Commit generated updates
         shell: bash
         run: |
           if git diff --quiet && [ -z "$(git status --porcelain --untracked-files=normal assets/posts)" ]; then
-            echo "No thumbnail changes"
+            echo "No generated changes"
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/posts.json posts assets/posts
-          git commit -m "게시글 썸네일 자동 생성 및 기존 글 일괄 적용"
+          git add data/posts.json posts assets/posts index.html inheritance.html renunciation.html corporate.html realestate.html family.html
+          git commit -m "최신글 4개 한줄 및 새 자동 썸네일 전체 적용"
           git pull --rebase origin main
           git push origin HEAD:main
