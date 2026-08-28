@@ -3,23 +3,15 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 ROOT=Path(__file__).resolve().parents[1]; POSTS_JSON=ROOT/'data'/'posts.json'; OUT_DIR=ROOT/'assets'/'posts'; OUT_DIR.mkdir(parents=True,exist_ok=True)
 SIZE=1080; SKY='#7FD1FF'; BLUE='#36a9e1'; NAVY='#173B6B'; INK='#20344A'; WHITE='#FFFFFF'
-FONT_BOLD=['/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc','/usr/share/fonts/truetype/noto/NotoSansCJK-Bold.ttc']; FONT_REG=['/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc','/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc']; EMOJI_FONTS=['/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf','/usr/share/fonts/truetype/ancient-scripts/Symbola_hint.ttf']
+FONT_BOLD=['/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc','/usr/share/fonts/truetype/noto/NotoSansCJK-Bold.ttc']; FONT_REG=['/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc','/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc']; EMOJI_FONT='/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf'
 def font(size,bold=True):
  for p in (FONT_BOLD if bold else FONT_REG):
   if os.path.exists(p):return ImageFont.truetype(p,size=size,index=0)
  return ImageFont.load_default()
-def emoji_font(size):
- for p in EMOJI_FONTS:
-  if os.path.exists(p):
-   try:return ImageFont.truetype(p,size=size)
-   except:pass
- return font(size,False)
 def clean_title(t):
  t=re.sub(r'^\s*\[[^\]]+\]\s*','',t or '').strip();t=re.sub(r'\s*\|\s*',' · ',t);return re.sub(r'\s+',' ',t)
 def short_title(t):
- t=clean_title(t);t=re.sub(r'\s*(총정리|완벽정리|한눈에 정리)\s*$','',t)
- # 카드에서 작아지므로 썸네일 제목은 핵심만 남겨 크게 표시
- parts=[x.strip() for x in re.split(r'\s*[·,|]\s*',t) if x.strip()]
+ t=clean_title(t);t=re.sub(r'\s*(총정리|완벽정리|한눈에 정리)\s*$','',t);parts=[x.strip() for x in re.split(r'\s*[·,|]\s*',t) if x.strip()]
  if len(t)>28 and len(parts)>1:t=' · '.join(parts[:2])
  if len(t)>34:t=t[:34].rstrip(' ·,')
  return t.strip()
@@ -62,12 +54,19 @@ def pick_icon(t,category):
  if category=='상속포기·한정승인':return '⏳'
  return '🔍'
 def draw_emoji(img,emoji):
- layer=Image.new('RGBA',(SIZE,SIZE),(0,0,0,0));ld=ImageDraw.Draw(layer);ef=emoji_font(210)
+ # Noto Color Emoji는 고정 비트맵 크기(109px)로 렌더링 후 확대해야 깨지지 않는다.
+ if not os.path.exists(EMOJI_FONT):return
+ try:ef=ImageFont.truetype(EMOJI_FONT,size=109)
+ except:return
+ tile=Image.new('RGBA',(220,220),(0,0,0,0));td=ImageDraw.Draw(tile)
  try:
-  box=ld.textbbox((0,0),emoji,font=ef,embedded_color=True);w=box[2]-box[0];h=box[3]-box[1];ld.text(((SIZE-w)//2,815-h//2),emoji,font=ef,embedded_color=True)
- except TypeError:
-  box=ld.textbbox((0,0),emoji,font=ef);w=box[2]-box[0];h=box[3]-box[1];ld.text(((SIZE-w)//2,815-h//2),emoji,font=ef,fill=NAVY)
- img.alpha_composite(layer)
+  box=td.textbbox((0,0),emoji,font=ef,embedded_color=True);w=box[2]-box[0];h=box[3]-box[1];td.text(((220-w)//2,(220-h)//2),emoji,font=ef,embedded_color=True)
+ except Exception:return
+ bbox=tile.getbbox()
+ if not bbox:return
+ glyph=tile.crop(bbox);glyph.thumbnail((235,235),Image.Resampling.LANCZOS)
+ x=(SIZE-glyph.width)//2;y=760
+ img.alpha_composite(glyph,(x,y))
 def highlighted(d,line,f,y,point):
  total=d.textbbox((0,0),line,font=f)[2];x=(SIZE-total)//2
  if point and point in line:
@@ -94,5 +93,5 @@ def main():
   slug=post.get('slug')
   if not slug:continue
   out=OUT_DIR/f'{slug}-thumbnail.png';create_thumbnail(post,out);post['thumbnail']='/assets/posts/'+out.name;patch_article(slug,out.relative_to(ROOT))
- POSTS_JSON.write_text(json.dumps(posts,ensure_ascii=False,indent=2)+'\n',encoding='utf-8');print('generated',len(posts),'thumbnails with larger titles')
+ POSTS_JSON.write_text(json.dumps(posts,ensure_ascii=False,indent=2)+'\n',encoding='utf-8');print('generated',len(posts),'thumbnails with fixed color emoji')
 if __name__=='__main__':main()
