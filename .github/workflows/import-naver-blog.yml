@@ -2,7 +2,6 @@ name: Import Naver Blog Posts
 
 on:
   schedule:
-    # 매일 오전 9시 17분(KST)에 딱 한 번 실행
     - cron: '17 0 * * *'
   workflow_dispatch:
 
@@ -29,7 +28,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests beautifulsoup4 lxml pillow
 
-      - name: Import Naver posts, images and publish thumbnails immediately
+      - name: Import Naver posts, repair body and publish
         shell: bash
         run: |
           set -e
@@ -39,18 +38,23 @@ jobs:
           git reset --hard origin/main
 
           python scripts/import_naver_blog.py
+          # SmartEditor 실제 본문 구조를 다시 읽어 본문 누락과 잘못된 카테고리를 교정
+          python scripts/repair_naver_posts.py
 
-          # 같은 실행 안에서 본문 구조·이미지·썸네일·목록·메타정보까지 반영
           python scripts/patch_admin_seo.py
           python scripts/patch_admin_category.py
           python scripts/site_maintenance.py
           python scripts/generate_thumbnails.py
           python scripts/fix_thumbnail_logo.py
+          # 자동 썸네일은 목록/검색용으로만 두고 네이버 수집글 본문에서는 제거
+          python scripts/strip_naver_article_hero.py
           python scripts/site_maintenance.py
           python scripts/apply_latest_cards.py
 
           python -m py_compile \
             scripts/import_naver_blog.py \
+            scripts/repair_naver_posts.py \
+            scripts/strip_naver_article_hero.py \
             scripts/patch_admin_seo.py \
             scripts/patch_admin_category.py \
             scripts/site_maintenance.py \
@@ -76,12 +80,11 @@ jobs:
           PY
 
           git diff --check
-
           if git diff --quiet && [ -z "$(git status --porcelain --untracked-files=normal)" ]; then
             echo "No Naver or generated changes"
             exit 0
           fi
 
           git add admin.html data/posts.json posts posts.html assets/posts assets/naver-images index.html inheritance.html renunciation.html corporate.html realestate.html family.html
-          git commit -m "네이버 글·첨부이미지·썸네일·목록 자동반영"
+          git commit -m "네이버 본문·분류·이미지 자동복구"
           git push origin HEAD:main
