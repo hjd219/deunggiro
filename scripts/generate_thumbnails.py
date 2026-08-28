@@ -19,28 +19,31 @@ def short_title(t):
   head=t.split(',',1)[0].strip()
   if len(head)>=12:return head
  return t.strip()
-def pick_point(t):
- text=re.sub(r'[\[\](){}]',' ',t);text=re.sub(r'\s+',' ',text).strip()
- stop={'총정리','완벽정리','한눈에','정리','절차','방법','필요서류','서류','비용','기간','관할','기준','주의사항','해야','할','일','후','시','경우','어떻게','하나요','부터','까지','관련','최신','글','인천'}
- patterns=[r'([가-힣A-Za-z0-9]{2,12}\s*[가-힣A-Za-z0-9]{0,8})(변경등기|변경|이전|말소|설정|설립|증자|감자|해임|선임|사임|포기|승인|등기|분할|심판|신청|허가|신고)',r'([가-힣A-Za-z0-9]{2,16})(보험금|해지환급금|유족연금|퇴직금|취득세|과태료)']
- for pat in patterns:
-  m=re.search(pat,text)
-  if m:
-   phrase=''.join(x for x in m.groups() if x).strip();phrase=re.sub(r'^(부모님|부모|남편|아내|배우자|가족)\s+(사망\s+후\s+)?','',phrase).strip()
-   if 2<=len(phrase)<=18:return phrase
- chunks=[c.strip() for c in re.split(r'[·,|:/?！!]|\s+-\s+',text) if c.strip()];candidates=[]
- for c in chunks:
-  words=[w for w in c.split() if w not in stop and len(w)>1]
-  if not words:continue
-  for n in (2,1):
-   for i in range(max(0,len(words)-n+1)):
-    p=' '.join(words[i:i+n]).strip()
-    if 2<=len(p)<=16:
-     score=len(p)+(5 if n==2 else 0)
-     if any(s in p for s in ['총정리','절차','방법','서류','기간','관할']):score-=8
-     candidates.append((score,p))
- if candidates:return max(candidates,key=lambda x:x[0])[1]
- words=[w for w in text.split() if w not in stop and len(w)>1];return words[0] if words else ''
+def pick_point(t,category=''):
+ # Pick one exact word/phrase from every title automatically; no topic keyword list.
+ text=clean_title(t)
+ generic={'총정리','완벽정리','정리','절차','방법','필요서류','서류','비용','기간','관할','기준','주의사항','주의','해결방법','해결','어떻게','하나요','해야','하는','경우','관련','최신','안내','가이드','신청','말소','설정','변경','이전','허가','신고','분실','총정리'}
+ category_words=set(re.findall(r'[가-힣A-Za-z0-9]{2,}',category or ''))
+ # Exact tokens preserve a substring that can be colored reliably on a rendered line.
+ tokens=re.findall(r'[가-힣A-Za-z0-9]{2,}',text)
+ candidates=[]
+ for idx,w in enumerate(tokens):
+  if w in generic or w in category_words:continue
+  if w in {'부동산','법인','상속','가사','인천'} and len(tokens)>1:continue
+  score=0
+  # Prefer compact compound nouns; avoid overly long sentence-like pieces.
+  score+=min(len(w),10)*3
+  if 3<=len(w)<=8:score+=12
+  if len(w)>=4:score+=6
+  score-=idx*1.5
+  if re.search(r'(권|등기|분할|포기|승인|이혼|개명|가압류|증여|상속|보험금|취득세|과태료)$',w):score+=8
+  candidates.append((score,idx,w))
+ if candidates:
+  return max(candidates,key=lambda x:(x[0],-x[1]))[2]
+ # Fallback guarantees a highlight for nearly every non-empty title.
+ for w in tokens:
+  if w not in generic:return w
+ return tokens[0] if tokens else ''
 def wrap_text(d,text,f,max_width):
  words=re.split(r'(\s+|·|,|\?|!)',text);lines=[];cur=''
  for token in words:
@@ -68,7 +71,7 @@ def highlighted(d,line,f,y,point):
   before,after=line.split(point,1);d.text((x,y),before,font=f,fill=INK);bw=d.textbbox((0,0),before,font=f)[2];d.text((x+bw,y),point,font=f,fill=BLUE);pw=d.textbbox((0,0),point,font=f)[2];d.text((x+bw+pw,y),after,font=f,fill=INK)
  else:d.text((x,y),line,font=f,fill=INK)
 def create_thumbnail(post,path):
- img=Image.new('RGBA',(SIZE,SIZE),WHITE);d=ImageDraw.Draw(img);d.rounded_rectangle((18,18,SIZE-18,SIZE-18),radius=34,fill=WHITE,outline=SKY,width=12);draw_logo(img,d,post.get('category',''));title=short_title(post.get('title',''));point=pick_point(title);tf,lines=fit_title(d,title,900,4);lh=int(tf.size*1.2);block=lh*len(lines);sy=max(275,(SIZE-block)//2+45)
+ img=Image.new('RGBA',(SIZE,SIZE),WHITE);d=ImageDraw.Draw(img);d.rounded_rectangle((18,18,SIZE-18,SIZE-18),radius=34,fill=WHITE,outline=SKY,width=12);draw_logo(img,d,post.get('category',''));title=short_title(post.get('title',''));point=pick_point(title,post.get('category',''));tf,lines=fit_title(d,title,900,4);lh=int(tf.size*1.2);block=lh*len(lines);sy=max(275,(SIZE-block)//2+45)
  for i,line in enumerate(lines):highlighted(d,line,tf,sy+i*lh,point)
  img.convert('RGB').save(path,'PNG',optimize=True)
 def patch_article(post,thumb):
@@ -108,5 +111,5 @@ def main():
   slug=post.get('slug')
   if not slug:continue
   out=OUT_DIR/f'{slug}-thumbnail.png';create_thumbnail(post,out);post['thumbnail']='/assets/posts/'+out.name;patch_article(post,out.relative_to(ROOT))
- POSTS_JSON.write_text(json.dumps(posts,ensure_ascii=False,indent=2)+'\n',encoding='utf-8');print('generated',len(posts),'thumbnails without icons and with automatic highlight phrases')
+ POSTS_JSON.write_text(json.dumps(posts,ensure_ascii=False,indent=2)+'\n',encoding='utf-8');print('generated',len(posts),'thumbnails without icons and with automatic per-article highlights')
 if __name__=='__main__':main()
