@@ -46,6 +46,25 @@ def dedupe_se_ids(text: str):
     return pat.sub(repl, text), changed
 
 
+def clear_legacy_related_actions(text: str):
+    """새 상담 CTA와 중복되는 예전 하단 버튼을 없애되 SEO 관련글 삽입 앵커는 유지한다."""
+    changed = 0
+    pat = re.compile(r'<div\s+class=["\']related["\'][^>]*>([\s\S]*?)</div>', re.I)
+
+    def repl(m):
+        nonlocal changed
+        inner = m.group(1)
+        plain = re.sub(r'<[^>]+>', ' ', inner)
+        plain = re.sub(r'\s+', ' ', html.unescape(plain)).strip()
+        # 기존 템플릿의 "○○ 법률정보 목록" + "032-425-1500 상담" 버튼 영역만 비운다.
+        if '032-425-1500' in plain or '법률정보 목록' in plain:
+            changed += 1
+            return '<div class="related"></div>'
+        return m.group(0)
+
+    return pat.sub(repl, text), changed
+
+
 def sync_category_meta(text: str, category: str) -> str:
     safe = html.escape(category, quote=True)
     pat = re.compile(r'<meta\s+name=["\']dg-category["\']\s+content=["\'][^"\']*["\']\s*/?>', re.I)
@@ -54,7 +73,6 @@ def sync_category_meta(text: str, category: str) -> str:
         text = pat.sub(tag, text, count=1)
     elif '</head>' in text:
         text = text.replace('</head>', tag + '\n</head>', 1)
-    # 본문 맨 위의 카테고리 배지만 동기화. 관련글 배지는 건드리지 않는다.
     text = re.sub(r'(<span\s+class=["\']badge["\']>)[\s\S]*?(</span>)', rf'\1{safe}\2', text, count=1, flags=re.I)
     return text
 
@@ -96,6 +114,7 @@ def main():
     posts = json.loads(POSTS_JSON.read_text(encoding='utf-8'))
     category_changes = []
     duplicate_id_fixes = 0
+    legacy_related_clears = 0
 
     for post in posts:
         slug = str(post.get('slug','')).strip().replace('.html','')
@@ -113,6 +132,8 @@ def main():
         text = p.read_text(encoding='utf-8')
         text2, fixed = dedupe_se_ids(text)
         duplicate_id_fixes += fixed
+        text2, cleared = clear_legacy_related_actions(text2)
+        legacy_related_clears += cleared
         text2 = sync_category_meta(text2, post.get('category') or new)
         if text2 != text:
             p.write_text(text2, encoding='utf-8')
@@ -123,6 +144,7 @@ def main():
     for slug, old, new in category_changes:
         print(' category', slug, old, '->', new)
     print('duplicate SE id fixes:', duplicate_id_fixes)
+    print('legacy related button blocks cleared:', legacy_related_clears)
     print('posts.html static cards rebuilt:', rebuilt)
 
 
