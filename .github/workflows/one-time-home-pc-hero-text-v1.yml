@@ -1,0 +1,37 @@
+name: One-time home PC hero text v1
+
+on:
+  push:
+    paths:
+      - '.github/workflows/one-time-home-pc-hero-text-v1.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Patch index PC hero text only
+        shell: bash
+        run: |
+          set -e
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          marker='/* HOME_PC_HERO_TEXT_V1 */'
+          if marker not in s:
+              css='''\n<style>\n/* HOME_PC_HERO_TEXT_V1 */\n@media(min-width:1001px){\n  .hero-grid{grid-template-columns:minmax(0,59%) minmax(0,41%)!important}\n  .copy h1{font-size:42px!important;line-height:1.2!important;letter-spacing:-3px!important;white-space:nowrap!important}\n}\n</style>\n'''
+              s=s.replace('</head>', css+'\n</head>', 1)
+              p.write_text(s,encoding='utf-8')
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet; then exit 0; fi
+          git add index.html
+          git commit -m "Adjust PC home hero title to two lines"
+          git push origin main
