@@ -18,55 +18,21 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
-
           p = Path('index.html')
           s = p.read_text(encoding='utf-8')
-
-          old = '''   <h1>복잡한 등기와 상속,<br><span>등기로</span>에서 더 쉽게</h1>
-   <p>상속 · 법인 · 부동산 · 한정승인·상속포기 · 가사. 필요한 업무를<br>선택하면 절차와 핵심정보를 확인할 수 있습니다.</p>'''
-          new = '''   <h1>상속부터 법인등기까지<br>복잡한 절차, <span>등기로</span>에서 쉽게.</h1>
-   <p>필요서류부터 절차·기간·비용까지,<br>궁금한 내용을 쉽고 빠르게 확인하세요.</p>'''
-          if old not in s:
+          old_h1 = '<h1>복잡한 등기와 상속,<br><span>등기로</span>에서 더 쉽게</h1>'
+          new_h1 = '<h1>상속부터 법인등기까지<br>복잡한 절차, <span>등기로</span>에서 쉽게.</h1>'
+          old_p = '<p>상속 · 법인 · 부동산 · 한정승인·상속포기 · 가사. 필요한 업무를<br>선택하면 절차와 핵심정보를 확인할 수 있습니다.</p>'
+          new_p = '<p>필요서류부터 절차·기간·비용까지,<br>궁금한 내용을 쉽고 빠르게 확인하세요.</p>'
+          if old_h1 not in s or old_p not in s:
               raise SystemExit('Expected hero copy not found; stopped without changing file.')
-          s = s.replace(old, new, 1)
-
-          marker = '</style>\n<link rel="stylesheet" href="/assets/site-shell.css">'
-          css = '''
-<style>
-/* HOME_HERO_REFRESH_V1 - copy readability + bright skyblue background */
-.hero{
-  position:relative!important;
-  overflow:hidden!important;
-  background:
-    radial-gradient(circle at 82% 30%,rgba(255,255,255,.72) 0%,rgba(255,255,255,.18) 32%,rgba(255,255,255,0) 58%),
-    linear-gradient(100deg,#ffffff 0%,#f5fbff 38%,#e7f6fd 72%,#d9f0fb 100%)!important;
-}
-.hero::before{
-  content:""!important;
-  display:block!important;
-  position:absolute!important;
-  inset:0!important;
-  z-index:0!important;
-  pointer-events:none!important;
-  background:linear-gradient(115deg,transparent 0 50%,rgba(255,255,255,.28) 51% 58%,transparent 59% 100%)!important;
-}
-.hero::after{display:none!important;}
-.hero-grid{position:relative!important;z-index:1!important;background:transparent!important;}
-.copy p{color:#39424d!important;font-weight:650!important;}
-.photo{background:transparent!important;}
-@media(max-width:800px){
-  .hero{
-    background:linear-gradient(180deg,#ffffff 0%,#f3fbff 48%,#e2f5fd 100%)!important;
-  }
-  .copy p{color:#39424d!important;font-weight:650!important;}
-}
-</style>
-'''
+          s = s.replace(old_h1, new_h1, 1).replace(old_p, new_p, 1)
+          marker = '<link rel="stylesheet" href="/assets/site-shell.css">'
+          css = '<style>\n/* HOME_HERO_REFRESH_V1 */\n.hero{position:relative!important;overflow:hidden!important;background:radial-gradient(circle at 82% 30%,rgba(255,255,255,.72) 0%,rgba(255,255,255,.18) 32%,rgba(255,255,255,0) 58%),linear-gradient(100deg,#ffffff 0%,#f5fbff 38%,#e7f6fd 72%,#d9f0fb 100%)!important}.hero::before{content:""!important;display:block!important;position:absolute!important;inset:0!important;z-index:0!important;pointer-events:none!important;background:linear-gradient(115deg,transparent 0 50%,rgba(255,255,255,.28) 51% 58%,transparent 59% 100%)!important}.hero::after{display:none!important}.hero-grid{position:relative!important;z-index:1!important;background:transparent!important}.copy p{color:#39424d!important;font-weight:650!important}.photo{background:transparent!important}@media(max-width:800px){.hero{background:linear-gradient(180deg,#ffffff 0%,#f3fbff 48%,#e2f5fd 100%)!important}.copy p{color:#39424d!important;font-weight:650!important}}\n</style>\n'
           if 'HOME_HERO_REFRESH_V1' not in s:
               if marker not in s:
                   raise SystemExit('CSS insertion marker not found; stopped without changing file.')
-              s = s.replace(marker, '</style>\n' + css + '<link rel="stylesheet" href="/assets/site-shell.css">', 1)
-
+              s = s.replace(marker, css + marker, 1)
           p.write_text(s, encoding='utf-8')
           PY
       - name: Commit change
