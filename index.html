@@ -1052,6 +1052,23 @@ section,header,footer,.container,.hero-grid,.quick-grid,.calc-grid,.post-box,.co
 }
 </style>
 
+
+<style>
+/* HOME_SKY_CONTINUOUS_BG_V1 */
+:root{--home-sky:#eef6fb}
+/* hero 아래 업무카드와 비용계산기까지 하나의 옅은 하늘색 면으로 연결 */
+.hero{background:linear-gradient(90deg,#f8fcff 0%,#f2f9fd 48%,var(--home-sky) 100%)!important}
+.quick{margin-top:0!important;padding:34px 0 30px!important;background:var(--home-sky)!important}
+.quick-grid{background:transparent!important;border:0!important;box-shadow:none!important}
+.quick-item.quick-rich{border:1px solid #d7e4ec!important}
+/* 기존 회색 계산기 섹션 제거하고 같은 하늘색으로 연결 */
+.section.soft{background:var(--home-sky)!important;padding-top:42px!important}
+@media(max-width:800px){
+ .quick{padding:22px 0 24px!important}
+ .section.soft{padding-top:44px!important}
+}
+</style>
+
 </head>
 <body class="home">
 
