@@ -1,0 +1,28 @@
+name: One-time home card top gap v1
+on:
+  push:
+    paths:
+      - '.github/workflows/one-time-home-card-top-gap-v1.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reduce desktop service card top gap
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html'); s=p.read_text(encoding='utf-8')
+          marker='/* HOME_CARD_TOP_GAP_PC_V1 */'
+          if marker not in s:
+            css='''\n<style>\n/* HOME_CARD_TOP_GAP_PC_V1 */\n@media(min-width:1001px){\n .hero-grid{min-height:500px!important}\n .photo{min-height:500px!important}\n .copy{padding-top:58px!important;padding-bottom:34px!important}\n .quick{padding-top:4px!important}\n}\n</style>\n'''
+            s=s.replace('</head>',css+'\n</head>',1)
+            p.write_text(s,encoding='utf-8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git commit -m 'Reduce PC gap above service cards'
+          git push origin main
