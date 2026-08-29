@@ -1069,6 +1069,23 @@ section,header,footer,.container,.hero-grid,.quick-grid,.calc-grid,.post-box,.co
 }
 </style>
 
+
+<style>
+/* HOME_SEAMLESS_SKY_V2 */
+:root{--home-seamless:#eef6fb}
+/* 히어로 하단부터 계산기까지 같은 배경색으로 이어 경계선을 없앰 */
+.hero{background:var(--home-seamless)!important}
+.hero::before,.hero::after{display:none!important}
+.hero-grid,.photo,.quick,.section.soft{background:var(--home-seamless)!important}
+.photo::after{background:linear-gradient(180deg,rgba(238,246,251,0),var(--home-seamless))!important}
+.quick{margin-top:0!important;padding-top:24px!important;padding-bottom:28px!important;border:0!important;box-shadow:none!important}
+.quick-grid{border:0!important;background:transparent!important;box-shadow:none!important}
+.section.soft{margin-top:0!important;padding-top:38px!important;border-top:0!important;box-shadow:none!important}
+/* 섹션 사이에 남는 흰 띠/선 제거 */
+.quick+.section,.quick+.section.soft{border-top:0!important;margin-top:0!important}
+@media(min-width:1001px){.quick{padding-top:18px!important}.section.soft{padding-top:34px!important}}
+</style>
+
 </head>
 <body class="home">
 
