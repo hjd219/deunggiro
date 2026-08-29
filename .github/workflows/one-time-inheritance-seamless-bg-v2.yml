@@ -1,0 +1,29 @@
+name: One-time inheritance seamless background v2
+on:
+  push:
+    paths:
+      - '.github/workflows/one-time-inheritance-seamless-bg-v2.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Unify inheritance page background including related legal information
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('inheritance.html')
+          s=p.read_text(encoding='utf-8')
+          marker='/* INHERITANCE_SEAMLESS_BG_V2 */'
+          if marker not in s:
+            css='''\n<style>\n/* INHERITANCE_SEAMLESS_BG_V2 */\n:root{--inheritance-sky:#eef6fb}\nhtml,body{background:var(--inheritance-sky)!important}\nmain,.main,.page,.page-wrap,.content-wrap{background:var(--inheritance-sky)!important}\n.hero,.inheritance-hero,.detail-hero,.page-hero{background:var(--inheritance-sky)!important;border-bottom:0!important;box-shadow:none!important}\n.section,.section.white,.section.soft,section,\n.inheritance-process-section,.inheritance-process-wrap,.inheritance-process,\n.inheritance-docs-section,.inheritance-faq-section,.faq-section,\n.related-section,.legal-info-section,.related-legal-section{\n  background:var(--inheritance-sky)!important;\n  border-top:0!important;border-bottom:0!important;box-shadow:none!important;\n}\n/* 히어로 우측 관련 법률정보는 흰 카드로 유지 */\n.related-legal,.related-legal-card,.legal-info,.legal-info-card,\n.hero-side,.hero-related,.related-card{\n  background:#fff!important;\n}\n/* 절차·필요서류·FAQ 등 실제 정보 박스는 흰색 유지 */\n.inheritance-flow,.flow-wrap,.doc-card,.docs-card,.faq-item,.info-card,.card{background:#fff}\n</style>\n'''
+            s=s.replace('</head>',css+'\n</head>',1)
+            p.write_text(s,encoding='utf-8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add inheritance.html
+          git commit -m 'Unify inheritance background and legal info area with homepage tone'
+          git push origin main
