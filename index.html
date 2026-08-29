@@ -1041,6 +1041,17 @@ section,header,footer,.container,.hero-grid,.quick-grid,.calc-grid,.post-box,.co
 }
 </style>
 
+
+<style>
+/* HOME_SERVICE_CARD_EDGE_FIX_V1 */
+@media(min-width:1001px){
+ .quick{width:100%!important;max-width:1180px!important;overflow:visible!important}
+ .quick-grid{width:100%!important;max-width:100%!important;min-width:0!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;box-sizing:border-box!important}
+ .quick-item.quick-rich{min-width:0!important;max-width:100%!important;width:auto!important;box-sizing:border-box!important;overflow:hidden!important}
+ .quick-item.quick-rich:last-child{margin-right:0!important}
+}
+</style>
+
 </head>
 <body class="home">
 
