@@ -1,0 +1,41 @@
+name: One-time detail background rhythm and inheritance gap v2
+on:
+  push:
+    paths:
+      - '.github/workflows/one-time-detail-bg-rhythm-gap-v2.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply detail page background rhythm
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          files=['inheritance.html','corporate.html','realestate.html','renunciation.html','family.html']
+          marker='/* DETAIL_BG_RHYTHM_V2 */'
+          css='''\n<style>\n/* DETAIL_BG_RHYTHM_V2 */\n:root{--detail-sky:#eef6fb}\nbody{background:var(--detail-sky)!important}\n.hero{background:var(--detail-sky)!important}\n/* 메인과 같은 리듬: 기본 정보영역 하늘색, 흰색 섹션은 흰색 */\n.section{background:var(--detail-sky)!important}\n.section.white{background:#fff!important}\n.section.soft{background:var(--detail-sky)!important}\n/* 최신글/관련글/법률정보 목록은 흰색 영역으로 분리 */\n#posts,#latest-posts,#related-posts,.latest-posts,.related-posts,.posts-section,.related-section{background:#fff!important}\n/* 정보 카드들은 흰색 유지 */\n.card,.article,.info-box,.calculator,.faq-item,.doc-card,.process-card,.legal-card,.related-legal,.related-legal-box{background:#fff!important}\n</style>\n'''
+          for fn in files:
+            p=Path(fn)
+            if not p.exists(): continue
+            s=p.read_text(encoding='utf-8')
+            if marker not in s:
+              s=s.replace('</head>',css+'\n</head>',1)
+              p.write_text(s,encoding='utf-8')
+          # 상속 페이지 PC: 히어로와 '상속절차 한눈에 보기' 사이의 과한 빈 공간 축소
+          p=Path('inheritance.html')
+          if p.exists():
+            s=p.read_text(encoding='utf-8')
+            m='/* INHERITANCE_PROCESS_TOP_GAP_V2 */'
+            if m not in s:
+              extra='''\n<style>\n/* INHERITANCE_PROCESS_TOP_GAP_V2 */\n@media(min-width:801px){\n section:has(.inheritance-flow){padding-top:22px!important;margin-top:0!important}\n .inheritance-process-section,.inheritance-process-wrap,.inheritance-process{margin-top:0!important;padding-top:22px!important}\n .inheritance-flow{margin-top:18px!important}\n}\n</style>\n'''
+              s=s.replace('</head>',extra+'\n</head>',1)
+              p.write_text(s,encoding='utf-8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add inheritance.html corporate.html realestate.html renunciation.html family.html
+          git commit -m 'Use consistent sky white rhythm on detail pages and reduce inheritance process gap'
+          git push origin main
