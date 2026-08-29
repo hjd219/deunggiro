@@ -1086,6 +1086,16 @@ section,header,footer,.container,.hero-grid,.quick-grid,.calc-grid,.post-box,.co
 @media(min-width:1001px){.quick{padding-top:18px!important}.section.soft{padding-top:34px!important}}
 </style>
 
+
+<style>
+/* QUICK_SIDE_BG_FIX_V1 */
+/* 업무카드 좌우 바깥까지 동일한 하늘색 배경으로 채움 */
+.quick{position:relative!important;background:#eef6fb!important}
+.quick::before{content:"";position:absolute;z-index:-1;top:0;bottom:0;left:50%;width:100vw;transform:translateX(-50%);background:#eef6fb!important}
+.quick>.container{background:transparent!important}
+@media(min-width:1001px){.quick{overflow:visible!important}}
+</style>
+
 </head>
 <body class="home">
 
