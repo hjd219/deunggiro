@@ -1,0 +1,222 @@
+name: One-time inheritance PC layout v10
+
+on:
+  push:
+    paths:
+      - '.github/workflows/one-time-inheritance-pc-layout-v10.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Patch inheritance PC layout only
+        shell: bash
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          python - <<'PY'
+          from pathlib import Path
+
+          p = Path('inheritance.html')
+          s = p.read_text(encoding='utf-8')
+          marker = 'INHERITANCE_PC_LAYOUT_V10'
+          if marker in s:
+              print('already patched')
+              raise SystemExit(0)
+
+          css = r'''
+          <style>
+          /* INHERITANCE_PC_LAYOUT_V10 */
+          .faq-acc strong{color:#168dca!important}
+          @media(min-width:801px){
+            .inheritance-flow{
+              display:grid!important;
+              grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr) 28px minmax(0,1fr) 28px minmax(0,1fr) 28px minmax(0,1fr)!important;
+              align-items:start!important;
+              gap:0!important;
+              padding:30px 18px!important;
+            }
+            .inheritance-flow .flow-step{
+              display:flex!important;
+              flex-direction:column!important;
+              align-items:center!important;
+              justify-content:flex-start!important;
+              text-align:center!important;
+              gap:0!important;
+              min-width:0!important;
+              width:100%!important;
+              padding:0 3px!important;
+            }
+            .inheritance-flow .flow-step .flow-icon{
+              flex:0 0 62px!important;
+              width:62px!important;
+              height:62px!important;
+              margin:0 auto 12px!important;
+            }
+            .inheritance-flow .flow-step h3{
+              margin:0 0 5px!important;
+              font-size:16px!important;
+              line-height:1.35!important;
+              letter-spacing:-.7px!important;
+              white-space:nowrap!important;
+              word-break:keep-all!important;
+              overflow-wrap:normal!important;
+            }
+            .inheritance-flow .flow-step p{
+              margin:0 0 9px!important;
+              font-size:11.5px!important;
+              line-height:1.45!important;
+              color:#727b87!important;
+              white-space:nowrap!important;
+              word-break:keep-all!important;
+            }
+            .inheritance-flow .flow-step .deadline{
+              margin:0!important;
+              min-height:27px!important;
+              padding:3px 9px!important;
+              font-size:10.5px!important;
+              white-space:nowrap!important;
+            }
+            .inheritance-flow .flow-arrow{
+              display:flex!important;
+              align-items:center!important;
+              justify-content:center!important;
+              width:28px!important;
+              height:62px!important;
+              margin:0!important;
+              padding:0!important;
+              transform:none!important;
+              font-size:23px!important;
+              line-height:1!important;
+              color:#b7c0ca!important;
+            }
+            .inheritance-pc-lower{
+              display:grid!important;
+              grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+              gap:20px!important;
+              align-items:start!important;
+              margin-top:30px!important;
+            }
+            .inheritance-pc-lower .docs-section,
+            .inheritance-pc-lower .faq-block{
+              margin:0!important;
+              padding:22px!important;
+              max-width:none!important;
+              width:100%!important;
+              background:#fff!important;
+              border:1px solid #dfe5ec!important;
+              border-radius:18px!important;
+              box-shadow:0 10px 28px rgba(31,41,55,.045)!important;
+            }
+            .inheritance-pc-lower .docs-section>.container{
+              width:100%!important;
+              max-width:none!important;
+              padding:0!important;
+            }
+            .inheritance-pc-lower .docs-section .title,
+            .inheritance-pc-lower .faq-title{
+              font-size:25px!important;
+              line-height:1.3!important;
+              margin:4px 0 14px!important;
+              letter-spacing:-1px!important;
+            }
+            .inheritance-pc-lower .docs-section .desc{
+              margin:0 0 14px!important;
+              font-size:12px!important;
+              line-height:1.6!important;
+            }
+            .inheritance-pc-lower .docs-grid{
+              grid-template-columns:1fr!important;
+              gap:9px!important;
+            }
+            .inheritance-pc-lower .docs-card{
+              padding:14px 15px!important;
+              border-radius:12px!important;
+            }
+            .inheritance-pc-lower .docs-card h3{
+              margin:0 0 7px!important;
+              font-size:14px!important;
+            }
+            .inheritance-pc-lower .docs-card ul{
+              font-size:12px!important;
+              line-height:1.65!important;
+            }
+            .inheritance-pc-lower .docs-note{
+              margin-top:10px!important;
+              font-size:11px!important;
+            }
+            .inheritance-pc-lower .faq-acc{
+              margin:8px 0!important;
+            }
+            .inheritance-pc-lower .faq-acc summary{
+              padding:14px 15px!important;
+              font-size:13.5px!important;
+            }
+            .inheritance-pc-lower .faq-acc p{
+              padding:0 15px 15px 54px!important;
+              font-size:12.5px!important;
+              line-height:1.7!important;
+            }
+          }
+          </style>
+          '''
+
+          js = r'''
+          <script>
+          /* INHERITANCE_PC_LAYOUT_V10 */
+          (function(){
+            const overview=document.querySelector('.inheritance-overview>.container');
+            const faq=overview&&overview.querySelector('.faq-block');
+            const docs=document.getElementById('documents');
+            if(!overview||!faq||!docs) return;
+
+            faq.querySelectorAll('details[open]').forEach(d=>d.removeAttribute('open'));
+
+            const faqPh=document.createComment('inheritance-faq-original-position');
+            const docsPh=document.createComment('inheritance-docs-original-position');
+            faq.parentNode.insertBefore(faqPh,faq);
+            docs.parentNode.insertBefore(docsPh,docs);
+
+            const lower=document.createElement('div');
+            lower.className='inheritance-pc-lower';
+            const mq=window.matchMedia('(min-width:801px)');
+
+            function applyLayout(){
+              if(mq.matches){
+                if(!lower.isConnected) faqPh.parentNode.insertBefore(lower,faqPh);
+                lower.appendChild(docs);
+                lower.appendChild(faq);
+              }else{
+                if(faq.parentNode!==faqPh.parentNode) faqPh.parentNode.insertBefore(faq,faqPh.nextSibling);
+                if(docs.parentNode!==docsPh.parentNode) docsPh.parentNode.insertBefore(docs,docsPh.nextSibling);
+                if(lower.isConnected) lower.remove();
+              }
+            }
+            applyLayout();
+            if(mq.addEventListener) mq.addEventListener('change',applyLayout);
+            else mq.addListener(applyLayout);
+          })();
+          </script>
+          '''
+
+          s = s.replace('</head>', css + '\n</head>', 1)
+          s = s.replace('</body>', js + '\n</body>', 1)
+          p.write_text(s, encoding='utf-8')
+          PY
+
+          git add inheritance.html
+          if git diff --cached --quiet; then
+            echo "No changes"
+            exit 0
+          fi
+          git commit -m "Fix inheritance desktop layout and align documents with FAQ"
+          git push origin main
