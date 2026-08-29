@@ -1,0 +1,32 @@
+name: One-time detail background unify v1
+on:
+  push:
+    paths:
+      - '.github/workflows/one-time-detail-bg-unify-v1.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply unified sky background to detail pages
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          files=['inheritance.html','corporate.html','realestate.html','renunciation.html','family.html']
+          marker='/* DETAIL_HOME_SKY_BG_V1 */'
+          css='''\n<style>\n/* DETAIL_HOME_SKY_BG_V1 */\n:root{--detail-sky:#eef6fb}\nbody{background:var(--detail-sky)!important}\n.hero{background:var(--detail-sky)!important}\n.hero::before,.hero::after{background-color:transparent}\n.section,.section.white,.section.soft{background:var(--detail-sky)!important}\n/* 내용 카드 자체는 흰색을 유지해 가독성 확보 */\n.card,.article,.info-box,.calculator,.faq-item,.doc-card,.process-card{background:#fff}\n</style>\n'''
+          for fn in files:
+            p=Path(fn)
+            if not p.exists(): continue
+            s=p.read_text(encoding='utf-8')
+            if marker in s: continue
+            s=s.replace('</head>',css+'\n</head>',1)
+            p.write_text(s,encoding='utf-8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add inheritance.html corporate.html realestate.html renunciation.html family.html
+          git commit -m 'Unify individual detail page backgrounds with home sky tone'
+          git push origin main
