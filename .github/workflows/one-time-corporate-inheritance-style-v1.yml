@@ -1,0 +1,120 @@
+name: One-time corporate inheritance style v1
+on:
+  push:
+    paths:
+      - '.github/workflows/one-time-corporate-inheritance-style-v1.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Patch corporate detail page
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('corporate.html')
+          s=p.read_text(encoding='utf-8')
+
+          css='''
+<style>
+/* CORPORATE_INHERITANCE_STYLE_V1 */
+.corp-guide{background:#eef6fb!important;padding:34px 0 58px}
+.corp-guide .corp-head{text-align:center;margin:0 0 24px}
+.corp-guide .corp-kicker{font-size:12px;font-weight:900;letter-spacing:.14em;color:#168dca;margin-bottom:6px}
+.corp-guide .corp-head h2{font-size:36px;line-height:1.25;letter-spacing:-1.8px;margin:0 0 8px;color:#20242b}
+.corp-guide .corp-head p{margin:0;color:#66717d;font-size:15px}
+.corp-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:stretch}
+.corp-card{background:#fff;border:1px solid #e1e8ee;border-radius:20px;padding:22px 20px;box-shadow:0 8px 24px rgba(31,41,55,.045);min-width:0}
+.corp-card-top{display:flex;align-items:center;gap:12px;margin-bottom:15px}
+.corp-icon{width:58px;height:58px;flex:0 0 58px;border-radius:18px;background:#fff;border:1px solid #dfe7ee;box-shadow:0 5px 14px rgba(31,41,55,.055);padding:10px;display:flex;align-items:center;justify-content:center}
+.corp-icon svg{width:100%;height:100%}
+.corp-no{font-size:11px;font-weight:900;color:#168dca;letter-spacing:.08em}
+.corp-card h3{font-size:23px;line-height:1.25;letter-spacing:-1px;margin:1px 0 0;color:#20242b}
+.corp-tags{display:flex;flex-wrap:wrap;gap:6px;margin:-2px 0 12px}
+.corp-tags span{font-size:11px;font-weight:800;color:#477186;background:#f2f8fc;border:1px solid #d9eaf4;border-radius:999px;padding:5px 8px}
+.corp-row{display:grid;grid-template-columns:94px minmax(0,1fr);gap:10px;padding:10px 0;border-top:1px solid #edf1f4;font-size:13px;line-height:1.6}
+.corp-row:first-of-type{border-top:0}
+.corp-row b{color:#168dca}
+.corp-row span{color:#4f5d68}
+.corp-note{margin:12px 0 0;padding:11px 12px;border-radius:12px;background:#f6fbfe;border:1px solid #dceef7;color:#566672;font-size:12px;line-height:1.55}
+.corp-note strong{color:#168dca}
+.corp-cost{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding:12px 14px;border-radius:12px;background:#168dca;color:#fff!important;font-size:13px;font-weight:900;text-decoration:none!important}
+.corp-faq-wrap{max-width:1180px;margin:0 auto;padding:54px 22px 66px;background:#eef6fb}
+.corp-faq-kicker{font-size:12px;font-weight:900;letter-spacing:.14em;color:#168dca;margin-bottom:6px}
+.corp-faq-wrap>h2{font-size:34px;line-height:1.25;letter-spacing:-1.5px;margin:0 0 20px;color:#20242b}
+.corp-faq{display:grid;gap:10px}
+.corp-faq-item{background:#fff;border:1px solid #dfe7ee;border-radius:16px;overflow:hidden}
+.corp-faq-q{width:100%;border:0;background:#fff;display:grid;grid-template-columns:36px minmax(0,1fr) 26px;gap:12px;align-items:center;text-align:left;padding:17px 18px;cursor:pointer;color:#20242b;font-weight:800;font-size:15px}
+.corp-qmark{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#e9f6fc;color:#168dca;font-weight:900}
+.corp-plus{font-size:22px;color:#8b98a5;text-align:center;transition:.2s}
+.corp-faq-a{display:none;padding:0 18px 18px 66px;color:#596773;font-size:14px;line-height:1.75}
+.corp-faq-item.open .corp-faq-a{display:block}
+.corp-faq-item.open .corp-plus{transform:rotate(45deg)}
+.corp-faq-a strong{color:#168dca}
+.corp-fine-table{width:100%;border-collapse:collapse;margin:12px 0 8px;font-size:13px;background:#fff}
+.corp-fine-table th,.corp-fine-table td{border:1px solid #e1e8ee;padding:8px 9px;text-align:left}.corp-fine-table th{background:#f4f9fc;color:#365a70}
+@media(max-width:900px){.corp-cards{grid-template-columns:1fr}.corp-guide{padding:28px 0 44px}.corp-guide .corp-head{text-align:left}.corp-guide .corp-head h2{font-size:28px}.corp-card{padding:18px 16px}.corp-faq-wrap{padding:42px 16px 54px}.corp-faq-wrap>h2{font-size:28px}}
+@media(max-width:560px){.corp-row{grid-template-columns:1fr;gap:2px}.corp-icon{width:52px;height:52px;flex-basis:52px;border-radius:16px}.corp-card h3{font-size:20px}.corp-faq-q{grid-template-columns:32px minmax(0,1fr) 22px;padding:15px 13px;font-size:14px}.corp-faq-a{padding:0 13px 15px 57px;font-size:13px}}
+</style>
+'''
+          if 'CORPORATE_INHERITANCE_STYLE_V1' not in s:
+              s=s.replace('</head>', css+'</head>',1)
+
+          new='''
+<section class="corp-guide" id="documents"><div class="container">
+  <div class="corp-head"><div class="corp-kicker">CORPORATE REGISTRATION</div><h2>법인등기 한눈에 보기</h2><p>법인설립·변경등기·자본금증자에 필요한 핵심서류를 업무별로 확인하세요.</p></div>
+  <div class="corp-cards">
+    <article class="corp-card" id="service-1">
+      <div class="corp-card-top"><div class="corp-icon" aria-hidden="true"><svg viewBox="0 0 64 64"><rect x="13" y="18" width="38" height="34" rx="5" fill="none" stroke="#438fe5" stroke-width="4"/><path d="M22 18v-7h20v7M22 29h20M22 39h20M22 48h12" fill="none" stroke="#438fe5" stroke-width="4" stroke-linecap="round"/></svg></div><div><div class="corp-no">01</div><h3>법인설립</h3></div></div>
+      <div class="corp-row"><b>임원</b><span>인감도장 · 인감증명서 1통 · 주민등록초본 1통</span></div>
+      <div class="corp-row"><b>발기인(주주)</b><span>잔고증명서 1통</span></div>
+      <div class="corp-note"><strong>기본 결정사항</strong><br>상호 · 목적 · 자본금 · 1주의 금액</div>
+      <a class="corp-cost" href="/corporate-calculator.html">법인설립 비용 계산하기 <span>→</span></a>
+    </article>
+    <article class="corp-card" id="service-2">
+      <div class="corp-card-top"><div class="corp-icon" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M15 19h27M15 31h21M15 43h16" fill="none" stroke="#2eb59a" stroke-width="4" stroke-linecap="round"/><circle cx="46" cy="43" r="11" fill="none" stroke="#2eb59a" stroke-width="4"/><path d="M46 37v12M40 43h12" stroke="#2eb59a" stroke-width="4" stroke-linecap="round"/></svg></div><div><div class="corp-no">02</div><h3>변경등기</h3></div></div>
+      <div class="corp-tags"><span>임원변경</span><span>상호변경</span><span>목적변경</span><span>본점이전</span></div>
+      <div class="corp-row"><b>임원</b><span>인감도장 · 인감증명서 2통 · 주민등록초본 1통 (주소 변동 포함)</span></div>
+      <div class="corp-row"><b>임원 아닌 주주</b><span>인감도장 · 인감증명서 1통</span></div>
+      <div class="corp-row"><b>법인</b><span>법인 인감도장 · 법인 인감증명서 1통 · 정관 2통 · 주주명부 1통 · 법인 인감카드 (중임 아닌 경우)</span></div>
+      <div class="corp-note"><strong>주주전원 서면결의가 가능한 경우</strong><br>사건에 따라 각 서류 1통씩으로 진행 가능한 경우가 있습니다.</div>
+      <a class="corp-cost" href="/corporate-calculator.html">변경등기 비용 계산하기 <span>→</span></a>
+    </article>
+    <article class="corp-card" id="service-3">
+      <div class="corp-card-top"><div class="corp-icon" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M12 49h42" stroke="#7d68cf" stroke-width="4" stroke-linecap="round"/><path d="M17 43l10-11 8 6 13-17" fill="none" stroke="#7d68cf" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M41 21h8v8" fill="none" stroke="#7d68cf" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="corp-no">03</div><h3>자본금증자</h3></div></div>
+      <div class="corp-row"><b>일반증자</b><span><strong>법인 잔고증명서</strong></span></div>
+      <div class="corp-row"><b>가수금증자</b><span><strong>가수금 계정별원장</strong></span></div>
+      <div class="corp-note">증자 방식과 신주배정 구조에 따라 주주총회·이사회 관련 서류가 추가될 수 있습니다.</div>
+      <a class="corp-cost" href="/corporate-calculator.html">자본금증자 비용 계산하기 <span>→</span></a>
+    </article>
+  </div>
+</div></section>
+<section class="corp-faq-wrap"><div class="corp-faq-kicker">FAQ</div><h2>자주 묻는 질문</h2><div class="corp-faq">
+  <div class="corp-faq-item"><button class="corp-faq-q" type="button"><span class="corp-qmark">Q</span><span>법인 변경등기는 언제까지 해야 하나요?</span><span class="corp-plus">＋</span></button><div class="corp-faq-a">변경등기는 등기사항별로 법정기간이 정해져 있습니다. 특히 임원변경 등은 <strong>변경일 또는 취임·퇴임일을 기준</strong>으로 기간을 확인해야 합니다.</div></div>
+  <div class="corp-faq-item"><button class="corp-faq-q" type="button"><span class="corp-qmark">Q</span><span>임원 임기가 끝났는데 그대로 두면 되나요?</span><span class="corp-plus">＋</span></button><div class="corp-faq-a">임기가 만료됐다면 중임 또는 퇴임·신임 등기를 검토해야 합니다. 등기를 늦추면 <strong>과태료 대상</strong>이 될 수 있습니다.</div></div>
+  <div class="corp-faq-item"><button class="corp-faq-q" type="button"><span class="corp-qmark">Q</span><span>법인 변경등기를 늦게 하면 과태료가 얼마나 나오나요?</span><span class="corp-plus">＋</span></button><div class="corp-faq-a">상법상 등기를 게을리한 경우 과태료가 부과될 수 있으며, 실제 금액은 지연기간·등기 종류·위반 횟수 등에 따라 달라집니다.<table class="corp-fine-table"><tr><th>지연기간</th><th>실무상 예상 범위</th></tr><tr><td>1개월 이내</td><td>약 5~10만원</td></tr><tr><td>1~3개월</td><td>약 10~20만원</td></tr><tr><td>3~6개월</td><td>약 20~30만원</td></tr><tr><td>6개월~1년</td><td>약 30~50만원</td></tr><tr><td>1~2년</td><td>약 50~100만원</td></tr><tr><td>2년 이상</td><td>100만원 이상 가능</td></tr></table><small>※ 위 금액은 예상 기준이며 실제 과태료는 사건 내용과 법원의 판단에 따라 달라질 수 있습니다.</small></div></div>
+  <div class="corp-faq-item"><button class="corp-faq-q" type="button"><span class="corp-qmark">Q</span><span>해산간주된 법인을 다시 운영할 수 있나요?</span><span class="corp-plus">＋</span></button><div class="corp-faq-a">해산간주 상태라면 요건을 확인해 <strong>회사계속등기</strong>를 검토할 수 있습니다. 청산종결간주까지 진행된 경우에는 별도 검토가 필요합니다.</div></div>
+</div></section>
+<script>document.addEventListener('click',function(e){const b=e.target.closest('.corp-faq-q');if(!b)return;const i=b.closest('.corp-faq-item');i.classList.toggle('open');});</script>
+'''
+          pattern=r'<section class="section white"><div class="container"><div class="label">MAIN SERVICES.*?(?=<section class="contact")'
+          s2,n=re.subn(pattern,new,s,flags=re.S)
+          if n!=1:
+              raise SystemExit(f'expected 1 main detail block, replaced {n}')
+          p.write_text(s2,encoding='utf-8')
+          PY
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add corporate.html
+          git diff --cached --quiet && exit 0
+          git commit -m 'Redesign corporate detail page in inheritance style'
+          git push
