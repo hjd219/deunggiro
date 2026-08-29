@@ -1,0 +1,39 @@
+name: One-time home service cards v2
+on:
+  push:
+    paths:
+      - '.github/workflows/one-time-home-service-cards-v2.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch home service cards
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html'); s=p.read_text(encoding='utf-8')
+          old=''' <div class="quick-grid">\n  <a class="quick-item" href="/inheritance.html"><strong>01</strong><h3>상속</h3><p>상속등기 · 재산분할</p><span class="go">자세히 보기 →</span></a>\n  <a class="quick-item" href="/corporate.html"><strong>02</strong><h3>법인</h3><p>설립 · 변경 · 증자</p><span class="go">자세히 보기 →</span></a>\n  <a class="quick-item" href="/realestate.html"><strong>03</strong><h3>부동산</h3><p>매매 · 증여 · 담보</p><span class="go">자세히 보기 →</span></a>\n  <a class="quick-item" href="/renunciation.html"><strong>04</strong><h3>한정승인·상속포기</h3><p>채무상속 대응</p><span class="go">자세히 보기 →</span></a>\n  <a class="quick-item" href="/family.html"><strong>05</strong><h3>가사</h3><p>이혼 · 개명 · 후견</p><span class="go">자세히 보기 →</span></a>\n </div>'''
+          icons=[
+          ('inheritance.html','01','상속','상속등기 · 재산분할','c1','<path d="M12 7h18l7 7v27H12z" stroke="#258ed0" stroke-width="3" fill="none"/><path d="M30 7v8h7M18 25l4 4 9-10" stroke="#25a8df" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'),
+          ('corporate.html','02','법인','설립 · 변경 · 증자','c2','<path d="M9 41h30M13 41V20h22v21M18 20v-7h12v7" stroke="#7766d5" stroke-width="3" fill="none"/><path d="M19 27h3m5 0h3m-11 7h3m5 0h3" stroke="#9a7be0" stroke-width="3" fill="none" stroke-linecap="round"/>'),
+          ('realestate.html','03','부동산','매매 · 증여 · 담보','c3','<path d="M7 23 24 9l17 14v18H12V24" stroke="#20a38e" stroke-width="3" fill="none"/><path d="M19 41V29h10v12" stroke="#53bba9" stroke-width="3" fill="none"/>'),
+          ('renunciation.html','04','한정승인·상속포기','채무상속 대응','c4','<path d="M24 7 38 12v10c0 9-5.5 15.5-14 20-8.5-4.5-14-11-14-20V12z" stroke="#c89725" stroke-width="3" fill="none"/><path d="M16 22h16M24 16v12M18 22l-4 6h8zm12 0-4 6h8z" stroke="#c89725" stroke-width="2.5" fill="none"/>'),
+          ('family.html','05','가사','이혼 · 개명 · 후견','c5','<circle cx="18" cy="18" r="6" stroke="#cf679d" stroke-width="3" fill="none"/><circle cx="31" cy="19" r="5" stroke="#7b6bd0" stroke-width="3" fill="none"/><path d="M8 39c1-8 5-12 10-12s9 4 10 12M26 30c5-3 12 1 13 9" stroke="#cf679d" stroke-width="3" fill="none" stroke-linecap="round"/>')]
+          cards=[]
+          for href,n,t,d,c,svg in icons:
+              cards.append(f'<a class="quick-item quick-rich {c}" href="/{href}"><span class="quick-icon"><svg viewBox="0 0 48 48">{svg}</svg></span><span class="quick-copy"><strong>{n}</strong><h3>{t}</h3><p>{d}</p><span class="go">자세히 보기</span></span><span class="quick-arrow">›</span></a>')
+          new=' <div class="quick-grid">\n  '+'\n  '.join(cards)+'\n </div>'
+          if old not in s: raise SystemExit('quick grid source not found')
+          s=s.replace(old,new,1)
+          css='''\n<style>\n/* HOME_SERVICE_CARDS_V2 */\n.quick-grid{gap:12px!important;background:transparent!important;border:0!important;box-shadow:none!important;overflow:visible!important}\n.quick-item.quick-rich{--qc:#36a9e1;--qbg:#f1faff;position:relative!important;overflow:hidden!important;display:grid!important;grid-template-columns:64px minmax(0,1fr) 30px!important;gap:12px!important;align-items:center!important;text-align:left!important;min-height:170px!important;padding:20px 14px 20px 18px!important;background:linear-gradient(110deg,var(--qbg),#fff 76%)!important;border:1px solid #dbe5ed!important;border-radius:17px!important;box-shadow:0 8px 22px rgba(31,41,55,.08)!important}\n.quick-item.quick-rich:before{height:auto!important;width:5px!important;left:0!important;top:0!important;bottom:0!important;background:var(--qc)!important}\n.quick-rich.c2{--qc:#7766d5;--qbg:#f5f2ff}.quick-rich.c3{--qc:#20a38e;--qbg:#effbf8}.quick-rich.c4{--qc:#c89725;--qbg:#fff9e9}.quick-rich.c5{--qc:#cf679d;--qbg:#fff3f8}\n.quick-icon{width:60px;height:60px;border-radius:17px;background:#fff;border:1px solid #dfe7ee;box-shadow:0 5px 14px rgba(31,41,55,.055);padding:10px;display:grid;place-items:center}.quick-icon svg{width:100%;height:100%;display:block}.quick-copy{min-width:0}.quick-item.quick-rich strong{color:var(--qc)!important;font-size:11px!important}.quick-item.quick-rich h3{font-size:18px!important;line-height:1.3!important;margin:3px 0 5px!important}.quick-item.quick-rich p{font-size:11.5px!important;color:#737c85!important;line-height:1.45!important;margin:0 0 7px!important}.quick-item.quick-rich .go{color:var(--qc)!important;font-size:11px!important;font-weight:900!important}.quick-arrow{width:29px;height:29px;border-radius:50%;display:grid;place-items:center;background:var(--qc);color:#fff;font-size:22px;line-height:1}\n@media(max-width:800px){.quick-grid{gap:14px!important}.quick-item.quick-rich{grid-template-columns:66px minmax(0,1fr) 34px!important;min-height:132px!important;padding:18px 15px 18px 20px!important;border-bottom:1px solid #dbe5ed!important}.quick-icon{width:64px;height:64px}.quick-item.quick-rich h3{font-size:21px!important}.quick-item.quick-rich p{font-size:13px!important}.quick-item.quick-rich .go{font-size:12px!important}.quick-arrow{width:33px;height:33px;font-size:25px}}\n@media(hover:hover) and (pointer:fine){.quick-item.quick-rich:hover{transform:translateY(-3px)!important;background:linear-gradient(110deg,var(--qbg),#fff 76%)!important;color:#20242b!important;border-color:var(--qc)!important}.quick-item.quick-rich:hover h3{color:#20242b!important}.quick-item.quick-rich:hover p{color:#737c85!important}.quick-item.quick-rich:hover strong,.quick-item.quick-rich:hover .go{color:var(--qc)!important}}\n</style>\n'''
+          s=s.replace('</head>',css+'\n</head>',1); p.write_text(s,encoding='utf-8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git commit -m 'Apply highlighted service cards with line icons'
+          git push origin main
