@@ -1,0 +1,38 @@
+name: One-time real estate icon unification and cleanup
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/one-time-realestate-icon-cleanup.yml']
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Unify real estate icons and clean completed one-time workflows
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('realestate.html')
+          s=p.read_text(encoding='utf-8')
+          doc='''<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="14" y="8" width="36" height="48" rx="6" fill="#fff"/><rect x="14" y="8" width="36" height="48" rx="6" fill="none" stroke="#438fe5" stroke-width="3"/><rect x="21" y="20" width="22" height="4" rx="2" fill="#438fe5"/><rect x="21" y="29" width="18" height="4" rx="2" fill="#438fe5"/><circle cx="44" cy="46" r="10" fill="#36a9e1"/><path d="M39 46l3 3 6-7" fill="none" stroke="white" stroke-width="3"/></svg>'''
+          house='''<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M9 29 32 10l23 19v25H9V29Z" fill="#fff" stroke="#36a9e1" stroke-width="3" stroke-linejoin="round"/><path d="M23 54V37h18v17" fill="#e8f7fd" stroke="#7b61d1" stroke-width="3"/><circle cx="48" cy="46" r="10" fill="#d7f5ee" stroke="#2eb59a" stroke-width="3"/><path d="m43 46 3 3 6-7" fill="none" stroke="#2eb59a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>'''
+          s=s.replace('<div class="re-ico">📄</div>', '<div class="re-ico">'+doc+'</div>')
+          s=s.replace('<div class="re-ico">🏠</div>', '<div class="re-ico">'+house+'</div>')
+          marker='/* REALESTATE_INHERITANCE_ICON_STYLE_V1 */'
+          if marker not in s:
+              s=s.replace('</style><section class="re-main">', marker+'\n.re-ico{width:60px!important;height:60px!important;border-radius:17px!important;padding:9px!important;background:#fff!important;border:1px solid #dfe7ee!important;box-shadow:0 5px 14px rgba(31,41,55,.055)!important}\n.re-ico svg{width:100%!important;height:100%!important;display:block!important}\n</style><section class="re-main">',1)
+          p.write_text(s,encoding='utf-8')
+          PY
+          # Remove completed patch-only workflows. Keep permanent SEO/import/audit workflows.
+          rm -f .github/workflows/one-time-*.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add realestate.html .github/workflows
+          git commit -m "부동산 아이콘 통일 및 일회성 워크플로 정리"
+          git pull --rebase origin main
+          git push origin HEAD:main
