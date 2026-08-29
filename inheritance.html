@@ -559,6 +559,32 @@ main,.main,.page,.page-wrap,.content-wrap{background:var(--inheritance-sky)!impo
 .inheritance-flow,.flow-wrap,.doc-card,.docs-card,.faq-item,.info-card,.card{background:#fff}
 </style>
 
+
+<style>
+/* DETAIL_BG_RHYTHM_V2 */
+:root{--detail-sky:#eef6fb}
+body{background:var(--detail-sky)!important}
+.hero{background:var(--detail-sky)!important}
+/* 메인과 같은 리듬: 기본 정보영역 하늘색, 흰색 섹션은 흰색 */
+.section{background:var(--detail-sky)!important}
+.section.white{background:#fff!important}
+.section.soft{background:var(--detail-sky)!important}
+/* 최신글/관련글/법률정보 목록은 흰색 영역으로 분리 */
+#posts,#latest-posts,#related-posts,.latest-posts,.related-posts,.posts-section,.related-section{background:#fff!important}
+/* 정보 카드들은 흰색 유지 */
+.card,.article,.info-box,.calculator,.faq-item,.doc-card,.process-card,.legal-card,.related-legal,.related-legal-box{background:#fff!important}
+</style>
+
+
+<style>
+/* INHERITANCE_PROCESS_TOP_GAP_V2 */
+@media(min-width:801px){
+ section:has(.inheritance-flow){padding-top:22px!important;margin-top:0!important}
+ .inheritance-process-section,.inheritance-process-wrap,.inheritance-process{margin-top:0!important;padding-top:22px!important}
+ .inheritance-flow{margin-top:18px!important}
+}
+</style>
+
 </head><body><header class="header">
   <div class="container header-inner">
     <a class="logo" href="/"><span>등기로</span><small>현재두 법무사 사무소 · 인천</small></a>
