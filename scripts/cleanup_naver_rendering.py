@@ -17,10 +17,35 @@ BARE_MARKER_PATTERNS = [
     re.compile(r'(?m)^\s*SEO_RELATED_POSTS_END\s*$'),
 ]
 
+# 네이버 본문 끝에 붙는 '같이 보면 좋은 글' 링크 미리보기 묶음.
+# 홈페이지에는 별도의 '함께 보면 좋은 글' 내부링크 블록이 생성되므로 중복 블록은 제거한다.
+NAVER_RELATED_PATTERNS = [
+    re.compile(
+        r'<(?:h2|h3|p)[^>]*>\s*(?:<[^>]+>\s*)*같이\s*보면\s*좋은\s*글(?:\s*</[^>]+>)*\s*</(?:h2|h3|p)>[\s\S]*?(?=<!--\s*SEO_RELATED_POSTS_START\s*-->|<section[^>]+class=["\'][^"\']*seo-related-posts|</article>)',
+        re.I,
+    ),
+    re.compile(
+        r'<(?:h2|h3|p)[^>]*>\s*(?:<[^>]+>\s*)*같이\s*보면\s*좋은\s*글(?:\s*</[^>]+>)*\s*</(?:h2|h3|p)>[\s\S]*?(?:blog\.naver\.com[\s\S]*?)(?=<!--\s*SEO_RELATED_POSTS_START\s*-->|</article>)',
+        re.I,
+    ),
+]
+
+# 링크카드가 제목 없이 남은 경우도 제거. 네이버 도메인을 포함하는 연속 문단/링크 묶음만 대상으로 한다.
+NAVER_CARD_PATTERNS = [
+    re.compile(
+        r'(?:<p[^>]*>[\s\S]*?</p>\s*){0,3}<p[^>]*>\s*(?:<[^>]+>\s*)*blog\.naver\.com(?:\s*</[^>]+>)*\s*</p>(?:\s*<(?:p|h2|h3|blockquote)[^>]*>[\s\S]*?</(?:p|h2|h3|blockquote)>){0,12}(?=<!--\s*SEO_RELATED_POSTS_START\s*-->|</article>)',
+        re.I,
+    ),
+]
+
 
 def clean_html(text: str) -> str:
     out = text
     for pat in SOURCE_NOTE_PATTERNS:
+        out = pat.sub('', out)
+    for pat in NAVER_RELATED_PATTERNS:
+        out = pat.sub('', out)
+    for pat in NAVER_CARD_PATTERNS:
         out = pat.sub('', out)
     for pat in BARE_MARKER_PATTERNS:
         out = pat.sub('', out)
