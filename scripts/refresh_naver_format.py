@@ -6,8 +6,8 @@ from urllib.parse import urljoin,parse_qs,urlparse
 import requests
 from bs4 import BeautifulSoup
 from PIL import Image
-ROOT=Path(__file__).resolve().parents[1]; DATA=ROOT/'data'/'posts.json'; MEDIA=ROOT/'assets'/'naver-images'; BLOG='hjd21'; FORMAT_VERSION='11'
-UA={'User-Agent':'Mozilla/5.0 (compatible; DeunggiroFormat/1.8; +https://www.deunggiro.kr/)'}
+ROOT=Path(__file__).resolve().parents[1]; DATA=ROOT/'data'/'posts.json'; MEDIA=ROOT/'assets'/'naver-images'; BLOG='hjd21'; FORMAT_VERSION='12'
+UA={'User-Agent':'Mozilla/5.0 (compatible; DeunggiroFormat/1.9; +https://www.deunggiro.kr/)'}
 EMOJI_RE=re.compile('[\U0001F000-\U0001FAFF\U00002600-\U000027BF]')
 def get(u):
  r=requests.get(u,headers=UA,timeout=25); r.raise_for_status(); r.encoding='utf-8'; return r
@@ -54,36 +54,46 @@ def _linkdata_src(holder):
     src=normalize_img_url(m.group(1).replace('\\/','/'))
     if src: return src
  return ''
-def image_src(node):
- # Naver often puts a reduced preview URL in <img src> while the full-resolution
- # image URL lives in data-linkdata. Always prefer the original URL first.
+def image_candidates(node):
+ out=[]
+ def add(v):
+  v=normalize_img_url(v)
+  if v and v not in out and (v.startswith('http') or 'pstatic.net' in v): out.append(v)
  holders=[]
  if getattr(node,'attrs',None): holders.append(node)
  if getattr(node,'find_all',None): holders.extend(node.find_all(attrs={'data-linkdata':True}))
  if getattr(node,'find_parent',None):
-  par=node.find_parent(attrs={'data-linkdata':True})
-  if par: holders.append(par)
- for holder in holders:
-  src=_linkdata_src(holder)
-  if src: return src
- img=node if getattr(node,'name',None)=='img' else (node.select_one('img') if getattr(node,'select_one',None) else None)
- if img:
-  for a in ('data-lazy-src','data-src','data-original','src'):
-   src=normalize_img_url(img.get(a))
-   if src and ('pstatic.net' in src or src.startswith('http')): return src
- return ''
-def saveimg(src,slug,i,skip_if_small=False):
- try:
-  r=requests.get(src,headers=UA,timeout=20); r.raise_for_status(); data=r.content
-  if skip_if_small:
+  p=node.find_parent(attrs={'data-linkdata':True})
+  if p: holders.append(p)
+ for h in holders: add(_linkdata_src(h))
+ imgs=[]
+ if getattr(node,'name',None)=='img': imgs.append(node)
+ if getattr(node,'select',None): imgs.extend(node.select('img'))
+ for img in imgs:
+  for a in ('data-original','data-lazy-src','data-src','src'): add(img.get(a))
+ return out
+def download_best(candidates):
+ best=None
+ for src in candidates:
+  try:
+   r=requests.get(src,headers=UA,timeout=20); r.raise_for_status(); data=r.content
    try:
     with Image.open(BytesIO(data)) as im: w,h=im.size
-    if w < 450 and h < 450 and len(data) < 120000:
-     print('FORMAT_TRAILING_THUMB_SKIP',slug,f'{w}x{h}',len(data)); return ''
-   except Exception: pass
-  ct=(r.headers.get('content-type') or '').lower(); ext='.png' if 'png' in ct else '.webp' if 'webp' in ct else '.gif' if 'gif' in ct else '.jpg'; d=MEDIA/slug; d.mkdir(parents=True,exist_ok=True); p=d/f'fmt-{i:02d}{ext}'; p.write_bytes(data); return '/'+p.relative_to(ROOT).as_posix()
- except Exception as e:
-  print('FORMAT_IMAGE_SKIP',slug,str(e)); return ''
+   except Exception: w=h=0
+   score=(w*h,len(data))
+   if best is None or score>best[0]: best=(score,src,data,r.headers.get('content-type') or '',w,h)
+  except Exception as e: print('FORMAT_IMAGE_CANDIDATE_SKIP',str(e))
+ return best
+def saveimg(candidates,slug,i,skip_if_small=False):
+ best=download_best(candidates)
+ if not best: return ''
+ score,src,data,ct,w,h=best
+ if skip_if_small and w<450 and h<450 and len(data)<120000:
+  print('FORMAT_TRAILING_THUMB_SKIP',slug,f'{w}x{h}',len(data)); return ''
+ ext='.png' if 'png' in ct.lower() else '.webp' if 'webp' in ct.lower() else '.gif' if 'gif' in ct.lower() else '.jpg'
+ d=MEDIA/slug; d.mkdir(parents=True,exist_ok=True); p=d/f'fmt-{i:02d}{ext}'; p.write_bytes(data)
+ print('FORMAT_IMAGE_BEST',slug,i,f'{w}x{h}',len(data),src)
+ return '/'+p.relative_to(ROOT).as_posix()
 def promo_start_text(v):
  v=re.sub(r'\s+','',v)
  return any(k in v for k in ('현재두법무사사무소상담안내','현재두법무사상담안내','현재두법무사사무소상담','032-425-1500'))
@@ -125,11 +135,12 @@ def extract(u,slug):
    continue
   image_node=c.select_one('.se-module-image') or c.select_one('[data-linktype="img"]') or c.select_one('img') or c.select_one('[data-linkdata]')
   if image_node:
-   src=image_src(image_node)
-   if not src or src in seen_imgs: continue
-   seen_imgs.add(src); imgno+=1
+   candidates=image_candidates(image_node)
+   key='|'.join(candidates)
+   if not candidates or key in seen_imgs: continue
+   seen_imgs.add(key); imgno+=1
    trailing=(promo_start-len(comps) != 0 and i >= max(0,promo_start-4)) or (promo_start==len(comps) and i>=max(0,len(comps)-3))
-   loc=saveimg(src,slug,imgno,skip_if_small=trailing)
+   loc=saveimg(candidates,slug,imgno,skip_if_small=trailing)
    if loc: out.append(f'<p class="media-paragraph naver-image"><img src="{html.escape(loc,quote=True)}" alt="" loading="lazy" decoding="async"></p>')
  body='\n'.join(out); chars=len(re.sub(r'\s+','',' '.join(BeautifulSoup(body,'html.parser').stripped_strings)))
  if chars<500: raise RuntimeError(f'short formatted body {chars}')
