@@ -6,7 +6,6 @@ on:
       - 'scripts/import_naver_blog.py'
       - 'scripts/import_naver_blog_full.py'
       - 'scripts/import_naver_blog_missing.py'
-      - 'scripts/import_naver_blog_missing_v2.py'
       - 'scripts/repair_naver_posts.py'
       - 'scripts/strip_naver_emojis.py'
       - 'scripts/cleanup_naver_rendering.py'
@@ -37,65 +36,48 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: Install importer and thumbnail dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y fonts-noto-cjk
           python -m pip install --upgrade pip
           pip install requests beautifulsoup4 lxml pillow
-
       - name: Sync main before import
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch origin main
           git reset --hard origin/main
-
-      - name: Import only missing Naver posts
+      - name: Import missing Naver posts with legacy body parser
         timeout-minutes: 6
-        run: timeout --signal=TERM 330s python -u scripts/import_naver_blog_missing_v2.py
-
+        run: timeout --signal=TERM 330s python -u scripts/import_naver_blog_missing.py
       - name: Strip decorative emojis
-        timeout-minutes: 2
         run: timeout 90s python -u scripts/strip_naver_emojis.py
       - name: Patch import dates
-        timeout-minutes: 2
         run: timeout 90s python -u scripts/patch_naver_import_dates.py
       - name: Patch admin SEO and category
-        timeout-minutes: 2
         run: |
           timeout 90s python -u scripts/patch_admin_seo.py
           timeout 90s python -u scripts/patch_admin_category.py
       - name: Site maintenance first pass
-        timeout-minutes: 2
         run: timeout 90s python -u scripts/site_maintenance.py
       - name: Inject internal links
-        timeout-minutes: 2
         run: timeout 90s python -u scripts/inject_internal_links.py
       - name: Cleanup Naver rendering
-        timeout-minutes: 2
         run: timeout 90s python -u scripts/cleanup_naver_rendering.py
       - name: Optimize Naver keywords
-        timeout-minutes: 2
         run: timeout 90s python -u scripts/optimize_naver_keywords.py
       - name: Generate thumbnails
-        timeout-minutes: 3
         run: timeout 150s python -u scripts/generate_thumbnails.py
       - name: Fix thumbnail logo
-        timeout-minutes: 2
         run: timeout 90s python -u scripts/fix_thumbnail_logo.py
       - name: Site maintenance final pass
-        timeout-minutes: 2
         run: timeout 90s python -u scripts/site_maintenance.py
       - name: Latest cards and sitemap
-        timeout-minutes: 2
         run: |
           timeout 90s python -u scripts/apply_latest_cards.py
           timeout 90s python -u scripts/generate_sitemap.py
-
       - name: SEO automation and RSS
-        timeout-minutes: 3
         run: |
           node --check scripts/seo-auto.mjs
           node --check scripts/seo-canonical-fix.mjs
@@ -103,9 +85,7 @@ jobs:
           timeout 120s node scripts/seo-auto.mjs
           timeout 60s node scripts/seo-canonical-fix.mjs
           timeout 60s node scripts/rss-auto.mjs
-
       - name: Validate generated site
-        timeout-minutes: 3
         shell: bash
         run: |
           set -euo pipefail
@@ -114,38 +94,21 @@ jobs:
           import json
           from pathlib import Path
           posts=json.loads(Path('data/posts.json').read_text(encoding='utf-8'))
-          missing=[]
+          sitemap=Path('sitemap.xml').read_text(encoding='utf-8')
           for p in posts:
               slug=(p.get('slug') or '').replace('.html','')
               thumb=(p.get('thumbnail') or '').strip()
-              if not thumb:
-                  missing.append(slug+': empty thumbnail')
-              elif not Path(thumb.lstrip('/')).exists():
-                  missing.append(thumb)
-          if missing:
-              raise SystemExit('Missing thumbnails: '+', '.join(missing[:20]))
-          sitemap=Path('sitemap.xml').read_text(encoding='utf-8')
-          missing_urls=[]
-          for p in posts:
-              slug=(p.get('slug') or '').replace('.html','')
-              if slug and Path('posts',slug+'.html').exists() and f'/posts/{slug}.html' not in sitemap:
-                  missing_urls.append(slug)
-          if missing_urls:
-              raise SystemExit('Missing sitemap URLs: '+', '.join(missing_urls[:20]))
-          print('validated',len(posts),'posts with thumbnails and sitemap URLs')
+              if not thumb or not Path(thumb.lstrip('/')).exists(): raise SystemExit('Missing thumbnail: '+slug)
+              if slug and Path('posts',slug+'.html').exists() and f'/posts/{slug}.html' not in sitemap: raise SystemExit('Missing sitemap URL: '+slug)
+          print('validated',len(posts),'posts')
           PY
           find scripts -type d -name '__pycache__' -prune -exec rm -rf {} +
           git diff --check
-
       - name: Commit generated changes
-        timeout-minutes: 3
         shell: bash
         run: |
           set -euo pipefail
-          if git diff --quiet && [ -z "$(git status --porcelain --untracked-files=normal)" ]; then
-            echo "No Naver or generated changes"
-            exit 0
-          fi
+          if git diff --quiet && [ -z "$(git status --porcelain --untracked-files=normal)" ]; then echo "No changes"; exit 0; fi
           git add admin.html data/posts.json data/seo-report.json posts posts.html assets/posts assets/naver-images index.html inheritance.html renunciation.html corporate.html realestate.html family.html sitemap.xml rss.xml
           git commit -m "네이버 본문·SEO·RSS·내부링크·사이트맵 자동반영"
           git push origin HEAD:main
