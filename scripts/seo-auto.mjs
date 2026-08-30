@@ -19,7 +19,7 @@ function loadPosts(){
   catch{ throw new Error('data/posts.json JSON 형식이 깨져 있습니다.'); }
   if(!Array.isArray(raw)) throw new Error('data/posts.json은 배열 형식이어야 합니다.');
   const seen=new Set(),valid=[];
-  raw.forEach((p,i)=>{
+  raw.forEach(p=>{
     if(!p||typeof p!=='object') return;
     const item={...p,title:clean(p.title),category:clean(p.category),date:clean(p.date),slug:clean(p.slug),keywords:clean(p.keywords),summary:clean(p.summary),thumbnail:clean(p.thumbnail)};
     if(!item.title||!item.category||!item.date||!item.slug)return;
@@ -33,7 +33,29 @@ function loadPosts(){
 const posts=loadPosts();
 if(!posts.length)throw new Error('유효한 게시글이 없습니다.');
 
-function replaceMarked(html,name,block,before){const start=`<!-- ${name}_START -->`,end=`<!-- ${name}_END -->`,re=new RegExp(`${start}[\\s\\S]*?${end}`,'m'),marked=`${start}\n${block}\n${end}`;if(re.test(html))return html.replace(re,marked);const idx=html.indexOf(before);if(idx<0)return html;return html.slice(0,idx)+marked+'\n'+html.slice(idx)}
+function replaceMarked(html,name,block,before){
+  const start=`<!-- ${name}_START -->`,end=`<!-- ${name}_END -->`;
+  const re=new RegExp(`${start}[\\s\\S]*?${end}`,'m');
+  const marked=`${start}\n${block}\n${end}`;
+  if(re.test(html))return html.replace(re,marked);
+  const idx=html.indexOf(before);if(idx<0)return html;
+  return html.slice(0,idx)+marked+'\n'+html.slice(idx);
+}
+
+/* 과거 후처리에서 HTML 주석 기호가 사라지며 SEO_* 마커가 본문에 글자로 노출된 경우를 정리한다.
+   게시글마다 기존 자동 생성 breadcrumb/구조화데이터를 제거한 뒤 아래에서 정확히 한 번만 다시 삽입한다. */
+function sanitizeSeoArtifacts(html){
+  for(const name of ['SEO_STRUCTURED_DATA','SEO_BREADCRUMB']){
+    const start=`<!-- ${name}_START -->`,end=`<!-- ${name}_END -->`;
+    const marked=new RegExp(`${start}[\\s\\S]*?${end}`,'g');
+    html=html.replace(marked,'');
+  }
+  html=html.replace(/(?:<!--\s*)?SEO_(?:STRUCTURED_DATA|BREADCRUMB)_(?:START|END)(?:\s*-->)?/g,'');
+  html=html.replace(/<nav\b[^>]*aria-label=["']breadcrumb["'][^>]*>[\s\S]*?<\/nav>\s*/gi,'');
+  html=html.replace(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>[\s\S]*?<\/script>\s*/gi,'');
+  return html;
+}
+
 function removeLegacyLegalInfoSection(html){return html.replace(/<section class="section white">[\s\S]*?<h2 class="title">등기로 법률정보<\/h2>[\s\S]*?<\/section>\s*(?=<!-- SEO_LATEST_START -->)/m,'')}
 function latestCards(list,limit=4){return sortPosts(list).slice(0,limit).map(p=>{const thumb=p.thumbnail||`/assets/posts/${p.slug}-thumbnail.png`;return `<a class="dg-latest-card" href="/posts/${esc(p.slug)}.html"><div class="dg-latest-thumb"><img loading="lazy" decoding="async" src="${esc(thumb)}" alt="${esc(p.title)}"></div><div class="dg-latest-body"><div class="dg-latest-cat">${esc(p.category)}</div><div class="dg-latest-card-title">${esc(p.title.replace(/^\s*\[[^\]]+\]\s*/,''))}</div><div class="dg-latest-date">${esc(p.date.replaceAll('-','.'))}</div></div></a>`}).join('\n')}
 function buildLatestSection(list,title='최신 법률정보'){if(!list.length)return '';return `<section id="dg-latest-posts" class="dg-latest-wrap"><div class="dg-latest-inner"><div class="dg-latest-head"><div><div class="dg-latest-kicker">등기로 · 최신글</div><h2 class="dg-latest-title">${esc(title)}</h2><p class="dg-latest-desc">최근 등록된 실무 정보를 확인하세요.</p></div><a class="dg-latest-more" href="/posts.html">전체 글 보기 →</a></div><div class="dg-latest-grid">${latestCards(list,4)}</div></div></section>`}
@@ -51,5 +73,32 @@ function writeIfChanged(file,next){const current=fs.readFileSync(file,'utf8');if
 const indexPath=path.join(root,'index.html');if(fs.existsSync(indexPath)){let html=fs.readFileSync(indexPath,'utf8');html=removeLegacyLegalInfoSection(html);html=replaceMarked(html,'SEO_LATEST',buildLatestSection(posts),'\n<section class="contact"');writeIfChanged(indexPath,html)}
 const categoryPages=[['inheritance.html',['상속등기','상속재산분할'],'상속 관련 최신 글'],['renunciation.html',['상속포기·한정승인'],'상속포기·한정승인 관련 최신 글'],['corporate.html',['법인등기'],'법인등기 관련 최신 글'],['realestate.html',['부동산등기'],'부동산등기 관련 최신 글'],['family.html',['가사'],'가사 관련 최신 글']];
 for(const [file,cats,title] of categoryPages){const full=path.join(root,file);if(!fs.existsSync(full))continue;const related=posts.filter(x=>cats.includes(x.category));let html=fs.readFileSync(full,'utf8');html=replaceMarked(html,'SEO_CATEGORY_LINKS',buildLatestSection(related,title),'\n<footer');writeIfChanged(full,html)}
-const audit=[];for(const p of posts){const relFile=`posts/${p.slug}.html`,file=path.join(root,relFile);if(!fs.existsSync(file)){audit.push({slug:p.slug,status:'warning',issues:['HTML 파일 없음']});continue}let html=fs.readFileSync(file,'utf8'),url=`${BASE}/posts/${p.slug}.html`,image=abs(p.thumbnail),modified=gitModifiedDate(relFile,p.date||todayKST()),description=optimizedDescription(p,html);html=replaceMeta(html,'description',description);html=replaceOg(html,'og:description',description);html=enhanceImages(html,p);const articleLd={'@context':'https://schema.org','@type':'Article',headline:p.title,description,datePublished:p.date,dateModified:modified,mainEntityOfPage:{'@type':'WebPage','@id':url},author:{'@type':'Person',name:'현재두'},publisher:{'@type':'Organization',name:'현재두 법무사 사무소',url:BASE},...(image?{image:[image]}:{})},breadcrumbLd={'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'홈',item:BASE+'/'},{'@type':'ListItem',position:2,name:'법률정보',item:BASE+'/posts.html'},{'@type':'ListItem',position:3,name:p.category,item:BASE+'/posts.html'},{'@type':'ListItem',position:4,name:p.title,item:url}]},ldBlock=`<script type="application/ld+json">${JSON.stringify(articleLd).replace(/<\//g,'<\\/')}</script>\n<script type="application/ld+json">${JSON.stringify(breadcrumbLd).replace(/<\//g,'<\\/')}</script>`;html=replaceMarked(html,'SEO_STRUCTURED_DATA',ldBlock,'\n</head>');const crumb=`<nav aria-label="breadcrumb" style="max-width:850px;margin:0 auto 12px;padding:0 4px;font-size:13px;color:#68717d"><a href="/">홈</a> &gt; <a href="/posts.html">법률정보</a> &gt; <span>${esc(p.category)}</span></nav>`;html=replaceMarked(html,'SEO_BREADCRUMB',crumb,'<article class="article">');const rel=relatedPosts(p),relatedBlock=rel.length?`<section aria-labelledby="related-posts-title" style="margin-top:34px;padding-top:24px;border-top:1px solid #e5e7eb"><h2 id="related-posts-title" style="font-size:22px;margin:0 0 14px">같이 보면 좋은 글</h2><div style="display:grid;gap:9px">${rel.map(x=>`<a href="/posts/${esc(x.slug)}.html" style="display:block;padding:12px 14px;border:1px solid #d9e0ea;border-radius:9px;text-decoration:none"><small style="color:#36a9e1;font-weight:800">${esc(x.category)}</small><strong style="display:block;margin-top:3px;color:#20242b;line-height:1.45">${esc(x.title)}</strong></a>`).join('')}</div></section>`:'';html=replaceMarked(html,'SEO_RELATED_POSTS',relatedBlock,'<div class="related">');const issues=[];if(!/<link\s+rel=["']canonical["']/i.test(html))issues.push('canonical 누락');if(!/<meta\s+name=["']description["']/i.test(html))issues.push('description 누락');if(/<meta\s+name=["']robots["'][^>]*noindex/i.test(html))issues.push('noindex 발견');if(!/"@type":"Article"/.test(html))issues.push('Article 구조화데이터 누락');if(!/"@type":"BreadcrumbList"/.test(html))issues.push('Breadcrumb 구조화데이터 누락');if(rel.length===0)issues.push('내부 관련글 없음');writeIfChanged(file,html);updateSitemapLastmod(p,modified);audit.push({slug:p.slug,status:issues.length?'warning':'ok',issues,modified,related:rel.map(x=>x.slug)})}
-const report={generatedAt:new Date().toISOString(),totalPosts:posts.length,ok:audit.filter(x=>x.status==='ok').length,warnings:audit.filter(x=>x.status!=='ok').length,items:audit};fs.writeFileSync(path.join(root,'data','seo-report.json'),JSON.stringify(report,null,2)+'\n');console.log(`SEO 자동화 완료: ${posts.length}개 글 / 정상 ${report.ok} / 경고 ${report.warnings}`);
+
+const audit=[];
+for(const p of posts){
+  const relFile=`posts/${p.slug}.html`,file=path.join(root,relFile);
+  if(!fs.existsSync(file)){audit.push({slug:p.slug,status:'warning',issues:['HTML 파일 없음']});continue}
+  let html=sanitizeSeoArtifacts(fs.readFileSync(file,'utf8'));
+  const url=`${BASE}/posts/${p.slug}.html`,image=abs(p.thumbnail),modified=gitModifiedDate(relFile,p.date||todayKST()),description=optimizedDescription(p,html);
+  html=replaceMeta(html,'description',description);html=replaceOg(html,'og:description',description);html=enhanceImages(html,p);
+  const articleLd={'@context':'https://schema.org','@type':'Article',headline:p.title,description,datePublished:p.date,dateModified:modified,mainEntityOfPage:{'@type':'WebPage','@id':url},author:{'@type':'Person',name:'현재두'},publisher:{'@type':'Organization',name:'현재두 법무사 사무소',url:BASE},...(image?{image:[image]}:{})};
+  const breadcrumbLd={'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'홈',item:BASE+'/'},{'@type':'ListItem',position:2,name:'법률정보',item:BASE+'/posts.html'},{'@type':'ListItem',position:3,name:p.category,item:BASE+'/posts.html'},{'@type':'ListItem',position:4,name:p.title,item:url}]};
+  const ldBlock=`<script type="application/ld+json">${JSON.stringify(articleLd).replace(/<\//g,'<\\/')}</script>\n<script type="application/ld+json">${JSON.stringify(breadcrumbLd).replace(/<\//g,'<\\/')}</script>`;
+  html=replaceMarked(html,'SEO_STRUCTURED_DATA',ldBlock,'\n</head>');
+  const crumb=`<nav aria-label="breadcrumb" style="max-width:850px;margin:0 auto 12px;padding:0 4px;font-size:13px;color:#68717d"><a href="/">홈</a> &gt; <a href="/posts.html">법률정보</a> &gt; <span>${esc(p.category)}</span></nav>`;
+  html=replaceMarked(html,'SEO_BREADCRUMB',crumb,'<article class="article">');
+  const rel=relatedPosts(p),relatedBlock=rel.length?`<section aria-labelledby="related-posts-title" style="margin-top:34px;padding-top:24px;border-top:1px solid #e5e7eb"><h2 id="related-posts-title" style="font-size:22px;margin:0 0 14px">같이 보면 좋은 글</h2><div style="display:grid;gap:9px">${rel.map(x=>`<a href="/posts/${esc(x.slug)}.html" style="display:block;padding:12px 14px;border:1px solid #d9e0ea;border-radius:9px;text-decoration:none"><small style="color:#36a9e1;font-weight:800">${esc(x.category)}</small><strong style="display:block;margin-top:3px;color:#20242b;line-height:1.45">${esc(x.title)}</strong></a>`).join('')}</div></section>`:'';
+  html=replaceMarked(html,'SEO_RELATED_POSTS',relatedBlock,'<div class="related">');
+  const issues=[];
+  if(!/<link\b[^>]*rel=["']canonical["']/i.test(html))issues.push('canonical 누락');
+  if(!/<meta\s+name=["']description["']/i.test(html))issues.push('description 누락');
+  if(/<meta\s+name=["']robots["'][^>]*noindex/i.test(html))issues.push('noindex 발견');
+  if(!/"@type":"Article"/.test(html))issues.push('Article 구조화데이터 누락');
+  if(!/"@type":"BreadcrumbList"/.test(html))issues.push('Breadcrumb 구조화데이터 누락');
+  if(rel.length===0)issues.push('내부 관련글 없음');
+  if(/SEO_(?:STRUCTURED_DATA|BREADCRUMB)_(?:START|END)(?!\s*-->)/.test(html))issues.push('SEO 마커 노출 위험');
+  writeIfChanged(file,html);updateSitemapLastmod(p,modified);audit.push({slug:p.slug,status:issues.length?'warning':'ok',issues,modified,related:rel.map(x=>x.slug)});
+}
+const report={generatedAt:new Date().toISOString(),totalPosts:posts.length,ok:audit.filter(x=>x.status==='ok').length,warnings:audit.filter(x=>x.status!=='ok').length,items:audit};
+fs.writeFileSync(path.join(root,'data','seo-report.json'),JSON.stringify(report,null,2)+'\n');
+console.log(`SEO 자동화 완료: ${posts.length}개 글 / 정상 ${report.ok} / 경고 ${report.warnings}`);
