@@ -117,24 +117,24 @@ def fetch_all_blog_items_html():
             elif not old.get('title') and item.get('title'):
                 seen[n] = item
 
-        print(f'HTML_LIST_PAGE page={page} items={len(page_items)} new={new_count}')
+        print(f'HTML_LIST_PAGE page={page} items={len(page_items)} new={new_count}', flush=True)
         if not page_items or new_count == 0:
             empty_pages += 1
         else:
             empty_pages = 0
 
         if errors and not page_items:
-            print('HTML_LIST_PAGE_ERRORS', page, ' | '.join(errors))
+            print('HTML_LIST_PAGE_ERRORS', page, ' | '.join(errors), flush=True)
         if empty_pages >= EMPTY_PAGE_LIMIT:
             break
 
     items = list(seen.values())
     if items:
         items.sort(key=lambda x: int(x['log_no']), reverse=True)
-        print(f'HTML_LIST_TOTAL={len(items)}')
+        print(f'HTML_LIST_TOTAL={len(items)}', flush=True)
         return items
 
-    print('HTML_LIST_FALLBACK_ORIGINAL')
+    print('HTML_LIST_FALLBACK_ORIGINAL', flush=True)
     return base.fetch_all_blog_items()
 
 
@@ -144,7 +144,7 @@ def _is_bare_domain(text: str) -> bool:
 
 
 def _remove_link_preview_artifacts(body: str) -> str:
-    """네이버 링크/표 미리보기 카드가 긴 일반문단으로 풀리는 현상을 제거한다."""
+    """네이버 링크/표 미리보기 카드가 일반문단으로 풀리는 현상을 제거한다."""
     soup = BeautifulSoup(body, 'html.parser')
     removed = 0
     blocks = list(soup.find_all(['p', 'div']))
@@ -155,11 +155,9 @@ def _remove_link_preview_artifacts(body: str) -> str:
         if not _is_bare_domain(text):
             continue
 
-        # 링크 카드 마지막에 도메인만 별도 문단으로 붙는 구조.
         prev = block.find_previous_sibling()
         if prev is not None:
             prev_text = ' '.join(prev.stripped_strings).strip()
-            # 카드 본문이 표/요약 전체를 한 문단으로 펼쳐 놓은 경우만 제거한다.
             preview_hint = any(x in prev_text for x in (
                 '좌우로 스크롤 가능합니다', '요약표입니다', '표준세율',
                 '기본 세율', '기본세율', '적용 세목', '특이사항',
@@ -171,7 +169,7 @@ def _remove_link_preview_artifacts(body: str) -> str:
         removed += 1
 
     if removed:
-        print(f'LINK_PREVIEW_ARTIFACTS_REMOVED={removed}')
+        print(f'LINK_PREVIEW_ARTIFACTS_REMOVED={removed}', flush=True)
     return str(soup)
 
 
@@ -181,12 +179,23 @@ _original_clean_article = base.clean_article
 def clean_article_without_previews(url, slug=''):
     body, text = _original_clean_article(url, slug)
     body = _remove_link_preview_artifacts(body)
-    # 본문 길이 판정은 원문 텍스트를 유지한다. 링크 카드 제거는 HTML 출력에만 적용한다.
     return body, text
+
+
+def skip_existing_remote_refresh(posts):
+    """기존 수집글 전체를 네이버에서 다시 받지 않는다.
+
+    기존 글은 뒤 단계의 로컬 정리 스크립트가 처리하고, 네트워크 요청은 새 글에만 사용한다.
+    이미지가 많은 기존 글을 매 실행마다 재다운로드하면서 수십 분 이상 멈추는 문제를 방지한다.
+    """
+    count = sum(1 for p in posts if p.get('source') == 'naver-blog')
+    print(f'REFRESH_EXISTING_SKIPPED={count}', flush=True)
+    return 0
 
 
 base.fetch_all_blog_items = fetch_all_blog_items_html
 base.clean_article = clean_article_without_previews
+base.refresh_existing_imports = skip_existing_remote_refresh
 
 if __name__ == '__main__':
     base.main()
