@@ -7,7 +7,7 @@ import requests
 from bs4 import BeautifulSoup
 from PIL import Image
 ROOT=Path(__file__).resolve().parents[1]; DATA=ROOT/'data'/'posts.json'; MEDIA=ROOT/'assets'/'naver-images'; BLOG='hjd21'
-UA={'User-Agent':'Mozilla/5.0 (compatible; DeunggiroFormat/1.6; +https://www.deunggiro.kr/)'}
+UA={'User-Agent':'Mozilla/5.0 (compatible; DeunggiroFormat/1.7; +https://www.deunggiro.kr/)'}
 EMOJI_RE=re.compile('[\U0001F000-\U0001FAFF\U00002600-\U000027BF]')
 def get(u):
  r=requests.get(u,headers=UA,timeout=25); r.raise_for_status(); r.encoding='utf-8'; return r
@@ -39,12 +39,10 @@ def normalize_img_url(src):
  if src.startswith('data:'): return ''
  return src
 def image_src(node):
- # 1) 일반 img 속성
  if getattr(node,'name',None)=='img':
   for a in ('data-lazy-src','data-src','data-original','src'):
    src=normalize_img_url(node.get(a))
    if src and ('pstatic.net' in src or src.startswith('http')): return src
- # 2) SmartEditor ONE는 이미지 주소를 data-linkdata JSON에 보관하는 경우가 많다.
  for holder in ([node] if getattr(node,'attrs',None) else []) + (node.find_all(attrs={'data-linkdata':True}) if getattr(node,'find_all',None) else []):
   raw=holder.get('data-linkdata') if getattr(holder,'get',None) else ''
   if not raw: continue
@@ -58,24 +56,22 @@ def image_src(node):
    if m:
     src=normalize_img_url(m.group(1).replace('\\/','/'))
     if src: return src
- # 3) data-linkdata가 상위 a 태그에 있는 경우
  if getattr(node,'find_parent',None):
   par=node.find_parent(attrs={'data-linkdata':True})
   if par:
    return image_src(par)
  return ''
-def saveimg(src,slug,i):
+def saveimg(src,slug,i,skip_if_small=False):
  try:
   r=requests.get(src,headers=UA,timeout=20); r.raise_for_status(); data=r.content
-  # 네이버가 본문 앞에 넣는 작은 미리보기/스티커 이미지는 본문 대표 이미지처럼 보이므로 제외한다.
-  # 실제 본문 이미지는 보통 충분한 폭과 용량을 가지며, 작은 이미지에만 이 조건을 적용한다.
-  try:
-   with Image.open(BytesIO(data)) as im:
-    w,h=im.size
-   if w < 400 and len(data) < 80000:
-    print('FORMAT_IMAGE_SMALL_SKIP',slug,f'{w}x{h}',len(data)); return ''
-  except Exception:
-   pass
+  if skip_if_small:
+   try:
+    with Image.open(BytesIO(data)) as im:
+     w,h=im.size
+    if w < 450 and h < 450 and len(data) < 120000:
+     print('FORMAT_TRAILING_THUMB_SKIP',slug,f'{w}x{h}',len(data)); return ''
+   except Exception:
+    pass
   ct=(r.headers.get('content-type') or '').lower(); ext='.png' if 'png' in ct else '.webp' if 'webp' in ct else '.gif' if 'gif' in ct else '.jpg'; d=MEDIA/slug; d.mkdir(parents=True,exist_ok=True); p=d/f'fmt-{i:02d}{ext}'; p.write_bytes(data); return '/'+p.relative_to(ROOT).as_posix()
  except Exception as e:
   print('FORMAT_IMAGE_SKIP',slug,str(e)); return ''
@@ -110,22 +106,24 @@ def extract(u,slug):
     if cells: rows.append('<tr>'+''.join(cells)+'</tr>')
    if rows: out.append('<table class="naver-table"><tbody>'+''.join(rows)+'</tbody></table>')
    continue
-  # SmartEditor 컴포넌트 순서 유지. img 태그가 없어도 data-linkdata 이미지 모듈을 잡는다.
-  nodes=c.select('.se-text-paragraph, .se-module-image, [data-linktype="img"], [data-linkdata], img')
-  if not nodes: nodes=c.select('.se-module-text p,.se-section-text p')
-  for n in nodes:
-   is_text=('se-text-paragraph' in (n.get('class') or [])) or n.name=='p'
-   if is_text:
+  # 컴포넌트 단위로 DOM 순서를 유지한다. 같은 이미지 컴포넌트 안의
+  # data-linkdata/미리보기/img를 각각 수집하지 않고 실제 이미지 1장만 저장한다.
+  text_nodes=c.select('.se-text-paragraph,.se-module-text p,.se-section-text p')
+  if text_nodes:
+   for n in text_nodes:
     if n.find('a',href=True): continue
     v=txt(n); k=re.sub(r'\W+','',v)
     if len(k)<2 or k in seen: continue
-    seen.add(k); out.append(styled_text(n)); continue
-   src=image_src(n)
+    seen.add(k); out.append(styled_text(n))
+   continue
+  image_node=c.select_one('.se-module-image') or c.select_one('[data-linktype="img"]') or c.select_one('img') or c.select_one('[data-linkdata]')
+  if image_node:
+   src=image_src(image_node)
    if not src or src in seen_imgs: continue
-   # 일반 외부 링크카드 이미지는 제외하되, 네이버 이미지 모듈의 자체 링크는 허용한다.
-   anc=n.find_parent('a',href=True) if getattr(n,'find_parent',None) else None
-   if anc and 'se-module-image-link' not in ' '.join(anc.get('class',[])): continue
-   seen_imgs.add(src); imgno+=1; loc=saveimg(src,slug,imgno)
+   seen_imgs.add(src); imgno+=1
+   # 상담/홍보 영역 바로 앞의 작은 정사각형 이미지만 블로그 하단 썸네일로 본다.
+   trailing=(promo_start-len(comps) != 0 and i >= max(0,promo_start-4)) or (promo_start==len(comps) and i>=max(0,len(comps)-3))
+   loc=saveimg(src,slug,imgno,skip_if_small=trailing)
    if loc: out.append(f'<p class="media-paragraph naver-image"><img src="{html.escape(loc,quote=True)}" alt="" loading="lazy" decoding="async"></p>')
  body='\n'.join(out); chars=len(re.sub(r'\s+','',' '.join(BeautifulSoup(body,'html.parser').stripped_strings)))
  if chars<500: raise RuntimeError(f'short formatted body {chars}')
@@ -138,7 +136,7 @@ def main():
   slug=str(p.get('slug','')).replace('.html',''); path=ROOT/'posts'/f'{slug}.html'
   if not path.exists(): continue
   old=path.read_text(encoding='utf-8',errors='replace')
-  if 'name="dg-naver-format" content="9"' in old: continue
+  if 'name="dg-naver-format" content="10"' in old: continue
   u=p.get('source_url') or (f'https://blog.naver.com/{BLOG}/{slug.removeprefix("naver-")}' if slug.startswith('naver-') else '')
   if not u: continue
   try:
@@ -147,7 +145,7 @@ def main():
    node.clear(); frag=BeautifulSoup(body,'html.parser')
    for x in list(frag.contents): node.append(x)
    for oldmeta in soup.select('meta[name="dg-naver-format"]'): oldmeta.decompose()
-   meta=soup.new_tag('meta'); meta['name']='dg-naver-format'; meta['content']='9'; soup.head.append(meta)
+   meta=soup.new_tag('meta'); meta['name']='dg-naver-format'; meta['content']='10'; soup.head.append(meta)
    path.write_text(str(soup),encoding='utf-8'); changed+=1; print('FORMAT_REFRESHED',slug,'chars='+str(chars),'images='+str(imgs)); time.sleep(.15)
   except Exception as e: print('FORMAT_SKIP',slug,e)
  print('FORMAT_REFRESHED_TOTAL',changed)
