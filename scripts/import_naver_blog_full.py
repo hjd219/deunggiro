@@ -2,15 +2,72 @@ from __future__ import annotations
 
 import html
 import re
+import sys
 from datetime import datetime
+from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
 from bs4 import BeautifulSoup
 
 import import_naver_blog as base
 
-MAX_PAGES = 120
+# 일일 자동수집은 무한 과거 탐색을 하지 않는다.
+# 15페이지 안에서 홈페이지에 없는 최신 글 3개를 찾으면 즉시 종료한다.
+MAX_PAGES = 15
 EMPTY_PAGE_LIMIT = 3
+MAX_LOCAL_IMAGES = 6
+HTTP_TIMEOUT = (4, 10)
+IMAGE_TIMEOUT = (4, 8)
+
+_session = base.requests.Session()
+_session.headers.update(base.UA)
+
+
+def fast_get(url, **kwargs):
+    kwargs.setdefault('timeout', HTTP_TIMEOUT)
+    r = _session.get(url, **kwargs)
+    r.raise_for_status()
+    try:
+        r.content.decode('utf-8')
+        r.encoding = 'utf-8'
+    except UnicodeDecodeError:
+        r.encoding = r.encoding or r.apparent_encoding or 'utf-8'
+    return r
+
+
+def fast_save_image(src, slug, index):
+    # 본문 이미지가 수십 장인 글 때문에 Actions가 수십 분 멈추는 것을 방지한다.
+    # 앞 6장만 로컬 저장하고 나머지는 원격 주소를 그대로 사용한다.
+    if index > MAX_LOCAL_IMAGES:
+        print(f'IMAGE_REMOTE_ONLY index={index}', flush=True)
+        return src
+    try:
+        with _session.get(src, timeout=IMAGE_TIMEOUT, stream=True) as r:
+            r.raise_for_status()
+            length = int(r.headers.get('content-length') or 0)
+            if length > 8 * 1024 * 1024:
+                print(f'IMAGE_TOO_LARGE index={index} bytes={length}', flush=True)
+                return src
+            chunks = []
+            total = 0
+            for chunk in r.iter_content(64 * 1024):
+                if not chunk:
+                    continue
+                total += len(chunk)
+                if total > 8 * 1024 * 1024:
+                    print(f'IMAGE_TOO_LARGE_STREAM index={index}', flush=True)
+                    return src
+                chunks.append(chunk)
+            if not chunks:
+                return src
+            folder = base.MEDIA_ROOT / slug
+            folder.mkdir(parents=True, exist_ok=True)
+            path = folder / f'{index:02d}{base.image_ext(r, src)}'
+            path.write_bytes(b''.join(chunks))
+            return '/' + path.relative_to(base.ROOT).as_posix()
+    except Exception as e:
+        print('IMAGE_SKIP', src, e, file=sys.stderr, flush=True)
+        return src
 
 
 def _log_no(href: str) -> str:
@@ -111,8 +168,6 @@ def _is_missing(item, log_nos, sources, titles):
 
 
 def fetch_all_blog_items_html():
-    # 매일 전체 330여 글을 훑지 않는다. 최신 페이지부터 보면서 홈페이지에 없는
-    # 글 MAX_IMPORT(현재 3개)를 확보하면 즉시 네이버 목록 탐색을 끝낸다.
     existing_log_nos, existing_sources, existing_titles = _existing_state()
     seen = {}
     missing_seen = set()
@@ -124,7 +179,7 @@ def fetch_all_blog_items_html():
         errors = []
         for endpoint in endpoints:
             try:
-                r = base.get(endpoint, params={'blogId': base.BLOG_ID, 'from': 'postList', 'categoryNo': '0', 'currentPage': str(page)})
+                r = fast_get(endpoint, params={'blogId': base.BLOG_ID, 'from': 'postList', 'categoryNo': '0', 'currentPage': str(page)})
                 page_items = _extract_items(r.text)
                 if page_items:
                     break
@@ -162,7 +217,7 @@ def fetch_all_blog_items_html():
         items.sort(key=lambda x: int(x['log_no']), reverse=True)
         print(f'HTML_LIST_TOTAL={len(items)}', flush=True)
         return items
-    print('HTML_LIST_FALLBACK_ORIGINAL', flush=True)
+    print('HTML_LIST_FALLBACK_RSS', flush=True)
     return base.fetch_feed_items()
 
 
@@ -199,8 +254,10 @@ _original_clean_article = base.clean_article
 
 
 def clean_article_without_previews(url, slug=''):
+    print(f'ARTICLE_FETCH_START {url}', flush=True)
     body, text = _original_clean_article(url, slug)
     body = _remove_link_preview_artifacts(body)
+    print(f'ARTICLE_FETCH_DONE {url} chars={len(text)}', flush=True)
     return body, text
 
 
@@ -210,6 +267,9 @@ def skip_existing_remote_refresh(posts):
     return 0
 
 
+# base importer의 모든 네트워크 요청/이미지 저장도 제한된 버전으로 교체한다.
+base.get = fast_get
+base.save_image = fast_save_image
 base.fetch_all_blog_items = fetch_all_blog_items_html
 base.clean_article = clean_article_without_previews
 base.refresh_existing_imports = skip_existing_remote_refresh
