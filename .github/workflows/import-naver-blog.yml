@@ -38,7 +38,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests beautifulsoup4 lxml pillow
 
-      - name: Import Naver posts, repair body and publish
+      - name: Import new Naver posts and publish
         shell: bash
         run: |
           set -e
@@ -47,8 +47,9 @@ jobs:
           git fetch origin main
           git reset --hard origin/main
 
+          # 네이버 원격 요청은 새로 발견된 글에만 사용한다.
+          # 기존 수집글은 다시 다운로드하지 않고 아래 로컬 정리만 수행한다.
           python -u scripts/import_naver_blog_full.py
-          python -u scripts/repair_naver_posts.py
           python scripts/strip_naver_emojis.py
           python scripts/patch_naver_import_dates.py
           python scripts/patch_admin_seo.py
