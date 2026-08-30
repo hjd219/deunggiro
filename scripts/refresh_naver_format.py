@@ -5,7 +5,7 @@ from urllib.parse import urljoin,parse_qs,urlparse
 import requests
 from bs4 import BeautifulSoup
 ROOT=Path(__file__).resolve().parents[1]; DATA=ROOT/'data'/'posts.json'; MEDIA=ROOT/'assets'/'naver-images'; BLOG='hjd21'
-UA={'User-Agent':'Mozilla/5.0 (compatible; DeunggiroFormat/1.5; +https://www.deunggiro.kr/)'}
+UA={'User-Agent':'Mozilla/5.0 (compatible; DeunggiroFormat/1.6; +https://www.deunggiro.kr/)'}
 EMOJI_RE=re.compile('[\U0001F000-\U0001FAFF\U00002600-\U000027BF]')
 def get(u):
  r=requests.get(u,headers=UA,timeout=25); r.raise_for_status(); r.encoding='utf-8'; return r
@@ -30,10 +30,38 @@ def styled_text(n):
  t=txt(n); size=fontsize(n); classes=' '.join(n.get('class',[]))+' '+' '.join(c for x in n.find_all(True) for c in x.get('class',[])); st=' '.join([n.get('style','')]+[x.get('style','') for x in n.find_all(True)])
  weight='700' if n.find(['b','strong']) or 'font-weight: bold' in st.lower() else '400'; align='center' if ('se-text-paragraph-align-center' in classes or 'text-align: center' in st.lower()) else 'right' if ('align-right' in classes or 'text-align: right' in st.lower()) else 'left'
  return f'<p class="naver-p" style="font-size:{size}px;font-weight:{weight};text-align:{align}">{html.escape(t)}</p>'
-def image_src(im):
- src=im.get('data-lazy-src') or im.get('data-src') or im.get('data-original') or im.get('src') or ''
+def normalize_img_url(src):
+ src=html.unescape((src or '').strip())
  if src.startswith('//'): src='https:'+src
+ if src.startswith('http://'): src='https://'+src[7:]
+ if src.startswith('data:'): return ''
  return src
+def image_src(node):
+ # 1) 일반 img 속성
+ if getattr(node,'name',None)=='img':
+  for a in ('data-lazy-src','data-src','data-original','src'):
+   src=normalize_img_url(node.get(a))
+   if src and ('pstatic.net' in src or src.startswith('http')): return src
+ # 2) SmartEditor ONE는 이미지 주소를 data-linkdata JSON에 보관하는 경우가 많다.
+ for holder in ([node] if getattr(node,'attrs',None) else []) + (node.find_all(attrs={'data-linkdata':True}) if getattr(node,'find_all',None) else []):
+  raw=holder.get('data-linkdata') if getattr(holder,'get',None) else ''
+  if not raw: continue
+  try:
+   data=json.loads(html.unescape(raw))
+   for k in ('src','originalSrc','originalImageUrl','imageUrl'):
+    src=normalize_img_url(data.get(k))
+    if src: return src
+  except Exception:
+   m=re.search(r'"(?:src|originalSrc|originalImageUrl|imageUrl)"\s*:\s*"([^"]+)"',html.unescape(raw))
+   if m:
+    src=normalize_img_url(m.group(1).replace('\\/','/'))
+    if src: return src
+ # 3) data-linkdata가 상위 a 태그에 있는 경우
+ if getattr(node,'find_parent',None):
+  par=node.find_parent(attrs={'data-linkdata':True})
+  if par:
+   return image_src(par)
+ return ''
 def saveimg(src,slug,i):
  try:
   r=requests.get(src,headers=UA,timeout=20); r.raise_for_status(); ct=(r.headers.get('content-type') or '').lower(); ext='.png' if 'png' in ct else '.webp' if 'webp' in ct else '.gif' if 'gif' in ct else '.jpg'; d=MEDIA/slug; d.mkdir(parents=True,exist_ok=True); p=d/f'fmt-{i:02d}{ext}'; p.write_bytes(r.content); return '/'+p.relative_to(ROOT).as_posix()
@@ -70,23 +98,26 @@ def extract(u,slug):
     if cells: rows.append('<tr>'+''.join(cells)+'</tr>')
    if rows: out.append('<table class="naver-table"><tbody>'+''.join(rows)+'</tbody></table>')
    continue
-  # 컴포넌트 안의 실제 표시 순서를 따라 텍스트와 이미지를 함께 처리한다.
-  nodes=c.select('.se-text-paragraph, img')
-  if not nodes: nodes=c.select('.se-module-text p,.se-section-text p,img')
+  # SmartEditor 컴포넌트 순서 유지. img 태그가 없어도 data-linkdata 이미지 모듈을 잡는다.
+  nodes=c.select('.se-text-paragraph, .se-module-image, [data-linktype="img"], [data-linkdata], img')
+  if not nodes: nodes=c.select('.se-module-text p,.se-section-text p')
   for n in nodes:
-   if n.name=='img':
-    if n.find_parent('a',href=True): continue
-    src=image_src(n)
-    if not src or src in seen_imgs: continue
-    seen_imgs.add(src); imgno+=1; loc=saveimg(src,slug,imgno)
-    if loc: out.append(f'<p class="media-paragraph naver-image"><img src="{html.escape(loc,quote=True)}" alt="" loading="lazy" decoding="async"></p>')
-   else:
+   is_text=('se-text-paragraph' in (n.get('class') or [])) or n.name=='p'
+   if is_text:
     if n.find('a',href=True): continue
     v=txt(n); k=re.sub(r'\W+','',v)
     if len(k)<2 or k in seen: continue
-    seen.add(k); out.append(styled_text(n))
+    seen.add(k); out.append(styled_text(n)); continue
+   src=image_src(n)
+   if not src or src in seen_imgs: continue
+   # 일반 외부 링크카드 이미지는 제외하되, 네이버 이미지 모듈의 자체 링크는 허용한다.
+   anc=n.find_parent('a',href=True) if getattr(n,'find_parent',None) else None
+   if anc and 'se-module-image-link' not in ' '.join(anc.get('class',[])): continue
+   seen_imgs.add(src); imgno+=1; loc=saveimg(src,slug,imgno)
+   if loc: out.append(f'<p class="media-paragraph naver-image"><img src="{html.escape(loc,quote=True)}" alt="" loading="lazy" decoding="async"></p>')
  body='\n'.join(out); chars=len(re.sub(r'\s+','',' '.join(BeautifulSoup(body,'html.parser').stripped_strings)))
  if chars<500: raise RuntimeError(f'short formatted body {chars}')
+ print('FORMAT_EXTRACT',slug,'components='+str(len(comps)),'source_images='+str(len(root.select('img,[data-linktype="img"],[data-linkdata]'))),'saved_images='+str(imgno))
  return body,chars,imgno
 def main():
  posts=json.loads(DATA.read_text(encoding='utf-8')); changed=0
@@ -95,7 +126,7 @@ def main():
   slug=str(p.get('slug','')).replace('.html',''); path=ROOT/'posts'/f'{slug}.html'
   if not path.exists(): continue
   old=path.read_text(encoding='utf-8',errors='replace')
-  if 'name="dg-naver-format" content="7"' in old: continue
+  if 'name="dg-naver-format" content="8"' in old: continue
   u=p.get('source_url') or (f'https://blog.naver.com/{BLOG}/{slug.removeprefix("naver-")}' if slug.startswith('naver-') else '')
   if not u: continue
   try:
@@ -104,7 +135,7 @@ def main():
    node.clear(); frag=BeautifulSoup(body,'html.parser')
    for x in list(frag.contents): node.append(x)
    for oldmeta in soup.select('meta[name="dg-naver-format"]'): oldmeta.decompose()
-   meta=soup.new_tag('meta'); meta['name']='dg-naver-format'; meta['content']='7'; soup.head.append(meta)
+   meta=soup.new_tag('meta'); meta['name']='dg-naver-format'; meta['content']='8'; soup.head.append(meta)
    path.write_text(str(soup),encoding='utf-8'); changed+=1; print('FORMAT_REFRESHED',slug,'chars='+str(chars),'images='+str(imgs)); time.sleep(.15)
   except Exception as e: print('FORMAT_SKIP',slug,e)
  print('FORMAT_REFRESHED_TOTAL',changed)
