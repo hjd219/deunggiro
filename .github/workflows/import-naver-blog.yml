@@ -1,21 +1,6 @@
 name: Import Naver Blog Posts
 
 on:
-  push:
-    paths:
-      - 'scripts/import_naver_blog.py'
-      - 'scripts/import_naver_blog_full.py'
-      - 'scripts/import_naver_blog_missing.py'
-      - 'scripts/repair_naver_posts.py'
-      - 'scripts/strip_naver_emojis.py'
-      - 'scripts/cleanup_naver_rendering.py'
-      - 'scripts/optimize_naver_keywords.py'
-      - 'scripts/inject_internal_links.py'
-      - 'scripts/seo-auto.mjs'
-      - 'scripts/seo-canonical-fix.mjs'
-      - 'scripts/rss-auto.mjs'
-      - 'assets/article-v2.css'
-      - '.github/workflows/import-naver-blog.yml'
   schedule:
     - cron: '17 0 * * *'
   workflow_dispatch:
@@ -30,92 +15,49 @@ concurrency:
 jobs:
   import:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Install importer and thumbnail dependencies
+      - name: Install
         run: |
           sudo apt-get update
           sudo apt-get install -y fonts-noto-cjk
           python -m pip install --upgrade pip
           pip install requests beautifulsoup4 lxml pillow
-      - name: Sync main before import
+      - name: Sync main
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch origin main
           git reset --hard origin/main
-      - name: Import missing posts with August 29 body collector
-        timeout-minutes: 7
-        shell: bash
+      - name: Import
+        run: timeout 300s python -u scripts/import_naver_blog_clean.py
+      - name: Postprocess
         run: |
-          set -euo pipefail
-          GOOD_SHA=9df0d6fc682c75ff78bd8ff4a6a4e832e45c2c73
-          cp scripts/import_naver_blog.py scripts/import_naver_blog_current.py
-          git show "$GOOD_SHA:scripts/import_naver_blog.py" > scripts/import_naver_blog.py
-          timeout --signal=TERM 360s python -u scripts/import_naver_blog_missing.py
-          mv scripts/import_naver_blog_current.py scripts/import_naver_blog.py
-      - name: Strip decorative emojis
-        run: timeout 90s python -u scripts/strip_naver_emojis.py
-      - name: Patch import dates
-        run: timeout 90s python -u scripts/patch_naver_import_dates.py
-      - name: Patch admin SEO and category
-        run: |
-          timeout 90s python -u scripts/patch_admin_seo.py
-          timeout 90s python -u scripts/patch_admin_category.py
-      - name: Site maintenance first pass
-        run: timeout 90s python -u scripts/site_maintenance.py
-      - name: Inject internal links
-        run: timeout 90s python -u scripts/inject_internal_links.py
-      - name: Cleanup Naver rendering
-        run: timeout 90s python -u scripts/cleanup_naver_rendering.py
-      - name: Optimize Naver keywords
-        run: timeout 90s python -u scripts/optimize_naver_keywords.py
-      - name: Generate thumbnails
-        run: timeout 150s python -u scripts/generate_thumbnails.py
-      - name: Fix thumbnail logo
-        run: timeout 90s python -u scripts/fix_thumbnail_logo.py
-      - name: Site maintenance final pass
-        run: timeout 90s python -u scripts/site_maintenance.py
-      - name: Latest cards and sitemap
-        run: |
+          timeout 90s python -u scripts/strip_naver_emojis.py
+          timeout 90s python -u scripts/patch_naver_import_dates.py
+          timeout 90s python -u scripts/site_maintenance.py
+          timeout 90s python -u scripts/inject_internal_links.py
+          timeout 90s python -u scripts/cleanup_naver_rendering.py
+          timeout 90s python -u scripts/optimize_naver_keywords.py
+          timeout 150s python -u scripts/generate_thumbnails.py
+          timeout 90s python -u scripts/fix_thumbnail_logo.py
           timeout 90s python -u scripts/apply_latest_cards.py
           timeout 90s python -u scripts/generate_sitemap.py
-      - name: SEO automation and RSS
-        run: |
-          node --check scripts/seo-auto.mjs
-          node --check scripts/seo-canonical-fix.mjs
-          node --check scripts/rss-auto.mjs
           timeout 120s node scripts/seo-auto.mjs
           timeout 60s node scripts/seo-canonical-fix.mjs
           timeout 60s node scripts/rss-auto.mjs
-      - name: Validate generated site
-        shell: bash
+      - name: Validate
         run: |
-          set -euo pipefail
-          python -m py_compile scripts/*.py
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          posts=json.loads(Path('data/posts.json').read_text(encoding='utf-8'))
-          sitemap=Path('sitemap.xml').read_text(encoding='utf-8')
-          for p in posts:
-              slug=(p.get('slug') or '').replace('.html','')
-              thumb=(p.get('thumbnail') or '').strip()
-              if not thumb or not Path(thumb.lstrip('/')).exists(): raise SystemExit('Missing thumbnail: '+slug)
-              if slug and Path('posts',slug+'.html').exists() and f'/posts/{slug}.html' not in sitemap: raise SystemExit('Missing sitemap URL: '+slug)
-          print('validated',len(posts),'posts')
-          PY
-          find scripts -type d -name '__pycache__' -prune -exec rm -rf {} +
+          python -m py_compile scripts/import_naver_blog_clean.py
           git diff --check
-      - name: Commit generated changes
+      - name: Commit
         shell: bash
         run: |
           set -euo pipefail
           if git diff --quiet && [ -z "$(git status --porcelain --untracked-files=normal)" ]; then echo "No changes"; exit 0; fi
-          git add admin.html data/posts.json data/seo-report.json posts posts.html assets/posts assets/naver-images index.html inheritance.html renunciation.html corporate.html realestate.html family.html sitemap.xml rss.xml
-          git commit -m "네이버 본문·SEO·RSS·내부링크·사이트맵 자동반영"
+          git add data/posts.json data/seo-report.json posts posts.html assets/posts assets/naver-images index.html inheritance.html renunciation.html corporate.html realestate.html family.html sitemap.xml rss.xml admin.html
+          git commit -m "네이버 자동수집 및 SEO 자동반영"
           git push origin HEAD:main
