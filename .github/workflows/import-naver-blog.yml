@@ -12,6 +12,7 @@ on:
       - 'scripts/optimize_naver_keywords.py'
       - 'scripts/inject_internal_links.py'
       - 'scripts/seo-auto.mjs'
+      - 'scripts/seo-canonical-fix.mjs'
       - 'scripts/rss-auto.mjs'
       - 'assets/article-v2.css'
       - '.github/workflows/import-naver-blog.yml'
@@ -96,8 +97,10 @@ jobs:
         timeout-minutes: 3
         run: |
           node --check scripts/seo-auto.mjs
+          node --check scripts/seo-canonical-fix.mjs
           node --check scripts/rss-auto.mjs
           timeout 120s node scripts/seo-auto.mjs
+          timeout 60s node scripts/seo-canonical-fix.mjs
           timeout 60s node scripts/rss-auto.mjs
 
       - name: Validate generated site
