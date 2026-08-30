@@ -7,6 +7,7 @@ on:
       - 'scripts/import_naver_blog_full.py'
       - 'scripts/strip_naver_emojis.py'
       - 'scripts/cleanup_naver_rendering.py'
+      - 'scripts/optimize_naver_keywords.py'
       - '.github/workflows/import-naver-blog.yml'
   schedule:
     - cron: '17 0 * * *'
@@ -53,6 +54,7 @@ jobs:
           python scripts/site_maintenance.py
           python scripts/inject_internal_links.py
           python scripts/cleanup_naver_rendering.py
+          python scripts/optimize_naver_keywords.py
           python scripts/generate_thumbnails.py
           python scripts/fix_thumbnail_logo.py
           python scripts/site_maintenance.py
@@ -64,6 +66,7 @@ jobs:
             scripts/import_naver_blog_full.py \
             scripts/strip_naver_emojis.py \
             scripts/cleanup_naver_rendering.py \
+            scripts/optimize_naver_keywords.py \
             scripts/repair_naver_posts.py \
             scripts/patch_naver_import_dates.py \
             scripts/patch_admin_seo.py \
