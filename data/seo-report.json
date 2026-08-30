@@ -1,918 +1,335 @@
 {
-  "generatedAt": "2026-08-30T13:38:33.649Z",
+  "generatedAt": "2026-08-30T13:46:21.851Z",
   "totalPosts": 65,
-  "ok": 0,
-  "warnings": 65,
+  "ok": 65,
+  "warnings": 0,
+  "canonicalFixed": 65,
+  "missingFiles": 0,
   "items": [
     {
       "slug": "naver-224356439849",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224366421588",
-        "name-change-incheon-procedure-guide-documents-4lfyb2",
-        "divorce-agreement-property-division-procedure-18044u",
-        "gift-real-estate-acquisition-tax-property-division-incheon-pro-aga3r7"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224366421588",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "divorce-agreement-property-division-procedure-18044u",
-        "naver-224356439849",
-        "name-change-incheon-procedure-guide-documents-4lfyb2",
-        "naver-224354426663"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224370995171",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224356297494",
-        "naver-224230217554",
-        "naver-224373999206",
-        "naver-224263423819"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224230217554",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224235350490",
-        "naver-224356297494",
-        "naver-224263423819",
-        "naver-224354426663"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224235350490",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224230217554",
-        "naver-224263423819",
-        "naver-224356297494",
-        "naver-224354426663"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224242416419",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224309218026",
-        "naver-224353211876",
-        "naver-224355215061",
-        "naver-224361399594"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224263423819",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224235350490",
-        "naver-224356297494",
-        "naver-224373999206",
-        "naver-224230217554"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224309218026",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224242416419",
-        "naver-224353211876",
-        "naver-224355215061",
-        "naver-224353330147"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224353211876",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224309218026",
-        "naver-224353330147",
-        "naver-224242416419",
-        "naver-224355215061"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224353330147",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224353211876",
-        "naver-224309218026",
-        "naver-224355215061",
-        "naver-224355686824"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224354109361",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224366499313",
-        "naver-224368815748",
-        "naver-224354174521",
-        "naver-224355594940"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224354174521",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224366499313",
-        "naver-224355594940",
-        "naver-224368815748",
-        "naver-224354109361"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224354426663",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224230217554",
-        "naver-224235350490",
-        "naver-224356297494",
-        "naver-224263423819"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224355184406",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224356395409",
-        "naver-224373920248",
-        "naver-224355247343",
-        "inheritance-registration-renunciation-limited-acceptance-inche-15yen8"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224355215061",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224355686824",
-        "naver-224309218026",
-        "naver-224362568807",
-        "naver-224242416419"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224355247343",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224355184406",
-        "naver-224356395409",
-        "naver-224373920248",
-        "inheritance-registration-renunciation-limited-acceptance-inche-15yen8"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224355543154",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224355594940",
-        "naver-224362513421",
-        "naver-224368815748",
-        "naver-224366499313"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224355594940",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224368815748",
-        "naver-224362513421",
-        "naver-224354174521",
-        "naver-224355543154"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224355686824",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224366634981",
-        "naver-224355215061",
-        "naver-224362568807",
-        "naver-224353211876"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224356297494",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224230217554",
-        "naver-224263423819",
-        "naver-224235350490",
-        "naver-224370995171"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224356395409",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224373920248",
-        "naver-224355184406",
-        "inheritance-registration-renunciation-limited-acceptance-inche-15yen8",
-        "naver-224355247343"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224361399594",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224355215061",
-        "naver-224373658569",
-        "naver-224242416419",
-        "naver-224309218026"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224362513421",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224355594940",
-        "naver-224368815748",
-        "naver-224366499313",
-        "naver-224355543154"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224362568807",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224355215061",
-        "naver-224355686824",
-        "naver-224366634981",
-        "naver-224353211876"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224363628938",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224230217554",
-        "naver-224235350490",
-        "naver-224356297494",
-        "naver-224263423819"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224366499313",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224368815748",
-        "naver-224354174521",
-        "naver-224362513421",
-        "naver-224354109361"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224366634981",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224355686824",
-        "naver-224373658569",
-        "naver-224355215061",
-        "naver-224362568807"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224368789124",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224373999206",
-        "naver-224370995171",
-        "naver-224230217554",
-        "naver-224354426663"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224368815748",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224355594940",
-        "naver-224366499313",
-        "naver-224362513421",
-        "naver-224354109361"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224371192381",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224353330147",
-        "naver-224353211876",
-        "naver-224355686824",
-        "naver-224362568807"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224373658569",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224366634981",
-        "naver-224355215061",
-        "naver-224361399594",
-        "naver-224242416419"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224373767993",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224235350490",
-        "naver-224263423819",
-        "naver-224356297494",
-        "naver-224373999206"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224373920248",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224356395409",
-        "naver-224355184406",
-        "naver-224355247343",
-        "inheritance-registration-renunciation-limited-acceptance-inche-15yen8"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224373999206",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224263423819",
-        "naver-224235350490",
-        "naver-224356297494",
-        "naver-224373767993"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224374111575",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224388148925",
-        "naver-224388265417",
-        "naver-224374856351",
-        "naver-224354109361"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224374856351",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224388265417",
-        "naver-224388148925",
-        "naver-224374111575",
-        "naver-224371192381"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224375051282",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224356297494",
-        "naver-224354426663",
-        "naver-224363628938",
-        "naver-224230217554"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224376060472",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224362513421",
-        "naver-224366499313",
-        "naver-224354174521",
-        "naver-224355543154"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224388148925",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224388265417",
-        "naver-224374111575",
-        "naver-224374856351",
-        "naver-224354109361"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "naver-224388265417",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224374856351",
-        "naver-224388148925",
-        "naver-224374111575",
-        "naver-224373920248"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "inheritance-registration-renunciation-limited-acceptance-inche-15yen8",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224356395409",
-        "naver-224355184406",
-        "naver-224373920248",
-        "inheritance-incheon-29s7ds"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "ceo-company-name-change-business-purpose-capital-increase-corp-17kgzb",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224356297494",
-        "naver-224230217554",
-        "naver-224235350490",
-        "naver-224363628938"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "inheritance-renunciation-procedure-g8cmkc",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224354174521",
-        "naver-224355594940",
-        "naver-224366499313",
-        "naver-224368815748"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "mortgage-real-estate-procedure-16vqc8",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "real-estate-provisional-seizure-incheon-procedure-6069xy",
-        "naver-224242416419",
-        "naver-224362568807",
-        "gift-real-estate-acquisition-tax-property-division-incheon-pro-aga3r7"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "inheritance-renunciation-limited-acceptance-incheon-guide-u5n9so",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224368815748",
-        "naver-224355543154",
-        "naver-224355594940",
-        "naver-224362513421"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "corporate-incheon-documents-1-158nty",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224263423819",
-        "naver-224356297494",
-        "naver-224373999206",
-        "incheon-procedure-documents-c8y2vn"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "inheritance-incheon-29s7ds",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224356395409",
-        "inheritance-registration-renunciation-limited-acceptance-inche-15yen8",
-        "naver-224373920248",
-        "inheritance-partition-registration-procedure-guide-caution-1w5ku0"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "incheon-procedure-documents-c8y2vn",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224368789124",
-        "naver-224235350490",
-        "naver-224263423819",
-        "naver-224354426663"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "inheritance-partition-registration-guide-documents-cwfz1z",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "inheritance-partition-registration-procedure-guide-caution-1w5ku0",
-        "inheritance-registration-acquisition-tax-incheon-procedure-doc-v9aban",
-        "inheritance-registration-acquisition-tax-g2aqja",
-        "naver-224356395409"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "ceo-corporate-procedure-1-o1kz7e",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224356297494",
-        "ceo-company-name-change-business-purpose-capital-increase-corp-17kgzb",
-        "naver-224363628938",
-        "corporate-incheon-documents-1-158nty"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "inheritance-partition-registration-procedure-guide-caution-1w5ku0",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224356395409",
-        "inheritance-partition-registration-guide-documents-cwfz1z",
-        "naver-224373920248",
-        "inheritance-registration-renunciation-limited-acceptance-inche-15yen8"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "real-estate-provisional-seizure-incheon-procedure-6069xy",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224362568807",
-        "mortgage-real-estate-procedure-16vqc8",
-        "gift-real-estate-acquisition-tax-property-division-incheon-pro-aga3r7",
-        "naver-224242416419"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "inheritance-registration-acquisition-tax-incheon-procedure-doc-v9aban",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "inheritance-partition-registration-guide-documents-cwfz1z",
-        "inheritance-registration-acquisition-tax-g2aqja",
-        "naver-224356395409",
-        "inheritance-registration-renunciation-limited-acceptance-inche-15yen8"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "inheritance-renunciation-limited-acceptance-incheon-procedure-1podzk",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224368815748",
-        "naver-224355594940",
-        "naver-224362513421",
-        "naver-224366499313"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "inheritance-renunciation-incheon-procedure-documents-1ifftk",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224355594940",
-        "naver-224362513421",
-        "naver-224368815748",
-        "naver-224366499313"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "inheritance-renunciation-limited-acceptance-incheon-procedure-1rigsk",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "inheritance-renunciation-caution-1cgaqh",
-        "naver-224368815748",
-        "naver-224355543154",
-        "naver-224355594940"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "sale-real-estate-guide-bvcdri",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224355215061",
-        "naver-224242416419",
-        "naver-224309218026",
-        "naver-224353211876"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "corporate-cost-3-1f4kd9",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224370995171",
-        "naver-224230217554",
-        "naver-224356297494",
-        "corporate-formation-procedure-cost-documents-u9jgv1"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "inheritance-gift-real-estate-acquisition-tax-property-division-1xfulg",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224309218026",
-        "naver-224242416419",
-        "gift-real-estate-acquisition-tax-property-division-incheon-pro-aga3r7",
-        "naver-224353211876"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "inheritance-registration-acquisition-tax-g2aqja",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "inheritance-registration-acquisition-tax-incheon-procedure-doc-v9aban",
-        "inheritance-partition-registration-guide-documents-cwfz1z",
-        "inheritance-partition-registration-procedure-guide-caution-1w5ku0",
-        "naver-224356395409"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "inheritance-renunciation-caution-1cgaqh",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "inheritance-renunciation-limited-acceptance-incheon-procedure-1rigsk",
-        "naver-224355543154",
-        "naver-224368815748",
-        "inheritance-renunciation-limited-acceptance-incheon-procedure-1podzk"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "name-change-incheon-procedure-guide-documents-4lfyb2",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224356439849",
-        "naver-224366421588",
-        "divorce-agreement-property-division-procedure-18044u",
-        "naver-224354426663"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "gift-real-estate-acquisition-tax-property-division-incheon-pro-aga3r7",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224309218026",
-        "naver-224353211876",
-        "naver-224353330147",
-        "naver-224362568807"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "divorce-agreement-property-division-procedure-18044u",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224366421588",
-        "naver-224356439849",
-        "name-change-incheon-procedure-guide-documents-4lfyb2",
-        "inheritance-renunciation-incheon-procedure-documents-1ifftk"
-      ]
+      "status": "ok",
+      "issues": []
     },
     {
       "slug": "corporate-formation-procedure-cost-documents-u9jgv1",
-      "status": "warning",
-      "issues": [
-        "canonical 누락"
-      ],
-      "modified": "2026-08-30",
-      "related": [
-        "naver-224230217554",
-        "naver-224263423819",
-        "incheon-procedure-documents-c8y2vn",
-        "naver-224370995171"
-      ]
+      "status": "ok",
+      "issues": []
     }
   ]
 }
