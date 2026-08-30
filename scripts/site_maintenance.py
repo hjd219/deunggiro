@@ -17,7 +17,7 @@ CATEGORY_RULES = [
 ]
 
 COMMON_CSS = [
-    '<link rel="stylesheet" href="/assets/article-v2.css?v=4">',
+    '<link rel="stylesheet" href="/assets/article-v2.css?v=9">',
     '<link rel="stylesheet" href="/assets/site-shell.css">',
     '<link rel="stylesheet" href="/assets/latest-posts.css">',
 ]
@@ -31,40 +31,55 @@ COMMON_JS = [
 
 def infer_category(title: str, current: str = '') -> str:
     current = (current or '').strip()
-    if current and current != '기타':
-        return current
+    if current and current != '기타': return current
     text = re.sub(r'\s+', ' ', title or '')
     for category, words in CATEGORY_RULES:
-        if any(word in text for word in words):
-            return category
+        if any(word in text for word in words): return category
     return current or '기타'
 
 
 def dedupe_se_ids(text: str):
-    seen = {}
-    changed = 0
+    seen = {}; changed = 0
     pat = re.compile(r'\bid=(["\'])(SE-[^"\']+)\1', re.I)
     def repl(m):
         nonlocal changed
-        quote, value = m.group(1), m.group(2)
-        seen[value] = seen.get(value, 0) + 1
-        if seen[value] == 1:
-            return m.group(0)
-        changed += 1
-        return f'id={quote}{value}-{seen[value]}{quote}'
+        quote, value = m.group(1), m.group(2); seen[value] = seen.get(value, 0) + 1
+        if seen[value] == 1: return m.group(0)
+        changed += 1; return f'id={quote}{value}-{seen[value]}{quote}'
     return pat.sub(repl, text), changed
 
 
+def dedupe_head_meta(text: str):
+    """Keep the first SEO/meta declaration of each kind in <head>."""
+    m = re.search(r'(<head\b[^>]*>)([\s\S]*?)(</head>)', text, re.I)
+    if not m: return text, 0
+    head = m.group(2); seen = set(); removed = 0
+    tag_pat = re.compile(r'<meta\b[^>]*>', re.I)
+    def repl(mt):
+        nonlocal removed
+        tag = mt.group(0)
+        name = re.search(r'\bname\s*=\s*["\']([^"\']+)["\']', tag, re.I)
+        prop = re.search(r'\bproperty\s*=\s*["\']([^"\']+)["\']', tag, re.I)
+        equiv = re.search(r'\bhttp-equiv\s*=\s*["\']([^"\']+)["\']', tag, re.I)
+        if name: key=('name',name.group(1).lower())
+        elif prop: key=('property',prop.group(1).lower())
+        elif equiv: key=('http-equiv',equiv.group(1).lower())
+        else: return tag
+        if key in seen:
+            removed += 1; return ''
+        seen.add(key); return tag
+    new_head = tag_pat.sub(repl, head)
+    new = text[:m.start()] + m.group(1) + new_head + m.group(3) + text[m.end():]
+    return new, removed
+
+
 def clear_legacy_related_actions(text: str):
-    changed = 0
-    pat = re.compile(r'<div\s+class=["\']related["\'][^>]*>([\s\S]*?)</div>', re.I)
+    changed = 0; pat = re.compile(r'<div\s+class=["\']related["\'][^>]*>([\s\S]*?)</div>', re.I)
     def repl(m):
         nonlocal changed
-        plain = re.sub(r'<[^>]+>', ' ', m.group(1))
-        plain = re.sub(r'\s+', ' ', html.unescape(plain)).strip()
+        plain = re.sub(r'<[^>]+>', ' ', m.group(1)); plain = re.sub(r'\s+', ' ', html.unescape(plain)).strip()
         if not plain or '032-425-1500' in plain or '법률정보 목록' in plain:
-            changed += 1
-            return ''
+            changed += 1; return ''
         return m.group(0)
     return pat.sub(repl, text), changed
 
@@ -74,101 +89,47 @@ def ensure_common_assets(text: str):
     for href in COMMON_CSS:
         path = re.search(r'href="([^"]+)"', href).group(1).split('?')[0]
         text = re.sub(rf'<link[^>]+href=["\']{re.escape(path)}(?:\?[^"\']*)?["\'][^>]*>', '', text, flags=re.I)
-    css = ''.join(COMMON_CSS)
-    text = text.replace('</head>', css + '</head>', 1)
-
+    text = text.replace('</head>', ''.join(COMMON_CSS) + '</head>', 1)
     for src_tag in COMMON_JS:
         path = re.search(r'src="([^"]+)"', src_tag).group(1).split('?')[0]
         text = re.sub(rf'<script[^>]+src=["\']{re.escape(path)}(?:\?[^"\']*)?["\'][^>]*>\s*</script>', '', text, flags=re.I)
-    js = ''.join(COMMON_JS)
-    text = text.replace('</body>', js + '</body>', 1)
+    text = text.replace('</body>', ''.join(COMMON_JS) + '</body>', 1)
     return text, text != original
 
 
 def sync_category_meta(text: str, category: str) -> str:
-    safe = html.escape(category, quote=True)
-    pat = re.compile(r'<meta\s+name=["\']dg-category["\']\s+content=["\'][^"\']*["\']\s*/?>', re.I)
-    tag = f'<meta name="dg-category" content="{safe}">'
-    if pat.search(text):
-        text = pat.sub(tag, text, count=1)
-    elif '</head>' in text:
-        text = text.replace('</head>', tag + '\n</head>', 1)
+    safe = html.escape(category, quote=True); pat = re.compile(r'<meta\s+name=["\']dg-category["\']\s+content=["\'][^"\']*["\']\s*/?>', re.I); tag = f'<meta name="dg-category" content="{safe}">'
+    if pat.search(text): text = pat.sub(tag, text, count=1)
+    elif '</head>' in text: text = text.replace('</head>', tag + '\n</head>', 1)
     text = re.sub(r'(<span\s+class=["\']badge["\']>)[\s\S]*?(</span>)', rf'\1{safe}\2', text, count=1, flags=re.I)
     return text
 
 
 def card(post: dict) -> str:
-    slug = str(post.get('slug','')).strip().replace('.html','')
-    title = str(post.get('title','')).strip()
-    category = str(post.get('category','') or '법률정보').strip()
-    date = str(post.get('date','')).strip()
-    summary = str(post.get('summary','')).strip()
-    thumb = str(post.get('thumbnail','')).strip() or f'/assets/posts/{slug}-thumbnail.png'
-    return (
-        f'<a class="post-card" href="/posts/{html.escape(slug, quote=True)}.html">'
-        f'<img class="post-thumb" src="{html.escape(thumb, quote=True)}" alt="{html.escape(title, quote=True)}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src=\'/favicon.png\'">'
-        '<div class="post-content">'
-        f'<div class="post-meta"><span class="badge">{html.escape(category)}</span>{html.escape(date)}</div>'
-        f'<h3>{html.escape(title)}</h3><p>{html.escape(summary)}</p></div></a>'
-    )
+    slug=str(post.get('slug','')).strip().replace('.html',''); title=str(post.get('title','')).strip(); category=str(post.get('category','') or '법률정보').strip(); date=str(post.get('date','')).strip(); summary=str(post.get('summary','')).strip(); thumb=str(post.get('thumbnail','')).strip() or f'/assets/posts/{slug}-thumbnail.png'
+    return f'<a class="post-card" href="/posts/{html.escape(slug, quote=True)}.html"><img class="post-thumb" src="{html.escape(thumb, quote=True)}" alt="{html.escape(title, quote=True)}" loading="lazy" decoding="async" onerror="this.onerror=null;this.src=\'/favicon.png\'"><div class="post-content"><div class="post-meta"><span class="badge">{html.escape(category)}</span>{html.escape(date)}</div><h3>{html.escape(title)}</h3><p>{html.escape(summary)}</p></div></a>'
 
 
 def rebuild_posts_page(posts):
-    if not POSTS_PAGE.exists():
-        return False
-    text = POSTS_PAGE.read_text(encoding='utf-8')
-    ordered = sorted(posts, key=lambda p: (str(p.get('date','')), str(p.get('slug',''))), reverse=True)
-    block = '\n'.join(card(p) for p in ordered if p.get('slug'))
-    pat = re.compile(r'<!-- SEO_STATIC_POSTS_START -->[\s\S]*?<!-- SEO_STATIC_POSTS_END -->', re.M)
-    marked = '<!-- SEO_STATIC_POSTS_START -->\n' + block + '\n<!-- SEO_STATIC_POSTS_END -->'
-    if not pat.search(text):
-        return False
-    new = pat.sub(marked, text, count=1)
-    if new != text:
-        POSTS_PAGE.write_text(new, encoding='utf-8')
-        return True
+    if not POSTS_PAGE.exists(): return False
+    text=POSTS_PAGE.read_text(encoding='utf-8'); ordered=sorted(posts,key=lambda p:(str(p.get('date','')),str(p.get('slug',''))),reverse=True); block='\n'.join(card(p) for p in ordered if p.get('slug')); pat=re.compile(r'<!-- SEO_STATIC_POSTS_START -->[\s\S]*?<!-- SEO_STATIC_POSTS_END -->',re.M); marked='<!-- SEO_STATIC_POSTS_START -->\n'+block+'\n<!-- SEO_STATIC_POSTS_END -->'
+    if not pat.search(text): return False
+    new=pat.sub(marked,text,count=1)
+    if new!=text: POSTS_PAGE.write_text(new,encoding='utf-8'); return True
     return False
 
 
 def main():
-    posts = json.loads(POSTS_JSON.read_text(encoding='utf-8'))
-    category_changes = []
-    duplicate_id_fixes = 0
-    legacy_related_clears = 0
-    common_asset_fixes = 0
-
+    posts=json.loads(POSTS_JSON.read_text(encoding='utf-8')); category_changes=[]; duplicate_id_fixes=0; duplicate_meta_fixes=0; legacy_related_clears=0; common_asset_fixes=0
     for post in posts:
-        slug = str(post.get('slug','')).strip().replace('.html','')
-        old = str(post.get('category','') or '').strip()
-        new = infer_category(str(post.get('title','')), old)
-        if new != old:
-            post['category'] = new
-            category_changes.append((slug, old or '(없음)', new))
+        slug=str(post.get('slug','')).strip().replace('.html',''); old=str(post.get('category','') or '').strip(); new=infer_category(str(post.get('title','')),old)
+        if new!=old: post['category']=new; category_changes.append((slug,old or '(없음)',new))
+        if not slug: continue
+        p=ROOT/'posts'/f'{slug}.html'
+        if not p.exists(): continue
+        text=p.read_text(encoding='utf-8'); text2,fixed=dedupe_se_ids(text); duplicate_id_fixes+=fixed; text2,cleared=clear_legacy_related_actions(text2); legacy_related_clears+=cleared; text2=sync_category_meta(text2,post.get('category') or new); text2,meta_removed=dedupe_head_meta(text2); duplicate_meta_fixes+=meta_removed; text2,asset_changed=ensure_common_assets(text2); common_asset_fixes+=1 if asset_changed else 0
+        if text2!=text: p.write_text(text2,encoding='utf-8')
+    POSTS_JSON.write_text(json.dumps(posts,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'); rebuilt=rebuild_posts_page(posts)
+    print('category changes:',len(category_changes)); print('duplicate SE id fixes:',duplicate_id_fixes); print('duplicate meta tags removed:',duplicate_meta_fixes); print('legacy related button blocks cleared:',legacy_related_clears); print('common article shell assets fixed:',common_asset_fixes); print('posts.html static cards rebuilt:',rebuilt)
 
-        if not slug:
-            continue
-        p = ROOT / 'posts' / f'{slug}.html'
-        if not p.exists():
-            continue
-        text = p.read_text(encoding='utf-8')
-        text2, fixed = dedupe_se_ids(text)
-        duplicate_id_fixes += fixed
-        text2, cleared = clear_legacy_related_actions(text2)
-        legacy_related_clears += cleared
-        text2 = sync_category_meta(text2, post.get('category') or new)
-        text2, asset_changed = ensure_common_assets(text2)
-        common_asset_fixes += 1 if asset_changed else 0
-        if text2 != text:
-            p.write_text(text2, encoding='utf-8')
-
-    POSTS_JSON.write_text(json.dumps(posts, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-    rebuilt = rebuild_posts_page(posts)
-    print('category changes:', len(category_changes))
-    print('duplicate SE id fixes:', duplicate_id_fixes)
-    print('legacy related button blocks cleared:', legacy_related_clears)
-    print('common article shell assets fixed:', common_asset_fixes)
-    print('posts.html static cards rebuilt:', rebuilt)
-
-
-if __name__ == '__main__':
-    main()
+if __name__=='__main__': main()
