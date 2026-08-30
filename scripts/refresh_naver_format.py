@@ -5,7 +5,7 @@ from urllib.parse import urljoin,parse_qs,urlparse
 import requests
 from bs4 import BeautifulSoup
 ROOT=Path(__file__).resolve().parents[1]; DATA=ROOT/'data'/'posts.json'; MEDIA=ROOT/'assets'/'naver-images'; BLOG='hjd21'
-UA={'User-Agent':'Mozilla/5.0 (compatible; DeunggiroFormat/1.3; +https://www.deunggiro.kr/)'}
+UA={'User-Agent':'Mozilla/5.0 (compatible; DeunggiroFormat/1.4; +https://www.deunggiro.kr/)'}
 EMOJI_RE=re.compile('[\U0001F000-\U0001FAFF\U00002600-\U000027BF]')
 def get(u):
  r=requests.get(u,headers=UA,timeout=25); r.raise_for_status(); r.encoding='utf-8'; return r
@@ -38,11 +38,13 @@ def saveimg(src,slug,i):
 def promo_start_text(v):
  v=re.sub(r'\s+','',v)
  return any(k in v for k in ('현재두법무사사무소상담안내','현재두법무사상담안내','현재두법무사사무소상담','032-425-1500'))
+def is_link_component(c):
+ cl=' '.join(c.get('class',[])).lower()
+ return ('se-oglink' in cl or 'se-link' in cl or 'se-module-link' in cl or c.select_one('.se-oglink-info,.se-module-oglink,.se-module-link,.se-link-preview') is not None or (c.find('a',href=True) is not None and not c.select_one('.se-image,.se-module-image')))
 def extract(u,slug):
  s=BeautifulSoup(get(view(u)).text,'html.parser'); root=s.select_one('.se-main-container') or s.select_one('#postViewArea') or s.select_one('.post-view')
  if not root: raise RuntimeError('no body')
  comps=root.select(':scope > .se-component') or root.select('.se-component') or list(root.children)
- # 원문 하단의 '현재두 법무사사무소 상담 안내'부터 끝까지 통째로 제외한다.
  promo_start=len(comps)
  for i,c in enumerate(comps):
   if getattr(c,'select_one',None) and promo_start_text(txt(c)): promo_start=i; break
@@ -50,8 +52,9 @@ def extract(u,slug):
  for i,c in enumerate(comps):
   if i>=promo_start: break
   if not getattr(c,'select_one',None): continue
+  # 네이버 본문에 삽입된 URL/링크카드/링크 문단은 홈페이지로 가져오지 않는다.
+  if is_link_component(c): continue
   cl=' '.join(c.get('class',[]))
-  if 'se-oglink' in cl or 'se-link' in cl or c.select_one('.se-oglink-info,.se-module-oglink'): continue
   if 'se-horizontalLine' in cl or c.select_one('.se-horizontalLine') or c.name=='hr': out.append('<hr class="article-divider naver-divider">'); continue
   table=c.select_one('table') if c.name!='table' else c
   if table:
@@ -67,6 +70,8 @@ def extract(u,slug):
   imgs=c.find_all('img'); pars=c.select('.se-text-paragraph,.se-module-text p,.se-section-text p')
   if imgs and not pars:
    for im in imgs:
+    # 링크가 걸린 이미지는 삽입 링크로 보고 제외한다.
+    if im.find_parent('a',href=True): continue
     src=im.get('data-lazy-src') or im.get('data-src') or im.get('src') or ''
     if not src: continue
     imgno+=1; loc=saveimg(src,slug,imgno)
@@ -74,6 +79,7 @@ def extract(u,slug):
    continue
   if pars:
    for p in pars:
+    if p.find('a',href=True): continue
     v=txt(p); k=re.sub(r'\W+','',v)
     if len(k)<2 or k in seen: continue
     seen.add(k); out.append(styled_text(p))
@@ -87,7 +93,7 @@ def main():
   slug=str(p.get('slug','')).replace('.html',''); path=ROOT/'posts'/f'{slug}.html'
   if not path.exists(): continue
   old=path.read_text(encoding='utf-8',errors='replace')
-  if 'name="dg-naver-format" content="5"' in old: continue
+  if 'name="dg-naver-format" content="6"' in old: continue
   u=p.get('source_url') or (f'https://blog.naver.com/{BLOG}/{slug.removeprefix("naver-")}' if slug.startswith('naver-') else '')
   if not u: continue
   try:
@@ -96,7 +102,7 @@ def main():
    node.clear(); frag=BeautifulSoup(body,'html.parser')
    for x in list(frag.contents): node.append(x)
    for oldmeta in soup.select('meta[name="dg-naver-format"]'): oldmeta.decompose()
-   meta=soup.new_tag('meta'); meta['name']='dg-naver-format'; meta['content']='5'; soup.head.append(meta)
+   meta=soup.new_tag('meta'); meta['name']='dg-naver-format'; meta['content']='6'; soup.head.append(meta)
    path.write_text(str(soup),encoding='utf-8'); changed+=1; print('FORMAT_REFRESHED',slug,'chars='+str(chars),'images='+str(imgs)); time.sleep(.15)
   except Exception as e: print('FORMAT_SKIP',slug,e)
  print('FORMAT_REFRESHED_TOTAL',changed)
