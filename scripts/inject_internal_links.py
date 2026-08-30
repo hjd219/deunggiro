@@ -2,6 +2,7 @@ import html
 import json
 import re
 from pathlib import Path
+from bs4 import BeautifulSoup, Comment
 
 ROOT = Path(__file__).resolve().parents[1]
 POSTS_JSON = ROOT / 'data' / 'posts.json'
@@ -52,20 +53,44 @@ def related_block(current, posts):
         title = html.escape(str(p.get('title','')).strip())
         category = html.escape(str(p.get('category','') or '법률정보').strip())
         items.append(f'<li><a href="/posts/{slug}.html"><span>{category}</span><strong>{title}</strong></a></li>')
-    return (
-        START + '\n'
-        '<section class="seo-related-posts" aria-label="관련 법률정보">'
-        '<h2>함께 보면 좋은 글</h2><ul>' + ''.join(items) + '</ul></section>\n' + END
-    )
+    return START + '\n<section class="seo-related-posts" aria-label="관련 법률정보"><h2>함께 보면 좋은 글</h2><ul>' + ''.join(items) + '</ul></section>\n' + END
+
+
+def remove_old_related(text):
+    """깨진 마커/중복 관련글을 모두 지우고 한 블록만 다시 넣기 위한 정리."""
+    soup = BeautifulSoup(text, 'html.parser')
+    changed = False
+
+    # 화면에 노출되거나 깨진 마커 문자열 제거
+    for node in list(soup.find_all(string=True)):
+        raw = str(node)
+        if isinstance(node, Comment):
+            if 'SEO_RELATED_POSTS_START' in raw or 'SEO_RELATED_POSTS_END' in raw:
+                node.extract(); changed = True
+            continue
+        if 'SEO_RELATED_POSTS_START' in raw or 'SEO_RELATED_POSTS_END' in raw:
+            cleaned = re.sub(r'SEO_RELATED_POSTS_(?:START|END)', '', raw).strip()
+            if cleaned:
+                node.replace_with(cleaned)
+            else:
+                parent = node.parent
+                if parent and parent.name in ('p','div','span') and ' '.join(parent.stripped_strings).strip() == raw.strip():
+                    parent.decompose()
+                else:
+                    node.extract()
+            changed = True
+
+    # 관련글 section이 몇 개 있든 전부 제거
+    for sec in list(soup.select('.seo-related-posts')):
+        sec.decompose(); changed = True
+
+    return str(soup) if changed else text
 
 
 def main():
     posts = json.loads(POSTS_JSON.read_text(encoding='utf-8'))
-    pat = re.compile(re.escape(START) + r'[\s\S]*?' + re.escape(END), re.M)
     changed = 0
     for post in posts:
-        # 네이버 자동수집글과 관리자에서 수동 작성한 글을 구분하지 않고
-        # data/posts.json에 등록된 모든 상세글을 같은 내부링크 3개 규칙으로 통일한다.
         slug = str(post.get('slug','')).replace('.html','')
         if not slug:
             continue
@@ -73,16 +98,14 @@ def main():
         if not path.exists():
             continue
         text = path.read_text(encoding='utf-8')
+        clean = remove_old_related(text)
         block = related_block(post, posts)
-        if pat.search(text):
-            new = pat.sub(block, text, count=1)
-        else:
-            marker = '</article>'
-            new = text.replace(marker, block + marker, 1) if marker in text else text
+        marker = '</article>'
+        new = clean.replace(marker, block + marker, 1) if marker in clean else clean
         if new != text:
             path.write_text(new, encoding='utf-8')
             changed += 1
-    print('internal related links injected for all posts:', changed)
+    print('internal related links deduped and injected:', changed)
 
 
 if __name__ == '__main__':
