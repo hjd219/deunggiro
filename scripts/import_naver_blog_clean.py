@@ -7,8 +7,8 @@ from urllib.parse import urljoin,urlparse,parse_qs
 import requests
 from bs4 import BeautifulSoup,NavigableString,Tag
 ROOT=Path(__file__).resolve().parents[1]; POSTS_JSON=ROOT/'data'/'posts.json'; POSTS_DIR=ROOT/'posts'; MEDIA_ROOT=ROOT/'assets'/'naver-images'
-BLOG_ID='hjd21'; RSS_URL=f'https://rss.blog.naver.com/{BLOG_ID}.xml'; BASE='https://www.deunggiro.kr'; MAX_IMPORT=3; MAX_REPAIR=6
-UA={'User-Agent':'Mozilla/5.0 (compatible; DeunggiroBlogImporter/3.0; +https://www.deunggiro.kr/)'}
+BLOG_ID='hjd21'; RSS_URL=f'https://rss.blog.naver.com/{BLOG_ID}.xml'; BASE='https://www.deunggiro.kr'; MAX_IMPORT=3; MAX_REPAIR=100
+UA={'User-Agent':'Mozilla/5.0 (compatible; DeunggiroBlogImporter/3.1; +https://www.deunggiro.kr/)'}
 CATEGORY_RULES=[('상속포기·한정승인',('상속포기','한정승인','특별한정승인','상속채무')),('상속재산분할',('상속재산분할','상속분쟁','기여분','특별수익','협조거부','연락두절')),('법인등기',('법인','주식회사','유한회사','대표이사','이사','감사','주주','본점이전','자본금','증자','감자','상호변경','목적변경')),('가사',('협의이혼','재판이혼','이혼','개명','후견','친권','양육비')),('부동산등기',('근저당','가압류','등기권리증','매매','증여','전세권','부동산','재산분할등기')),('상속등기',('상속등기','대습상속','상속취득세','상속인','상속지분','상속재산','유언','부모님 사망'))]
 def get(url):
  r=requests.get(url,headers=UA,timeout=25); r.raise_for_status(); r.encoding=r.apparent_encoding or r.encoding or 'utf-8'; return r
@@ -62,9 +62,9 @@ def extract(url,slug):
  body='\n'.join(parts); text=re.sub(r'\s+',' ',' '.join(root.stripped_strings)).strip(); return body,text,imgno
 def body_chars(path):
  if not path.exists(): return 0
- h=path.read_text(encoding='utf-8',errors='ignore'); m=re.search(r'<div class="article-body">(.*?)(?:</div>\s*<!-- SEO_RELATED_POSTS_START|</article>)',h,re.S)
- if not m: return 0
- return len(re.sub(r'\s+','',re.sub(r'<[^>]+>',' ',m.group(1))))
+ soup=BeautifulSoup(path.read_text(encoding='utf-8',errors='ignore'),'html.parser'); body=soup.select_one('.article-body')
+ if body is None: return 0
+ return len(re.sub(r'\s+','',' '.join(body.stripped_strings)))
 def build(p,body):
  t=html.escape(p['title']); sm=html.escape(p.get('summary') or ''); c=html.escape(p.get('category') or '기타'); d=p.get('date') or datetime.now().strftime('%Y-%m-%d'); sl=p['slug']
  return f'''<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{t} | 현재두 법무사 사무소</title><meta name="description" content="{sm}"><link rel="canonical" href="{BASE}/posts/{sl}.html"><meta name="dg-title" content="{t}"><meta name="dg-category" content="{c}"><meta name="dg-date" content="{d}"><meta name="dg-summary" content="{sm}"><link rel="stylesheet" href="/assets/article-v2.css?v=9"><link rel="stylesheet" href="/assets/site-shell.css"></head><body class="article-v2"><header class="header"></header><main class="section"><div class="container article-wrap"><article class="article"><div class="post-meta"><span class="badge">{c}</span>{d}</div><h1>{t}</h1><p class="desc">{sm}</p><div class="article-body">{body}</div><!-- SEO_RELATED_POSTS_START --><!-- SEO_RELATED_POSTS_END --></article></div></main><section class="contact"></section><footer class="footer"></footer><script src="/assets/site-shell.js" defer></script><script src="/assets/article-v2.js" defer></script></body></html>'''
@@ -86,14 +86,17 @@ def repair(posts):
   if chars<500: bad.append((p,chars))
  print('SPARSE_FOUND',len(bad))
  for p,oldchars in bad[:MAX_REPAIR]:
-  url=p.get('source_url') or ''; slug=(p.get('slug') or '').replace('.html','')
+  slug=(p.get('slug') or '').replace('.html',''); path=POSTS_DIR/(slug+'.html')
+  url=p.get('source_url') or ''
+  if not url and slug.startswith('naver-'):
+   url=f'https://blog.naver.com/{BLOG_ID}/{slug.removeprefix("naver-")}'
   if not url: print('REPAIR_SKIP_NO_URL',slug); continue
   try: body,text,imgs=extract(url,slug)
   except Exception as e: print('REPAIR_SKIP',slug,e); continue
   chars=len(re.sub(r'\s+','',text)); print('REPAIR_CANDIDATE',slug,'old='+str(oldchars),'new='+str(chars),'images='+str(imgs))
   if chars<500: print('REPAIR_SHORT',slug); continue
   p['category']=category((p.get('title') or '')+' '+text[:500]); p['summary']=p.get('summary') or ((p.get('title') or '')+'의 핵심 절차와 준비사항을 정리합니다.')[:100]
-  path.write_text(build(p,body),encoding='utf-8'); repaired+=1; print('REPAIRED',slug)
+  path.write_text(build(p,body),encoding='utf-8'); repaired+=1; print('REPAIRED',slug,'saved='+str(body_chars(path)))
  print('REPAIRED_TOTAL',repaired); return repaired
 def main():
  posts=json.loads(POSTS_JSON.read_text(encoding='utf-8')); repair(posts); sources={str(p.get('source_url','')) for p in posts}; titles={norm(p.get('title','')) for p in posts}; imported=0; checked=0
