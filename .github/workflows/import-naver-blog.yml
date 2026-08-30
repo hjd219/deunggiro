@@ -43,19 +43,27 @@ jobs:
           python - <<'PY'
           import json,re
           from pathlib import Path
+          from bs4 import BeautifulSoup
           posts=json.loads(Path('data/posts.json').read_text(encoding='utf-8'))
           checked=0
           bad=[]
           for p in posts:
-              if p.get('source')!='naver-blog': continue
+              if p.get('source')!='naver-blog':
+                  continue
               slug=(p.get('slug') or '').replace('.html','')
               f=Path('posts')/(slug+'.html')
-              if not f.exists(): bad.append(slug+':missing'); continue
-              h=f.read_text(encoding='utf-8',errors='ignore')
-              m=re.search(r'<div class="article-body">(.*?)(?:</div>\s*<!-- SEO_RELATED_POSTS_START|</article>)',h,re.S)
-              if not m: bad.append(slug+':no-body'); continue
-              text=re.sub(r'\s+','',re.sub(r'<[^>]+>',' ',m.group(1)))
-              if len(text)<500: bad.append(f'{slug}:short-{len(text)}'); continue
+              if not f.exists():
+                  bad.append(slug+':missing')
+                  continue
+              soup=BeautifulSoup(f.read_text(encoding='utf-8',errors='ignore'),'html.parser')
+              body=soup.select_one('.article-body')
+              if body is None:
+                  bad.append(slug+':no-body')
+                  continue
+              text=re.sub(r'\s+','',' '.join(body.stripped_strings))
+              if len(text)<500:
+                  bad.append(f'{slug}:short-{len(text)}')
+                  continue
               checked+=1
           print('BODY_VALIDATED',checked,'BAD',len(bad))
           if bad:
