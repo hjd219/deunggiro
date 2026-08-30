@@ -5,7 +5,7 @@ from urllib.parse import urljoin,parse_qs,urlparse
 import requests
 from bs4 import BeautifulSoup
 ROOT=Path(__file__).resolve().parents[1]; DATA=ROOT/'data'/'posts.json'; MEDIA=ROOT/'assets'/'naver-images'; BLOG='hjd21'
-UA={'User-Agent':'Mozilla/5.0 (compatible; DeunggiroFormat/1.2; +https://www.deunggiro.kr/)'}
+UA={'User-Agent':'Mozilla/5.0 (compatible; DeunggiroFormat/1.3; +https://www.deunggiro.kr/)'}
 EMOJI_RE=re.compile('[\U0001F000-\U0001FAFF\U00002600-\U000027BF]')
 def get(u):
  r=requests.get(u,headers=UA,timeout=25); r.raise_for_status(); r.encoding='utf-8'; return r
@@ -35,20 +35,17 @@ def saveimg(src,slug,i):
   if src.startswith('//'): src='https:'+src
   r=requests.get(src,headers=UA,timeout=20); r.raise_for_status(); ct=(r.headers.get('content-type') or '').lower(); ext='.png' if 'png' in ct else '.webp' if 'webp' in ct else '.gif' if 'gif' in ct else '.jpg'; d=MEDIA/slug; d.mkdir(parents=True,exist_ok=True); p=d/f'fmt-{i:02d}{ext}'; p.write_bytes(r.content); return '/'+p.relative_to(ROOT).as_posix()
  except: return ''
-def is_promo_text(v):
+def promo_start_text(v):
  v=re.sub(r'\s+','',v)
- keys=('현재두법무사','현재두법무사사무소','등기로','상담문의','상담전화','전화상담','방문상담','032-425-1500','오시는길','사무실위치','법무사사무소')
- return any(k.replace(' ','') in v for k in keys)
+ return any(k in v for k in ('현재두법무사사무소상담안내','현재두법무사상담안내','현재두법무사사무소상담','032-425-1500'))
 def extract(u,slug):
  s=BeautifulSoup(get(view(u)).text,'html.parser'); root=s.select_one('.se-main-container') or s.select_one('#postViewArea') or s.select_one('.post-view')
  if not root: raise RuntimeError('no body')
  comps=root.select(':scope > .se-component') or root.select('.se-component') or list(root.children)
- # 하단 홍보 영역 시작점: 뒤쪽의 사무실/상담 홍보 문구가 시작되면 이후 컴포넌트는 가져오지 않는다.
+ # 원문 하단의 '현재두 법무사사무소 상담 안내'부터 끝까지 통째로 제외한다.
  promo_start=len(comps)
  for i,c in enumerate(comps):
-  if not getattr(c,'select_one',None): continue
-  v=txt(c)
-  if i >= max(0,len(comps)-12) and is_promo_text(v): promo_start=i; break
+  if getattr(c,'select_one',None) and promo_start_text(txt(c)): promo_start=i; break
  out=[]; imgno=0; seen=set()
  for i,c in enumerate(comps):
   if i>=promo_start: break
@@ -67,9 +64,7 @@ def extract(u,slug):
     if cells: rows.append('<tr>'+''.join(cells)+'</tr>')
    if rows: out.append('<table class="naver-table"><tbody>'+''.join(rows)+'</tbody></table>')
    continue
-  # 컴포넌트 순서 그대로 처리하여 네이버 본문의 이미지 위치를 유지한다.
-  imgs=c.find_all('img')
-  pars=c.select('.se-text-paragraph,.se-module-text p,.se-section-text p')
+  imgs=c.find_all('img'); pars=c.select('.se-text-paragraph,.se-module-text p,.se-section-text p')
   if imgs and not pars:
    for im in imgs:
     src=im.get('data-lazy-src') or im.get('data-src') or im.get('src') or ''
@@ -80,9 +75,8 @@ def extract(u,slug):
   if pars:
    for p in pars:
     v=txt(p); k=re.sub(r'\W+','',v)
-    if len(k)<2 or k in seen or is_promo_text(v): continue
+    if len(k)<2 or k in seen: continue
     seen.add(k); out.append(styled_text(p))
-   continue
  body='\n'.join(out); chars=len(re.sub(r'\s+','',' '.join(BeautifulSoup(body,'html.parser').stripped_strings)))
  if chars<500: raise RuntimeError(f'short formatted body {chars}')
  return body,chars,imgno
@@ -93,7 +87,7 @@ def main():
   slug=str(p.get('slug','')).replace('.html',''); path=ROOT/'posts'/f'{slug}.html'
   if not path.exists(): continue
   old=path.read_text(encoding='utf-8',errors='replace')
-  if 'name="dg-naver-format" content="4"' in old: continue
+  if 'name="dg-naver-format" content="5"' in old: continue
   u=p.get('source_url') or (f'https://blog.naver.com/{BLOG}/{slug.removeprefix("naver-")}' if slug.startswith('naver-') else '')
   if not u: continue
   try:
@@ -102,7 +96,7 @@ def main():
    node.clear(); frag=BeautifulSoup(body,'html.parser')
    for x in list(frag.contents): node.append(x)
    for oldmeta in soup.select('meta[name="dg-naver-format"]'): oldmeta.decompose()
-   meta=soup.new_tag('meta'); meta['name']='dg-naver-format'; meta['content']='4'; soup.head.append(meta)
+   meta=soup.new_tag('meta'); meta['name']='dg-naver-format'; meta['content']='5'; soup.head.append(meta)
    path.write_text(str(soup),encoding='utf-8'); changed+=1; print('FORMAT_REFRESHED',slug,'chars='+str(chars),'images='+str(imgs)); time.sleep(.15)
   except Exception as e: print('FORMAT_SKIP',slug,e)
  print('FORMAT_REFRESHED_TOTAL',changed)
