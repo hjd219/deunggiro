@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'scripts/import_naver_blog.py'
+      - 'scripts/import_naver_blog_full.py'
       - '.github/workflows/import-naver-blog.yml'
   schedule:
     - cron: '17 0 * * *'
@@ -41,7 +42,7 @@ jobs:
           git fetch origin main
           git reset --hard origin/main
 
-          python scripts/import_naver_blog.py
+          python scripts/import_naver_blog_full.py
           python scripts/repair_naver_posts.py
           python scripts/patch_naver_import_dates.py
           python scripts/patch_admin_seo.py
@@ -52,11 +53,11 @@ jobs:
           python scripts/fix_thumbnail_logo.py
           python scripts/site_maintenance.py
           python scripts/apply_latest_cards.py
-          # data/posts.json과 실제 상세 HTML을 기준으로 모든 개별글 URL을 사이트맵에 자동 반영
           python scripts/generate_sitemap.py
 
           python -m py_compile \
             scripts/import_naver_blog.py \
+            scripts/import_naver_blog_full.py \
             scripts/repair_naver_posts.py \
             scripts/patch_naver_import_dates.py \
             scripts/patch_admin_seo.py \
@@ -93,6 +94,7 @@ jobs:
           print('validated',len(posts),'posts with thumbnails and sitemap URLs')
           PY
 
+          find scripts -type d -name '__pycache__' -prune -exec rm -rf {} +
           git diff --check
           if git diff --quiet && [ -z "$(git status --porcelain --untracked-files=normal)" ]; then
             echo "No Naver or generated changes"
