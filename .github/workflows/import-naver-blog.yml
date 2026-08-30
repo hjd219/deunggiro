@@ -36,32 +36,31 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch origin main
           git reset --hard origin/main
-      - name: Import with clean collector
+      - name: Import and repair
         run: timeout 300s python -u scripts/import_naver_blog_clean.py
-      - name: Validate imported bodies
+      - name: Validate repaired and imported bodies
         run: |
           python - <<'PY'
           import json,re
           from pathlib import Path
           posts=json.loads(Path('data/posts.json').read_text(encoding='utf-8'))
           checked=0
+          bad=[]
           for p in posts:
-              if p.get('source')!='naver-blog':
-                  continue
+              if p.get('source')!='naver-blog': continue
               slug=(p.get('slug') or '').replace('.html','')
               f=Path('posts')/(slug+'.html')
-              if not f.exists():
-                  raise SystemExit('Missing imported HTML: '+slug)
-              h=f.read_text(encoding='utf-8')
-              m=re.search(r'<div class="article-body">(.*?)</div>\s*<!-- SEO_RELATED_POSTS_START',h,re.S)
-              if not m:
-                  raise SystemExit('Missing article-body: '+slug)
-              text=re.sub(r'<[^>]+>',' ',m.group(1))
-              text=re.sub(r'\s+','',text)
-              if len(text)<500:
-                  raise SystemExit(f'Short imported body: {slug} chars={len(text)}')
+              if not f.exists(): bad.append(slug+':missing'); continue
+              h=f.read_text(encoding='utf-8',errors='ignore')
+              m=re.search(r'<div class="article-body">(.*?)(?:</div>\s*<!-- SEO_RELATED_POSTS_START|</article>)',h,re.S)
+              if not m: bad.append(slug+':no-body'); continue
+              text=re.sub(r'\s+','',re.sub(r'<[^>]+>',' ',m.group(1)))
+              if len(text)<500: bad.append(f'{slug}:short-{len(text)}'); continue
               checked+=1
-          print('BODY_VALIDATED',checked)
+          print('BODY_VALIDATED',checked,'BAD',len(bad))
+          if bad:
+              print('BODY_BAD_LIST',','.join(bad))
+              raise SystemExit(1)
           PY
       - name: Postprocess
         run: |
@@ -88,5 +87,5 @@ jobs:
           set -euo pipefail
           if git diff --quiet && [ -z "$(git status --porcelain --untracked-files=normal)" ]; then echo "No changes"; exit 0; fi
           git add data/posts.json data/seo-report.json posts posts.html assets/posts assets/naver-images index.html inheritance.html renunciation.html corporate.html realestate.html family.html sitemap.xml rss.xml admin.html
-          git commit -m "네이버 자동수집 및 SEO 자동반영"
+          git commit -m "네이버 자동수집 본문복구 및 SEO 자동반영"
           git push origin HEAD:main
