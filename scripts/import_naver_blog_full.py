@@ -72,7 +72,6 @@ def _extract_items(text: str):
         if not n or n in seen:
             continue
         title = _title_from_anchor(a)
-        # 글목록의 썸네일 링크처럼 제목이 비어 있어도 logNo는 보존한다.
         seen.add(n)
         out.append({
             'title': title,
@@ -131,7 +130,6 @@ def fetch_all_blog_items_html():
 
     items = list(seen.values())
     if items:
-        # 최신 logNo부터 처리한다. 빠진 글이 많아도 하루 3개 제한은 base.main()이 적용한다.
         items.sort(key=lambda x: int(x['log_no']), reverse=True)
         print(f'HTML_LIST_TOTAL={len(items)}')
         return items
@@ -140,7 +138,55 @@ def fetch_all_blog_items_html():
     return base.fetch_all_blog_items()
 
 
+def _is_bare_domain(text: str) -> bool:
+    text = re.sub(r'\s+', '', text or '').lower()
+    return bool(re.fullmatch(r'(?:https?://)?(?:www\.)?[a-z0-9-]+(?:\.[a-z0-9-]+)+(?:/[^\s]*)?', text))
+
+
+def _remove_link_preview_artifacts(body: str) -> str:
+    """네이버 링크/표 미리보기 카드가 긴 일반문단으로 풀리는 현상을 제거한다."""
+    soup = BeautifulSoup(body, 'html.parser')
+    removed = 0
+    blocks = list(soup.find_all(['p', 'div']))
+    for block in blocks:
+        if block.parent is None:
+            continue
+        text = ' '.join(block.stripped_strings).strip()
+        if not _is_bare_domain(text):
+            continue
+
+        # 링크 카드 마지막에 도메인만 별도 문단으로 붙는 구조.
+        prev = block.find_previous_sibling()
+        if prev is not None:
+            prev_text = ' '.join(prev.stripped_strings).strip()
+            # 카드 본문이 표/요약 전체를 한 문단으로 펼쳐 놓은 경우만 제거한다.
+            preview_hint = any(x in prev_text for x in (
+                '좌우로 스크롤 가능합니다', '요약표입니다', '표준세율',
+                '기본 세율', '기본세율', '적용 세목', '특이사항',
+            ))
+            if len(prev_text) >= 180 or preview_hint:
+                prev.decompose()
+                removed += 1
+        block.decompose()
+        removed += 1
+
+    if removed:
+        print(f'LINK_PREVIEW_ARTIFACTS_REMOVED={removed}')
+    return str(soup)
+
+
+_original_clean_article = base.clean_article
+
+
+def clean_article_without_previews(url, slug=''):
+    body, text = _original_clean_article(url, slug)
+    body = _remove_link_preview_artifacts(body)
+    # 본문 길이 판정은 원문 텍스트를 유지한다. 링크 카드 제거는 HTML 출력에만 적용한다.
+    return body, text
+
+
 base.fetch_all_blog_items = fetch_all_blog_items_html
+base.clean_article = clean_article_without_previews
 
 if __name__ == '__main__':
     base.main()
