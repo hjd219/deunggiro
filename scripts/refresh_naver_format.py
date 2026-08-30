@@ -1,9 +1,11 @@
 from __future__ import annotations
 import html,json,re,time
+from io import BytesIO
 from pathlib import Path
 from urllib.parse import urljoin,parse_qs,urlparse
 import requests
 from bs4 import BeautifulSoup
+from PIL import Image
 ROOT=Path(__file__).resolve().parents[1]; DATA=ROOT/'data'/'posts.json'; MEDIA=ROOT/'assets'/'naver-images'; BLOG='hjd21'
 UA={'User-Agent':'Mozilla/5.0 (compatible; DeunggiroFormat/1.6; +https://www.deunggiro.kr/)'}
 EMOJI_RE=re.compile('[\U0001F000-\U0001FAFF\U00002600-\U000027BF]')
@@ -64,7 +66,17 @@ def image_src(node):
  return ''
 def saveimg(src,slug,i):
  try:
-  r=requests.get(src,headers=UA,timeout=20); r.raise_for_status(); ct=(r.headers.get('content-type') or '').lower(); ext='.png' if 'png' in ct else '.webp' if 'webp' in ct else '.gif' if 'gif' in ct else '.jpg'; d=MEDIA/slug; d.mkdir(parents=True,exist_ok=True); p=d/f'fmt-{i:02d}{ext}'; p.write_bytes(r.content); return '/'+p.relative_to(ROOT).as_posix()
+  r=requests.get(src,headers=UA,timeout=20); r.raise_for_status(); data=r.content
+  # 네이버가 본문 앞에 넣는 작은 미리보기/스티커 이미지는 본문 대표 이미지처럼 보이므로 제외한다.
+  # 실제 본문 이미지는 보통 충분한 폭과 용량을 가지며, 작은 이미지에만 이 조건을 적용한다.
+  try:
+   with Image.open(BytesIO(data)) as im:
+    w,h=im.size
+   if w < 400 and len(data) < 80000:
+    print('FORMAT_IMAGE_SMALL_SKIP',slug,f'{w}x{h}',len(data)); return ''
+  except Exception:
+   pass
+  ct=(r.headers.get('content-type') or '').lower(); ext='.png' if 'png' in ct else '.webp' if 'webp' in ct else '.gif' if 'gif' in ct else '.jpg'; d=MEDIA/slug; d.mkdir(parents=True,exist_ok=True); p=d/f'fmt-{i:02d}{ext}'; p.write_bytes(data); return '/'+p.relative_to(ROOT).as_posix()
  except Exception as e:
   print('FORMAT_IMAGE_SKIP',slug,str(e)); return ''
 def promo_start_text(v):
@@ -126,7 +138,7 @@ def main():
   slug=str(p.get('slug','')).replace('.html',''); path=ROOT/'posts'/f'{slug}.html'
   if not path.exists(): continue
   old=path.read_text(encoding='utf-8',errors='replace')
-  if 'name="dg-naver-format" content="8"' in old: continue
+  if 'name="dg-naver-format" content="9"' in old: continue
   u=p.get('source_url') or (f'https://blog.naver.com/{BLOG}/{slug.removeprefix("naver-")}' if slug.startswith('naver-') else '')
   if not u: continue
   try:
@@ -135,7 +147,7 @@ def main():
    node.clear(); frag=BeautifulSoup(body,'html.parser')
    for x in list(frag.contents): node.append(x)
    for oldmeta in soup.select('meta[name="dg-naver-format"]'): oldmeta.decompose()
-   meta=soup.new_tag('meta'); meta['name']='dg-naver-format'; meta['content']='8'; soup.head.append(meta)
+   meta=soup.new_tag('meta'); meta['name']='dg-naver-format'; meta['content']='9'; soup.head.append(meta)
    path.write_text(str(soup),encoding='utf-8'); changed+=1; print('FORMAT_REFRESHED',slug,'chars='+str(chars),'images='+str(imgs)); time.sleep(.15)
   except Exception as e: print('FORMAT_SKIP',slug,e)
  print('FORMAT_REFRESHED_TOTAL',changed)
