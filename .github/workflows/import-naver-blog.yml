@@ -6,6 +6,7 @@ on:
       - 'scripts/import_naver_blog.py'
       - 'scripts/import_naver_blog_full.py'
       - 'scripts/import_naver_blog_missing.py'
+      - 'scripts/import_naver_blog_missing_v2.py'
       - 'scripts/repair_naver_posts.py'
       - 'scripts/strip_naver_emojis.py'
       - 'scripts/cleanup_naver_rendering.py'
@@ -53,7 +54,7 @@ jobs:
 
       - name: Import only missing Naver posts
         timeout-minutes: 6
-        run: timeout --signal=TERM 330s python -u scripts/import_naver_blog_missing.py
+        run: timeout --signal=TERM 330s python -u scripts/import_naver_blog_missing_v2.py
 
       - name: Strip decorative emojis
         timeout-minutes: 2
