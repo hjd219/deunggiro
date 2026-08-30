@@ -36,40 +36,8 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch origin main
           git reset --hard origin/main
-      - name: Import and repair
+      - name: Import repair and validate bodies
         run: timeout 300s python -u scripts/import_naver_blog_clean.py
-      - name: Validate repaired and imported bodies
-        run: |
-          python - <<'PY'
-          import json,re
-          from pathlib import Path
-          from bs4 import BeautifulSoup
-          posts=json.loads(Path('data/posts.json').read_text(encoding='utf-8'))
-          checked=0
-          bad=[]
-          for p in posts:
-              if p.get('source')!='naver-blog':
-                  continue
-              slug=(p.get('slug') or '').replace('.html','')
-              f=Path('posts')/(slug+'.html')
-              if not f.exists():
-                  bad.append(slug+':missing')
-                  continue
-              soup=BeautifulSoup(f.read_text(encoding='utf-8',errors='ignore'),'html.parser')
-              body=soup.select_one('.article-body')
-              if body is None:
-                  bad.append(slug+':no-body')
-                  continue
-              text=re.sub(r'\s+','',' '.join(body.stripped_strings))
-              if len(text)<500:
-                  bad.append(f'{slug}:short-{len(text)}')
-                  continue
-              checked+=1
-          print('BODY_VALIDATED',checked,'BAD',len(bad))
-          if bad:
-              print('BODY_BAD_LIST',','.join(bad))
-              raise SystemExit(1)
-          PY
       - name: Postprocess
         run: |
           timeout 90s python -u scripts/strip_naver_emojis.py
