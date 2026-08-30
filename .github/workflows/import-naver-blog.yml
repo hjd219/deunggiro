@@ -48,9 +48,17 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch origin main
           git reset --hard origin/main
-      - name: Import missing Naver posts with legacy body parser
+      - name: Import with verified August 29 collector
         timeout-minutes: 6
-        run: timeout --signal=TERM 330s python -u scripts/import_naver_blog_missing.py
+        shell: bash
+        run: |
+          set -euo pipefail
+          GOOD_SHA=9df0d6fc682c75ff78bd8ff4a6a4e832e45c2c73
+          git show "$GOOD_SHA:scripts/import_naver_blog.py" > scripts/import_naver_blog_29.py
+          git show "$GOOD_SHA:scripts/repair_naver_posts.py" > scripts/repair_naver_posts_29.py
+          timeout --signal=TERM 240s python -u scripts/import_naver_blog_29.py
+          timeout --signal=TERM 90s python -u scripts/repair_naver_posts_29.py
+          rm -f scripts/import_naver_blog_29.py scripts/repair_naver_posts_29.py
       - name: Strip decorative emojis
         run: timeout 90s python -u scripts/strip_naver_emojis.py
       - name: Patch import dates
