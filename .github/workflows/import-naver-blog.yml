@@ -3,7 +3,7 @@ name: Import Naver Blog Posts
 on:
   push:
     paths:
-      - 'scripts/inject_internal_links.py'
+      - 'scripts/import_naver_blog_clean.py'
       - '.github/workflows/import-naver-blog.yml'
   schedule:
     - cron: '17 0 * * *'
@@ -36,8 +36,33 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch origin main
           git reset --hard origin/main
-      - name: Import
+      - name: Import with clean collector
         run: timeout 300s python -u scripts/import_naver_blog_clean.py
+      - name: Validate imported bodies
+        run: |
+          python - <<'PY'
+          import json,re
+          from pathlib import Path
+          posts=json.loads(Path('data/posts.json').read_text(encoding='utf-8'))
+          checked=0
+          for p in posts:
+              if p.get('source')!='naver-blog':
+                  continue
+              slug=(p.get('slug') or '').replace('.html','')
+              f=Path('posts')/(slug+'.html')
+              if not f.exists():
+                  raise SystemExit('Missing imported HTML: '+slug)
+              h=f.read_text(encoding='utf-8')
+              m=re.search(r'<div class="article-body">(.*?)</div>\s*<!-- SEO_RELATED_POSTS_START',h,re.S)
+              if not m:
+                  raise SystemExit('Missing article-body: '+slug)
+              text=re.sub(r'<[^>]+>',' ',m.group(1))
+              text=re.sub(r'\s+','',text)
+              if len(text)<500:
+                  raise SystemExit(f'Short imported body: {slug} chars={len(text)}')
+              checked+=1
+          print('BODY_VALIDATED',checked)
+          PY
       - name: Postprocess
         run: |
           timeout 90s python -u scripts/strip_naver_emojis.py
@@ -53,9 +78,9 @@ jobs:
           timeout 120s node scripts/seo-auto.mjs
           timeout 60s node scripts/seo-canonical-fix.mjs
           timeout 60s node scripts/rss-auto.mjs
-      - name: Validate
+      - name: Validate site
         run: |
-          python -m py_compile scripts/import_naver_blog_clean.py scripts/inject_internal_links.py
+          python -m py_compile scripts/import_naver_blog_clean.py
           git diff --check
       - name: Commit
         shell: bash
