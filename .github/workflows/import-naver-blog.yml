@@ -6,6 +6,7 @@ on:
       - 'scripts/import_naver_blog.py'
       - 'scripts/import_naver_blog_full.py'
       - 'scripts/repair_naver_posts.py'
+      - 'scripts/restore_naver_number_emojis.py'
       - 'scripts/strip_naver_emojis.py'
       - 'scripts/cleanup_naver_rendering.py'
       - 'scripts/optimize_naver_keywords.py'
@@ -50,6 +51,10 @@ jobs:
       - name: Import only new Naver posts
         timeout-minutes: 6
         run: timeout --signal=TERM 330s python -u scripts/import_naver_blog_full.py
+
+      - name: Restore legacy number emojis
+        timeout-minutes: 6
+        run: timeout --signal=TERM 330s python -u scripts/restore_naver_number_emojis.py
 
       - name: Strip decorative emojis
         timeout-minutes: 2
