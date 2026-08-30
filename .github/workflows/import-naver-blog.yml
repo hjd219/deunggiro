@@ -1,6 +1,10 @@
 name: Import Naver Blog Posts
 
 on:
+  push:
+    paths:
+      - 'scripts/import_naver_blog.py'
+      - '.github/workflows/import-naver-blog.yml'
   schedule:
     - cron: '17 0 * * *'
   workflow_dispatch:
