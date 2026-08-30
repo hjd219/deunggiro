@@ -41,9 +41,8 @@ def inline(el):
   if isinstance(n,NavigableString):return html.escape(str(n))
   if not isinstance(n,Tag):return ''
   inner=''.join(walk(x) for x in n.children); name=n.name.lower()
-  cls=' '.join(n.get('class') or [])
   style=(n.get('style') or '').lower()
-  bold=name in ('b','strong') or 'font-weight:700' in style or 'font-weight: 700' in style or 'se-fs-' in cls and 'se-ff-' not in cls and False
+  bold=name in ('b','strong') or 'font-weight:700' in style or 'font-weight: 700' in style
   if bold:return f'<strong>{inner}</strong>'
   if name in ('em','i'):return f'<em>{inner}</em>'
   if name=='u':return f'<u>{inner}</u>'
@@ -105,7 +104,6 @@ def extract(url,slug):
    if not plain or plain in seen:continue
    if any(x in plain for x in FOOT):footer=True;break
    seen.add(plain); rich=inline(p)
-   # 네이버 원문의 제목/문단 속성만 따르고 번호 모양으로 재분류하지 않는다.
    tag='p'
    if p.name in ('h2','h3'):tag=p.name
    elif p.find_parent(class_=re.compile(r'se-module-text')):
@@ -114,21 +112,24 @@ def extract(url,slug):
    parts.append(f'<{tag}>{rich}</{tag}>')
  return '\n'.join(parts)
 
+def remove_source_note(s):
+ s=re.sub(r'<p[^>]*class=["\'][^"\']*source-note[^"\']*["\'][^>]*>.*?</p>','',s,flags=re.I|re.S)
+ s=re.sub(r'<p[^>]*>\s*네이버 블로그에 작성한 내용을.*?원문 보기.*?</p>','',s,flags=re.I|re.S)
+ return s
+
 def rebuild(post,body):
  p=POSTS_DIR/f"{post['slug']}.html"
  if not p.exists():return
- s=p.read_text(encoding='utf-8'); cat=html.escape(post['category']);
+ s=remove_source_note(p.read_text(encoding='utf-8')); cat=html.escape(post['category']);
  s=re.sub(r'(<meta\s+name=["\']dg-category["\']\s+content=["\'])[^"\']*',r'\1'+cat,s,count=1,flags=re.I)
  s=re.sub(r'(<span\s+class=["\']badge["\']>).*?(</span>)',r'\1'+cat+r'\2',s,count=1,flags=re.I|re.S)
  s=re.sub(r'<figure[^>]+id=["\']dg-post-hero-image["\'][^>]*>.*?</figure>','',s,flags=re.I|re.S)
  s=re.sub(r'<style[^>]+id=["\']dg-post-hero-style["\'][^>]*>.*?</style>','',s,flags=re.I|re.S)
  m=re.search(r'(<div class="article-body">)(.*?)(</div><!-- SEO_RELATED_POSTS_START -->)',s,re.I|re.S)
  if not m:return
- source=html.escape(post['source_url'],quote=True)
  intro_title=re.sub(r'^\s*\[[^\]]+\]\s*','',post['title'])
  intro=f'<p class="article-intro"><strong>{html.escape(intro_title)}에서 꼭 확인해야 할 핵심 내용을 순서대로 살펴보겠습니다.</strong></p>'
- note=f'<p class="source-note">네이버 블로그에 작성한 내용을 등기로 홈페이지 형식에 맞게 정리했습니다. <a href="{source}" target="_blank" rel="noopener noreferrer">원문 보기</a></p>'
- s=s[:m.start()]+m.group(1)+intro+body+note+m.group(3)+s[m.end():]
+ s=s[:m.start()]+m.group(1)+intro+body+m.group(3)+s[m.end():]
  p.write_text(s,encoding='utf-8')
 
 def main():
