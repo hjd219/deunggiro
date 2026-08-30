@@ -15,8 +15,9 @@ KEYCAP['10'] = '\U0001F51F'
 # 원숫자는 소제목 등에 쓰므로 그대로 유지한다.
 CIRCLED_RE = re.compile(r'[①-⑳㉑-㊿]')
 KEYCAP_RE = re.compile(r'(?:[1-9]\ufe0f?\u20e3|\U0001F51F)')
-PLAIN_HEADING_RE = re.compile(r'^\s*(10|[1-9])\s*[.)]\s*')
-ELEVEN_PLUS_RE = re.compile(r'^\s*(1[1-9]|[2-9]\d)\s*[.)]\s*')
+# 네이버 제목은 "1 제목", "1. 제목", "1) 제목" 형태가 섞여 있어 모두 허용한다.
+PLAIN_HEADING_RE = re.compile(r'^\s*(10|[1-9])(?:\s*[.)]\s*|\s+)')
+ELEVEN_PLUS_RE = re.compile(r'^\s*(1[1-9]|[2-9]\d)(?:\s*[.)]\s*|\s+)')
 
 
 def normalize_heading(tag):
