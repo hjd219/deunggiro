@@ -1,7 +1,7 @@
 import json
 import re
 from pathlib import Path
-from bs4 import BeautifulSoup, Tag
+from bs4 import BeautifulSoup, Tag, Comment
 
 ROOT = Path(__file__).resolve().parents[1]
 POSTS_JSON = ROOT / 'data' / 'posts.json'
@@ -10,6 +10,7 @@ POSTS_DIR = ROOT / 'posts'
 DOMAIN_RE = re.compile(r'^(?:m\.)?blog\.naver\.com$', re.I)
 PREVIEW_MARKERS = ('oglink', 'link-preview', 'link_preview', 'se-oglink', 'se-module-oglink', 'se-oglink-info')
 PREVIEW_HINT_RE = re.compile(r'(\.\.\.|…|“|”|"|네이버 블로그|blog\.naver\.com)', re.I)
+SEO_MARKER_RE = re.compile(r'^\s*SEO_RELATED_POSTS_(?:START|END)\s*$', re.I)
 
 
 def marker_text(tag: Tag) -> str:
@@ -30,7 +31,6 @@ def remove_preview_containers(soup: BeautifulSoup) -> bool:
 
 def remove_inline_naver_cards(soup: BeautifulSoup) -> bool:
     changed = False
-    # p/div만 검사한다. span까지 검사하면 같은 카드의 중첩 노드를 반복 탐색해 매우 느려질 수 있다.
     for node in list(soup.find_all(['p', 'div'])):
         if node.parent is None:
             continue
@@ -60,9 +60,25 @@ def remove_inline_naver_cards(soup: BeautifulSoup) -> bool:
     return changed
 
 
+def remove_visible_seo_markers(soup: BeautifulSoup) -> bool:
+    """SEO_RELATED_POSTS_START/END가 텍스트로 화면에 노출되는 경우만 제거한다.
+    HTML 주석 마커는 내부링크 갱신용이므로 보존한다.
+    """
+    changed = False
+    for text_node in list(soup.find_all(string=True)):
+        if isinstance(text_node, Comment):
+            continue
+        if SEO_MARKER_RE.fullmatch(str(text_node)):
+            parent = text_node.parent
+            if isinstance(parent, Tag) and parent.name in ('p', 'div', 'span') and ' '.join(parent.stripped_strings).strip() == str(text_node).strip():
+                parent.decompose()
+            else:
+                text_node.extract()
+            changed = True
+    return changed
+
+
 def clean_html(text: str) -> str:
-    # 거대한 HTML 전체에 [\s\S]* 정규식을 반복 적용하던 방식을 제거한다.
-    # BeautifulSoup으로 한 번만 파싱해 필요한 노드만 삭제한다.
     soup = BeautifulSoup(text, 'html.parser')
     changed = False
 
@@ -71,10 +87,8 @@ def clean_html(text: str) -> str:
         changed = True
 
     changed = remove_preview_containers(soup) or changed
+    changed = remove_visible_seo_markers(soup) or changed
 
-    # '같이 보면 좋은 글'은 네이버에서 풀린 관련글 영역만 제거한다.
-    # 등기로 자체 SEO 관련글 마커/섹션은 건드리지 않는다.
-    seo_marker = soup.find(string=lambda s: isinstance(s, str) and 'SEO_RELATED_POSTS_START' in s)
     for node in list(soup.find_all(['h2', 'h3', 'p'])):
         if node.parent is None:
             continue
@@ -87,7 +101,6 @@ def clean_html(text: str) -> str:
                 changed = True
                 if nxt is None:
                     break
-                # 자체 SEO 관련글 section은 보존
                 classes = ' '.join(nxt.get('class') or []) if isinstance(nxt, Tag) else ''
                 if 'seo-related-posts' in classes:
                     break
