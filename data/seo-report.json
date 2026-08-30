@@ -1,11 +1,21 @@
 {
-  "generatedAt": "2026-08-30T14:38:29.859Z",
-  "totalPosts": 65,
-  "ok": 65,
+  "generatedAt": "2026-08-30T14:47:06.609Z",
+  "totalPosts": 67,
+  "ok": 67,
   "warnings": 0,
-  "canonicalFixed": 65,
+  "canonicalFixed": 67,
   "missingFiles": 0,
   "items": [
+    {
+      "slug": "naver-224355705172",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "slug": "naver-224363661745",
+      "status": "ok",
+      "issues": []
+    },
     {
       "slug": "naver-224370002913",
       "status": "ok",
