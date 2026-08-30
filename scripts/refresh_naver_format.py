@@ -5,7 +5,10 @@ from urllib.parse import urljoin,parse_qs,urlparse
 import requests
 from bs4 import BeautifulSoup
 ROOT=Path(__file__).resolve().parents[1]; DATA=ROOT/'data'/'posts.json'; MEDIA=ROOT/'assets'/'naver-images'; BLOG='hjd21'
-UA={'User-Agent':'Mozilla/5.0 (compatible; DeunggiroFormat/1.0; +https://www.deunggiro.kr/)'}
+UA={'User-Agent':'Mozilla/5.0 (compatible; DeunggiroFormat/1.1; +https://www.deunggiro.kr/)'}
+# 허용: 1️⃣~9️⃣, 🔟, ①~⑳. 그 외 이모지/장식기호는 제거한다.
+EMOJI_RE=re.compile('[\U0001F000-\U0001FAFF\U00002600-\U000027BF]')
+CIRCLED=set('①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳')
 def get(u):
  r=requests.get(u,headers=UA,timeout=25); r.raise_for_status(); r.encoding='utf-8'; return r
 def logno(u):
@@ -13,19 +16,23 @@ def logno(u):
 def view(u):
  s=BeautifulSoup(get(u).text,'html.parser'); f=s.select_one('iframe#mainFrame,iframe[name="mainFrame"]')
  return urljoin('https://blog.naver.com/',f['src']) if f and f.get('src') else f'https://blog.naver.com/PostView.naver?blogId={BLOG}&logNo={logno(u)}&redirect=Dlog&widgetTypeCall=true&directAccess=false'
-def txt(n): return re.sub(r'\s+',' ',' '.join(n.stripped_strings)).strip()
+def keep_number_emoji(v):
+ saved=[]
+ def stash(m): saved.append(m.group(0)); return f'__DGNUM{len(saved)-1}__'
+ v=re.sub(r'(?:[1-9]\ufe0f?\u20e3|🔟)',stash,v)
+ # ①~⑳은 BMP 문자라 별도로 그대로 둔다.
+ v=EMOJI_RE.sub('',v).replace('\ufe0f','')
+ for i,x in enumerate(saved): v=v.replace(f'__DGNUM{i}__',x)
+ return re.sub(r'[ \t]+',' ',v).strip()
+def txt(n): return keep_number_emoji(re.sub(r'\s+',' ',' '.join(n.stripped_strings)).strip())
 def fontsize(n):
- classes=' '.join(n.get('class',[]))+' '+' '.join(c for x in n.find_all(True) for c in x.get('class',[]))
- m=re.search(r'(?:se-fs-|se_font_size_)(?:fs)?(\d{1,2})',classes)
- if m:
-  v=int(m.group(1)); return max(13,min(28,v))
- st=' '.join([n.get('style','')]+[x.get('style','') for x in n.find_all(True)])
- m=re.search(r'font-size\s*:\s*(\d{1,2})px',st,re.I)
+ classes=' '.join(n.get('class',[]))+' '+' '.join(c for x in n.find_all(True) for c in x.get('class',[])); m=re.search(r'(?:se-fs-|se_font_size_)(?:fs)?(\d{1,2})',classes)
+ if m: return max(13,min(28,int(m.group(1))))
+ st=' '.join([n.get('style','')]+[x.get('style','') for x in n.find_all(True)]); m=re.search(r'font-size\s*:\s*(\d{1,2})px',st,re.I)
  return max(13,min(28,int(m.group(1)))) if m else 16
 def styled_text(n):
  t=txt(n); size=fontsize(n); classes=' '.join(n.get('class',[]))+' '+' '.join(c for x in n.find_all(True) for c in x.get('class',[])); st=' '.join([n.get('style','')]+[x.get('style','') for x in n.find_all(True)])
- weight='700' if ('se-ff-' in classes and ('bold' in classes.lower() or 'font-weight: bold' in st.lower())) or n.find(['b','strong']) else '400'
- align='center' if ('se-text-paragraph-align-center' in classes or 'text-align: center' in st.lower()) else 'right' if ('align-right' in classes or 'text-align: right' in st.lower()) else 'left'
+ weight='700' if ('se-ff-' in classes and ('bold' in classes.lower() or 'font-weight: bold' in st.lower())) or n.find(['b','strong']) else '400'; align='center' if ('se-text-paragraph-align-center' in classes or 'text-align: center' in st.lower()) else 'right' if ('align-right' in classes or 'text-align: right' in st.lower()) else 'left'
  return f'<p class="naver-p" style="font-size:{size}px;font-weight:{weight};text-align:{align}">{html.escape(t)}</p>'
 def saveimg(src,slug,i):
  try:
@@ -35,10 +42,7 @@ def saveimg(src,slug,i):
 def extract(u,slug):
  s=BeautifulSoup(get(view(u)).text,'html.parser'); root=s.select_one('.se-main-container') or s.select_one('#postViewArea') or s.select_one('.post-view')
  if not root: raise RuntimeError('no body')
- comps=root.select(':scope > .se-component') or root.select('.se-component')
- if not comps: comps=list(root.children)
- # 마지막 실제 텍스트 컴포넌트 뒤의 이미지는 블로그 하단 썸네일/홍보 이미지로 보고 제외한다.
- last_text=-1
+ comps=root.select(':scope > .se-component') or root.select('.se-component') or list(root.children); last_text=-1
  for i,c in enumerate(comps):
   if getattr(c,'select_one',None) and c.select_one('.se-text-paragraph,.se-module-text p') and len(txt(c))>=2: last_text=i
  out=[]; imgno=0; seen=set()
@@ -82,7 +86,8 @@ def main():
   slug=str(p.get('slug','')).replace('.html',''); path=ROOT/'posts'/f'{slug}.html'
   if not path.exists(): continue
   old=path.read_text(encoding='utf-8',errors='replace')
-  if 'name="dg-naver-format" content="2"' in old: continue
+  # format 3은 숫자 이모지만 유지하는 현재 규칙이다.
+  if 'name="dg-naver-format" content="3"' in old: continue
   u=p.get('source_url') or (f'https://blog.naver.com/{BLOG}/{slug.removeprefix("naver-")}' if slug.startswith('naver-') else '')
   if not u: continue
   try:
@@ -90,7 +95,8 @@ def main():
    if not node: continue
    node.clear(); frag=BeautifulSoup(body,'html.parser')
    for x in list(frag.contents): node.append(x)
-   meta=soup.new_tag('meta'); meta['name']='dg-naver-format'; meta['content']='2'; soup.head.append(meta)
+   for oldmeta in soup.select('meta[name="dg-naver-format"]'): oldmeta.decompose()
+   meta=soup.new_tag('meta'); meta['name']='dg-naver-format'; meta['content']='3'; soup.head.append(meta)
    path.write_text(str(soup),encoding='utf-8'); changed+=1; print('FORMAT_REFRESHED',slug,'chars='+str(chars),'images='+str(imgs)); time.sleep(.15)
   except Exception as e: print('FORMAT_SKIP',slug,e)
  print('FORMAT_REFRESHED_TOTAL',changed)
