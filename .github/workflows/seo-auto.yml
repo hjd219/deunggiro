@@ -8,6 +8,7 @@ on:
       - 'posts/**'
       - 'sitemap.xml'
       - 'scripts/seo-auto.mjs'
+      - 'scripts/seo-canonical-fix.mjs'
       - 'scripts/rss-auto.mjs'
       - 'scripts/seo-trigger.txt'
   workflow_dispatch:
@@ -32,10 +33,13 @@ jobs:
       - name: Validate automation scripts
         run: |
           node --check scripts/seo-auto.mjs
+          node --check scripts/seo-canonical-fix.mjs
           node --check scripts/rss-auto.mjs
 
       - name: Run SEO automation
-        run: node scripts/seo-auto.mjs
+        run: |
+          node scripts/seo-auto.mjs
+          node scripts/seo-canonical-fix.mjs
 
       - name: Generate RSS
         run: node scripts/rss-auto.mjs
