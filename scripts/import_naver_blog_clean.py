@@ -8,7 +8,7 @@ import requests
 from bs4 import BeautifulSoup,NavigableString,Tag
 ROOT=Path(__file__).resolve().parents[1]; POSTS_JSON=ROOT/'data'/'posts.json'; POSTS_DIR=ROOT/'posts'; MEDIA_ROOT=ROOT/'assets'/'naver-images'
 BLOG_ID='hjd21'; RSS_URL=f'https://rss.blog.naver.com/{BLOG_ID}.xml'; BASE='https://www.deunggiro.kr'; MAX_IMPORT=3; MAX_REPAIR=100
-UA={'User-Agent':'Mozilla/5.0 (compatible; DeunggiroBlogImporter/3.1; +https://www.deunggiro.kr/)'}
+UA={'User-Agent':'Mozilla/5.0 (compatible; DeunggiroBlogImporter/3.2; +https://www.deunggiro.kr/)'}
 CATEGORY_RULES=[('상속포기·한정승인',('상속포기','한정승인','특별한정승인','상속채무')),('상속재산분할',('상속재산분할','상속분쟁','기여분','특별수익','협조거부','연락두절')),('법인등기',('법인','주식회사','유한회사','대표이사','이사','감사','주주','본점이전','자본금','증자','감자','상호변경','목적변경')),('가사',('협의이혼','재판이혼','이혼','개명','후견','친권','양육비')),('부동산등기',('근저당','가압류','등기권리증','매매','증여','전세권','부동산','재산분할등기')),('상속등기',('상속등기','대습상속','상속취득세','상속인','상속지분','상속재산','유언','부모님 사망'))]
 def get(url):
  r=requests.get(url,headers=UA,timeout=25); r.raise_for_status(); r.encoding=r.apparent_encoding or r.encoding or 'utf-8'; return r
@@ -18,8 +18,7 @@ def category(text):
   if any(w in text for w in words): return c
  return '기타'
 def logno(url):
- m=re.search(r'/(\d{6,})(?:\?|$)',url)
- return m.group(1) if m else (parse_qs(urlparse(url).query).get('logNo') or [''])[0]
+ m=re.search(r'/(\d{6,})(?:\?|$)',url); return m.group(1) if m else (parse_qs(urlparse(url).query).get('logNo') or [''])[0]
 def view_url(url):
  r=get(url); s=BeautifulSoup(r.text,'html.parser'); f=s.select_one('iframe#mainFrame,iframe[name="mainFrame"]')
  if f and f.get('src'): return urljoin('https://blog.naver.com/',f['src'])
@@ -53,8 +52,7 @@ def extract(url,slug):
   elif el.name=='table':
    rows=[]
    for tr in el.find_all('tr'):
-    cells=[]
-    for cell in tr.find_all(['th','td'],recursive=False): cells.append(f'<{cell.name}>{inline(cell)}</{cell.name}>')
+    cells=[f'<{cell.name}>{inline(cell)}</{cell.name}>' for cell in tr.find_all(['th','td'],recursive=False)]
     if cells: rows.append('<tr>'+''.join(cells)+'</tr>')
    if rows: parts.append('<table class="naver-table"><tbody>'+''.join(rows)+'</tbody></table>')
   elif el.name=='hr': parts.append('<hr class="article-divider">')
@@ -63,11 +61,14 @@ def extract(url,slug):
 def body_chars(path):
  if not path.exists(): return 0
  soup=BeautifulSoup(path.read_text(encoding='utf-8',errors='ignore'),'html.parser'); body=soup.select_one('.article-body')
- if body is None: return 0
- return len(re.sub(r'\s+','',' '.join(body.stripped_strings)))
+ return len(re.sub(r'\s+','',' '.join(body.stripped_strings))) if body else 0
 def build(p,body):
  t=html.escape(p['title']); sm=html.escape(p.get('summary') or ''); c=html.escape(p.get('category') or '기타'); d=p.get('date') or datetime.now().strftime('%Y-%m-%d'); sl=p['slug']
  return f'''<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{t} | 현재두 법무사 사무소</title><meta name="description" content="{sm}"><link rel="canonical" href="{BASE}/posts/{sl}.html"><meta name="dg-title" content="{t}"><meta name="dg-category" content="{c}"><meta name="dg-date" content="{d}"><meta name="dg-summary" content="{sm}"><link rel="stylesheet" href="/assets/article-v2.css?v=9"><link rel="stylesheet" href="/assets/site-shell.css"></head><body class="article-v2"><header class="header"></header><main class="section"><div class="container article-wrap"><article class="article"><div class="post-meta"><span class="badge">{c}</span>{d}</div><h1>{t}</h1><p class="desc">{sm}</p><div class="article-body">{body}</div><!-- SEO_RELATED_POSTS_START --><!-- SEO_RELATED_POSTS_END --></article></div></main><section class="contact"></section><footer class="footer"></footer><script src="/assets/site-shell.js" defer></script><script src="/assets/article-v2.js" defer></script></body></html>'''
+def save_post(p,body):
+ slug=(p.get('slug') or '').replace('.html',''); p['slug']=slug; path=POSTS_DIR/f'{slug}.html'; path.write_text(build(p,body),encoding='utf-8'); saved=body_chars(path)
+ if saved<500: raise RuntimeError(f'저장 본문 검증 실패 {slug}: {saved}')
+ return saved
 def feed():
  s=BeautifulSoup(get(RSS_URL).content,'xml'); out=[]
  for x in s.find_all('item'):
@@ -82,21 +83,18 @@ def repair(posts):
  repaired=0; bad=[]
  for p in posts:
   if p.get('source')!='naver-blog': continue
-  slug=(p.get('slug') or '').replace('.html',''); path=POSTS_DIR/(slug+'.html'); chars=body_chars(path)
+  slug=(p.get('slug') or '').replace('.html',''); chars=body_chars(POSTS_DIR/f'{slug}.html')
   if chars<500: bad.append((p,chars))
  print('SPARSE_FOUND',len(bad))
  for p,oldchars in bad[:MAX_REPAIR]:
-  slug=(p.get('slug') or '').replace('.html',''); path=POSTS_DIR/(slug+'.html')
-  url=p.get('source_url') or ''
-  if not url and slug.startswith('naver-'):
-   url=f'https://blog.naver.com/{BLOG_ID}/{slug.removeprefix("naver-")}'
+  slug=(p.get('slug') or '').replace('.html',''); url=p.get('source_url') or (f'https://blog.naver.com/{BLOG_ID}/{slug.removeprefix("naver-")}' if slug.startswith('naver-') else '')
   if not url: print('REPAIR_SKIP_NO_URL',slug); continue
-  try: body,text,imgs=extract(url,slug)
-  except Exception as e: print('REPAIR_SKIP',slug,e); continue
-  chars=len(re.sub(r'\s+','',text)); print('REPAIR_CANDIDATE',slug,'old='+str(oldchars),'new='+str(chars),'images='+str(imgs))
-  if chars<500: print('REPAIR_SHORT',slug); continue
-  p['category']=category((p.get('title') or '')+' '+text[:500]); p['summary']=p.get('summary') or ((p.get('title') or '')+'의 핵심 절차와 준비사항을 정리합니다.')[:100]
-  path.write_text(build(p,body),encoding='utf-8'); repaired+=1; print('REPAIRED',slug,'saved='+str(body_chars(path)))
+  try:
+   body,text,imgs=extract(url,slug); chars=len(re.sub(r'\s+','',text)); print('REPAIR_CANDIDATE',slug,'old='+str(oldchars),'new='+str(chars),'images='+str(imgs))
+   if chars<500: print('REPAIR_SHORT',slug); continue
+   p['category']=category((p.get('title') or '')+' '+text[:500]); p['summary']=p.get('summary') or ((p.get('title') or '')+'의 핵심 절차와 준비사항을 정리합니다.')[:100]
+   saved=save_post(p,body); repaired+=1; print('REPAIRED',slug,'saved='+str(saved))
+  except Exception as e: print('REPAIR_SKIP',slug,e)
  print('REPAIRED_TOTAL',repaired); return repaired
 def main():
  posts=json.loads(POSTS_JSON.read_text(encoding='utf-8')); repair(posts); sources={str(p.get('source_url','')) for p in posts}; titles={norm(p.get('title','')) for p in posts}; imported=0; checked=0
@@ -106,12 +104,12 @@ def main():
   n=logno(url)
   if not n: continue
   checked+=1; slug='naver-'+n
-  try: body,text,imgs=extract(url,slug)
-  except Exception as e: print('SKIP',n,e); continue
-  chars=len(re.sub(r'\s+','',text)); print('CANDIDATE',n,'chars='+str(chars),'images='+str(imgs))
-  if chars<500: print('SKIP_SHORT',n); continue
-  sm=(re.sub(r'^\s*\[[^\]]+\]\s*','',title)+'의 핵심 절차와 준비사항을 정리합니다.')[:100]
-  p={'title':title,'category':category(title+' '+text[:500]),'date':date,'slug':slug,'keywords':title,'summary':sm,'source_url':url,'source':'naver-blog'}
-  (POSTS_DIR/f'{slug}.html').write_text(build(p,body),encoding='utf-8'); posts.insert(0,p); sources.add(url); titles.add(norm(title)); imported+=1; print('IMPORTED_NEW',slug)
+  try:
+   body,text,imgs=extract(url,slug); chars=len(re.sub(r'\s+','',text)); print('CANDIDATE',n,'chars='+str(chars),'images='+str(imgs))
+   if chars<500: print('SKIP_SHORT',n); continue
+   sm=(re.sub(r'^\s*\[[^\]]+\]\s*','',title)+'의 핵심 절차와 준비사항을 정리합니다.')[:100]
+   p={'title':title,'category':category(title+' '+text[:500]),'date':date,'slug':slug,'keywords':title,'summary':sm,'source_url':url,'source':'naver-blog'}
+   saved=save_post(p,body); posts.insert(0,p); sources.add(url); titles.add(norm(title)); imported+=1; print('IMPORTED_NEW',slug,'saved='+str(saved))
+  except Exception as e: print('SKIP',n,e)
  POSTS_JSON.write_text(json.dumps(posts,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'); print('IMPORT_SCAN',checked,'IMPORTED',imported)
 if __name__=='__main__': main()
