@@ -1,11 +1,11 @@
 name: Import Naver Blog Posts
 
-# retrigger: 2026-08-30
 on:
   push:
     paths:
       - 'scripts/import_naver_blog.py'
       - 'scripts/import_naver_blog_full.py'
+      - 'scripts/repair_naver_posts.py'
       - 'scripts/strip_naver_emojis.py'
       - 'scripts/cleanup_naver_rendering.py'
       - 'scripts/optimize_naver_keywords.py'
@@ -19,11 +19,12 @@ permissions:
 
 concurrency:
   group: import-naver-blog-main
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   import:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -46,8 +47,8 @@ jobs:
           git fetch origin main
           git reset --hard origin/main
 
-          python scripts/import_naver_blog_full.py
-          python scripts/repair_naver_posts.py
+          python -u scripts/import_naver_blog_full.py
+          python -u scripts/repair_naver_posts.py
           python scripts/strip_naver_emojis.py
           python scripts/patch_naver_import_dates.py
           python scripts/patch_admin_seo.py
