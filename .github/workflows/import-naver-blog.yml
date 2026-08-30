@@ -9,6 +9,8 @@ on:
       - 'scripts/strip_naver_emojis.py'
       - 'scripts/cleanup_naver_rendering.py'
       - 'scripts/optimize_naver_keywords.py'
+      - 'scripts/inject_internal_links.py'
+      - 'assets/article-v2.css'
       - '.github/workflows/import-naver-blog.yml'
   schedule:
     - cron: '17 0 * * *'
