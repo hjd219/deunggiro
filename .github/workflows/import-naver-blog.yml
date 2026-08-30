@@ -47,54 +47,52 @@ jobs:
 
       - name: Import only new Naver posts
         timeout-minutes: 6
-        shell: bash
-        run: |
-          set -euo pipefail
-          echo "NAVER_IMPORT_START $(date -u +%FT%TZ)"
-          timeout --signal=TERM 330s python -u scripts/import_naver_blog_full.py
-          echo "NAVER_IMPORT_END $(date -u +%FT%TZ)"
+        run: timeout --signal=TERM 330s python -u scripts/import_naver_blog_full.py
 
-      - name: Local cleanup SEO thumbnails and sitemap
-        timeout-minutes: 8
-        shell: bash
+      - name: Strip decorative emojis
+        timeout-minutes: 2
+        run: timeout 90s python -u scripts/strip_naver_emojis.py
+      - name: Patch import dates
+        timeout-minutes: 2
+        run: timeout 90s python -u scripts/patch_naver_import_dates.py
+      - name: Patch admin SEO and category
+        timeout-minutes: 2
         run: |
-          set -euo pipefail
-          python -u scripts/strip_naver_emojis.py
-          python -u scripts/patch_naver_import_dates.py
-          python -u scripts/patch_admin_seo.py
-          python -u scripts/patch_admin_category.py
-          python -u scripts/site_maintenance.py
-          python -u scripts/inject_internal_links.py
-          python -u scripts/cleanup_naver_rendering.py
-          python -u scripts/optimize_naver_keywords.py
-          python -u scripts/generate_thumbnails.py
-          python -u scripts/fix_thumbnail_logo.py
-          python -u scripts/site_maintenance.py
-          python -u scripts/apply_latest_cards.py
-          python -u scripts/generate_sitemap.py
+          timeout 90s python -u scripts/patch_admin_seo.py
+          timeout 90s python -u scripts/patch_admin_category.py
+      - name: Site maintenance first pass
+        timeout-minutes: 2
+        run: timeout 90s python -u scripts/site_maintenance.py
+      - name: Inject internal links
+        timeout-minutes: 2
+        run: timeout 90s python -u scripts/inject_internal_links.py
+      - name: Cleanup Naver rendering
+        timeout-minutes: 2
+        run: timeout 90s python -u scripts/cleanup_naver_rendering.py
+      - name: Optimize Naver keywords
+        timeout-minutes: 2
+        run: timeout 90s python -u scripts/optimize_naver_keywords.py
+      - name: Generate thumbnails
+        timeout-minutes: 3
+        run: timeout 150s python -u scripts/generate_thumbnails.py
+      - name: Fix thumbnail logo
+        timeout-minutes: 2
+        run: timeout 90s python -u scripts/fix_thumbnail_logo.py
+      - name: Site maintenance final pass
+        timeout-minutes: 2
+        run: timeout 90s python -u scripts/site_maintenance.py
+      - name: Latest cards and sitemap
+        timeout-minutes: 2
+        run: |
+          timeout 90s python -u scripts/apply_latest_cards.py
+          timeout 90s python -u scripts/generate_sitemap.py
 
       - name: Validate generated site
         timeout-minutes: 3
         shell: bash
         run: |
           set -euo pipefail
-          python -m py_compile \
-            scripts/import_naver_blog.py \
-            scripts/import_naver_blog_full.py \
-            scripts/strip_naver_emojis.py \
-            scripts/cleanup_naver_rendering.py \
-            scripts/optimize_naver_keywords.py \
-            scripts/repair_naver_posts.py \
-            scripts/patch_naver_import_dates.py \
-            scripts/patch_admin_seo.py \
-            scripts/patch_admin_category.py \
-            scripts/site_maintenance.py \
-            scripts/inject_internal_links.py \
-            scripts/generate_thumbnails.py \
-            scripts/fix_thumbnail_logo.py \
-            scripts/apply_latest_cards.py \
-            scripts/generate_sitemap.py
-
+          python -m py_compile scripts/*.py
           python - <<'PY'
           import json
           from pathlib import Path
@@ -119,7 +117,6 @@ jobs:
               raise SystemExit('Missing sitemap URLs: '+', '.join(missing_urls[:20]))
           print('validated',len(posts),'posts with thumbnails and sitemap URLs')
           PY
-
           find scripts -type d -name '__pycache__' -prune -exec rm -rf {} +
           git diff --check
 
