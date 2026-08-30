@@ -1,6 +1,10 @@
 name: 기존글 번호 이모지 1회 적용
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/restore_naver_number_emojis.py'
   workflow_dispatch:
 
 permissions:
