@@ -1,147 +1,121 @@
-import html, json, re, sys
+import html
+import json
+import re
 from pathlib import Path
-from urllib.parse import urljoin, urlparse, parse_qs
-import requests
-from bs4 import BeautifulSoup, NavigableString, Tag
 
-ROOT=Path(__file__).resolve().parents[1]
-POSTS_JSON=ROOT/'data'/'posts.json'; POSTS_DIR=ROOT/'posts'; MEDIA_ROOT=ROOT/'assets'/'naver-images'
-UA={'User-Agent':'Mozilla/5.0 (compatible; DeunggiroBlogRepair/1.0; +https://www.deunggiro.kr/)'}
-RULES=[
- ('상속포기·한정승인',('상속포기','한정승인','특별한정승인','상속채무')),
- ('상속재산분할',('상속재산분할','상속분쟁','기여분','특별수익')),
- ('부동산등기',('신탁','가압류','근저당','가등기','전세권','소유권이전','부동산','매매','증여','등기권리증')),
- ('법인등기',('법인','주식회사','유한회사','대표이사','이사변경','감사','주주','본점이전','자본금','증자','감자','상호변경','목적변경','해산','청산')),
- ('가사',('이혼','개명','성년후견','한정후견','친권','양육비')),
- ('상속등기',('상속등기','대습상속','상속취득세','상속인','상속지분','상속재산','유언','사망')),
+from bs4 import BeautifulSoup
+
+ROOT = Path(__file__).resolve().parents[1]
+POSTS_JSON = ROOT / 'data' / 'posts.json'
+POSTS_DIR = ROOT / 'posts'
+
+RULES = [
+    ('상속포기·한정승인', ('상속포기', '한정승인', '특별한정승인', '상속채무')),
+    ('상속재산분할', ('상속재산분할', '상속분쟁', '기여분', '특별수익')),
+    ('부동산등기', ('신탁', '가압류', '근저당', '가등기', '전세권', '소유권이전', '부동산', '매매', '증여', '등기권리증')),
+    ('법인등기', ('법인', '주식회사', '유한회사', '대표이사', '이사변경', '감사', '주주', '본점이전', '자본금', '증자', '감자', '상호변경', '목적변경', '해산', '청산')),
+    ('가사', ('이혼', '개명', '성년후견', '한정후견', '친권', '양육비')),
+    ('상속등기', ('상속등기', '대습상속', '상속취득세', '상속인', '상속지분', '상속재산', '유언', '사망')),
 ]
-FOOT=('현재두법무사','현재두 법무사','032-425-1500','경원대로 873','상담 안내','상담안내')
 
-def get(url):
- r=requests.get(url,headers=UA,timeout=30); r.raise_for_status(); r.encoding='utf-8'; return r
 
-def logno(url):
- m=re.search(r'/(\d{6,})(?:\?|$)',url)
- if m:return m.group(1)
- return (parse_qs(urlparse(url).query).get('logNo') or [''])[0]
+def category(text):
+    text = re.sub(r'\s+', ' ', text or '')
+    for c, words in RULES:
+        if any(w in text for w in words):
+            return c
+    return '기타'
 
-def view_url(url):
- r=get(url); soup=BeautifulSoup(r.text,'html.parser'); f=soup.select_one('iframe#mainFrame,iframe[name="mainFrame"]')
- if f and f.get('src'):return urljoin('https://blog.naver.com/',f['src'])
- n=logno(url); return f'https://blog.naver.com/PostView.naver?blogId=hjd21&logNo={n}&redirect=Dlog&widgetTypeCall=true&directAccess=false'
-
-def category(title):
- text=re.sub(r'\s+',' ',title or '')
- for c,words in RULES:
-  if any(w in text for w in words):return c
- return '기타'
-
-def inline(el):
- def walk(n):
-  if isinstance(n,NavigableString):return html.escape(str(n))
-  if not isinstance(n,Tag):return ''
-  inner=''.join(walk(x) for x in n.children); name=n.name.lower()
-  style=(n.get('style') or '').lower()
-  bold=name in ('b','strong') or 'font-weight:700' in style or 'font-weight: 700' in style
-  if bold:return f'<strong>{inner}</strong>'
-  if name in ('em','i'):return f'<em>{inner}</em>'
-  if name=='u':return f'<u>{inner}</u>'
-  if name=='br':return '<br>'
-  if name=='a':
-   href=n.get('href') or ''
-   return f'<a href="{html.escape(href,quote=True)}" target="_blank" rel="noopener noreferrer">{inner}</a>' if href.startswith('http') else inner
-  return inner
- return re.sub(r'[ \t]+',' ',' '.join(walk(x) for x in el.children)).strip()
-
-def save_image(src,slug,no):
- try:
-  r=requests.get(src,headers=UA,timeout=30); r.raise_for_status()
-  ct=(r.headers.get('content-type') or '').lower(); ext='.png' if 'png' in ct else '.webp' if 'webp' in ct else '.gif' if 'gif' in ct else '.jpg'
-  d=MEDIA_ROOT/slug; d.mkdir(parents=True,exist_ok=True); p=d/f'{no:02d}{ext}'; p.write_bytes(r.content); return '/'+p.relative_to(ROOT).as_posix()
- except Exception:return src
-
-def table_html(t):
- rows=[]
- for tr in t.find_all('tr'):
-  cells=[]
-  for cell in tr.find_all(['th','td']):
-   attrs=''.join(f' {k}="{cell.get(k)}"' for k in ('colspan','rowspan') if str(cell.get(k) or '').isdigit())
-   cells.append(f'<{cell.name}{attrs}>{inline(cell)}</{cell.name}>')
-  if cells:rows.append('<tr>'+''.join(cells)+'</tr>')
- return '<table class="naver-table"><tbody>'+''.join(rows)+'</tbody></table>' if rows else ''
-
-def extract(url,slug):
- soup=BeautifulSoup(get(view_url(url)).text,'html.parser'); root=soup.select_one('.se-main-container') or soup.select_one('#postViewArea') or soup.select_one('.post-view')
- if not root:raise RuntimeError('본문 영역 없음')
- for x in root.select('script,style,noscript,iframe,button'):x.decompose()
- parts=[]; seen=set(); image_no=0; footer=False
- components=root.select('.se-component')
- if not components: components=[root]
- for comp in components:
-  txt=' '.join(comp.stripped_strings).strip()
-  if txt and any(x in txt for x in FOOT):footer=True
-  if footer:continue
-  classes=' '.join(comp.get('class') or [])
-  if 'se-horizontalLine' in classes or 'se-horizontal-line' in classes:
-   parts.append('<hr class="article-divider">'); continue
-  table=comp.find('table')
-  if table:
-   rendered=table_html(table)
-   if rendered:parts.append(rendered)
-   continue
-  imgs=comp.find_all('img')
-  if imgs and ('se-image' in classes or not txt):
-   for img in imgs:
-    src=img.get('data-lazy-src') or img.get('data-src') or img.get('src') or ''
-    if src.startswith('//'):src='https:'+src
-    if not src:continue
-    image_no+=1; src=save_image(src,slug,image_no); parts.append(f'<p class="media-paragraph"><img src="{html.escape(src,quote=True)}" alt="" loading="lazy" decoding="async"></p>')
-   continue
-  paras=comp.select('.se-text-paragraph')
-  if not paras:paras=comp.find_all(['h2','h3','p','blockquote'],recursive=True)
-  for p in paras:
-   plain=' '.join(p.stripped_strings).strip()
-   if not plain or plain in seen:continue
-   if any(x in plain for x in FOOT):footer=True;break
-   seen.add(plain); rich=inline(p)
-   tag='p'
-   if p.name in ('h2','h3'):tag=p.name
-   elif p.find_parent(class_=re.compile(r'se-module-text')):
-    style=' '.join(p.get('class') or [])+' '+(p.get('style') or '')
-    if 'se-fs-fs24' in style or 'se-fs-fs28' in style or 'se-fs-fs32' in style:tag='h3'
-   parts.append(f'<{tag}>{rich}</{tag}>')
- return '\n'.join(parts)
 
 def remove_source_note(s):
- s=re.sub(r'<p[^>]*class=["\'][^"\']*source-note[^"\']*["\'][^>]*>.*?</p>','',s,flags=re.I|re.S)
- s=re.sub(r'<p[^>]*>\s*네이버 블로그에 작성한 내용을.*?원문 보기.*?</p>','',s,flags=re.I|re.S)
- return s
+    s = re.sub(r'<p[^>]*class=["\'][^"\']*source-note[^"\']*["\'][^>]*>.*?</p>', '', s, flags=re.I | re.S)
+    s = re.sub(r'<p[^>]*>\s*네이버 블로그에 작성한 내용을.*?원문 보기.*?</p>', '', s, flags=re.I | re.S)
+    return s
 
-def rebuild(post,body):
- p=POSTS_DIR/f"{post['slug']}.html"
- if not p.exists():return
- s=remove_source_note(p.read_text(encoding='utf-8')); cat=html.escape(post['category']);
- s=re.sub(r'(<meta\s+name=["\']dg-category["\']\s+content=["\'])[^"\']*',r'\1'+cat,s,count=1,flags=re.I)
- s=re.sub(r'(<span\s+class=["\']badge["\']>).*?(</span>)',r'\1'+cat+r'\2',s,count=1,flags=re.I|re.S)
- s=re.sub(r'<figure[^>]+id=["\']dg-post-hero-image["\'][^>]*>.*?</figure>','',s,flags=re.I|re.S)
- s=re.sub(r'<style[^>]+id=["\']dg-post-hero-style["\'][^>]*>.*?</style>','',s,flags=re.I|re.S)
- m=re.search(r'(<div class="article-body">)(.*?)(</div><!-- SEO_RELATED_POSTS_START -->)',s,re.I|re.S)
- if not m:return
- intro_title=re.sub(r'^\s*\[[^\]]+\]\s*','',post['title'])
- intro=f'<p class="article-intro"><strong>{html.escape(intro_title)}에서 꼭 확인해야 할 핵심 내용을 순서대로 살펴보겠습니다.</strong></p>'
- s=s[:m.start()]+m.group(1)+intro+body+m.group(3)+s[m.end():]
- p.write_text(s,encoding='utf-8')
+
+def remove_preview_components(s):
+    soup = BeautifulSoup(s, 'html.parser')
+    removed = 0
+
+    # 이미 저장된 HTML 안의 네이버 링크카드/OG 링크 잔재를 통째로 제거한다.
+    for el in list(soup.find_all(True)):
+        if el.parent is None:
+            continue
+        marker = ' '.join([
+            str(el.get('id') or ''),
+            ' '.join(el.get('class') or []),
+        ]).lower()
+        if any(x in marker for x in ('se-oglink', 'se-module-oglink', 'oglink', 'link-preview', 'link_preview')):
+            el.decompose()
+            removed += 1
+
+    # 도메인만 남은 문단과 대표적인 링크카드 묶음도 제거한다.
+    bare_domain = re.compile(r'^(?:https?://)?(?:www\.|m\.)?[a-z0-9-]+(?:\.[a-z0-9-]+)+(?:/[^\s]*)?$', re.I)
+    for p in list(soup.find_all('p')):
+        if p.parent is None:
+            continue
+        text = ' '.join(p.stripped_strings).strip()
+        if bare_domain.fullmatch(re.sub(r'\s+', '', text)):
+            prev = p.find_previous_sibling()
+            if prev is not None:
+                prev_text = ' '.join(prev.stripped_strings).strip()
+                if len(prev_text) >= 160 or any(x in prev_text for x in ('같이 보면 좋은 글', '요약표입니다', '좌우로 스크롤 가능합니다')):
+                    prev.decompose()
+            p.decompose()
+            removed += 1
+
+    return str(soup), removed
+
+
+def repair_local(post):
+    slug = str(post.get('slug', '')).replace('.html', '')
+    if not slug:
+        return False, 0
+    page = POSTS_DIR / f'{slug}.html'
+    if not page.exists():
+        return False, 0
+
+    original = page.read_text(encoding='utf-8')
+    s = remove_source_note(original)
+    s, removed = remove_preview_components(s)
+
+    soup = BeautifulSoup(s, 'html.parser')
+    article = soup.select_one('.article-body')
+    body_text = ' '.join(article.stripped_strings) if article else ''
+    title = str(post.get('title', ''))
+    new_cat = category(title + ' ' + body_text[:1200])
+    post['category'] = new_cat
+
+    escaped_cat = html.escape(new_cat)
+    s = re.sub(r'(<meta\s+name=["\']dg-category["\']\s+content=["\'])[^"\']*', r'\1' + escaped_cat, s, count=1, flags=re.I)
+    s = re.sub(r'(<span\s+class=["\']badge["\']>).*?(</span>)', r'\1' + escaped_cat + r'\2', s, count=1, flags=re.I | re.S)
+
+    # 기존에 잘못 들어간 대표이미지 요소는 제거하고 뒤 단계에서 썸네일을 다시 관리한다.
+    s = re.sub(r'<figure[^>]+id=["\']dg-post-hero-image["\'][^>]*>.*?</figure>', '', s, flags=re.I | re.S)
+    s = re.sub(r'<style[^>]+id=["\']dg-post-hero-style["\'][^>]*>.*?</style>', '', s, flags=re.I | re.S)
+
+    if s != original:
+        page.write_text(s, encoding='utf-8')
+        return True, removed
+    return False, removed
+
 
 def main():
- posts=json.loads(POSTS_JSON.read_text(encoding='utf-8')); done=0
- for post in posts:
-  if post.get('source')!='naver-blog' or not post.get('source_url'):continue
-  slug=str(post.get('slug','')).replace('.html',''); post['slug']=slug
-  try:
-   body=extract(post['source_url'],slug)
-   plain=re.sub(r'<[^>]+>',' ',body)
-   if len(re.sub(r'\s+','',plain))<80:raise RuntimeError('추출 본문이 너무 짧음')
-   post['category']=category(post.get('title','')); rebuild(post,body); done+=1; print('REPAIRED',slug,post['category'])
-  except Exception as e:print('REPAIR_SKIP',slug,e,file=sys.stderr)
- POSTS_JSON.write_text(json.dumps(posts,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'); print('repaired',done)
-if __name__=='__main__':main()
+    posts = json.loads(POSTS_JSON.read_text(encoding='utf-8'))
+    done = 0
+    preview_removed = 0
+
+    for post in posts:
+        if post.get('source') != 'naver-blog':
+            continue
+        changed, removed = repair_local(post)
+        if changed:
+            done += 1
+        preview_removed += removed
+
+    POSTS_JSON.write_text(json.dumps(posts, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+    print(f'LOCAL_REPAIRED={done} PREVIEW_REMOVED={preview_removed}', flush=True)
+
+
+if __name__ == '__main__':
+    main()
