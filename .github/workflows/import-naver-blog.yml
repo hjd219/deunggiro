@@ -36,16 +36,13 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch origin main
           git reset --hard origin/main
-      - name: Import repair and validate bodies
-        run: timeout 300s python -u scripts/import_naver_blog_clean.py
-      - name: Postprocess
+      - name: Import repair and quality gate
+        run: timeout 420s python -u scripts/import_naver_blog_clean.py
+      - name: Safe postprocess
         run: |
-          timeout 90s python -u scripts/strip_naver_emojis.py
           timeout 90s python -u scripts/patch_naver_import_dates.py
           timeout 90s python -u scripts/site_maintenance.py
           timeout 90s python -u scripts/inject_internal_links.py
-          timeout 90s python -u scripts/cleanup_naver_rendering.py
-          timeout 90s python -u scripts/optimize_naver_keywords.py
           timeout 150s python -u scripts/generate_thumbnails.py
           timeout 90s python -u scripts/fix_thumbnail_logo.py
           timeout 90s python -u scripts/apply_latest_cards.py
@@ -53,8 +50,27 @@ jobs:
           timeout 120s node scripts/seo-auto.mjs
           timeout 60s node scripts/seo-canonical-fix.mjs
           timeout 60s node scripts/rss-auto.mjs
-      - name: Validate site
+      - name: Final body quality gate
         run: |
+          python - <<'PY'
+          import json,re
+          from pathlib import Path
+          from bs4 import BeautifulSoup
+          root=Path('.')
+          posts=json.loads((root/'data/posts.json').read_text(encoding='utf-8'))
+          marks=('êµ','ë“','ë¡','ì§','ì—','ì›','ë¹','ê³','ë°','ì„','ìƒ','ìž','í•','ì‹','ìš','ìœ','ì•','ë¶','ì¶','ì ','ì²')
+          bad=[]; checked=0
+          for p in posts:
+              if p.get('source')!='naver-blog': continue
+              checked+=1; slug=str(p.get('slug','')).replace('.html',''); path=root/'posts'/f'{slug}.html'
+              if not path.exists(): bad.append(f'{slug}:missing'); continue
+              soup=BeautifulSoup(path.read_text(encoding='utf-8',errors='replace'),'html.parser'); body=soup.select_one('.article-body')
+              text=' '.join(body.stripped_strings) if body else ''; chars=len(re.sub(r'\s+','',text)); moji=sum(text.count(x) for x in marks)
+              if chars<500 or moji: bad.append(f'{slug}:chars={chars}:mojibake={moji}')
+          print('POSTPROCESS_QUALITY',checked,'BAD',len(bad))
+          if bad:
+              print('POSTPROCESS_BAD_LIST',','.join(bad)); raise SystemExit(1)
+          PY
           python -m py_compile scripts/import_naver_blog_clean.py
           git diff --check
       - name: Commit
@@ -63,5 +79,5 @@ jobs:
           set -euo pipefail
           if git diff --quiet && [ -z "$(git status --porcelain --untracked-files=normal)" ]; then echo "No changes"; exit 0; fi
           git add data/posts.json data/seo-report.json posts posts.html assets/posts assets/naver-images index.html inheritance.html renunciation.html corporate.html realestate.html family.html sitemap.xml rss.xml admin.html
-          git commit -m "네이버 자동수집 본문복구 및 SEO 자동반영"
+          git commit -m "네이버 자동수집 품질검사 및 불량글 복구"
           git push origin HEAD:main
