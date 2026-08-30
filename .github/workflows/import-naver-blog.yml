@@ -11,6 +11,8 @@ on:
       - 'scripts/cleanup_naver_rendering.py'
       - 'scripts/optimize_naver_keywords.py'
       - 'scripts/inject_internal_links.py'
+      - 'scripts/seo-auto.mjs'
+      - 'scripts/rss-auto.mjs'
       - 'assets/article-v2.css'
       - '.github/workflows/import-naver-blog.yml'
   schedule:
@@ -90,6 +92,14 @@ jobs:
           timeout 90s python -u scripts/apply_latest_cards.py
           timeout 90s python -u scripts/generate_sitemap.py
 
+      - name: SEO automation and RSS
+        timeout-minutes: 3
+        run: |
+          node --check scripts/seo-auto.mjs
+          node --check scripts/rss-auto.mjs
+          timeout 120s node scripts/seo-auto.mjs
+          timeout 60s node scripts/rss-auto.mjs
+
       - name: Validate generated site
         timeout-minutes: 3
         shell: bash
@@ -132,6 +142,6 @@ jobs:
             echo "No Naver or generated changes"
             exit 0
           fi
-          git add admin.html data/posts.json posts posts.html assets/posts assets/naver-images index.html inheritance.html renunciation.html corporate.html realestate.html family.html sitemap.xml
-          git commit -m "네이버 본문·SEO·내부링크·사이트맵 자동반영"
+          git add admin.html data/posts.json data/seo-report.json posts posts.html assets/posts assets/naver-images index.html inheritance.html renunciation.html corporate.html realestate.html family.html sitemap.xml rss.xml
+          git commit -m "네이버 본문·SEO·RSS·내부링크·사이트맵 자동반영"
           git push origin HEAD:main
