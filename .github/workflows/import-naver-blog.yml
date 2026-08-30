@@ -5,6 +5,7 @@ on:
     paths:
       - 'scripts/import_naver_blog.py'
       - 'scripts/import_naver_blog_full.py'
+      - 'scripts/strip_naver_emojis.py'
       - '.github/workflows/import-naver-blog.yml'
   schedule:
     - cron: '17 0 * * *'
@@ -44,6 +45,7 @@ jobs:
 
           python scripts/import_naver_blog_full.py
           python scripts/repair_naver_posts.py
+          python scripts/strip_naver_emojis.py
           python scripts/patch_naver_import_dates.py
           python scripts/patch_admin_seo.py
           python scripts/patch_admin_category.py
@@ -58,6 +60,7 @@ jobs:
           python -m py_compile \
             scripts/import_naver_blog.py \
             scripts/import_naver_blog_full.py \
+            scripts/strip_naver_emojis.py \
             scripts/repair_naver_posts.py \
             scripts/patch_naver_import_dates.py \
             scripts/patch_admin_seo.py \
