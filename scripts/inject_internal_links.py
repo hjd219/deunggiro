@@ -57,11 +57,10 @@ def related_block(current, posts):
 
 
 def remove_old_related(text):
-    """깨진 마커/중복 관련글을 모두 지우고 한 블록만 다시 넣기 위한 정리."""
+    """깨진 마커, 중복 관련글, 빈 관련글 섹션을 모두 제거하고 한 블록만 다시 넣는다."""
     soup = BeautifulSoup(text, 'html.parser')
     changed = False
 
-    # 화면에 노출되거나 깨진 마커 문자열 제거
     for node in list(soup.find_all(string=True)):
         raw = str(node)
         if isinstance(node, Comment):
@@ -80,9 +79,20 @@ def remove_old_related(text):
                     node.extract()
             changed = True
 
-    # 관련글 section이 몇 개 있든 전부 제거
+    # 우리가 생성한 기존 관련글 제거
     for sec in list(soup.select('.seo-related-posts')):
         sec.decompose(); changed = True
+
+    # 예전 SEO 자동화가 남긴 관련글/빈 section 제거.
+    # 특히 빈 section은 border-top 때문에 모바일에서 긴 빈 공간과 가로줄로 보였다.
+    for sec in list(soup.find_all('section')):
+        aria = str(sec.get('aria-labelledby') or '').strip()
+        label = str(sec.get('aria-label') or '').strip()
+        text_value = ' '.join(sec.stripped_strings).strip()
+        is_related = aria == 'related-posts-title' or label in ('관련 글','관련 법률정보')
+        has_related_heading = any(x in text_value for x in ('같이 보면 좋은 글','함께 보면 좋은 글'))
+        if is_related or has_related_heading:
+            sec.decompose(); changed = True
 
     return str(soup) if changed else text
 
