@@ -25,6 +25,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install content audit dependencies
+        run: pip install requests beautifulsoup4 lxml
+
+      - name: Audit existing Naver post bodies
+        timeout-minutes: 8
+        run: timeout --signal=TERM 450s python -u scripts/audit_naver_post_content.py
+
       - name: Check JSON XML Python JavaScript YAML and site references
         shell: bash
         run: |
