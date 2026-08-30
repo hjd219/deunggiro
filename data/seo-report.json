@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-08-30T14:47:06.609Z",
+  "generatedAt": "2026-08-30T14:50:08.121Z",
   "totalPosts": 67,
-  "ok": 67,
-  "warnings": 0,
-  "canonicalFixed": 67,
+  "ok": 66,
+  "warnings": 1,
+  "canonicalFixed": 1,
   "missingFiles": 0,
   "items": [
     {
@@ -328,8 +328,10 @@
     },
     {
       "slug": "gift-real-estate-acquisition-tax-property-division-incheon-pro-aga3r7",
-      "status": "ok",
-      "issues": []
+      "status": "warning",
+      "issues": [
+        "noindex 발견"
+      ]
     },
     {
       "slug": "divorce-agreement-property-division-procedure-18044u",
