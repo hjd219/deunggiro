@@ -6,8 +6,8 @@ from urllib.parse import urljoin,parse_qs,urlparse
 import requests
 from bs4 import BeautifulSoup
 from PIL import Image
-ROOT=Path(__file__).resolve().parents[1]; DATA=ROOT/'data'/'posts.json'; MEDIA=ROOT/'assets'/'naver-images'; BLOG='hjd21'
-UA={'User-Agent':'Mozilla/5.0 (compatible; DeunggiroFormat/1.7; +https://www.deunggiro.kr/)'}
+ROOT=Path(__file__).resolve().parents[1]; DATA=ROOT/'data'/'posts.json'; MEDIA=ROOT/'assets'/'naver-images'; BLOG='hjd21'; FORMAT_VERSION='11'
+UA={'User-Agent':'Mozilla/5.0 (compatible; DeunggiroFormat/1.8; +https://www.deunggiro.kr/)'}
 EMOJI_RE=re.compile('[\U0001F000-\U0001FAFF\U00002600-\U000027BF]')
 def get(u):
  r=requests.get(u,headers=UA,timeout=25); r.raise_for_status(); r.encoding='utf-8'; return r
@@ -38,40 +38,49 @@ def normalize_img_url(src):
  if src.startswith('http://'): src='https://'+src[7:]
  if src.startswith('data:'): return ''
  return src
-def image_src(node):
- if getattr(node,'name',None)=='img':
-  for a in ('data-lazy-src','data-src','data-original','src'):
-   src=normalize_img_url(node.get(a))
-   if src and ('pstatic.net' in src or src.startswith('http')): return src
- for holder in ([node] if getattr(node,'attrs',None) else []) + (node.find_all(attrs={'data-linkdata':True}) if getattr(node,'find_all',None) else []):
-  raw=holder.get('data-linkdata') if getattr(holder,'get',None) else ''
-  if not raw: continue
-  try:
-   data=json.loads(html.unescape(raw))
-   for k in ('src','originalSrc','originalImageUrl','imageUrl'):
-    src=normalize_img_url(data.get(k))
-    if src: return src
-  except Exception:
-   m=re.search(r'"(?:src|originalSrc|originalImageUrl|imageUrl)"\s*:\s*"([^"]+)"',html.unescape(raw))
+def _linkdata_src(holder):
+ raw=holder.get('data-linkdata') if getattr(holder,'get',None) else ''
+ if not raw: return ''
+ try:
+  data=json.loads(html.unescape(raw))
+  for k in ('originalSrc','originalImageUrl','imageUrl','src'):
+   src=normalize_img_url(data.get(k))
+   if src: return src
+ except Exception:
+  decoded=html.unescape(raw)
+  for k in ('originalSrc','originalImageUrl','imageUrl','src'):
+   m=re.search(rf'"{k}"\s*:\s*"([^"]+)"',decoded)
    if m:
     src=normalize_img_url(m.group(1).replace('\\/','/'))
     if src: return src
+ return ''
+def image_src(node):
+ # Naver often puts a reduced preview URL in <img src> while the full-resolution
+ # image URL lives in data-linkdata. Always prefer the original URL first.
+ holders=[]
+ if getattr(node,'attrs',None): holders.append(node)
+ if getattr(node,'find_all',None): holders.extend(node.find_all(attrs={'data-linkdata':True}))
  if getattr(node,'find_parent',None):
   par=node.find_parent(attrs={'data-linkdata':True})
-  if par:
-   return image_src(par)
+  if par: holders.append(par)
+ for holder in holders:
+  src=_linkdata_src(holder)
+  if src: return src
+ img=node if getattr(node,'name',None)=='img' else (node.select_one('img') if getattr(node,'select_one',None) else None)
+ if img:
+  for a in ('data-lazy-src','data-src','data-original','src'):
+   src=normalize_img_url(img.get(a))
+   if src and ('pstatic.net' in src or src.startswith('http')): return src
  return ''
 def saveimg(src,slug,i,skip_if_small=False):
  try:
   r=requests.get(src,headers=UA,timeout=20); r.raise_for_status(); data=r.content
   if skip_if_small:
    try:
-    with Image.open(BytesIO(data)) as im:
-     w,h=im.size
+    with Image.open(BytesIO(data)) as im: w,h=im.size
     if w < 450 and h < 450 and len(data) < 120000:
      print('FORMAT_TRAILING_THUMB_SKIP',slug,f'{w}x{h}',len(data)); return ''
-   except Exception:
-    pass
+   except Exception: pass
   ct=(r.headers.get('content-type') or '').lower(); ext='.png' if 'png' in ct else '.webp' if 'webp' in ct else '.gif' if 'gif' in ct else '.jpg'; d=MEDIA/slug; d.mkdir(parents=True,exist_ok=True); p=d/f'fmt-{i:02d}{ext}'; p.write_bytes(data); return '/'+p.relative_to(ROOT).as_posix()
  except Exception as e:
   print('FORMAT_IMAGE_SKIP',slug,str(e)); return ''
@@ -106,8 +115,6 @@ def extract(u,slug):
     if cells: rows.append('<tr>'+''.join(cells)+'</tr>')
    if rows: out.append('<table class="naver-table"><tbody>'+''.join(rows)+'</tbody></table>')
    continue
-  # 컴포넌트 단위로 DOM 순서를 유지한다. 같은 이미지 컴포넌트 안의
-  # data-linkdata/미리보기/img를 각각 수집하지 않고 실제 이미지 1장만 저장한다.
   text_nodes=c.select('.se-text-paragraph,.se-module-text p,.se-section-text p')
   if text_nodes:
    for n in text_nodes:
@@ -121,7 +128,6 @@ def extract(u,slug):
    src=image_src(image_node)
    if not src or src in seen_imgs: continue
    seen_imgs.add(src); imgno+=1
-   # 상담/홍보 영역 바로 앞의 작은 정사각형 이미지만 블로그 하단 썸네일로 본다.
    trailing=(promo_start-len(comps) != 0 and i >= max(0,promo_start-4)) or (promo_start==len(comps) and i>=max(0,len(comps)-3))
    loc=saveimg(src,slug,imgno,skip_if_small=trailing)
    if loc: out.append(f'<p class="media-paragraph naver-image"><img src="{html.escape(loc,quote=True)}" alt="" loading="lazy" decoding="async"></p>')
@@ -136,7 +142,7 @@ def main():
   slug=str(p.get('slug','')).replace('.html',''); path=ROOT/'posts'/f'{slug}.html'
   if not path.exists(): continue
   old=path.read_text(encoding='utf-8',errors='replace')
-  if 'name="dg-naver-format" content="10"' in old: continue
+  if f'name="dg-naver-format" content="{FORMAT_VERSION}"' in old: continue
   u=p.get('source_url') or (f'https://blog.naver.com/{BLOG}/{slug.removeprefix("naver-")}' if slug.startswith('naver-') else '')
   if not u: continue
   try:
@@ -145,7 +151,7 @@ def main():
    node.clear(); frag=BeautifulSoup(body,'html.parser')
    for x in list(frag.contents): node.append(x)
    for oldmeta in soup.select('meta[name="dg-naver-format"]'): oldmeta.decompose()
-   meta=soup.new_tag('meta'); meta['name']='dg-naver-format'; meta['content']='10'; soup.head.append(meta)
+   meta=soup.new_tag('meta'); meta['name']='dg-naver-format'; meta['content']=FORMAT_VERSION; soup.head.append(meta)
    path.write_text(str(soup),encoding='utf-8'); changed+=1; print('FORMAT_REFRESHED',slug,'chars='+str(chars),'images='+str(imgs)); time.sleep(.15)
   except Exception as e: print('FORMAT_SKIP',slug,e)
  print('FORMAT_REFRESHED_TOTAL',changed)
