@@ -1,11 +1,26 @@
 {
-  "generatedAt": "2026-08-30T14:27:56.435Z",
-  "totalPosts": 62,
-  "ok": 62,
+  "generatedAt": "2026-08-30T14:38:29.859Z",
+  "totalPosts": 65,
+  "ok": 65,
   "warnings": 0,
-  "canonicalFixed": 62,
+  "canonicalFixed": 65,
   "missingFiles": 0,
   "items": [
+    {
+      "slug": "naver-224370002913",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "slug": "naver-224370995171",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "slug": "naver-224377212131",
+      "status": "ok",
+      "issues": []
+    },
     {
       "slug": "naver-224356439849",
       "status": "ok",
