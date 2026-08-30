@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-08-30T22:28:06.351Z",
+  "generatedAt": "2026-08-30T23:20:15.981Z",
   "totalPosts": 67,
-  "ok": 66,
-  "warnings": 1,
+  "ok": 60,
+  "warnings": 7,
   "canonicalFixed": 66,
   "missingFiles": 0,
   "items": [
@@ -263,13 +263,17 @@
     },
     {
       "slug": "ceo-corporate-procedure-1-o1kz7e",
-      "status": "ok",
-      "issues": []
+      "status": "warning",
+      "issues": [
+        "noindex 발견"
+      ]
     },
     {
       "slug": "inheritance-partition-registration-procedure-guide-caution-1w5ku0",
-      "status": "ok",
-      "issues": []
+      "status": "warning",
+      "issues": [
+        "noindex 발견"
+      ]
     },
     {
       "slug": "real-estate-provisional-seizure-incheon-procedure-6069xy",
@@ -303,8 +307,10 @@
     },
     {
       "slug": "corporate-cost-3-1f4kd9",
-      "status": "ok",
-      "issues": []
+      "status": "warning",
+      "issues": [
+        "noindex 발견"
+      ]
     },
     {
       "slug": "inheritance-gift-real-estate-acquisition-tax-property-division-1xfulg",
@@ -313,8 +319,10 @@
     },
     {
       "slug": "inheritance-registration-acquisition-tax-g2aqja",
-      "status": "ok",
-      "issues": []
+      "status": "warning",
+      "issues": [
+        "noindex 발견"
+      ]
     },
     {
       "slug": "inheritance-renunciation-caution-1cgaqh",
@@ -335,13 +343,17 @@
     },
     {
       "slug": "divorce-agreement-property-division-procedure-18044u",
-      "status": "ok",
-      "issues": []
+      "status": "warning",
+      "issues": [
+        "noindex 발견"
+      ]
     },
     {
       "slug": "corporate-formation-procedure-cost-documents-u9jgv1",
-      "status": "ok",
-      "issues": []
+      "status": "warning",
+      "issues": [
+        "noindex 발견"
+      ]
     }
   ]
 }
