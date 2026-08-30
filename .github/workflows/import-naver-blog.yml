@@ -1,6 +1,10 @@
 name: Import Naver Blog Posts
 
 on:
+  push:
+    paths:
+      - 'scripts/inject_internal_links.py'
+      - '.github/workflows/import-naver-blog.yml'
   schedule:
     - cron: '17 0 * * *'
   workflow_dispatch:
@@ -51,7 +55,7 @@ jobs:
           timeout 60s node scripts/rss-auto.mjs
       - name: Validate
         run: |
-          python -m py_compile scripts/import_naver_blog_clean.py
+          python -m py_compile scripts/import_naver_blog_clean.py scripts/inject_internal_links.py
           git diff --check
       - name: Commit
         shell: bash
