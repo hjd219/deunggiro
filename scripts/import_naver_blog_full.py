@@ -73,34 +73,58 @@ def _extract_items(text: str):
             continue
         title = _title_from_anchor(a)
         seen.add(n)
-        out.append({
-            'title': title,
-            'link': base.canonical_blog_url(n),
-            'date': _date_from_context(a),
-            'log_no': n,
-        })
+        out.append({'title': title, 'link': base.canonical_blog_url(n), 'date': _date_from_context(a), 'log_no': n})
     return out
 
 
+def _existing_state():
+    posts = base.load_posts()
+    log_nos = set()
+    sources = set()
+    titles = set()
+    for p in posts:
+        source = str(p.get('source_url', '')).strip()
+        if source:
+            sources.add(source)
+        title = base.norm_title(p.get('title', ''))
+        if title:
+            titles.add(title)
+        n = base.log_no_from_url(source)
+        if not n:
+            m = re.fullmatch(r'naver-(\d{6,})', str(p.get('slug', '')).replace('.html', ''))
+            n = m.group(1) if m else ''
+        if n:
+            log_nos.add(n)
+    return log_nos, sources, titles
+
+
+def _is_missing(item, log_nos, sources, titles):
+    n = item.get('log_no') or _log_no(item.get('link', ''))
+    if not n or n in log_nos:
+        return False
+    if item.get('link') in sources:
+        return False
+    title = base.norm_title(item.get('title', ''))
+    if title and title in titles:
+        return False
+    return True
+
+
 def fetch_all_blog_items_html():
+    # 매일 전체 330여 글을 훑지 않는다. 최신 페이지부터 보면서 홈페이지에 없는
+    # 글 MAX_IMPORT(현재 3개)를 확보하면 즉시 네이버 목록 탐색을 끝낸다.
+    existing_log_nos, existing_sources, existing_titles = _existing_state()
     seen = {}
+    missing_seen = set()
     empty_pages = 0
-    endpoints = (
-        'https://blog.naver.com/PostList.naver',
-        'https://m.blog.naver.com/PostList.naver',
-    )
+    endpoints = ('https://blog.naver.com/PostList.naver', 'https://m.blog.naver.com/PostList.naver')
 
     for page in range(1, MAX_PAGES + 1):
         page_items = []
         errors = []
         for endpoint in endpoints:
             try:
-                r = base.get(endpoint, params={
-                    'blogId': base.BLOG_ID,
-                    'from': 'postList',
-                    'categoryNo': '0',
-                    'currentPage': str(page),
-                })
+                r = base.get(endpoint, params={'blogId': base.BLOG_ID, 'from': 'postList', 'categoryNo': '0', 'currentPage': str(page)})
                 page_items = _extract_items(r.text)
                 if page_items:
                     break
@@ -116,13 +140,18 @@ def fetch_all_blog_items_html():
                 new_count += 1
             elif not old.get('title') and item.get('title'):
                 seen[n] = item
+            if _is_missing(item, existing_log_nos, existing_sources, existing_titles):
+                missing_seen.add(n)
 
-        print(f'HTML_LIST_PAGE page={page} items={len(page_items)} new={new_count}', flush=True)
+        print(f'HTML_LIST_PAGE page={page} items={len(page_items)} new={new_count} missing={len(missing_seen)}', flush=True)
+        if len(missing_seen) >= base.MAX_IMPORT:
+            print(f'HTML_LIST_EARLY_STOP missing={len(missing_seen)} target={base.MAX_IMPORT}', flush=True)
+            break
+
         if not page_items or new_count == 0:
             empty_pages += 1
         else:
             empty_pages = 0
-
         if errors and not page_items:
             print('HTML_LIST_PAGE_ERRORS', page, ' | '.join(errors), flush=True)
         if empty_pages >= EMPTY_PAGE_LIMIT:
@@ -133,9 +162,8 @@ def fetch_all_blog_items_html():
         items.sort(key=lambda x: int(x['log_no']), reverse=True)
         print(f'HTML_LIST_TOTAL={len(items)}', flush=True)
         return items
-
     print('HTML_LIST_FALLBACK_ORIGINAL', flush=True)
-    return base.fetch_all_blog_items()
+    return base.fetch_feed_items()
 
 
 def _is_bare_domain(text: str) -> bool:
@@ -144,7 +172,6 @@ def _is_bare_domain(text: str) -> bool:
 
 
 def _remove_link_preview_artifacts(body: str) -> str:
-    """네이버 링크/표 미리보기 카드가 일반문단으로 풀리는 현상을 제거한다."""
     soup = BeautifulSoup(body, 'html.parser')
     removed = 0
     blocks = list(soup.find_all(['p', 'div']))
@@ -154,20 +181,15 @@ def _remove_link_preview_artifacts(body: str) -> str:
         text = ' '.join(block.stripped_strings).strip()
         if not _is_bare_domain(text):
             continue
-
         prev = block.find_previous_sibling()
         if prev is not None:
             prev_text = ' '.join(prev.stripped_strings).strip()
-            preview_hint = any(x in prev_text for x in (
-                '좌우로 스크롤 가능합니다', '요약표입니다', '표준세율',
-                '기본 세율', '기본세율', '적용 세목', '특이사항',
-            ))
+            preview_hint = any(x in prev_text for x in ('좌우로 스크롤 가능합니다', '요약표입니다', '표준세율', '기본 세율', '기본세율', '적용 세목', '특이사항'))
             if len(prev_text) >= 180 or preview_hint:
                 prev.decompose()
                 removed += 1
         block.decompose()
         removed += 1
-
     if removed:
         print(f'LINK_PREVIEW_ARTIFACTS_REMOVED={removed}', flush=True)
     return str(soup)
@@ -183,11 +205,6 @@ def clean_article_without_previews(url, slug=''):
 
 
 def skip_existing_remote_refresh(posts):
-    """기존 수집글 전체를 네이버에서 다시 받지 않는다.
-
-    기존 글은 뒤 단계의 로컬 정리 스크립트가 처리하고, 네트워크 요청은 새 글에만 사용한다.
-    이미지가 많은 기존 글을 매 실행마다 재다운로드하면서 수십 분 이상 멈추는 문제를 방지한다.
-    """
     count = sum(1 for p in posts if p.get('source') == 'naver-blog')
     print(f'REFRESH_EXISTING_SKIPPED={count}', flush=True)
     return 0
