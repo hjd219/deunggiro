@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-08-30T23:53:20.556Z",
-  "totalPosts": 67,
+  "generatedAt": "2026-08-31T00:22:36.145Z",
+  "totalPosts": 60,
   "ok": 60,
-  "warnings": 7,
+  "warnings": 0,
   "canonicalFixed": 60,
   "missingFiles": 0,
   "items": [
@@ -262,20 +262,6 @@
       "issues": []
     },
     {
-      "slug": "ceo-corporate-procedure-1-o1kz7e",
-      "status": "warning",
-      "issues": [
-        "noindex 발견"
-      ]
-    },
-    {
-      "slug": "inheritance-partition-registration-procedure-guide-caution-1w5ku0",
-      "status": "warning",
-      "issues": [
-        "noindex 발견"
-      ]
-    },
-    {
       "slug": "real-estate-provisional-seizure-incheon-procedure-6069xy",
       "status": "ok",
       "issues": []
@@ -306,23 +292,9 @@
       "issues": []
     },
     {
-      "slug": "corporate-cost-3-1f4kd9",
-      "status": "warning",
-      "issues": [
-        "noindex 발견"
-      ]
-    },
-    {
       "slug": "inheritance-gift-real-estate-acquisition-tax-property-division-1xfulg",
       "status": "ok",
       "issues": []
-    },
-    {
-      "slug": "inheritance-registration-acquisition-tax-g2aqja",
-      "status": "warning",
-      "issues": [
-        "noindex 발견"
-      ]
     },
     {
       "slug": "inheritance-renunciation-caution-1cgaqh",
@@ -333,27 +305,6 @@
       "slug": "name-change-incheon-procedure-guide-documents-4lfyb2",
       "status": "ok",
       "issues": []
-    },
-    {
-      "slug": "gift-real-estate-acquisition-tax-property-division-incheon-pro-aga3r7",
-      "status": "warning",
-      "issues": [
-        "noindex 발견"
-      ]
-    },
-    {
-      "slug": "divorce-agreement-property-division-procedure-18044u",
-      "status": "warning",
-      "issues": [
-        "noindex 발견"
-      ]
-    },
-    {
-      "slug": "corporate-formation-procedure-cost-documents-u9jgv1",
-      "status": "warning",
-      "issues": [
-        "noindex 발견"
-      ]
     }
   ]
 }
