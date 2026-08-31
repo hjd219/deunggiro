@@ -30,6 +30,53 @@ document.addEventListener('DOMContentLoaded',()=>{
       const intro=document.querySelector('.corp-head p');
       if(intro) intro.textContent='법인설립·변경등기·자본금증자·회사계속등기에 필요한 핵심서류를 업무별로 확인하세요.';
     }
+
+    const faqLayout=document.querySelector('.corp-faq-layout');
+    const authCard=document.querySelector('.corp-auth-card');
+    const faq=document.querySelector('.corp-faq');
+    if(faqLayout&&authCard&&faq&&!document.querySelector('.corp-penalty-card')){
+      const penalty=document.createElement('section');
+      penalty.className='corp-penalty-card';
+      penalty.innerHTML=`<div class="corp-penalty-kicker">PENALTY GUIDE</div><h3>과태료 예상기준표</h3><p class="corp-penalty-desc">임원변경등기 지연 시 참고할 수 있는 실무상 예상기준입니다.</p><table class="corp-penalty-table"><thead><tr><th>등기 지연기간</th><th>예상기준</th></tr></thead><tbody><tr><td>1일 ~ 1개월</td><td>약 10만원 이내</td></tr><tr><td>1개월 ~ 2개월</td><td>약 20만원 이내</td></tr><tr><td>2개월 ~ 6개월</td><td>약 30만원 이내</td></tr><tr><td>6개월 ~ 1년</td><td>약 50만원 이내</td></tr><tr><td>1년 이상</td><td>사건별 상이</td></tr></tbody></table><div class="corp-penalty-note">※ 법원의 공식 과태료 산정표가 아닌 실무상 예상기준입니다. 실제 과태료는 지연기간, 등기사항, 위반 내용 및 법원의 판단에 따라 달라질 수 있습니다.</div>`;
+      faqLayout.insertBefore(penalty,faq);
+      authCard.style.order='1'; penalty.style.order='2'; faq.style.order='3';
+
+      const items=[...faq.querySelectorAll('.corp-faq-item')].slice(0,4);
+      const qa=[
+        ['임원 임기가 만료되면 과태료가 나오나요?','임기만료 후 임원을 선임한 경우 <strong>주주총회 선임일 또는 취임승낙일부터 2주 이내</strong> 변경등기를 해야 하며, 기간을 넘기면 과태료가 부과될 수 있습니다.'],
+        ['해산간주된 법인을 다시 운영할 수 있나요?','<strong>해산간주 상태라면 회사계속등기가 가능합니다.</strong> 다만 청산종결간주된 법인은 회사계속이 불가능하며 청산사무 수행을 위한 부활등기만 가능합니다.'],
+        ['1인 법인·1인 주주도 주주총회를 꼭 해야 하나요?','<strong>1인 주주 법인은 주주전원 서면결의로 주주총회를 갈음할 수 있습니다.</strong>'],
+        ['대표이사의 주소가 변경되면 변경등기를 해야 하나요?','네. 대표이사의 주소가 변경된 경우 <strong>주소변경일로부터 2주 이내에 대표이사 주소변경등기</strong>를 해야 합니다.']
+      ];
+      items.forEach((item,i)=>{
+        const q=item.querySelector('.corp-faq-q');
+        const a=item.querySelector('.corp-faq-a');
+        if(q){const mark=q.querySelector('.corp-qmark');const plus=q.querySelector('.corp-plus');q.innerHTML='';if(mark)q.appendChild(mark);const span=document.createElement('span');span.textContent=qa[i][0];q.appendChild(span);if(plus)q.appendChild(plus)}
+        if(a)a.innerHTML=qa[i][1];
+      });
+
+      const faqStyle=document.createElement('style');
+      faqStyle.textContent=`
+        .corp-faq-inner{max-width:1180px!important}
+        .corp-faq-layout{display:grid!important;grid-template-columns:.82fr 1fr 1.35fr!important;gap:18px!important;align-items:stretch!important}
+        .corp-faq-layout>.corp-auth-card,.corp-faq-layout>.corp-penalty-card,.corp-faq-layout>.corp-faq{background:#fff!important;border:1px solid #d7e1e8!important;border-radius:22px!important;padding:25px 22px!important;min-width:0!important;box-shadow:0 6px 20px rgba(31,41,55,.035)!important}
+        .corp-faq{display:block!important}
+        .corp-penalty-kicker{font-size:11px;font-weight:900;letter-spacing:.13em;color:#168dca;margin-bottom:7px}
+        .corp-penalty-card h3{font-size:27px;line-height:1.22;letter-spacing:-1.4px;margin:0 0 16px;color:#20242b}
+        .corp-penalty-desc{font-size:12.5px;color:#6b7680;line-height:1.6;margin:0 0 15px}
+        .corp-penalty-table{width:100%;border-collapse:separate;border-spacing:0;font-size:11.5px;border:1px solid #dfe7ee;border-radius:11px;overflow:hidden}
+        .corp-penalty-table th,.corp-penalty-table td{padding:8px 7px;text-align:center;border-bottom:1px solid #e5ebef}
+        .corp-penalty-table tr:last-child td{border-bottom:0}.corp-penalty-table th{background:#f3f9fc;color:#365a70;font-weight:900}.corp-penalty-table td:first-child{font-weight:800;color:#4b5965}.corp-penalty-table td:last-child{font-weight:900;color:#168dca}
+        .corp-penalty-note{margin-top:11px;padding:9px 10px;background:#f6fbfe;border:1px solid #dceef7;border-radius:10px;color:#687680;font-size:9.8px;line-height:1.55}
+        .corp-faq-layout .corp-faq-item{border:1px solid #cfdde8!important;border-radius:13px!important;margin:8px 0!important}
+        .corp-faq-layout .corp-faq-q{padding:13px 12px!important;font-size:12.5px!important;grid-template-columns:30px minmax(0,1fr) 24px!important;gap:9px!important}
+        .corp-faq-layout .corp-qmark{width:27px!important;height:27px!important;font-size:12px!important}
+        .corp-faq-layout .corp-faq-a{padding:0 13px 14px 48px!important;font-size:11.5px!important;line-height:1.7!important}
+        @media(max-width:950px){.corp-faq-layout{grid-template-columns:1fr 1fr!important}.corp-faq-layout>.corp-faq{grid-column:1/-1!important}}
+        @media(max-width:650px){.corp-faq-layout{grid-template-columns:1fr!important}.corp-faq-layout>.corp-faq{grid-column:auto!important}.corp-faq-layout>.corp-auth-card,.corp-faq-layout>.corp-penalty-card,.corp-faq-layout>.corp-faq{padding:22px 18px!important}}
+      `;
+      document.head.appendChild(faqStyle);
+    }
   }
 
   const btn=document.getElementById('dg-shell-menu-btn'),panel=document.getElementById('dg-shell-mobile-panel'),close=document.getElementById('dg-shell-menu-close');
