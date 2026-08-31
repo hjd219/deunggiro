@@ -3,9 +3,8 @@ name: Import Naver Blog Posts
 on:
   push:
     paths:
-      - 'scripts/import_naver_blog_clean.py'
+      - 'scripts/import_naver_blog.py'
       - 'scripts/refresh_naver_format.py'
-      - 'scripts/cleanup_duplicate_posts.py'
       - '.github/workflows/import-naver-blog.yml'
   schedule:
     - cron: '17 0 * * *'
@@ -38,13 +37,8 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch origin main
           git reset --hard origin/main
-      - name: Remove legacy duplicate posts
-        run: python -u scripts/cleanup_duplicate_posts.py
-      - name: Fill removed slots from Naver blog
-        run: |
-          timeout 420s python -u scripts/import_naver_blog_clean.py
-          timeout 420s python -u scripts/import_naver_blog_clean.py
-          timeout 420s python -u scripts/import_naver_blog_clean.py
+      - name: Import posts missing from website
+        run: timeout 420s python -u scripts/import_naver_blog.py
       - name: Preserve Naver body formatting
         run: timeout 420s python -u scripts/refresh_naver_format.py
       - name: Safe postprocess
@@ -80,7 +74,7 @@ jobs:
           if bad:
               print('POSTPROCESS_BAD_LIST',','.join(bad)); raise SystemExit(1)
           PY
-          python -m py_compile scripts/import_naver_blog_clean.py scripts/refresh_naver_format.py scripts/cleanup_duplicate_posts.py
+          python -m py_compile scripts/import_naver_blog.py scripts/refresh_naver_format.py
           git diff --check
       - name: Commit
         shell: bash
@@ -88,5 +82,5 @@ jobs:
           set -euo pipefail
           if git diff --quiet && [ -z "$(git status --porcelain --untracked-files=normal)" ]; then echo "No changes"; exit 0; fi
           git add data/posts.json data/seo-report.json posts posts.html assets/posts assets/naver-images index.html inheritance.html renunciation.html corporate.html realestate.html family.html sitemap.xml rss.xml admin.html
-          git commit -m "중복글 정리 및 네이버 미수집 글 대체"
+          git commit -m "네이버 블로그 미수집 글 자동 반영"
           git push origin HEAD:main
