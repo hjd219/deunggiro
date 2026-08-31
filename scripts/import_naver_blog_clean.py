@@ -15,6 +15,7 @@ def get(url):
  r=requests.get(url,headers=UA,timeout=25); r.raise_for_status(); r.encoding='utf-8'; return r
 def norm(v): return re.sub(r'[^0-9A-Za-z가-힣]+','',html.unescape(v or '')).lower()
 def category(text):
+ if '이혼' in text: return '가사'
  for c,words in CATEGORY_RULES:
   if any(w in text for w in words): return c
  return '기타'
@@ -34,17 +35,13 @@ def extract(url,slug):
  if root is None: raise RuntimeError('본문 영역 없음')
  for x in root.select('script,style,noscript,iframe,button'): x.decompose()
  parts=[]; seen=set(); imgno=0
- # SmartEditor ONE의 실제 문단 단위로 수집한다. span만 있는 문단도 빠뜨리지 않는다.
  selectors='.se-text-paragraph, .se-module-text p, .se-section-text p, #postViewArea p, .post-view p'
  for el in root.select(selectors):
-  txt=clean_text(' '.join(el.stripped_strings))
-  key=norm(txt)
+  txt=clean_text(' '.join(el.stripped_strings)); key=norm(txt)
   if not txt or len(key)<2 or key in seen: continue
-  seen.add(key)
-  tag='p'
+  seen.add(key); tag='p'
   if re.match(r'^(?:[1-9]️⃣|🔟|\d{1,2}[\.\s]|[①-⑳])',txt) and len(txt)<100: tag='h2'
   parts.append(f'<{tag}>{html.escape(txt)}</{tag}>')
- # 표는 별도 보존
  for table in root.find_all('table'):
   rows=[]
   for tr in table.find_all('tr'):
@@ -54,14 +51,12 @@ def extract(url,slug):
     if txt: cells.append(f'<{cell.name}>{html.escape(txt)}</{cell.name}>')
    if cells: rows.append('<tr>'+''.join(cells)+'</tr>')
   if rows: parts.append('<table class="naver-table"><tbody>'+''.join(rows)+'</tbody></table>')
- # 이미지
  for img in root.find_all('img'):
   src=img.get('data-lazy-src') or img.get('data-src') or img.get('src') or ''; src='https:'+src if src.startswith('//') else src
   if not src: continue
   imgno+=1; local=save_image(src,slug,imgno)
   if local: parts.append(f'<p class="media-paragraph"><img src="{html.escape(local,quote=True)}" alt="" loading="lazy" decoding="async"></p>')
  body='\n'.join(parts); source_text=clean_text(' '.join(root.stripped_strings)); body_text=clean_text(' '.join(BeautifulSoup(body,'html.parser').stripped_strings))
- # 네이버 구조가 또 바뀌어 문단 선택자가 놓치면 안전한 텍스트 문단으로 폴백한다.
  if len(re.sub(r'\s+','',body_text))<500 and len(re.sub(r'\s+','',source_text))>=500:
   fallback=[]
   for el in root.select('.se-component, .se-module, .se-section, #postViewArea > div, .post-view > div'):
