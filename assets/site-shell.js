@@ -20,6 +20,18 @@ document.addEventListener('DOMContentLoaded',()=>{
     document.head.appendChild(mobile);
   }
 
+  if(current==='/corporate.html'){
+    const cards=document.querySelector('.corp-cards');
+    if(cards&&!document.getElementById('service-4')){
+      cards.insertAdjacentHTML('beforeend',`<article class="corp-card" id="service-4"><div class="corp-card-top"><div class="corp-icon"><svg viewBox="0 0 64 64"><path d="M21 29v-6c0-8 5-13 12-13 5 0 9 3 11 7" fill="none" stroke="#d85b7d" stroke-width="3.8" stroke-linecap="round"/><rect x="16" y="28" width="34" height="25" rx="6" fill="none" stroke="#d85b7d" stroke-width="3.8"/><path d="M33 36v8" fill="none" stroke="#d85b7d" stroke-width="3.8" stroke-linecap="round"/><circle cx="33" cy="36" r="2.5" fill="#d85b7d"/><path d="M23 48h20" fill="none" stroke="#d85b7d" stroke-width="3" stroke-linecap="round"/></svg></div><div><div class="corp-no">04</div><h3>회사계속등기</h3></div></div><div class="corp-tags"><span>해산간주</span><span>회사계속</span><span>임원선임</span></div><div class="corp-row"><b>임원</b><span>인감도장 · 인감증명서 2통 · 주민등록초본 1통</span></div><div class="corp-row"><b>임원 아닌 주주</b><span>인감도장 · 인감증명서 1통</span></div><div class="corp-row"><b>법인</b><span>법인 인감도장 · 정관 2통 · 주주명부 1통 · 법인 인감카드</span></div><div class="corp-note"><strong>회사계속등기 확인사항</strong><br>현재 법인등기부상 해산간주 상태인지 먼저 확인하고, 회사계속 결의와 임원선임을 함께 진행합니다.</div><a class="corp-cost" href="tel:0324251500">회사계속등기 상담하기 <span>→</span></a></article>`);
+      const style=document.createElement('style');
+      style.textContent='@media(min-width:901px){.corp-cards{grid-template-columns:repeat(4,minmax(0,1fr))!important}.corp-card{padding:20px 17px!important}.corp-row{grid-template-columns:82px minmax(0,1fr)!important;gap:8px!important}.corp-card h3{font-size:21px!important}}';
+      document.head.appendChild(style);
+      const intro=document.querySelector('.corp-head p');
+      if(intro) intro.textContent='법인설립·변경등기·자본금증자·회사계속등기에 필요한 핵심서류를 업무별로 확인하세요.';
+    }
+  }
+
   const btn=document.getElementById('dg-shell-menu-btn'),panel=document.getElementById('dg-shell-mobile-panel'),close=document.getElementById('dg-shell-menu-close');
   if(btn&&panel){const setOpen=o=>{panel.classList.toggle('open',o);panel.setAttribute('aria-hidden',o?'false':'true');btn.setAttribute('aria-expanded',o?'true':'false')};btn.addEventListener('click',()=>setOpen(!panel.classList.contains('open')));close?.addEventListener('click',()=>setOpen(false));panel.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setOpen(false)));document.addEventListener('keydown',e=>{if(e.key==='Escape')setOpen(false)})}
 });
