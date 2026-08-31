@@ -28,3 +28,12 @@ body.article-v2 .article-body img,.article .article-body img{display:block!impor
   .corp-faq{order:2!important;align-content:start!important}
   .corp-faq-q{min-height:58px!important;padding:13px!important}
 }
+
+/* 상세페이지 배경 리듬 통일: 부동산·가사 포함 */
+body:not(.article-v2){background:#eef6fb!important}
+body:not(.article-v2) .subhero{background:#eef6fb!important}
+body:not(.article-v2) .subhero::before,body:not(.article-v2) .subhero::after{background:transparent!important}
+body:not(.article-v2) .section{background:#eef6fb!important}
+body:not(.article-v2) .section.white{background:#fff!important}
+body:not(.article-v2) .section.soft{background:#eef6fb!important}
+body:not(.article-v2) #posts,body:not(.article-v2) #latest-posts,body:not(.article-v2) #related-posts,body:not(.article-v2) .latest-posts,body:not(.article-v2) .related-posts,body:not(.article-v2) .posts-section,body:not(.article-v2) .related-section{background:#fff!important}
