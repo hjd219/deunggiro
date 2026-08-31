@@ -31,8 +31,11 @@ COMMON_JS = [
 
 def infer_category(title: str, current: str = '') -> str:
     current = (current or '').strip()
-    if current and current != '기타': return current
     text = re.sub(r'\s+', ' ', title or '')
+    # 이혼 관련 글은 재산분할등기·부동산 등의 단어가 함께 있어도 항상 가사로 분류한다.
+    if '이혼' in text:
+        return '가사'
+    if current and current != '기타': return current
     for category, words in CATEGORY_RULES:
         if any(word in text for word in words): return category
     return current or '기타'
@@ -50,7 +53,6 @@ def dedupe_se_ids(text: str):
 
 
 def dedupe_head_meta(text: str):
-    """Keep the first SEO/meta declaration of each kind in <head>."""
     m = re.search(r'(<head\b[^>]*>)([\s\S]*?)(</head>)', text, re.I)
     if not m: return text, 0
     head = m.group(2); seen = set(); removed = 0
