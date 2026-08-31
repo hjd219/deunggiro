@@ -6,79 +6,30 @@ document.addEventListener('DOMContentLoaded',()=>{
   const header=`<header class="dg-shell-header"><div class="dg-shell-inner"><a class="dg-shell-logo" href="/"><span>등기로</span><small>현재두 법무사 사무소 · 인천</small></a><nav class="dg-shell-nav">${navHtml}</nav><button class="dg-shell-mobile-menu-btn" id="dg-shell-menu-btn" type="button" aria-expanded="false">☰ 메뉴</button><a class="dg-shell-mobile-call" href="tel:0324251500">전화상담</a></div></header><div class="dg-shell-mobile-panel" id="dg-shell-mobile-panel" aria-hidden="true"><div class="dg-shell-mobile-grid">${navHtml}</div><button class="dg-shell-mobile-close" id="dg-shell-menu-close" type="button">메뉴 닫기 ↑</button></div>`;
   const contact=`<section class="dg-shell-contact"><div class="dg-shell-contact-grid"><div><div class="dg-shell-label">CONSULTATION</div><h2>복잡한 등기절차, 등기로에서 확인하세요.</h2><p>상속 · 법인 · 부동산 등 필요한 절차와 준비서류를 확인할 수 있습니다.</p></div><a class="dg-shell-phone" href="tel:0324251500">032-425-1500</a></div></section>`;
   const footer=`<footer class="dg-shell-footer"><div class="dg-shell-footer-grid"><div><div class="dg-shell-footer-brand">등기로</div><div class="dg-shell-footer-office">현재두 법무사 사무소</div><div class="dg-shell-footer-info"><div><strong>주소</strong> 인천 미추홀구 경원대로 873, 201호(주안동, 인성빌딩) · 인천가정법원 옆</div><div><strong>전화</strong> <a href="tel:0324251500">032-425-1500</a></div></div><div class="dg-shell-channel-row"><a class="dg-shell-social" href="https://blog.naver.com/hjd21" target="_blank" rel="noopener noreferrer"><span class="dg-shell-social-icon naver">N</span>네이버 블로그</a><span class="dg-shell-dot">·</span><a class="dg-shell-social" href="https://youtube.com/channel/UCHs3WtBFAiV8bOsQUB-n-Ew?si=tTUgTZWRKg98bvYa" target="_blank" rel="noopener noreferrer"><span class="dg-shell-social-icon youtube">▶</span>유튜브</a></div></div><div class="dg-shell-route"><div class="dg-shell-route-title">찾아오시는 길</div><div class="dg-shell-route-sub">인천가정법원 옆 · 인성빌딩 2층</div><div class="dg-shell-route-list"><div class="dg-shell-route-item"><span>🚇</span><span><b>1호선</b> 주안역·간석역 1번 출구 도보 이용</span></div><div class="dg-shell-route-item"><span>🚇</span><span><b>인천지하철 2호선</b> 석바위시장역 하차 후 석바위 지하상가 5번 출구 도보 이용</span></div><div class="dg-shell-route-item"><span>⏱</span><span><b>도보시간</b> 간석역 약 15분 · 주안역 약 19분 · 석바위시장역 약 12분</span></div></div><div class="dg-shell-route-actions"><a href="https://map.naver.com/p/search/%EC%9D%B8%EC%B2%9C%20%EB%AF%B8%EC%B6%94%ED%99%80%EA%B5%AC%20%EA%B2%BD%EC%9B%90%EB%8C%80%EB%A1%9C%20873" target="_blank" rel="noopener noreferrer">네이버 지도에서 보기 →</a><a href="tel:0324251500">방문문의 032-425-1500</a></div></div></div></footer>`;
-
   const replaceFirst=(selectors,html)=>{for(const s of selectors){const el=document.querySelector(s);if(el){el.outerHTML=html;return true}}return false};
   if(!replaceFirst(['header.header','header.dg-shell-header'],header)) document.body.insertAdjacentHTML('afterbegin',header);
   if(!replaceFirst(['section.contact','section.cta','section.dg-shell-contact'],contact)) document.body.insertAdjacentHTML('beforeend',contact);
   if(!replaceFirst(['footer.footer','footer.dg-shell-footer'],footer)) document.body.insertAdjacentHTML('beforeend',footer);
-
   if(current==='/renunciation.html'){
     const h1=document.querySelector('.service-hero h1,.subhero h1,.hero h1');
     if(h1){h1.style.fontSize='clamp(38px,4.6vw,56px)';h1.style.letterSpacing='-3px';h1.style.whiteSpace='nowrap'}
-    const mobile=document.createElement('style');
-    mobile.textContent='@media(max-width:700px){.service-hero h1,.subhero h1,.hero h1{font-size:clamp(30px,8vw,40px)!important;letter-spacing:-2px!important;white-space:normal!important}}';
-    document.head.appendChild(mobile);
+    const mobile=document.createElement('style');mobile.textContent='@media(max-width:700px){.service-hero h1,.subhero h1,.hero h1{font-size:clamp(30px,8vw,40px)!important;letter-spacing:-2px!important;white-space:normal!important}}';document.head.appendChild(mobile);
   }
-
   if(current==='/corporate.html'){
     const cards=document.querySelector('.corp-cards');
     if(cards&&!document.getElementById('service-4')){
       cards.insertAdjacentHTML('beforeend',`<article class="corp-card" id="service-4"><div class="corp-card-top"><div class="corp-icon"><svg viewBox="0 0 64 64"><path d="M21 29v-6c0-8 5-13 12-13 5 0 9 3 11 7" fill="none" stroke="#d85b7d" stroke-width="3.8" stroke-linecap="round"/><rect x="16" y="28" width="34" height="25" rx="6" fill="none" stroke="#d85b7d" stroke-width="3.8"/><path d="M33 36v8" fill="none" stroke="#d85b7d" stroke-width="3.8" stroke-linecap="round"/><circle cx="33" cy="36" r="2.5" fill="#d85b7d"/><path d="M23 48h20" fill="none" stroke="#d85b7d" stroke-width="3" stroke-linecap="round"/></svg></div><div><div class="corp-no">04</div><h3>회사계속등기</h3></div></div><div class="corp-tags"><span>해산간주</span><span>회사계속</span><span>임원선임</span></div><div class="corp-row"><b>임원</b><span>인감도장 · 인감증명서 2통 · 주민등록초본 1통</span></div><div class="corp-row"><b>임원 아닌 주주</b><span>인감도장 · 인감증명서 1통</span></div><div class="corp-row"><b>법인</b><span>법인 인감도장 · 정관 2통 · 주주명부 1통 · 법인 인감카드</span></div><div class="corp-note"><strong>회사계속등기 확인사항</strong><br>현재 법인등기부상 해산간주 상태인지 먼저 확인하고, 회사계속 결의와 임원선임을 함께 진행합니다.</div><a class="corp-cost" href="tel:0324251500">회사계속등기 상담하기 <span>→</span></a></article>`);
-      const style=document.createElement('style');
-      style.textContent='@media(min-width:901px){.corp-cards{grid-template-columns:repeat(4,minmax(0,1fr))!important}.corp-card{padding:20px 17px!important}.corp-row{grid-template-columns:82px minmax(0,1fr)!important;gap:8px!important}.corp-card h3{font-size:21px!important}}';
-      document.head.appendChild(style);
-      const intro=document.querySelector('.corp-head p');
-      if(intro) intro.textContent='법인설립·변경등기·자본금증자·회사계속등기에 필요한 핵심서류를 업무별로 확인하세요.';
+      const style=document.createElement('style');style.textContent='@media(min-width:901px){.corp-cards{grid-template-columns:repeat(4,minmax(0,1fr))!important}.corp-card{padding:20px 17px!important}.corp-row{grid-template-columns:82px minmax(0,1fr)!important;gap:8px!important}.corp-card h3{font-size:21px!important}}';document.head.appendChild(style);
+      const intro=document.querySelector('.corp-head p');if(intro) intro.textContent='법인설립·변경등기·자본금증자·회사계속등기에 필요한 핵심서류를 업무별로 확인하세요.';
     }
-
-    const faqLayout=document.querySelector('.corp-faq-layout');
-    const authCard=document.querySelector('.corp-auth-card');
-    const faq=document.querySelector('.corp-faq');
+    const faqLayout=document.querySelector('.corp-faq-layout'),authCard=document.querySelector('.corp-auth-card'),faq=document.querySelector('.corp-faq');
     if(faqLayout&&authCard&&faq&&!document.querySelector('.corp-penalty-card')){
-      const penalty=document.createElement('section');
-      penalty.className='corp-penalty-card';
-      penalty.innerHTML=`<div class="corp-penalty-kicker">PENALTY GUIDE</div><h3>과태료 예상기준표</h3><p class="corp-penalty-desc">임원변경등기 지연 시 참고할 수 있는 실무상 예상기준입니다.</p><table class="corp-penalty-table"><thead><tr><th>등기 지연기간</th><th>예상기준</th></tr></thead><tbody><tr><td>1일 ~ 1개월</td><td>약 10만원 이내</td></tr><tr><td>1개월 ~ 2개월</td><td>약 20만원 이내</td></tr><tr><td>2개월 ~ 6개월</td><td>약 30만원 이내</td></tr><tr><td>6개월 ~ 1년</td><td>약 50만원 이내</td></tr><tr><td>1년 이상</td><td>사건별 상이</td></tr></tbody></table><div class="corp-penalty-note">※ 법원의 공식 과태료 산정표가 아닌 실무상 예상기준입니다. 실제 과태료는 지연기간, 등기사항, 위반 내용 및 법원의 판단에 따라 달라질 수 있습니다.</div>`;
-      faqLayout.insertBefore(penalty,faq);
-      authCard.style.order='1'; penalty.style.order='2'; faq.style.order='3';
-
-      const items=[...faq.querySelectorAll('.corp-faq-item')].slice(0,4);
-      const qa=[
-        ['임원 임기가 만료되면 과태료가 나오나요?','임기만료 후 임원을 선임한 경우 <strong>주주총회 선임일 또는 취임승낙일부터 2주 이내</strong> 변경등기를 해야 하며, 기간을 넘기면 과태료가 부과될 수 있습니다.'],
-        ['해산간주된 법인을 다시 운영할 수 있나요?','<strong>해산간주 상태라면 회사계속등기가 가능합니다.</strong> 다만 청산종결간주된 법인은 회사계속이 불가능하며 청산사무 수행을 위한 부활등기만 가능합니다.'],
-        ['1인 법인·1인 주주도 주주총회를 꼭 해야 하나요?','<strong>1인 주주 법인은 주주전원 서면결의로 주주총회를 갈음할 수 있습니다.</strong>'],
-        ['대표이사의 주소가 변경되면 변경등기를 해야 하나요?','네. 대표이사의 주소가 변경된 경우 <strong>주소변경일로부터 2주 이내에 대표이사 주소변경등기</strong>를 해야 합니다.']
-      ];
-      items.forEach((item,i)=>{
-        const q=item.querySelector('.corp-faq-q');
-        const a=item.querySelector('.corp-faq-a');
-        if(q){const mark=q.querySelector('.corp-qmark');const plus=q.querySelector('.corp-plus');q.innerHTML='';if(mark)q.appendChild(mark);const span=document.createElement('span');span.textContent=qa[i][0];q.appendChild(span);if(plus)q.appendChild(plus)}
-        if(a)a.innerHTML=qa[i][1];
-      });
-
-      const faqStyle=document.createElement('style');
-      faqStyle.textContent=`
-        .corp-faq-inner{max-width:1180px!important}
-        .corp-faq-layout{display:grid!important;grid-template-columns:.82fr 1fr 1.35fr!important;gap:18px!important;align-items:stretch!important}
-        .corp-faq-layout>.corp-auth-card,.corp-faq-layout>.corp-penalty-card,.corp-faq-layout>.corp-faq{background:#fff!important;border:1px solid #d7e1e8!important;border-radius:22px!important;padding:25px 22px!important;min-width:0!important;box-shadow:0 6px 20px rgba(31,41,55,.035)!important}
-        .corp-faq{display:block!important}
-        .corp-penalty-kicker{font-size:11px;font-weight:900;letter-spacing:.13em;color:#168dca;margin-bottom:7px}
-        .corp-penalty-card h3{font-size:27px;line-height:1.22;letter-spacing:-1.4px;margin:0 0 16px;color:#20242b}
-        .corp-penalty-desc{font-size:12.5px;color:#6b7680;line-height:1.6;margin:0 0 15px}
-        .corp-penalty-table{width:100%;border-collapse:separate;border-spacing:0;font-size:11.5px;border:1px solid #dfe7ee;border-radius:11px;overflow:hidden}
-        .corp-penalty-table th,.corp-penalty-table td{padding:8px 7px;text-align:center;border-bottom:1px solid #e5ebef}
-        .corp-penalty-table tr:last-child td{border-bottom:0}.corp-penalty-table th{background:#f3f9fc;color:#365a70;font-weight:900}.corp-penalty-table td:first-child{font-weight:800;color:#4b5965}.corp-penalty-table td:last-child{font-weight:900;color:#168dca}
-        .corp-penalty-note{margin-top:11px;padding:9px 10px;background:#f6fbfe;border:1px solid #dceef7;border-radius:10px;color:#687680;font-size:9.8px;line-height:1.55}
-        .corp-faq-layout .corp-faq-item{border:1px solid #cfdde8!important;border-radius:13px!important;margin:8px 0!important}
-        .corp-faq-layout .corp-faq-q{padding:13px 12px!important;font-size:12.5px!important;grid-template-columns:30px minmax(0,1fr) 24px!important;gap:9px!important}
-        .corp-faq-layout .corp-qmark{width:27px!important;height:27px!important;font-size:12px!important}
-        .corp-faq-layout .corp-faq-a{padding:0 13px 14px 48px!important;font-size:11.5px!important;line-height:1.7!important}
-        @media(max-width:950px){.corp-faq-layout{grid-template-columns:1fr 1fr!important}.corp-faq-layout>.corp-faq{grid-column:1/-1!important}}
-        @media(max-width:650px){.corp-faq-layout{grid-template-columns:1fr!important}.corp-faq-layout>.corp-faq{grid-column:auto!important}.corp-faq-layout>.corp-auth-card,.corp-faq-layout>.corp-penalty-card,.corp-faq-layout>.corp-faq{padding:22px 18px!important}}
-      `;
-      document.head.appendChild(faqStyle);
+      const penalty=document.createElement('section');penalty.className='corp-penalty-card';penalty.innerHTML=`<div class="corp-penalty-kicker">PENALTY GUIDE</div><h3>과태료 예상기준표</h3><p class="corp-penalty-desc">임원변경등기 지연 시 참고할 수 있는 실무상 예상기준입니다.</p><table class="corp-penalty-table"><thead><tr><th>등기 지연기간</th><th>예상기준</th></tr></thead><tbody><tr><td>1일 ~ 1개월</td><td>약 10만원 이내</td></tr><tr><td>1개월 ~ 2개월</td><td>약 20만원 이내</td></tr><tr><td>2개월 ~ 6개월</td><td>약 30만원 이내</td></tr><tr><td>6개월 ~ 1년</td><td>약 50만원 이내</td></tr><tr><td>1년 이상</td><td>사건별 상이</td></tr></tbody></table><div class="corp-penalty-note">※ 법원의 공식 과태료 산정표가 아닌 실무상 예상기준입니다. 실제 과태료는 지연기간, 등기사항, 위반 내용 및 법원의 판단에 따라 달라질 수 있습니다.</div>`;
+      faqLayout.appendChild(authCard);faqLayout.appendChild(penalty);faqLayout.appendChild(faq);
+      const items=[...faq.querySelectorAll('.corp-faq-item')].slice(0,4),qa=[['임원 임기가 만료되면 과태료가 나오나요?','임기만료 후 임원을 선임한 경우 <strong>주주총회 선임일 또는 취임승낙일부터 2주 이내</strong> 변경등기를 해야 하며, 기간을 넘기면 과태료가 부과될 수 있습니다.'],['해산간주된 법인을 다시 운영할 수 있나요?','<strong>해산간주 상태라면 회사계속등기가 가능합니다.</strong> 다만 청산종결간주된 법인은 회사계속이 불가능하며 청산사무 수행을 위한 부활등기만 가능합니다.'],['1인 법인·1인 주주도 주주총회를 꼭 해야 하나요?','<strong>1인 주주 법인은 주주전원 서면결의로 주주총회를 갈음할 수 있습니다.</strong>'],['대표이사의 주소가 변경되면 변경등기를 해야 하나요?','네. 대표이사의 주소가 변경된 경우 <strong>주소변경일로부터 2주 이내에 대표이사 주소변경등기</strong>를 해야 합니다.']];
+      items.forEach((item,i)=>{const q=item.querySelector('.corp-faq-q'),a=item.querySelector('.corp-faq-a');if(q){const mark=q.querySelector('.corp-qmark'),plus=q.querySelector('.corp-plus');q.innerHTML='';if(mark)q.appendChild(mark);const span=document.createElement('span');span.textContent=qa[i][0];q.appendChild(span);if(plus)q.appendChild(plus)}if(a)a.innerHTML=qa[i][1]});
+      const faqStyle=document.createElement('style');faqStyle.textContent=`.corp-faq-inner{max-width:1180px!important}.corp-faq-layout{display:grid!important;grid-template-columns:.82fr 1fr 1.35fr!important;gap:18px!important;align-items:stretch!important}.corp-faq-layout>.corp-auth-card{grid-column:1!important;grid-row:1!important}.corp-faq-layout>.corp-penalty-card{grid-column:2!important;grid-row:1!important}.corp-faq-layout>.corp-faq{grid-column:3!important;grid-row:1!important}.corp-faq-layout>.corp-auth-card,.corp-faq-layout>.corp-penalty-card,.corp-faq-layout>.corp-faq{background:#fff!important;border:1px solid #d7e1e8!important;border-radius:22px!important;padding:25px 22px!important;min-width:0!important;box-shadow:0 6px 20px rgba(31,41,55,.035)!important}.corp-faq{display:block!important}.corp-penalty-kicker{font-size:11px;font-weight:900;letter-spacing:.13em;color:#168dca;margin-bottom:7px}.corp-penalty-card h3{font-size:27px;line-height:1.22;letter-spacing:-1.4px;margin:0 0 16px;color:#20242b}.corp-penalty-desc{font-size:12.5px;color:#6b7680;line-height:1.6;margin:0 0 15px}.corp-penalty-table{width:100%;border-collapse:separate;border-spacing:0;font-size:11.5px;border:1px solid #dfe7ee;border-radius:11px;overflow:hidden}.corp-penalty-table th,.corp-penalty-table td{padding:8px 7px;text-align:center;border-bottom:1px solid #e5ebef}.corp-penalty-table tr:last-child td{border-bottom:0}.corp-penalty-table th{background:#f3f9fc;color:#365a70;font-weight:900}.corp-penalty-table td:first-child{font-weight:800;color:#4b5965}.corp-penalty-table td:last-child{font-weight:900;color:#168dca}.corp-penalty-note{margin-top:11px;padding:9px 10px;background:#f6fbfe;border:1px solid #dceef7;border-radius:10px;color:#687680;font-size:9.8px;line-height:1.55}.corp-faq-layout .corp-faq-item{border:1px solid #cfdde8!important;border-radius:13px!important;margin:8px 0!important}.corp-faq-layout .corp-faq-q{padding:13px 12px!important;font-size:12.5px!important;grid-template-columns:30px minmax(0,1fr) 24px!important;gap:9px!important}.corp-faq-layout .corp-qmark{width:27px!important;height:27px!important;font-size:12px!important}.corp-faq-layout .corp-faq-a{padding:0 13px 14px 48px!important;font-size:11.5px!important;line-height:1.7!important}@media(max-width:950px){.corp-faq-layout{grid-template-columns:1fr 1fr!important}.corp-faq-layout>.corp-auth-card{grid-column:1!important;grid-row:1!important}.corp-faq-layout>.corp-penalty-card{grid-column:2!important;grid-row:1!important}.corp-faq-layout>.corp-faq{grid-column:1/-1!important;grid-row:2!important}}@media(max-width:650px){.corp-faq-layout{grid-template-columns:1fr!important}.corp-faq-layout>.corp-auth-card{grid-column:1!important;grid-row:1!important}.corp-faq-layout>.corp-penalty-card{grid-column:1!important;grid-row:2!important}.corp-faq-layout>.corp-faq{grid-column:1!important;grid-row:3!important}.corp-faq-layout>.corp-auth-card,.corp-faq-layout>.corp-penalty-card,.corp-faq-layout>.corp-faq{padding:22px 18px!important}}`;document.head.appendChild(faqStyle);
     }
   }
-
-  const btn=document.getElementById('dg-shell-menu-btn'),panel=document.getElementById('dg-shell-mobile-panel'),close=document.getElementById('dg-shell-menu-close');
-  if(btn&&panel){const setOpen=o=>{panel.classList.toggle('open',o);panel.setAttribute('aria-hidden',o?'false':'true');btn.setAttribute('aria-expanded',o?'true':'false')};btn.addEventListener('click',()=>setOpen(!panel.classList.contains('open')));close?.addEventListener('click',()=>setOpen(false));panel.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setOpen(false)));document.addEventListener('keydown',e=>{if(e.key==='Escape')setOpen(false)})}
+  const btn=document.getElementById('dg-shell-menu-btn'),panel=document.getElementById('dg-shell-mobile-panel'),close=document.getElementById('dg-shell-menu-close');if(btn&&panel){const setOpen=o=>{panel.classList.toggle('open',o);panel.setAttribute('aria-hidden',o?'false':'true');btn.setAttribute('aria-expanded',o?'true':'false')};btn.addEventListener('click',()=>setOpen(!panel.classList.contains('open')));close?.addEventListener('click',()=>setOpen(false));panel.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setOpen(false)));document.addEventListener('keydown',e=>{if(e.key==='Escape')setOpen(false)})}
 });
