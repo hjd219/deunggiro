@@ -21,6 +21,7 @@ on:
       - 'scripts/apply_latest_cards.py'
       - 'scripts/patch_admin_seo.py'
       - 'scripts/patch_admin_category.py'
+      - 'scripts/fix_divorce_categories.py'
       - 'scripts/site_maintenance.py'
       - 'favicon.png'
       - '.github/workflows/auto-thumbnails.yml'
@@ -63,13 +64,14 @@ jobs:
 
             python scripts/patch_admin_seo.py
             python scripts/patch_admin_category.py
+            python scripts/fix_divorce_categories.py
             python scripts/site_maintenance.py
             python scripts/generate_thumbnails.py
             python scripts/fix_thumbnail_logo.py
             python scripts/site_maintenance.py
             python scripts/apply_latest_cards.py
 
-            python -m py_compile scripts/patch_admin_seo.py scripts/patch_admin_category.py scripts/site_maintenance.py scripts/generate_thumbnails.py scripts/fix_thumbnail_logo.py scripts/apply_latest_cards.py
+            python -m py_compile scripts/patch_admin_seo.py scripts/patch_admin_category.py scripts/fix_divorce_categories.py scripts/site_maintenance.py scripts/generate_thumbnails.py scripts/fix_thumbnail_logo.py scripts/apply_latest_cards.py
             node --check assets/latest-posts.js
             node --check assets/article-cta.js
 
