@@ -2,6 +2,7 @@ from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
 CSS='<link rel="stylesheet" href="/assets/site-shell.css">'
+ANALYTICS='<script src="/assets/analytics.js" defer></script>'
 JS='<script src="/assets/site-shell.js" defer></script>'
 PUBLIC_ROOT=[
  'index.html','inheritance.html','renunciation.html','corporate.html','realestate.html','family.html',
@@ -11,6 +12,8 @@ PUBLIC_ROOT=[
 def inject(text:str)->str:
     if '/assets/site-shell.css' not in text:
         text=text.replace('</head>',CSS+'\n</head>',1)
+    if '/assets/analytics.js' not in text:
+        text=text.replace('</head>',ANALYTICS+'\n</head>',1)
     if '/assets/site-shell.js' not in text:
         text=text.replace('</body>',JS+'\n</body>',1)
     return text
