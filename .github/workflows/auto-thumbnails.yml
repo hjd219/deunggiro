@@ -43,12 +43,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install Korean fonts and Pillow
+      - name: Install Korean fonts and Python dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y fonts-noto-cjk
           python -m pip install --upgrade pip
-          pip install pillow
+          pip install pillow beautifulsoup4
 
       - name: Generate and publish automated site updates from latest main
         shell: bash
