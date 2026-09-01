@@ -13,7 +13,7 @@ CATEGORY_RULES = [
     ('법인등기', ('법인','주식회사','유한회사','대표이사','이사','감사','주주','본점이전','자본금','증자','감자','상호변경','목적변경','해산','청산')),
     ('가사', ('협의이혼','재판이혼','이혼','개명','성년후견','한정후견','친권','양육비','가사사건')),
     ('부동산등기', ('근저당','가압류','등기권리증','등기필증','매매','증여','전세권','소유권이전','부동산','재산분할등기','신탁등기')),
-    ('상속등기', ('상속등기','대습상속','상속취득세','상속인','상속지분','상속재산','유언','사망 후 상속','부모님 사망')),
+    ('상속등기', ('상속등기','상속절차','대습상속','상속취득세','상속인','상속지분','상속재산','유언','사망 후 상속','부모님 사망')),
 ]
 
 COMMON_CSS = [
@@ -31,13 +31,15 @@ COMMON_JS = [
 
 def infer_category(title: str, current: str = '') -> str:
     current = (current or '').strip()
+    # 카테고리 판단은 scripts/fix_divorce_categories.py에서 전담한다.
+    # 유지보수 단계에서는 이미 정해진 값을 절대 다시 덮어쓰지 않는다.
+    if current and current != '기타':
+        return current
+
     text = re.sub(r'\s+', ' ', title or '')
-    # 이혼 관련 글은 재산분할등기·부동산 등의 단어가 함께 있어도 항상 가사로 분류한다.
-    if '이혼' in text:
-        return '가사'
-    if current and current != '기타': return current
     for category, words in CATEGORY_RULES:
-        if any(word in text for word in words): return category
+        if any(word in text for word in words):
+            return category
     return current or '기타'
 
 
