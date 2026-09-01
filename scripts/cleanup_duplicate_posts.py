@@ -25,82 +25,54 @@ def clean_slug(value: str) -> str:
     return str(value or "").strip().removesuffix(".html")
 
 
-def core_title(value: str) -> str:
-    """비교용 제목. 앞의 [인천], [부동산취득세] 같은 말머리만 제거한다."""
-    title = str(value or "").strip()
-    while True:
-        new = re.sub(r"^\s*\[[^\]]+\]\s*", "", title).strip()
-        if new == title:
-            break
-        title = new
-    return re.sub(r"[^0-9A-Za-z가-힣]+", "", title).lower()
+def exact_title(value: str) -> str:
+    """동일 제목 판정: 공백·문장부호 차이만 무시하고 단어는 절대 치환하지 않는다."""
+    return re.sub(r"[^0-9A-Za-z가-힣]+", "", str(value or "").strip()).lower()
 
 
 def main() -> None:
     posts = json.loads(POSTS_JSON.read_text(encoding="utf-8"))
-
-    # 같은 slug가 중복 등록된 경우 첫 항목만 유지한다.
+    removed: list[str] = []
+    kept: list[dict] = []
     seen_slugs: set[str] = set()
-    duplicate_slugs: set[str] = set(DUPLICATE_LEGACY_SLUGS)
+    seen_titles: set[str] = set()
+
     for post in posts:
         slug = clean_slug(post.get("slug"))
+        title_key = exact_title(post.get("title"))
         if not slug:
             continue
+
+        # 과거에 확인된 레거시 중복본은 계속 제거한다.
+        if slug in DUPLICATE_LEGACY_SLUGS:
+            removed.append(slug)
+            continue
+
+        # 같은 slug가 다시 들어오면 첫 항목만 유지한다.
         if slug in seen_slugs:
-            duplicate_slugs.add(slug)
-        else:
-            seen_slugs.add(slug)
-
-    # 네이버 원문과 예전 홈페이지 글의 핵심 제목이 완전히 같으면
-    # 네이버 수집본을 기준본으로 남기고 예전 홈페이지 글만 제거한다.
-    groups: dict[str, list[dict]] = {}
-    for post in posts:
-        key = core_title(post.get("title"))
-        if key:
-            groups.setdefault(key, []).append(post)
-
-    for group in groups.values():
-        if len(group) < 2:
+            removed.append(slug)
             continue
-        naver = [p for p in group if p.get("source") == "naver-blog"]
-        if not naver:
-            continue
-        for post in group:
-            if post.get("source") != "naver-blog":
-                slug = clean_slug(post.get("slug"))
-                if slug:
-                    duplicate_slugs.add(slug)
 
-    kept = []
-    removed = []
-    kept_slug_once: set[str] = set()
-    for post in posts:
-        slug = clean_slug(post.get("slug"))
-        if slug in duplicate_slugs:
-            # 같은 slug 자체가 중복된 경우 첫 번째 정상 항목까지 지우지 않도록 처리.
-            if slug in seen_slugs and slug in kept_slug_once:
-                removed.append(slug)
-                continue
-            if slug in DUPLICATE_LEGACY_SLUGS or post.get("source") != "naver-blog":
-                removed.append(slug)
-                continue
-        if slug:
-            kept_slug_once.add(slug)
+        # 핵심 규칙: 제목이 동일하면 먼저 나온 1개만 남기고 뒤의 글을 삭제한다.
+        # 가족관계·지역명·숫자 등 단어가 하나라도 다르면 다른 제목이므로 삭제하지 않는다.
+        if title_key and title_key in seen_titles:
+            removed.append(slug)
+            continue
+
+        seen_slugs.add(slug)
+        if title_key:
+            seen_titles.add(title_key)
         kept.append(post)
 
-    # 제거 대상 중 네이버 원문 파일은 절대 삭제하지 않는다.
     kept_slugs = {clean_slug(p.get("slug")) for p in kept}
-    for slug in set(removed):
-        if slug in kept_slugs:
+    for slug in sorted(set(removed)):
+        if not slug or slug in kept_slugs:
             continue
         path = POSTS_DIR / f"{slug}.html"
         if path.exists():
             path.unlink()
 
-    POSTS_JSON.write_text(
-        json.dumps(kept, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
+    POSTS_JSON.write_text(json.dumps(kept, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print("DUPLICATE_REMOVED", len(removed), ",".join(sorted(set(removed))))
     print("POSTS_REMAIN", len(kept))
 
