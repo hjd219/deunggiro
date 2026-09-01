@@ -24,6 +24,7 @@ on:
       - 'scripts/fix_divorce_categories.py'
       - 'scripts/site_maintenance.py'
       - 'scripts/sync_category_meta.py'
+      - 'scripts/audit_duplicate_posts.py'
       - 'scripts/seo-auto.mjs'
       - 'favicon.png'
       - '.github/workflows/auto-thumbnails.yml'
@@ -74,8 +75,9 @@ jobs:
             python scripts/apply_latest_cards.py
             node scripts/seo-auto.mjs
             python scripts/sync_category_meta.py
+            python scripts/audit_duplicate_posts.py
 
-            python -m py_compile scripts/patch_admin_seo.py scripts/patch_admin_category.py scripts/fix_divorce_categories.py scripts/site_maintenance.py scripts/generate_thumbnails.py scripts/fix_thumbnail_logo.py scripts/apply_latest_cards.py scripts/sync_category_meta.py
+            python -m py_compile scripts/patch_admin_seo.py scripts/patch_admin_category.py scripts/fix_divorce_categories.py scripts/site_maintenance.py scripts/generate_thumbnails.py scripts/fix_thumbnail_logo.py scripts/apply_latest_cards.py scripts/sync_category_meta.py scripts/audit_duplicate_posts.py
             node --check scripts/seo-auto.mjs
             node --check assets/latest-posts.js
             node --check assets/article-cta.js
@@ -158,13 +160,13 @@ jobs:
 
             git diff --check
 
-            if git diff --quiet && [ -z "$(git status --porcelain --untracked-files=normal assets/posts)" ]; then
+            if git diff --quiet && [ -z "$(git status --porcelain --untracked-files=normal assets/posts data/duplicate-report.json)" ]; then
               echo "No generated changes"
               exit 0
             fi
 
-            git add admin.html data/posts.json data/seo-report.json posts posts.html assets/posts index.html inheritance.html renunciation.html corporate.html realestate.html family.html sitemap.xml
-            git commit -m "게시글 카테고리·SEO·썸네일 일괄 동기화"
+            git add admin.html data/posts.json data/seo-report.json data/duplicate-report.json posts posts.html assets/posts index.html inheritance.html renunciation.html corporate.html realestate.html family.html sitemap.xml
+            git commit -m "게시글 카테고리·SEO·썸네일·중복점검 일괄 반영"
 
             if git push origin HEAD:main; then
               echo "Automated site updates published"
