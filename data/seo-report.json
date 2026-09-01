@@ -1,11 +1,61 @@
 {
-  "generatedAt": "2026-09-01T13:02:28.199Z",
-  "totalPosts": 79,
-  "ok": 79,
+  "generatedAt": "2026-09-01T14:23:26.796Z",
+  "totalPosts": 89,
+  "ok": 89,
   "warnings": 0,
-  "canonicalFixed": 79,
+  "canonicalFixed": 89,
   "missingFiles": 0,
   "items": [
+    {
+      "slug": "naver-224341146774",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "slug": "naver-224342319124",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "slug": "naver-224342396138",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "slug": "naver-224344801128",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "slug": "naver-224345217888",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "slug": "naver-224345965029",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "slug": "naver-224345975183",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "slug": "naver-224345991517",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "slug": "naver-224346166353",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "slug": "naver-224346175828",
+      "status": "ok",
+      "issues": []
+    },
     {
       "slug": "naver-224346192766",
       "status": "ok",
