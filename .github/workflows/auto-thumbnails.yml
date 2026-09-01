@@ -24,6 +24,7 @@ on:
       - 'scripts/fix_divorce_categories.py'
       - 'scripts/site_maintenance.py'
       - 'scripts/sync_category_meta.py'
+      - 'scripts/cleanup_duplicate_posts.py'
       - 'scripts/audit_duplicate_posts.py'
       - 'scripts/seo-auto.mjs'
       - 'favicon.png'
@@ -65,6 +66,7 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
 
+            python scripts/cleanup_duplicate_posts.py
             python scripts/patch_admin_seo.py
             python scripts/patch_admin_category.py
             python scripts/fix_divorce_categories.py
@@ -77,7 +79,7 @@ jobs:
             python scripts/sync_category_meta.py
             python scripts/audit_duplicate_posts.py
 
-            python -m py_compile scripts/patch_admin_seo.py scripts/patch_admin_category.py scripts/fix_divorce_categories.py scripts/site_maintenance.py scripts/generate_thumbnails.py scripts/fix_thumbnail_logo.py scripts/apply_latest_cards.py scripts/sync_category_meta.py scripts/audit_duplicate_posts.py
+            python -m py_compile scripts/cleanup_duplicate_posts.py scripts/patch_admin_seo.py scripts/patch_admin_category.py scripts/fix_divorce_categories.py scripts/site_maintenance.py scripts/generate_thumbnails.py scripts/fix_thumbnail_logo.py scripts/apply_latest_cards.py scripts/sync_category_meta.py scripts/audit_duplicate_posts.py
             node --check scripts/seo-auto.mjs
             node --check assets/latest-posts.js
             node --check assets/article-cta.js
@@ -91,10 +93,18 @@ jobs:
           missing=[]
           duplicate_ids=[]
           category_mismatches=[]
+          seen_titles={}
+          duplicate_titles=[]
 
           for p in posts:
               slug=(p.get('slug') or '').replace('.html','')
               expected=(p.get('category') or '').strip()
+              title_key=re.sub(r'[^0-9A-Za-z가-힣]+','',(p.get('title') or '').strip()).lower()
+              if title_key:
+                  if title_key in seen_titles:
+                      duplicate_titles.append(f"{seen_titles[title_key]} <-> {slug}: {p.get('title')}")
+                  else:
+                      seen_titles[title_key]=slug
               thumb=(p.get('thumbnail') or '').strip()
               if not thumb:
                   missing.append(slug+': empty thumbnail')
@@ -136,6 +146,8 @@ jobs:
               if bad:
                   category_mismatches.append(f"{slug}: expected={expected}, got={bad}")
 
+          if duplicate_titles:
+              raise SystemExit('Duplicate titles remain: '+' | '.join(duplicate_titles[:12]))
           if missing:
               raise SystemExit('Missing generated resources: '+', '.join(missing[:12]))
           if duplicate_ids:
@@ -155,7 +167,7 @@ jobs:
           listing=Path('posts.html').read_text(encoding='utf-8')
           if 'SEO_STATIC_POSTS_START' not in listing or 'post-thumb' not in listing:
               raise SystemExit('posts.html static thumbnail cards missing')
-          print('validated',len(posts),'posts: category source/meta/badge/breadcrumb/jsonld all synchronized')
+          print('validated',len(posts),'posts: duplicate titles absent; category source/meta/badge/breadcrumb/jsonld synchronized')
           PY
 
             git diff --check
@@ -166,7 +178,7 @@ jobs:
             fi
 
             git add admin.html data/posts.json data/seo-report.json data/duplicate-report.json posts posts.html assets/posts index.html inheritance.html renunciation.html corporate.html realestate.html family.html sitemap.xml
-            git commit -m "게시글 카테고리·SEO·썸네일·중복점검 일괄 반영"
+            git commit -m "게시글 중복삭제·카테고리·SEO·썸네일 일괄 반영"
 
             if git push origin HEAD:main; then
               echo "Automated site updates published"
