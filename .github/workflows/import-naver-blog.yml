@@ -6,6 +6,7 @@ on:
       - 'scripts/import_naver_blog.py'
       - 'scripts/refresh_naver_format.py'
       - 'scripts/fix_divorce_categories.py'
+      - 'scripts/cleanup_duplicate_posts.py'
       - '.github/workflows/import-naver-blog.yml'
   schedule:
     - cron: '17 0 * * *'
@@ -48,6 +49,7 @@ jobs:
         run: |
           timeout 90s python -u scripts/patch_naver_import_dates.py
           timeout 90s python -u scripts/fix_divorce_categories.py
+          timeout 90s python -u scripts/cleanup_duplicate_posts.py
           timeout 90s python -u scripts/site_maintenance.py
           timeout 90s python -u scripts/inject_internal_links.py
           timeout 150s python -u scripts/generate_thumbnails.py
@@ -78,7 +80,7 @@ jobs:
           if bad:
               print('POSTPROCESS_BAD_LIST',','.join(bad)); raise SystemExit(1)
           PY
-          python -m py_compile scripts/import_naver_blog.py scripts/refresh_naver_format.py scripts/fix_divorce_categories.py
+          python -m py_compile scripts/import_naver_blog.py scripts/refresh_naver_format.py scripts/fix_divorce_categories.py scripts/cleanup_duplicate_posts.py
           git diff --check
       - name: Commit
         shell: bash
