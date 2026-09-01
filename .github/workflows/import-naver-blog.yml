@@ -39,7 +39,9 @@ jobs:
           git fetch origin main
           git reset --hard origin/main
       - name: Import posts missing from website
-        run: timeout 420s python -u scripts/import_naver_blog.py
+        run: |
+          sed -i 's/^MAX_IMPORT = 3$/MAX_IMPORT = 10/' scripts/import_naver_blog.py
+          timeout 420s python -u scripts/import_naver_blog.py
       - name: Preserve Naver body formatting
         run: timeout 420s python -u scripts/refresh_naver_format.py
       - name: Safe postprocess
