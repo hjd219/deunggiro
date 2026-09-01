@@ -23,6 +23,7 @@ on:
       - 'scripts/patch_admin_category.py'
       - 'scripts/fix_divorce_categories.py'
       - 'scripts/site_maintenance.py'
+      - 'scripts/seo-auto.mjs'
       - 'favicon.png'
       - '.github/workflows/auto-thumbnails.yml'
   workflow_dispatch:
@@ -70,19 +71,26 @@ jobs:
             python scripts/fix_thumbnail_logo.py
             python scripts/site_maintenance.py
             python scripts/apply_latest_cards.py
+            node scripts/seo-auto.mjs
 
             python -m py_compile scripts/patch_admin_seo.py scripts/patch_admin_category.py scripts/fix_divorce_categories.py scripts/site_maintenance.py scripts/generate_thumbnails.py scripts/fix_thumbnail_logo.py scripts/apply_latest_cards.py
+            node --check scripts/seo-auto.mjs
             node --check assets/latest-posts.js
             node --check assets/article-cta.js
 
             python - <<'PY'
           import json,re
           from pathlib import Path
+          from bs4 import BeautifulSoup
+
           posts=json.loads(Path('data/posts.json').read_text(encoding='utf-8'))
           missing=[]
           duplicate_ids=[]
+          category_mismatches=[]
+
           for p in posts:
               slug=(p.get('slug') or '').replace('.html','')
+              expected=(p.get('category') or '').strip()
               thumb=(p.get('thumbnail') or '').strip()
               if not thumb:
                   missing.append(slug+': empty thumbnail')
@@ -97,10 +105,40 @@ jobs:
               if dup: duplicate_ids.append(slug+': '+','.join(dup[:3]))
               if '/assets/article-cta.js' not in text:
                   missing.append(slug+': article CTA script missing')
+
+              soup=BeautifulSoup(text,'html.parser')
+              meta=soup.find('meta',attrs={'name':'dg-category'})
+              meta_cat=(meta.get('content') or '').strip() if meta else ''
+              badge=soup.select_one('.post-meta .badge')
+              badge_cat=badge.get_text(' ',strip=True) if badge else ''
+              crumb=soup.find('nav',attrs={'aria-label':'breadcrumb'})
+              crumb_span=crumb.find('span') if crumb else None
+              crumb_cat=crumb_span.get_text(' ',strip=True) if crumb_span else ''
+              json_cat=''
+              for script in soup.find_all('script',attrs={'type':'application/ld+json'}):
+                  try:
+                      obj=json.loads(script.string or script.get_text() or '')
+                  except Exception:
+                      continue
+                  if isinstance(obj,dict) and obj.get('@type')=='BreadcrumbList':
+                      for item in obj.get('itemListElement',[]):
+                          if isinstance(item,dict) and item.get('position')==3:
+                              json_cat=str(item.get('name') or '').strip()
+                              break
+                  if json_cat:
+                      break
+              values={'meta':meta_cat,'badge':badge_cat,'breadcrumb':crumb_cat,'jsonld':json_cat}
+              bad={k:v for k,v in values.items() if v!=expected}
+              if bad:
+                  category_mismatches.append(f"{slug}: expected={expected}, got={bad}")
+
           if missing:
               raise SystemExit('Missing generated resources: '+', '.join(missing[:12]))
           if duplicate_ids:
               raise SystemExit('Duplicate SE ids remain: '+', '.join(duplicate_ids[:10]))
+          if category_mismatches:
+              raise SystemExit('Category sync mismatch: '+' | '.join(category_mismatches[:12]))
+
           for f in ['index.html','inheritance.html','renunciation.html','corporate.html','realestate.html','family.html']:
               text=Path(f).read_text(encoding='utf-8')
               if '/assets/latest-posts.js' not in text or '/assets/latest-posts.css' not in text:
@@ -113,7 +151,7 @@ jobs:
           listing=Path('posts.html').read_text(encoding='utf-8')
           if 'SEO_STATIC_POSTS_START' not in listing or 'post-thumb' not in listing:
               raise SystemExit('posts.html static thumbnail cards missing')
-          print('validated',len(posts),'posts, thumbnails, categories, CTA, latest cards and admin automation')
+          print('validated',len(posts),'posts: category source/meta/badge/breadcrumb/jsonld all synchronized')
           PY
 
             git diff --check
@@ -123,8 +161,8 @@ jobs:
               exit 0
             fi
 
-            git add admin.html data/posts.json posts posts.html assets/posts index.html inheritance.html renunciation.html corporate.html realestate.html family.html
-            git commit -m "게시글 썸네일·분류·상담CTA·목록 자동 반영"
+            git add admin.html data/posts.json data/seo-report.json posts posts.html assets/posts index.html inheritance.html renunciation.html corporate.html realestate.html family.html sitemap.xml
+            git commit -m "게시글 카테고리·SEO·썸네일 일괄 동기화"
 
             if git push origin HEAD:main; then
               echo "Automated site updates published"
