@@ -1,11 +1,61 @@
 {
-  "generatedAt": "2026-09-01T14:23:26.796Z",
-  "totalPosts": 89,
-  "ok": 89,
+  "generatedAt": "2026-09-01T14:39:35.559Z",
+  "totalPosts": 98,
+  "ok": 98,
   "warnings": 0,
-  "canonicalFixed": 89,
+  "canonicalFixed": 98,
   "missingFiles": 0,
   "items": [
+    {
+      "slug": "naver-224337817397",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "slug": "naver-224337822396",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "slug": "naver-224337829683",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "slug": "naver-224338873727",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "slug": "naver-224338880496",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "slug": "naver-224338890579",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "slug": "naver-224338950569",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "slug": "naver-224340026886",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "slug": "naver-224341118530",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "slug": "naver-224341135343",
+      "status": "ok",
+      "issues": []
+    },
     {
       "slug": "naver-224341146774",
       "status": "ok",
@@ -433,11 +483,6 @@
     },
     {
       "slug": "sale-real-estate-guide-bvcdri",
-      "status": "ok",
-      "issues": []
-    },
-    {
-      "slug": "inheritance-gift-real-estate-acquisition-tax-property-division-1xfulg",
       "status": "ok",
       "issues": []
     },
