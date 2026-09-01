@@ -23,6 +23,7 @@ on:
       - 'scripts/patch_admin_category.py'
       - 'scripts/fix_divorce_categories.py'
       - 'scripts/site_maintenance.py'
+      - 'scripts/sync_category_meta.py'
       - 'scripts/seo-auto.mjs'
       - 'favicon.png'
       - '.github/workflows/auto-thumbnails.yml'
@@ -72,8 +73,9 @@ jobs:
             python scripts/site_maintenance.py
             python scripts/apply_latest_cards.py
             node scripts/seo-auto.mjs
+            python scripts/sync_category_meta.py
 
-            python -m py_compile scripts/patch_admin_seo.py scripts/patch_admin_category.py scripts/fix_divorce_categories.py scripts/site_maintenance.py scripts/generate_thumbnails.py scripts/fix_thumbnail_logo.py scripts/apply_latest_cards.py
+            python -m py_compile scripts/patch_admin_seo.py scripts/patch_admin_category.py scripts/fix_divorce_categories.py scripts/site_maintenance.py scripts/generate_thumbnails.py scripts/fix_thumbnail_logo.py scripts/apply_latest_cards.py scripts/sync_category_meta.py
             node --check scripts/seo-auto.mjs
             node --check assets/latest-posts.js
             node --check assets/article-cta.js
