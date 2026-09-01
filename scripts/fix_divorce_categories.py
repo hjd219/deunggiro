@@ -20,6 +20,12 @@ RENUNCIATION_WORDS = (
     '상속포기', '한정승인', '특별한정승인', '상속채무', '상속빚', '상속 빚'
 )
 
+RENUNCIATION_FOCUS_PHRASES = (
+    '상속포기 절차', '상속포기 신청', '상속포기·한정승인', '상속포기 한정승인',
+    '한정승인 절차', '한정승인 신청', '특별한정승인', '상속포기 전', '상속포기 시',
+    '[인천 상속포기]', '[상속포기', '[인천 한정승인]', '[한정승인'
+)
+
 INHERITANCE_DIVISION_WORDS = (
     '상속재산분할', '상속분쟁', '기여분', '특별수익', '유류분',
     '상속회복청구', '상속재산분할심판'
@@ -28,7 +34,8 @@ INHERITANCE_DIVISION_WORDS = (
 STRONG_INHERITANCE_WORDS = (
     '상속등기', '상속절차', '대습상속', '상속취득세', '상속지분',
     '상속인 자격', '상속인자격', '상속재산 조회', '상속재산조회',
-    '상속예금', '상속 주식', '상속주식', '상속인 명의', '상속인명의'
+    '상속예금', '상속 주식', '상속주식', '상속인 명의', '상속인명의',
+    '상속순위', '누가 상속인', '상속인은 누구'
 )
 
 INHERITANCE_CONTEXT_WORDS = (
@@ -48,8 +55,6 @@ REAL_ESTATE_WORDS = (
     '부동산 이전', '부동산이전', '이전등기', '취득세', '재산분할등기'
 )
 
-# 이 표현들은 상속/이혼 문구가 함께 있어도 글의 주제가 부동산 이전·취득세인 경우다.
-# 상속재산분할이라는 단어 하나 때문에 상속재산분할 카테고리로 빠지지 않도록 먼저 판정한다.
 STRONG_REAL_ESTATE_PHRASES = (
     '부동산 등기 취득세', '부동산등기 취득세', '부동산 이전 절차', '부동산 이전절차',
     '부동산이전 절차', '부동산이전절차', '취득세율 총정리', '취득세 총정리',
@@ -61,11 +66,26 @@ SLUG_OVERRIDES = {
     'naver-224347168343': '부동산등기',
     'inheritance-gift-real-estate-acquisition-tax-property-division-1xfulg': '부동산등기',
     'naver-224397194690': '상속등기',
+    'inheritance-registration-acquisition-tax-incheon-procedure-doc-v9aban': '상속등기',
+    'naver-224331473807': '상속등기',
+    'naver-224337740704': '상속등기',
+    'naver-224395763010': '상속등기',
+    'naver-224376060472': '상속등기',
+    'inheritance-registration-renunciation-limited-acceptance-inche-15yen8': '상속등기',
 }
 
 
 def has_any(text: str, words: tuple[str, ...]) -> bool:
     return any(word in text for word in words)
+
+
+def is_inheritance_overview(text: str) -> bool:
+    # 사망 후 전체 흐름을 설명하는 글은 제목에 상속포기가 함께 있어도 상속등기로 묶는다.
+    if '상속등기' in text and '상속절차' in text:
+        return True
+    if '상속등기' in text and ('해야 할 일' in text or '총정리' in text) and has_any(text, INHERITANCE_CONTEXT_WORDS):
+        return True
+    return False
 
 
 def classify(title: str, current: str, slug: str = '') -> str:
@@ -79,36 +99,47 @@ def classify(title: str, current: str, slug: str = '') -> str:
     if has_any(t, CORPORATE_WORDS):
         return '법인등기'
 
-    # 2. 상속포기·한정승인은 별도 카테고리.
-    if has_any(t, RENUNCIATION_WORDS):
+    # 2. 제목 자체가 상속등기/상속절차 전체 흐름을 약속하면 상속포기 단어가 있어도 상속등기.
+    if is_inheritance_overview(t):
+        return '상속등기'
+
+    # 3. 명시적인 상속등기 제목은 취득세·부동산 단어보다 우선.
+    if '[인천 상속등기]' in t or '[상속등기]' in t or t.startswith('상속등기'):
+        return '상속등기'
+
+    # 4. 상속포기·한정승인 자체가 제목의 핵심인 글.
+    if has_any(t, RENUNCIATION_FOCUS_PHRASES):
         return '상속포기·한정승인'
 
-    # 3. 부동산 이전·취득세가 제목의 핵심인 복합 글을 먼저 잡는다.
-    #    예: 매매·상속·증여·이혼 재산분할 취득세, 이혼 재산분할등기 부동산 이전절차.
+    # 5. 부동산 이전·취득세가 제목의 핵심인 복합 글.
     if has_any(t, STRONG_REAL_ESTATE_PHRASES):
         return '부동산등기'
 
-    # 4. 상속재산분할·분쟁은 별도 카테고리.
+    # 6. 상속재산분할·분쟁은 별도 카테고리.
     if has_any(t, INHERITANCE_DIVISION_WORDS):
         return '상속재산분할'
 
-    # 5. 상속절차/상속등기를 제목이 명시하면 친권·이혼 같은 배경 단어보다 상속 우선.
+    # 7. 상속절차/상속등기/상속인 판단이 명시되면 친권·이혼 같은 배경 단어보다 상속 우선.
     if has_any(t, STRONG_INHERITANCE_WORDS):
         return '상속등기'
 
-    # 6. 일반적인 부동산 이전·취득세·매매·증여 글.
+    # 8. 포기·한정승인 관련 단어가 남아 있는 경우.
+    if has_any(t, RENUNCIATION_WORDS):
+        return '상속포기·한정승인'
+
+    # 9. 일반적인 부동산 이전·취득세·매매·증여 글.
     if has_any(t, REAL_ESTATE_WORDS):
         return '부동산등기'
 
-    # 7. 실제 친권·후견·이혼절차 자체가 핵심이면 가사.
+    # 10. 실제 친권·후견·이혼절차 자체가 핵심이면 가사.
     if has_any(t, FAMILY_WORDS):
         return '가사'
 
-    # 8. 그 밖의 사망·상속 문맥은 상속등기.
+    # 11. 그 밖의 사망·상속 문맥은 상속등기.
     if has_any(t, INHERITANCE_CONTEXT_WORDS):
         return '상속등기'
 
-    # 9. 연락두절/협조거부라는 단어만으로 분할로 보내지 않는다.
+    # 12. 연락두절/협조거부라는 단어만으로 분할로 보내지 않는다.
     if ('상속' in t and ('협조거부' in t or '연락두절' in t) and ('협의' in t or '분할' in t)):
         return '상속재산분할'
 
