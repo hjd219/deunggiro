@@ -6,7 +6,7 @@ from urllib.parse import urljoin,parse_qs,urlparse
 import requests
 from bs4 import BeautifulSoup
 from PIL import Image
-ROOT=Path(__file__).resolve().parents[1]; DATA=ROOT/'data'/'posts.json'; MEDIA=ROOT/'assets'/'naver-images'; BLOG='hjd21'; FORMAT_VERSION='12'
+ROOT=Path(__file__).resolve().parents[1]; DATA=ROOT/'data'/'posts.json'; MEDIA=ROOT/'assets'/'naver-images'; BLOG='hjd21'; FORMAT_VERSION='13'
 UA={'User-Agent':'Mozilla/5.0 (compatible; DeunggiroFormat/1.9; +https://www.deunggiro.kr/)'}
 EMOJI_RE=re.compile('[\U0001F000-\U0001FAFF\U00002600-\U000027BF]')
 def get(u):
@@ -96,7 +96,8 @@ def saveimg(candidates,slug,i,skip_if_small=False):
  return '/'+p.relative_to(ROOT).as_posix()
 def promo_start_text(v):
  v=re.sub(r'\s+','',v)
- return any(k in v for k in ('현재두법무사사무소상담안내','현재두법무사상담안내','현재두법무사사무소상담','032-425-1500'))
+ fixed=('현재두법무사사무소상담안내','현재두법무사상담안내','현재두법무사사무소상담','상속상담안내','법인상담안내','부동산상담안내','가사상담안내','이혼상담안내','032-425-1500','032-425-15')
+ return any(k in v for k in fixed) or (len(v)<=40 and '상담안내' in v)
 def is_link_component(c):
  cl=' '.join(c.get('class',[])).lower()
  return ('se-oglink' in cl or 'se-module-oglink' in cl or 'se-module-link' in cl or c.select_one('.se-oglink-info,.se-module-oglink,.se-module-link,.se-link-preview') is not None)
