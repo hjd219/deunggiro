@@ -6,6 +6,7 @@ on:
       - 'scripts/import_naver_blog.py'
       - 'scripts/refresh_naver_format.py'
       - 'scripts/strip_naver_nonnumber_emoji.py'
+      - 'scripts/ensure_section_dividers.py'
       - 'scripts/fix_divorce_categories.py'
       - 'scripts/cleanup_duplicate_posts.py'
       - '.github/workflows/import-naver-blog.yml'
@@ -49,6 +50,7 @@ jobs:
       - name: Safe postprocess
         run: |
           timeout 90s python -u scripts/strip_naver_nonnumber_emoji.py
+          timeout 90s python -u scripts/ensure_section_dividers.py
           timeout 90s python -u scripts/patch_naver_import_dates.py
           timeout 90s python -u scripts/fix_divorce_categories.py
           timeout 90s python -u scripts/cleanup_duplicate_posts.py
@@ -82,7 +84,7 @@ jobs:
           if bad:
               print('POSTPROCESS_BAD_LIST',','.join(bad)); raise SystemExit(1)
           PY
-          python -m py_compile scripts/import_naver_blog.py scripts/refresh_naver_format.py scripts/strip_naver_nonnumber_emoji.py scripts/fix_divorce_categories.py scripts/cleanup_duplicate_posts.py
+          python -m py_compile scripts/import_naver_blog.py scripts/refresh_naver_format.py scripts/strip_naver_nonnumber_emoji.py scripts/ensure_section_dividers.py scripts/fix_divorce_categories.py scripts/cleanup_duplicate_posts.py
           git diff --check
       - name: Commit
         shell: bash
@@ -93,4 +95,4 @@ jobs:
           git commit -m "네이버 블로그 미수집 글 자동 반영"
           git push origin HEAD:main
 
-# Manual trigger marker: 2026-09-02-emoji-clean
+# Manual trigger marker: 2026-09-02-section-divider
