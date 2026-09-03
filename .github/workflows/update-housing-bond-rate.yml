@@ -1,0 +1,111 @@
+name: Update daily housing bond rate
+
+on:
+  schedule:
+    - cron: "30 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-housing-bond-rate
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch and validate daily rate
+        run: |
+          python3 - <<'PY'
+          from datetime import datetime, timedelta, timezone
+          from pathlib import Path
+          import re
+          import urllib.request
+
+          sources = [
+              "https://dbbond.co.kr/sub/_sale.php",
+              "https://lawss.co.kr/lawpro/homepage/siga/auto_siga_kjaa.php",
+          ]
+          headers = {"User-Agent": "Mozilla/5.0 (deunggiro bond-rate updater)"}
+          found = None
+
+          for url in sources:
+              try:
+                  req = urllib.request.Request(url, headers=headers)
+                  raw = urllib.request.urlopen(req, timeout=20).read()
+                  text = None
+                  for enc in ("utf-8", "euc-kr", "cp949"):
+                      try:
+                          text = raw.decode(enc)
+                          break
+                      except UnicodeDecodeError:
+                          pass
+                  if not text:
+                      continue
+                  plain = re.sub(r"<[^>]+>", " ", text)
+                  plain = re.sub(r"&nbsp;|&#160;", " ", plain)
+                  matches = re.findall(
+                      r"(20\d{2}[.\-/]\d{2}[.\-/]\d{2}).{0,500}?([0-9]{1,2}\.[0-9]{3,6})\s*%",
+                      plain,
+                      flags=re.S,
+                  )
+                  if matches:
+                      found = matches[0]
+                      break
+              except Exception as exc:
+                  print(f"source failed: {url}: {exc}")
+
+          if not found:
+              raise SystemExit("No valid bond rate found; keeping existing value")
+
+          date_text, rate_text = found
+          date_text = date_text.replace("-", ".").replace("/", ".")
+          rate = float(rate_text)
+          if not (0.1 <= rate <= 30):
+              raise SystemExit(f"Out-of-range rate: {rate}")
+
+          kst = timezone(timedelta(hours=9))
+          today = datetime.now(kst).date()
+          rate_date = datetime.strptime(date_text, "%Y.%m.%d").date()
+          if rate_date > today or (today - rate_date).days > 7:
+              raise SystemExit(f"Stale or future rate date: {date_text}")
+
+          path = Path("acquisition-calculator.html")
+          html = path.read_text(encoding="utf-8")
+          updated, c1 = re.subn(
+              r"const DAILY_BOND_RATE=\d+(?:\.\d+)?;",
+              f"const DAILY_BOND_RATE={rate_text};",
+              html,
+              count=1,
+          )
+          updated, c2 = re.subn(
+              r'id="dailyBondRate">[^<]+</strong>',
+              f'id="dailyBondRate">{rate_text}%</strong>',
+              updated,
+              count=1,
+          )
+          updated, c3 = re.subn(
+              r'id="dailyBondDate">[^<]+</small>',
+              f'id="dailyBondDate">{date_text} 기준</small>',
+              updated,
+              count=1,
+          )
+          if (c1, c2, c3) != (1, 1, 1):
+              raise SystemExit(f"Expected markers not found: {(c1, c2, c3)}")
+          path.write_text(updated, encoding="utf-8")
+          print(f"validated {date_text} / {rate_text}%")
+          PY
+      - name: Commit only when rate changed
+        run: |
+          if git diff --quiet -- acquisition-calculator.html; then
+            echo "No rate change"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add acquisition-calculator.html
+          git commit -m "국민주택채권 할인율 자동 갱신"
+          git push
