@@ -80,6 +80,21 @@
  .result .total strong{font-size:29px!important}
 }
 </style>
+<style id="estimate-layout-fix">
+@media screen{
+ .result .print-columns{display:block!important}
+ .result .print-col{width:100%!important;margin:0!important}
+ .result .legal-col{margin-top:22px!important}
+ .result .print-col .row{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:16px!important}
+ .result .print-col .row span{display:block!important;margin:0!important;font-size:14px!important}
+ .result .print-col .row b{display:block!important;margin:0!important;font-size:16px!important;text-align:right!important}
+}
+@media print{
+ .result .print-columns{display:grid!important;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr)!important;gap:18px!important;align-items:start!important}
+ .result .print-col{width:auto!important;margin:0!important}
+ .result .legal-col{margin-top:0!important}
+}
+</style>
 </head><body><header class="header"><div class="head"><div class="logo">등기로<small>현재두 법무사 사무소</small></div></div></header>
 <section class="hero"><b>REAL ESTATE TAX</b><h1>부동산 취득세 계산기</h1><p>매매·증여·상속 부동산의 공과금과 법무사 보수를 계산합니다.</p></section>
 <main class="wrap">
