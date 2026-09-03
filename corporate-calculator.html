@@ -69,6 +69,10 @@
 }
 </style>
 <style id="estimate-layout-fix">
+@media screen and (min-width:801px){
+ .wrap{width:min(1120px,calc(100% - 28px))!important;grid-template-columns:minmax(0,1.28fr) minmax(380px,.72fr)!important;gap:20px!important}
+ .result{padding:25px!important}
+}
 @media screen{
  .result .print-columns{display:block!important}
  .result .print-col{width:100%!important;margin:0!important}
