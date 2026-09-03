@@ -37,3 +37,24 @@ body:not(.article-v2) .section{background:#eef6fb!important}
 body:not(.article-v2) .section.white{background:#fff!important}
 body:not(.article-v2) .section.soft{background:#eef6fb!important}
 body:not(.article-v2) #posts,body:not(.article-v2) #latest-posts,body:not(.article-v2) #related-posts,body:not(.article-v2) .latest-posts,body:not(.article-v2) .related-posts,body:not(.article-v2) .posts-section,body:not(.article-v2) .related-section{background:#fff!important}
+
+
+/* 전 페이지 글자 대비·선명도 통일 */
+:root{--muted:#4b5968!important}
+body{color:#182536!important;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+p,.desc,.lead,.summary,.subtitle,.subtext,.helper,.help,.note{color:#4b5968!important;font-weight:550}
+.hero p,.subhero p,.service-hero p,.copy p{color:#405064!important;font-weight:600!important}
+.quick-item p,.card p,.info-box p,.calc-card p,.calc-launch p,.post-card p,.feature-item p{color:#465568!important;font-weight:600!important}
+.post-meta,.meta,.date,.selected,.field label,.form-group label{color:#465568!important;font-weight:700!important}
+.article-body{color:#202d3d!important}
+.article-body p,.article-body li{color:#26384b!important;font-weight:500}
+.article-body blockquote{color:#31465a!important;font-weight:600}
+.result .row span,.result-row span,.calculator .notice,.admin-help{color:#263e53!important;font-weight:700!important}
+.dg-shell-contact p{color:#e0e9f4!important;font-weight:600!important}
+.dg-shell-footer{color:#dce6f3!important}
+.dg-shell-footer-info,.dg-shell-route-list{color:#e1e9f4!important;font-weight:600}
+.dg-shell-route-sub{color:#c8d9ec!important}
+.dg-shell-social,.dg-shell-route-actions a{font-weight:850!important}
+@media(max-width:700px){
+ p,.desc,.lead,.summary,.subtitle,.subtext,.helper,.help,.note{font-weight:600}
+}
