@@ -44,6 +44,13 @@
 .result .row b{color:#0b2137!important;font-weight:800!important}
 .result .total span{color:#263e53!important;font-weight:800!important}
 </style>
+<style>
+@media print{
+ .office-footer{display:block!important;margin-top:12px!important;padding:10px 12px!important;border:1px solid #91adbf!important;border-radius:9px!important;background:#f2faff!important;color:#1d354b!important;font-size:9px!important;line-height:1.55!important}
+ .office-footer b{display:block!important;margin:0 0 3px!important;color:#168dca!important;font-size:11px!important;font-weight:900!important}
+ .office-footer .office-address,.office-footer .office-contact{color:#263e53!important;font-weight:700!important}
+}
+</style>
 </head><body><header class="header"><div class="head"><div class="logo">등기로<small>현재두 법무사 사무소</small></div></div></header>
 <section class="hero"><b>REAL ESTATE TAX</b><h1>부동산 취득세 계산기</h1><p>매매·증여·상속 부동산의 공과금과 법무사 보수를 계산합니다.</p></section>
 <main class="wrap">
@@ -61,7 +68,7 @@
 <div class="row"><span>취득세</span><b id="acq">0원</b></div><div class="row"><span>지방교육세</span><b id="edu">0원</b></div><div class="row"><span>농어촌특별세</span><b id="rural">0원</b></div><div class="row"><span>국민주택채권 매입액</span><b id="bond">0원</b></div><div class="row"><span>채권 할인금액</span><b id="discountCost">0원</b></div><div class="row"><span>등기신청수수료</span><b id="registry">0원</b></div><div class="row"><span>교통비</span><b id="travelOut">80,000원</b></div><div class="row"><span>제증명 비용</span><b id="certOut">0원</b></div><div class="row" id="stampRow"><span>매매계약서 인지세(계약금액 기준)</span><b id="stamp">0원</b></div><div class="total"><span>예상 공과금 합계</span><strong id="publicTotal">0원</strong></div>
 </div><div class="print-col legal-col"><div class="section"><div class="step">LEGAL SERVICE FEE</div><h3>법무사 보수</h3></div>
 <div class="row"><span id="basicLabel">소유권이전 보수</span><b id="basic">0원</b></div><div class="row"><span>취득세 신고·채권 매입 대행</span><b id="agency">90,000원</b></div><div class="row"><span>부가가치세 10%</span><b id="vat">0원</b></div><div class="total"><span>예상 법무사 보수 합계</span><strong id="legalTotal">0원</strong></div><div class="total grand"><span>전체 예상비용</span><strong id="grand">0원</strong></div>
-</div></div><div class="documents"><h3>고객 준비서류</h3><div id="documentList"></div></div><button class="pdf-download" type="button" onclick="printEstimate()">견적서 PDF 받기</button><a class="consult" href="tel:0324251500">상담하기 032-425-1500</a><div class="print-footer"><b>복잡한 부동산등기, 등기로에서 쉽고 정확하게</b><br>상담 032-425-1500　www.deunggiro.kr</div></aside>
+</div></div><div class="documents"><h3>고객 준비서류</h3><div id="documentList"></div></div><button class="pdf-download" type="button" onclick="printEstimate()">견적서 PDF 받기</button><a class="consult" href="tel:0324251500">상담하기 032-425-1500</a><div class="print-footer office-footer"><b>등기로 | 현재두 법무사 사무소</b><div class="office-address">인천 미추홀구 경원대로 873, 201호(주안동, 인성빌딩) · 인천가정법원 옆</div><div class="office-contact">전화 032-425-1500　홈페이지 www.deunggiro.kr</div></div></aside>
 </main>
 <script>
 const DAILY_BOND_RATE=15.80058;
