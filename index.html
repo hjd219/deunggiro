@@ -1228,6 +1228,124 @@ section,header,footer,.container,.hero-grid,.quick-grid,.calc-grid,.post-box,.co
 }
 </style>
 
+
+<style>
+/* HOME_SERVICE_CARDS_FINAL_V4 */
+.quick-item.quick-rich{
+  grid-template-columns:64px minmax(0,1fr) 54px!important;
+  padding-right:0!important;
+  transition:transform .28s cubic-bezier(.2,.8,.2,1),box-shadow .28s ease,border-color .2s ease!important;
+  -webkit-tap-highlight-color:transparent!important;
+}
+.quick-item.quick-rich .quick-copy>strong{display:none!important}
+.quick-item.quick-rich .quick-copy{position:relative;z-index:1;padding-right:7px}
+.quick-item.quick-rich h3{
+  margin:0 0 7px!important;
+  color:#20242b!important;
+  font-size:21px!important;
+  font-weight:900!important;
+  letter-spacing:-.75px!important;
+}
+.quick-item.quick-rich p{
+  margin:0!important;
+  color:#168dca!important;
+  font-size:14px!important;
+  font-weight:800!important;
+  line-height:1.45!important;
+  opacity:1!important;
+}
+.quick-item.quick-rich .go{
+  position:absolute!important;
+  z-index:1;
+  top:0;
+  right:0;
+  bottom:0;
+  width:54px;
+  margin:0!important;
+  padding:15px 6px 48px!important;
+  display:flex!important;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  white-space:normal;
+  word-break:keep-all;
+  color:#fff!important;
+  background:var(--qc)!important;
+  border:0!important;
+  font-size:12px!important;
+  font-weight:900!important;
+  line-height:1.3!important;
+}
+.quick-item.quick-rich .quick-arrow{
+  position:absolute!important;
+  z-index:2;
+  right:11px;
+  bottom:14px;
+  width:32px!important;
+  height:32px!important;
+  color:#fff!important;
+  background:rgba(255,255,255,.2)!important;
+  border:1px solid rgba(255,255,255,.32)!important;
+  box-shadow:none!important;
+}
+.quick-item.quick-rich .quick-icon,
+.quick-item.quick-rich:hover .quick-icon,
+.quick-item.quick-rich:active .quick-icon,
+.quick-item.quick-rich:focus-visible .quick-icon{
+  transform:none!important;
+}
+.quick-item.quick-rich:focus-visible{
+  outline:3px solid color-mix(in srgb,var(--qc) 35%,transparent)!important;
+  outline-offset:3px!important;
+}
+.quick-item.quick-rich:focus-visible,
+.quick-item.quick-rich:active{
+  border-color:var(--qc)!important;
+}
+.quick-item.quick-rich:focus-visible p,
+.quick-item.quick-rich:active p{
+  color:var(--qc)!important;
+}
+@media(hover:hover) and (pointer:fine){
+  .quick-item.quick-rich:hover{
+    transform:translateY(-7px)!important;
+    background:linear-gradient(110deg,var(--qbg),#fff 76%)!important;
+    border-color:var(--qc)!important;
+    box-shadow:0 16px 30px rgba(31,41,55,.16)!important;
+  }
+  .quick-item.quick-rich:hover p{color:var(--qc)!important}
+}
+@media(min-width:1001px){
+  .quick-item.quick-rich{
+    grid-template-columns:52px minmax(0,1fr) 44px!important;
+    padding-right:0!important;
+  }
+  .quick-item.quick-rich h3{font-size:18px!important;line-height:1.25!important;margin-bottom:6px!important}
+  .quick-item.quick-rich.c4 h3{font-size:16px!important;line-height:1.25!important}
+  .quick-item.quick-rich p{font-size:12.5px!important;line-height:1.4!important}
+  .quick-item.quick-rich .go{width:44px;padding:12px 5px 43px!important;font-size:11px!important}
+  .quick-item.quick-rich .quick-arrow{right:8px;bottom:12px;width:28px!important;height:28px!important;font-size:20px!important}
+}
+@media(max-width:800px){
+  .quick-item.quick-rich{
+    grid-template-columns:66px minmax(0,1fr) 54px!important;
+    padding-right:0!important;
+  }
+  .quick-item.quick-rich:hover,.quick-item.quick-rich:focus{
+    transform:none!important;
+  }
+  .quick-item.quick-rich:active{
+    transform:translateY(-3px) scale(.985)!important;
+    background:linear-gradient(110deg,var(--qbg),#fff 76%)!important;
+    box-shadow:0 12px 24px rgba(31,41,55,.14)!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .quick-item.quick-rich{transition:none!important}
+  .quick-item.quick-rich:hover,.quick-item.quick-rich:active{transform:none!important}
+}
+</style>
+
 <script src="/assets/analytics.js" defer></script>
 </head>
 <body class="home">
@@ -1286,11 +1404,11 @@ section,header,footer,.container,.hero-grid,.quick-grid,.calc-grid,.post-box,.co
 
 <div class="container quick" id="services">
  <div class="quick-grid">
-  <a class="quick-item quick-rich c1" href="/inheritance.html"><span class="quick-icon"><svg viewBox="0 0 48 48"><path d="M12 7h18l7 7v27H12z" stroke="#258ed0" stroke-width="3" fill="none"/><path d="M30 7v8h7M18 25l4 4 9-10" stroke="#25a8df" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="quick-copy"><strong>01</strong><h3>상속</h3><p>상속등기 · 재산분할</p><span class="go">자세히 보기</span></span><span class="quick-arrow">›</span></a>
-  <a class="quick-item quick-rich c2" href="/corporate.html"><span class="quick-icon"><svg viewBox="0 0 48 48"><path d="M9 41h30M13 41V20h22v21M18 20v-7h12v7" stroke="#7766d5" stroke-width="3" fill="none"/><path d="M19 27h3m5 0h3m-11 7h3m5 0h3" stroke="#9a7be0" stroke-width="3" fill="none" stroke-linecap="round"/></svg></span><span class="quick-copy"><strong>02</strong><h3>법인</h3><p>설립 · 변경 · 증자</p><span class="go">자세히 보기</span></span><span class="quick-arrow">›</span></a>
-  <a class="quick-item quick-rich c3" href="/realestate.html"><span class="quick-icon"><svg viewBox="0 0 48 48"><path d="M7 23 24 9l17 14v18H12V24" stroke="#20a38e" stroke-width="3" fill="none"/><path d="M19 41V29h10v12" stroke="#53bba9" stroke-width="3" fill="none"/></svg></span><span class="quick-copy"><strong>03</strong><h3>부동산</h3><p>매매 · 증여 · 담보</p><span class="go">자세히 보기</span></span><span class="quick-arrow">›</span></a>
-  <a class="quick-item quick-rich c4" href="/renunciation.html"><span class="quick-icon"><svg viewBox="0 0 48 48"><path d="M24 7 38 12v10c0 9-5.5 15.5-14 20-8.5-4.5-14-11-14-20V12z" stroke="#c89725" stroke-width="3" fill="none"/><path d="M16 22h16M24 16v12M18 22l-4 6h8zm12 0-4 6h8z" stroke="#c89725" stroke-width="2.5" fill="none"/></svg></span><span class="quick-copy"><strong>04</strong><h3>한정승인·상속포기</h3><p>채무상속 대응</p><span class="go">자세히 보기</span></span><span class="quick-arrow">›</span></a>
-  <a class="quick-item quick-rich c5" href="/family.html"><span class="quick-icon"><svg viewBox="0 0 48 48"><circle cx="18" cy="18" r="6" stroke="#cf679d" stroke-width="3" fill="none"/><circle cx="31" cy="19" r="5" stroke="#7b6bd0" stroke-width="3" fill="none"/><path d="M8 39c1-8 5-12 10-12s9 4 10 12M26 30c5-3 12 1 13 9" stroke="#cf679d" stroke-width="3" fill="none" stroke-linecap="round"/></svg></span><span class="quick-copy"><strong>05</strong><h3>가사</h3><p>이혼 · 개명 · 후견</p><span class="go">자세히 보기</span></span><span class="quick-arrow">›</span></a>
+  <a class="quick-item quick-rich c1" href="/inheritance.html"><span class="quick-icon"><svg viewBox="0 0 48 48"><path d="M12 7h18l7 7v27H12z" stroke="#258ed0" stroke-width="3" fill="none"/><path d="M30 7v8h7M18 25l4 4 9-10" stroke="#25a8df" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="quick-copy"><h3>상속</h3><p>상속등기 · 재산분할</p><span class="go">자세히 보기</span></span><span class="quick-arrow">›</span></a>
+  <a class="quick-item quick-rich c2" href="/corporate.html"><span class="quick-icon"><svg viewBox="0 0 48 48"><path d="M9 41h30M13 41V20h22v21M18 20v-7h12v7" stroke="#7766d5" stroke-width="3" fill="none"/><path d="M19 27h3m5 0h3m-11 7h3m5 0h3" stroke="#9a7be0" stroke-width="3" fill="none" stroke-linecap="round"/></svg></span><span class="quick-copy"><h3>법인</h3><p>설립 · 변경 · 증자</p><span class="go">자세히 보기</span></span><span class="quick-arrow">›</span></a>
+  <a class="quick-item quick-rich c3" href="/realestate.html"><span class="quick-icon"><svg viewBox="0 0 48 48"><path d="M7 23 24 9l17 14v18H12V24" stroke="#20a38e" stroke-width="3" fill="none"/><path d="M19 41V29h10v12" stroke="#53bba9" stroke-width="3" fill="none"/></svg></span><span class="quick-copy"><h3>부동산</h3><p>매매 · 증여 · 담보</p><span class="go">자세히 보기</span></span><span class="quick-arrow">›</span></a>
+  <a class="quick-item quick-rich c4" href="/renunciation.html"><span class="quick-icon"><svg viewBox="0 0 48 48"><path d="M24 7 38 12v10c0 9-5.5 15.5-14 20-8.5-4.5-14-11-14-20V12z" stroke="#c89725" stroke-width="3" fill="none"/><path d="M16 22h16M24 16v12M18 22l-4 6h8zm12 0-4 6h8z" stroke="#c89725" stroke-width="2.5" fill="none"/></svg></span><span class="quick-copy"><h3>한정승인·상속포기</h3><p>채무상속 대응</p><span class="go">자세히 보기</span></span><span class="quick-arrow">›</span></a>
+  <a class="quick-item quick-rich c5" href="/family.html"><span class="quick-icon"><svg viewBox="0 0 48 48"><circle cx="18" cy="18" r="6" stroke="#cf679d" stroke-width="3" fill="none"/><circle cx="31" cy="19" r="5" stroke="#7b6bd0" stroke-width="3" fill="none"/><path d="M8 39c1-8 5-12 10-12s9 4 10 12M26 30c5-3 12 1 13 9" stroke="#cf679d" stroke-width="3" fill="none" stroke-linecap="round"/></svg></span><span class="quick-copy"><h3>가사</h3><p>이혼 · 개명 · 후견</p><span class="go">자세히 보기</span></span><span class="quick-arrow">›</span></a>
  </div>
 </div>
 
@@ -1315,10 +1433,10 @@ section,header,footer,.container,.hero-grid,.quick-grid,.calc-grid,.post-box,.co
 </section>
 
 <!-- SEO_LATEST_START -->
-<section id="dg-latest-posts" class="dg-latest-wrap"><div class="dg-latest-inner"><div class="dg-latest-head"><div><div class="dg-latest-kicker">등기로 · 최신글</div><h2 class="dg-latest-title">최신 법률정보</h2><p class="dg-latest-desc">최근 등록된 실무 정보를 확인하세요.</p></div><a class="dg-latest-more" href="/posts.html">전체 글 보기 →</a></div><div class="dg-latest-grid"><a class="dg-latest-card" href="/posts/naver-224281609182.html"><div class="dg-latest-thumb"><img loading="lazy" decoding="async" src="/assets/posts/naver-224281609182-thumbnail.png" alt="부동산경매 입찰금액 실수로 잘못 적어 낙찰된 경우 무효 가능할까? (보증금반환여부)"></div><div class="dg-latest-body"><div class="dg-latest-cat">부동산등기</div><div class="dg-latest-card-title">부동산경매 입찰금액 실수로 잘못 적어 낙찰된 경우 무효 가능할까? (보증금반환여부)</div><div class="dg-latest-date">2026.09.05</div></div></a>
-<a class="dg-latest-card" href="/posts/naver-224281664078.html"><div class="dg-latest-thumb"><img loading="lazy" decoding="async" src="/assets/posts/naver-224281664078-thumbnail.png" alt="이혼 안 하고 상간남·상간녀 위자료 소송 가능할까? 실제로 많이 하는 방법입니다 (배우자에게 구상권 청구가능)"></div><div class="dg-latest-body"><div class="dg-latest-cat">가사</div><div class="dg-latest-card-title">이혼 안 하고 상간남·상간녀 위자료 소송 가능할까? 실제로 많이 하는 방법입니다 (배우자에게 구상권 청구가능)</div><div class="dg-latest-date">2026.09.05</div></div></a>
-<a class="dg-latest-card" href="/posts/naver-224282188114.html"><div class="dg-latest-thumb"><img loading="lazy" decoding="async" src="/assets/posts/naver-224282188114-thumbnail.png" alt="부동산 경매 낙찰 촉탁등기취득세 + 등기 진행 어떻게 되나요?"></div><div class="dg-latest-body"><div class="dg-latest-cat">부동산등기</div><div class="dg-latest-card-title">부동산 경매 낙찰 촉탁등기취득세 + 등기 진행 어떻게 되나요?</div><div class="dg-latest-date">2026.09.05</div></div></a>
-<a class="dg-latest-card" href="/posts/naver-224283191663.html"><div class="dg-latest-thumb"><img loading="lazy" decoding="async" src="/assets/posts/naver-224283191663-thumbnail.png" alt="부동산경매 공유자 우선매수권 완벽 정리 (행사방법·보증금·주의사항)"></div><div class="dg-latest-body"><div class="dg-latest-cat">부동산등기</div><div class="dg-latest-card-title">부동산경매 공유자 우선매수권 완벽 정리 (행사방법·보증금·주의사항)</div><div class="dg-latest-date">2026.09.05</div></div></a></div></div></section>
+<section id="dg-latest-posts" class="dg-latest-wrap"><div class="dg-latest-inner"><div class="dg-latest-head"><div><div class="dg-latest-kicker">등기로 · 최신글</div><h2 class="dg-latest-title">최신 법률정보</h2><p class="dg-latest-desc">최근 등록된 실무 정보를 확인하세요.</p></div><a class="dg-latest-more" href="/posts.html">전체 글 보기 →</a></div><div class="dg-latest-grid"><a class="dg-latest-card" href="/posts/naver-224285020929.html"><div class="dg-latest-thumb"><img loading="lazy" decoding="async" src="/assets/posts/naver-224285020929-thumbnail.png" alt="부동산 근저당말소 등기 어떻게 해야 하나요? (1금융권·기타금융권·등기권리증분실 시 완벽 정리)"></div><div class="dg-latest-body"><div class="dg-latest-cat">부동산등기</div><div class="dg-latest-card-title">부동산 근저당말소 등기 어떻게 해야 하나요? (1금융권·기타금융권·등기권리증분실 시 완벽 정리)</div><div class="dg-latest-date">2026.09.04</div></div></a>
+<a class="dg-latest-card" href="/posts/naver-224285049791.html"><div class="dg-latest-thumb"><img loading="lazy" decoding="async" src="/assets/posts/naver-224285049791-thumbnail.png" alt="가등기 말소 어떻게 해야 하나요? | 단독 말소와 권리자 사망 시 처리 기준"></div><div class="dg-latest-body"><div class="dg-latest-cat">부동산등기</div><div class="dg-latest-card-title">가등기 말소 어떻게 해야 하나요? | 단독 말소와 권리자 사망 시 처리 기준</div><div class="dg-latest-date">2026.09.04</div></div></a>
+<a class="dg-latest-card" href="/posts/naver-224285062558.html"><div class="dg-latest-thumb"><img loading="lazy" decoding="async" src="/assets/posts/naver-224285062558-thumbnail.png" alt="자녀가 부모에게 집 증여하는 경우 어떻게 해야 하나요? | 절차·세금·2주택 해소 목적"></div><div class="dg-latest-body"><div class="dg-latest-cat">부동산등기</div><div class="dg-latest-card-title">자녀가 부모에게 집 증여하는 경우 어떻게 해야 하나요? | 절차·세금·2주택 해소 목적</div><div class="dg-latest-date">2026.09.04</div></div></a>
+<a class="dg-latest-card" href="/posts/naver-224285183024.html"><div class="dg-latest-thumb"><img loading="lazy" decoding="async" src="/assets/posts/naver-224285183024-thumbnail.png" alt="부동산 협의이혼 재산분할 공동명의·단독명의 이전 어떻게 해야 하나요?(협의이혼·조정·판결이혼 포함)"></div><div class="dg-latest-body"><div class="dg-latest-cat">부동산등기</div><div class="dg-latest-card-title">부동산 협의이혼 재산분할 공동명의·단독명의 이전 어떻게 해야 하나요?(협의이혼·조정·판결이혼 포함)</div><div class="dg-latest-date">2026.09.04</div></div></a></div></div></section>
 <!-- SEO_LATEST_END -->
 
 <section class="contact" id="contact">
