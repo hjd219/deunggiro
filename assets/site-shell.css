@@ -38,7 +38,6 @@ body:not(.article-v2) .section.white{background:#fff!important}
 body:not(.article-v2) .section.soft{background:#eef6fb!important}
 body:not(.article-v2) #posts,body:not(.article-v2) #latest-posts,body:not(.article-v2) #related-posts,body:not(.article-v2) .latest-posts,body:not(.article-v2) .related-posts,body:not(.article-v2) .posts-section,body:not(.article-v2) .related-section{background:#fff!important}
 
-
 /* 전 페이지 글자 대비·선명도 통일 */
 :root{--muted:#4b5968!important}
 body{color:#182536!important;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
@@ -81,5 +80,46 @@ p,.desc,.lead,.summary,.subtitle,.subtext,.helper,.help,.note{color:#4b5968!impo
   }
   body.home .hero .hero-written-line.second{
     width:84%!important;
+  }
+}
+
+/* DETAIL_BODYFONT_WRITE_V1 - 개별페이지: 홈페이지 본문체로 등→기→로 순차 표시 */
+body:not(.home):not(.article-v2) .subhero .container::after,
+body:not(.home):not(.article-v2) .service-hero .container::after{
+  content:"등기로";
+  display:block;
+  width:max-content;
+  max-width:100%;
+  margin-top:24px;
+  padding:0 .06em .30em 0;
+  color:var(--dg-primary);
+  font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR","Malgun Gothic",sans-serif;
+  font-size:46px;
+  font-weight:900;
+  line-height:1;
+  letter-spacing:-.07em;
+  white-space:nowrap;
+  clip-path:inset(0 100% 0 0);
+  background-image:linear-gradient(var(--dg-primary),var(--dg-primary)),linear-gradient(var(--dg-primary),var(--dg-primary));
+  background-repeat:no-repeat;
+  background-position:2% calc(100% - 8px),17% 100%;
+  background-size:0 5px,0 3px;
+  animation:dg-detail-word 1.35s steps(3,end) .16s forwards,dg-detail-line 1.15s ease-out 1.58s forwards;
+}
+@keyframes dg-detail-word{to{clip-path:inset(0 0 0 0)}}
+@keyframes dg-detail-line{to{background-size:96% 5px,72% 3px}}
+@media(max-width:700px){
+  body:not(.home):not(.article-v2) .subhero .container::after,
+  body:not(.home):not(.article-v2) .service-hero .container::after{
+    font-size:38px;
+    margin-top:22px;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  body:not(.home):not(.article-v2) .subhero .container::after,
+  body:not(.home):not(.article-v2) .service-hero .container::after{
+    clip-path:none;
+    background-size:96% 5px,72% 3px;
+    animation:none;
   }
 }
