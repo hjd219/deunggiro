@@ -1248,7 +1248,7 @@ section,header,footer,.container,.hero-grid,.quick-grid,.calc-grid,.post-box,.co
 }
 .quick-item.quick-rich p{
   margin:0!important;
-  color:#168dca!important;
+  color:var(--qc)!important;
   font-size:14px!important;
   font-weight:800!important;
   line-height:1.45!important;
@@ -1312,6 +1312,13 @@ section,header,footer,.container,.hero-grid,.quick-grid,.calc-grid,.post-box,.co
 .quick-item.quick-rich:focus-visible p,
 .quick-item.quick-rich:active p{
   color:var(--qc)!important;
+}
+.quick-item.quick-rich:hover p,
+.quick-item.quick-rich:focus p,
+.quick-item.quick-rich:focus-visible p,
+.quick-item.quick-rich:active p{
+  color:var(--qc)!important;
+  opacity:1!important;
 }
 @media(hover:hover) and (pointer:fine){
   .quick-item.quick-rich:hover{
