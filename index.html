@@ -997,6 +997,110 @@ section,header,footer,.container,.hero-grid,.quick-grid,.calc-grid,.post-box,.co
 }
 </style>
 
+<style>
+/* HOME_HERO_WRITING_V1 */
+.hero-title-lead{display:block;color:var(--ink)}
+.hero-written-phrase{
+  position:relative;
+  display:inline-block;
+  min-height:1.55em;
+  margin-top:.08em;
+  padding:0 .08em .3em 0;
+  white-space:nowrap;
+  line-height:1;
+  letter-spacing:-.075em;
+  vertical-align:top;
+}
+.hero-written-layer{
+  display:inline-flex;
+  align-items:baseline;
+}
+.hero-written-ghost{opacity:.055}
+.hero-written-ink{
+  position:absolute;
+  top:0;
+  left:0;
+  clip-path:inset(0 100% 0 0);
+  animation:hero-write-reveal 3.4s cubic-bezier(.42,0,.24,1) .15s both;
+}
+.hero-written-brand{
+  display:inline-block;
+  color:var(--primary);
+  font-size:1.42em;
+  font-weight:900;
+  letter-spacing:-.09em;
+  transform:translateY(.045em);
+}
+.hero-written-message{color:var(--ink);font-weight:900}
+.hero-written-line{
+  position:absolute;
+  left:2%;
+  bottom:.16em;
+  width:92%;
+  height:.09em;
+  border-radius:999px;
+  background:var(--primary);
+  transform:rotate(-2deg) scaleX(0);
+  transform-origin:left center;
+  animation:hero-write-line 3.4s ease-out .15s both;
+}
+.hero-written-line.second{
+  left:17%;
+  bottom:.02em;
+  width:72%;
+  height:.065em;
+  transform:rotate(1deg) scaleX(0);
+  animation-name:hero-write-line-two;
+}
+.hero-written-phrase::after{
+  content:"";
+  position:absolute;
+  left:1%;
+  top:44%;
+  width:.18em;
+  height:.18em;
+  border-radius:50% 50% 50% 0;
+  background:var(--primary);
+  box-shadow:0 0 .22em rgba(54,169,225,.42);
+  opacity:0;
+  transform:translate(-50%,-50%) rotate(-45deg);
+  animation:hero-write-pen 3.4s cubic-bezier(.42,0,.24,1) .15s both;
+}
+@keyframes hero-write-reveal{
+  0%,7%{clip-path:inset(0 100% 0 0)}
+  62%,100%{clip-path:inset(0 0 0 0)}
+}
+@keyframes hero-write-pen{
+  0%,7%{left:1%;opacity:0}
+  10%{opacity:1}
+  62%{left:98%;opacity:1}
+  66%,100%{left:98%;opacity:0}
+}
+@keyframes hero-write-line{
+  0%,64%{transform:rotate(-2deg) scaleX(0)}
+  80%,100%{transform:rotate(-2deg) scaleX(1)}
+}
+@keyframes hero-write-line-two{
+  0%,76%{transform:rotate(1deg) scaleX(0)}
+  94%,100%{transform:rotate(1deg) scaleX(1)}
+}
+@media(max-width:800px){
+  .hero-written-phrase{
+    font-size:clamp(27px,8.5vw,35px)!important;
+    min-height:1.62em;
+    margin-top:.14em;
+    letter-spacing:-.07em;
+  }
+  .hero-written-brand{font-size:1.42em}
+}
+@media(prefers-reduced-motion:reduce){
+  .hero-written-ink{clip-path:inset(0);animation:none}
+  .hero-written-phrase::after{display:none}
+  .hero-written-line{transform:rotate(-2deg) scaleX(1);animation:none}
+  .hero-written-line.second{transform:rotate(1deg) scaleX(1);animation:none}
+}
+</style>
+
 
 <style>
 /* HOME_SERVICE_CARDS_V2 */
@@ -1132,7 +1236,7 @@ section,header,footer,.container,.hero-grid,.quick-grid,.calc-grid,.post-box,.co
  <div class="container hero-grid">
   <div class="copy">
    <div class="hero-label">등기로 · 현재두 법무사 사무소</div>
-   <h1>상속부터 법인등기까지<br>복잡한 절차, <span>등기로</span>에서 쉽게.</h1>
+   <h1><span class="hero-title-lead">상속부터 법인등기까지<br>복잡한 절차,</span><span class="hero-written-phrase" aria-label="등기로에서 쉽게!"><span class="hero-written-layer hero-written-ghost" aria-hidden="true"><span class="hero-written-brand">등기로</span><span class="hero-written-message">에서 쉽게!</span></span><span class="hero-written-layer hero-written-ink" aria-hidden="true"><span class="hero-written-brand">등기로</span><span class="hero-written-message">에서 쉽게!</span></span><i class="hero-written-line" aria-hidden="true"></i><i class="hero-written-line second" aria-hidden="true"></i></span></h1>
    <p>필요서류부터 절차·기간·비용까지,<br>궁금한 내용을 쉽고 빠르게 확인하세요.</p>
    <div class="tags">
     <a href="/inheritance.html">인천 상속</a>
