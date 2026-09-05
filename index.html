@@ -1091,12 +1091,16 @@ section,header,footer,.container,.hero-grid,.quick-grid,.calc-grid,.post-box,.co
 }
 @media(max-width:800px){
   .hero-written-phrase{
-    font-size:clamp(27px,8.5vw,35px)!important;
-    min-height:1.62em;
+    font-size:50px!important;
+    min-height:106px;
     margin-top:.14em;
-    letter-spacing:-.07em;
+    letter-spacing:-.055em;
   }
-  .hero-written-brand{font-size:1.42em}
+  .hero-written-brand{font-size:1.48em}
+}
+@media(max-width:350px){
+  .hero-written-phrase{font-size:43px!important;min-height:94px}
+  .hero-written-brand{font-size:1.49em}
 }
 @media(prefers-reduced-motion:reduce){
   .hero-written-ink{clip-path:inset(0);animation:none}
