@@ -59,25 +59,27 @@ p,.desc,.lead,.summary,.subtitle,.subtext,.helper,.help,.note{color:#4b5968!impo
  p,.desc,.lead,.summary,.subtitle,.subtext,.helper,.help,.note{font-weight:600}
 }
 
-/* HOME_PC_WRITTEN_PHRASE_WIDE_V2 - PC에서 등기로 필기문구를 더 크고 길게 */
+/* HOME_PC_WRITTEN_PHRASE_WIDE_V3 - PC 높이는 유지하고 가로만 더 길게 */
 @media(min-width:1001px){
   body.home .hero .hero-written-phrase{
     font-size:50px!important;
-    letter-spacing:-.045em!important;
+    letter-spacing:.005em!important;
     min-height:1.62em!important;
     margin-top:.12em!important;
+    transform:scaleX(1.14)!important;
+    transform-origin:left center!important;
   }
   body.home .hero .hero-written-brand{
     font-size:1.46em!important;
-    letter-spacing:-.065em!important;
-  }
-  body.home .hero .hero-written-message{
     letter-spacing:-.035em!important;
   }
+  body.home .hero .hero-written-message{
+    letter-spacing:.005em!important;
+  }
   body.home .hero .hero-written-line{
-    width:96%!important;
+    width:99%!important;
   }
   body.home .hero .hero-written-line.second{
-    width:78%!important;
+    width:84%!important;
   }
 }
