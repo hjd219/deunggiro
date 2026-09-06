@@ -1,5 +1,5 @@
 {
-  "posts_checked": 178,
+  "posts_checked": 188,
   "duplicate_title_groups": [],
   "duplicate_posts_excluding_one_canonical_each": 0,
   "policy": "중복은 제목이 일치하는 경우만 판정한다. 공백·문장부호 차이만 무시하며 가족관계·지역명·숫자 등 단어가 다르면 중복으로 판정하지 않는다."
