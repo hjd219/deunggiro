@@ -1,0 +1,22 @@
+/* KOREAN_ONLY_LABELS_V1
+   화면에 노출되는 장식용 영문 라벨을 제거하고 한글 제목 중심으로 통일 */
+.label,
+.dg-shell-label,
+.re-itop small,
+.corp-faq-kicker,
+.corp-penalty-kicker,
+.corp-head .kicker,
+.corp-kicker,
+.process-kicker,
+.faq-kicker,
+.doc-kicker,
+.section-kicker,
+.eyebrow,
+.kicker{display:none!important}
+
+/* 부동산 유형 카드의 DOCUMENTS / TAX만 제거. 번호 탭(01~04)은 유지 */
+.re-itop small{display:none!important}
+
+/* 영문 라벨 제거 뒤 불필요한 위 여백 보정 */
+.label + h1,.label + h2,.label + h3,
+.dg-shell-label + h2{margin-top:0!important}
