@@ -83,3 +83,10 @@ p,.desc,.lead,.summary,.subtitle,.subtext,.helper,.help,.note{color:#4b5968!impo
     width:84%!important;
   }
 }
+
+/* MOBILE_SIDE_GUTTER_V1 - 모바일 본문/카드 좌우 여백 16px 통일 */
+@media(max-width:700px){
+  .container{padding-left:16px!important;padding-right:16px!important}
+  .dg-shell-header .dg-shell-inner{padding-left:16px!important;padding-right:16px!important}
+  .dg-shell-contact .dg-shell-contact-grid,.dg-shell-footer .dg-shell-footer-grid{padding-left:16px!important;padding-right:16px!important}
+}
