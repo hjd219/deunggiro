@@ -39,3 +39,6 @@ body:has(.re-main) .re-main>.container::after{content:"매매·증여·상속·�
 /* LEGAL_INFO_ENGLISH_OFF_V1 - 법률정보 목록 상단 영문 라벨 숨김 */
 body:has(#posts) .section>.container>.label{display:none!important}
 body:has(#posts) .section>.container>.title{margin-top:0!important}
+
+/* RELATED_CALCULATOR_CTA_V1 */
+.related-posts-actions .dg-related-calc{background:var(--dg-primary)!important;border-color:var(--dg-primary)!important;color:#fff!important;font-weight:900!important}
