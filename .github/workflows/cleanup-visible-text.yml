@@ -1,0 +1,37 @@
+name: cleanup-visible-text
+on:
+  push:
+    paths: ['.github/workflows/cleanup-visible-text.yml']
+permissions:
+  contents: write
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - run: |
+          git checkout 15a5f6553ff644fafc52a96e0b62c6449a096620^ -- index.html
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('index.html'); s=p.read_text()
+          s=s.replace('<span class="hero-written-layer hero-written-ghost" aria-hidden="true"><span class="hero-written-brand">등기로</span><span class="hero-written-message">에서 쉽게!</span></span>','')
+          for x in ['<div class="label">CALCULATOR</div>','<div class="label">REAL ESTATE TAX</div>','<div class="label">CORPORATE TAX</div>','<div class="label" style="color:#9fb9df">CONSULTATION</div>']: s=s.replace(x,'')
+          p.write_text(s)
+          labels={'inheritance.html':['INHERITANCE PROCESS','FAQ','DOCUMENTS','CONSULTATION','RELATED LEGAL INFORMATION'],'renunciation.html':['FAQ','DOCUMENTS','CONSULTATION','RELATED LEGAL INFORMATION'],'corporate.html':['CORPORATE REGISTRATION','FAQ','CONSULTATION','RELATED LEGAL INFORMATION'],'realestate.html':['REAL ESTATE','RELATED LEGAL INFORMATION','SELECT YOUR CASE','BEFORE REGISTRATION','FAQ','CONSULTATION'],'family.html':['FAMILY','RELATED LEGAL INFORMATION','MAIN SERVICES','DOCUMENTS','FAQ','CONSULTATION'],'posts.html':['LEGAL INFORMATION','CONSULTATION']}
+          for fn,words in labels.items():
+            p=Path(fn)
+            if not p.exists(): continue
+            s=p.read_text()
+            for w in words:
+              s=re.sub(r'<div class="(?:hero-label|label)"(?: style="[^"]*")?>\s*'+re.escape(w)+r'\s*</div>','',s)
+              s=re.sub(r'<small>\s*'+re.escape(w)+r'\s*</small>','',s)
+            if fn=='realestate.html': s=re.sub(r'<small>\s*0[12]\s+(?:DOCUMENTS|TAX)\s*</small>','',s)
+            p.write_text(s)
+          PY
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add index.html inheritance.html renunciation.html corporate.html realestate.html family.html posts.html
+          git commit -m 'Remove duplicate hero text and visible English labels' || exit 0
+          git push
