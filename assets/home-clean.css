@@ -28,7 +28,7 @@ body.home .hero-title-lead{display:block;color:var(--ink)}
 body.home .hero-written-phrase{position:relative;display:inline-block;min-height:1.55em;margin-top:.08em;padding:0 .08em .3em 0;white-space:nowrap;font-family:"Nanum Pen Script","Noto Sans KR","Malgun Gothic",sans-serif;font-weight:400;line-height:1;letter-spacing:-.075em;vertical-align:top}
 body.home .hero-written-layer{display:inline-flex;align-items:baseline}
 body.home .hero-written-ghost{visibility:hidden!important;opacity:0!important}
-body.home .hero-written-ink{position:absolute;top:0;left:0;clip-path:inset(0 100% 0 0);animation:home-write-reveal 3.4s cubic-bezier(.42,0,.24,1) .15s both}
+body.home .hero-written-ink{position:relative!important;top:0;left:0;clip-path:inset(0 100% 0 0);animation:home-write-reveal 3.4s cubic-bezier(.42,0,.24,1) .15s both}
 body.home .hero-written-brand{display:inline-block;color:var(--home-primary);font-size:1.42em;font-weight:400;letter-spacing:-.09em;transform:translateY(.045em)}
 body.home .hero-written-message{color:var(--ink);font-weight:400}
 body.home .hero-written-line{position:absolute;left:2%;bottom:.16em;width:92%;height:.09em;border-radius:999px;background:var(--home-primary);transform:rotate(-2deg) scaleX(0);transform-origin:left center;animation:home-write-line 3.4s ease-out .15s both}
