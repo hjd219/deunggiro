@@ -15,108 +15,17 @@ body.article-v2 .article-body img,.article .article-body img{display:block!impor
 @media(max-width:700px){.dg-shell-contact{padding:38px 0!important}.dg-shell-contact .dg-shell-contact-grid,.dg-shell-footer .dg-shell-footer-grid{padding-left:14px;padding-right:14px}.dg-shell-contact h2{font-size:25px;line-height:1.4}.dg-shell-contact p{font-size:13px}.dg-shell-contact .dg-shell-phone{font-size:24px}.dg-shell-footer{padding:30px 0 34px!important}.dg-shell-footer-brand{font-size:21px}.dg-shell-footer-office{font-size:14px}.dg-shell-footer-info{font-size:12px;line-height:1.8}.dg-shell-route-title{font-size:18px}.dg-shell-route-list{font-size:12px}.dg-shell-route-actions a{font-size:10px}}
 
 /* 법인등기 FAQ: 다른 상세페이지와 동일한 방향 + 질문 높이 정상화 */
-@media(min-width:801px){
-  .corp-faq-layout{grid-template-columns:minmax(300px,.65fr) minmax(0,1.35fr)!important;align-items:start!important}
-  .corp-auth-card{grid-column:1!important;grid-row:1!important}
-  .corp-faq{grid-column:2!important;grid-row:1!important;align-content:start!important;align-self:start!important}
-  .corp-faq-item{align-self:start!important;height:auto!important;min-height:0!important}
-  .corp-faq-q{min-height:64px!important;padding:14px 16px!important}
-}
-@media(max-width:800px){
-  .corp-faq-layout{grid-template-columns:1fr!important;align-items:start!important}
-  .corp-auth-card{order:1!important}
-  .corp-faq{order:2!important;align-content:start!important}
-  .corp-faq-q{min-height:58px!important;padding:13px!important}
-}
+@media(min-width:801px){.corp-faq-layout{grid-template-columns:minmax(300px,.65fr) minmax(0,1.35fr)!important;align-items:start!important}.corp-auth-card{grid-column:1!important;grid-row:1!important}.corp-faq{grid-column:2!important;grid-row:1!important;align-content:start!important;align-self:start!important}.corp-faq-item{align-self:start!important;height:auto!important;min-height:0!important}.corp-faq-q{min-height:64px!important;padding:14px 16px!important}}
+@media(max-width:800px){.corp-faq-layout{grid-template-columns:1fr!important;align-items:start!important}.corp-auth-card{order:1!important}.corp-faq{order:2!important;align-content:start!important}.corp-faq-q{min-height:58px!important;padding:13px!important}}
 
-/* 상세페이지 배경 리듬 통일: 부동산·가사 포함 */
-body:not(.article-v2){background:#eef6fb!important}
-body:not(.article-v2) .subhero{background:#eef6fb!important}
-body:not(.article-v2) .subhero::before,body:not(.article-v2) .subhero::after{background:transparent!important}
-body:not(.article-v2) .section{background:#eef6fb!important}
-body:not(.article-v2) .section.white{background:#fff!important}
-body:not(.article-v2) .section.soft{background:#eef6fb!important}
-body:not(.article-v2) #posts,body:not(.article-v2) #latest-posts,body:not(.article-v2) #related-posts,body:not(.article-v2) .latest-posts,body:not(.article-v2) .related-posts,body:not(.article-v2) .posts-section,body:not(.article-v2) .related-section{background:#fff!important}
+body:not(.article-v2){background:#eef6fb!important}body:not(.article-v2) .subhero{background:#eef6fb!important}body:not(.article-v2) .subhero::before,body:not(.article-v2) .subhero::after{background:transparent!important}body:not(.article-v2) .section{background:#eef6fb!important}body:not(.article-v2) .section.white{background:#fff!important}body:not(.article-v2) .section.soft{background:#eef6fb!important}body:not(.article-v2) #posts,body:not(.article-v2) #latest-posts,body:not(.article-v2) #related-posts,body:not(.article-v2) .latest-posts,body:not(.article-v2) .related-posts,body:not(.article-v2) .posts-section,body:not(.article-v2) .related-section{background:#fff!important}
+:root{--muted:#4b5968!important}body{color:#182536!important;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}p,.desc,.lead,.summary,.subtitle,.subtext,.helper,.help,.note{color:#4b5968!important;font-weight:550}.hero p,.subhero p,.service-hero p,.copy p{color:#405064!important;font-weight:600!important}.quick-item p,.card p,.info-box p,.calc-card p,.calc-launch p,.post-card p,.feature-item p{color:#465568!important;font-weight:600!important}.post-meta,.meta,.date,.selected,.field label,.form-group label{color:#465568!important;font-weight:700!important}.article-body{color:#202d3d!important}.article-body p,.article-body li{color:#26384b!important;font-weight:500}.article-body blockquote{color:#31465a!important;font-weight:600}.result .row span,.result-row span,.calculator .notice,.admin-help{color:#263e53!important;font-weight:700!important}.dg-shell-contact p{color:#e0e9f4!important;font-weight:600!important}.dg-shell-footer{color:#dce6f3!important}.dg-shell-footer-info,.dg-shell-route-list{color:#e1e9f4!important;font-weight:600}.dg-shell-route-sub{color:#c8d9ec!important}.dg-shell-social,.dg-shell-route-actions a{font-weight:850!important}
+@media(max-width:700px){p,.desc,.lead,.summary,.subtitle,.subtext,.helper,.help,.note{font-weight:600}.container{padding-left:16px!important;padding-right:16px!important}.dg-shell-header .dg-shell-inner{padding-left:16px!important;padding-right:16px!important}.dg-shell-contact .dg-shell-contact-grid,.dg-shell-footer .dg-shell-footer-grid{padding-left:16px!important;padding-right:16px!important}}
+@media(min-width:1001px){body.home .hero .hero-written-phrase{font-size:50px!important;letter-spacing:.005em!important;min-height:1.62em!important;margin-top:.12em!important;transform:scaleX(1.14)!important;transform-origin:left center!important}body.home .hero .hero-written-brand{font-size:1.46em!important;letter-spacing:-.035em!important}body.home .hero .hero-written-message{letter-spacing:.005em!important}body.home .hero .hero-written-line{width:99%!important}body.home .hero .hero-written-line.second{width:84%!important}body:not(.home):not(.article-v2) .subhero{padding-bottom:30px!important}body:not(.home):not(.article-v2) .subhero + .section{padding-top:36px!important}.subhero-related-grid .related-posts-head{padding:14px 18px 10px!important}.subhero-related-grid .related-posts-head h2{font-size:18px!important;margin:3px 0 2px!important}.subhero-related-grid .related-posts-head p{font-size:11px!important;line-height:1.5!important}.subhero-related-grid .related-posts-list a{padding:8px 14px!important}.subhero-related-grid .related-posts-actions{padding:9px!important;gap:7px!important}.subhero-related-grid .related-posts-actions a{min-height:32px!important}}
+body.home .hero-written-ghost{opacity:0!important}body.home .hero .copy{min-width:0!important}body.home .hero .buttons .btn{white-space:nowrap!important}
+@media(max-width:800px){body.home .hero .copy{padding-top:30px!important;padding-bottom:12px!important}body.home .hero h1{margin-bottom:12px!important}body.home .hero .hero-written-phrase{font-size:44px!important;min-height:88px!important;margin-top:24px!important}body.home .hero .copy p{max-width:34em!important;margin-bottom:15px!important}body.home .quick{padding-left:16px!important;padding-right:16px!important}body.home .section .container{padding-left:16px!important;padding-right:16px!important}}
+@media(max-width:480px){body.home .hero .hero-written-phrase{font-size:40px!important;min-height:80px!important;margin-top:20px!important}body.home .hero .buttons{grid-template-columns:1fr 1fr!important}body.home .hero .buttons .btn-dark{grid-column:1/-1!important}body.home .quick{padding-left:16px!important;padding-right:16px!important}}
 
-/* 전 페이지 글자 대비·선명도 통일 */
-:root{--muted:#4b5968!important}
-body{color:#182536!important;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
-p,.desc,.lead,.summary,.subtitle,.subtext,.helper,.help,.note{color:#4b5968!important;font-weight:550}
-.hero p,.subhero p,.service-hero p,.copy p{color:#405064!important;font-weight:600!important}
-.quick-item p,.card p,.info-box p,.calc-card p,.calc-launch p,.post-card p,.feature-item p{color:#465568!important;font-weight:600!important}
-.post-meta,.meta,.date,.selected,.field label,.form-group label{color:#465568!important;font-weight:700!important}
-.article-body{color:#202d3d!important}
-.article-body p,.article-body li{color:#26384b!important;font-weight:500}
-.article-body blockquote{color:#31465a!important;font-weight:600}
-.result .row span,.result-row span,.calculator .notice,.admin-help{color:#263e53!important;font-weight:700!important}
-.dg-shell-contact p{color:#e0e9f4!important;font-weight:600!important}
-.dg-shell-footer{color:#dce6f3!important}
-.dg-shell-footer-info,.dg-shell-route-list{color:#e1e9f4!important;font-weight:600}
-.dg-shell-route-sub{color:#c8d9ec!important}
-.dg-shell-social,.dg-shell-route-actions a{font-weight:850!important}
-@media(max-width:700px){
- p,.desc,.lead,.summary,.subtitle,.subtext,.helper,.help,.note{font-weight:600}
-}
-
-/* HOME_PC_WRITTEN_PHRASE_WIDE_V3 - PC 높이는 유지하고 가로만 더 길게 */
-@media(min-width:1001px){
-  body.home .hero .hero-written-phrase{
-    font-size:50px!important;
-    letter-spacing:.005em!important;
-    min-height:1.62em!important;
-    margin-top:.12em!important;
-    transform:scaleX(1.14)!important;
-    transform-origin:left center!important;
-  }
-  body.home .hero .hero-written-brand{
-    font-size:1.46em!important;
-    letter-spacing:-.035em!important;
-  }
-  body.home .hero .hero-written-message{
-    letter-spacing:.005em!important;
-  }
-  body.home .hero .hero-written-line{
-    width:99%!important;
-  }
-  body.home .hero .hero-written-line.second{
-    width:84%!important;
-  }
-}
-
-/* MOBILE_SIDE_GUTTER_V1 - 모바일 본문/카드 좌우 여백 16px 통일 */
-@media(max-width:700px){
-  .container{padding-left:16px!important;padding-right:16px!important}
-  .dg-shell-header .dg-shell-inner{padding-left:16px!important;padding-right:16px!important}
-  .dg-shell-contact .dg-shell-contact-grid,.dg-shell-footer .dg-shell-footer-grid{padding-left:16px!important;padding-right:16px!important}
-}
-
-/* DETAIL_PC_VERTICAL_GAP_V2 - 상세페이지 우측 법률정보 카드 자체를 압축해 실제 빈 공간 축소 */
-@media(min-width:1001px){
-  body:not(.home):not(.article-v2) .subhero{padding-bottom:30px!important}
-  body:not(.home):not(.article-v2) .subhero + .section{padding-top:36px!important}
-  .subhero-related-grid .related-posts-head{padding:14px 18px 10px!important}
-  .subhero-related-grid .related-posts-head h2{font-size:18px!important;margin:3px 0 2px!important}
-  .subhero-related-grid .related-posts-head p{font-size:11px!important;line-height:1.5!important}
-  .subhero-related-grid .related-posts-list a{padding:8px 14px!important}
-  .subhero-related-grid .related-posts-actions{padding:9px!important;gap:7px!important}
-  .subhero-related-grid .related-posts-actions a{min-height:32px!important}
-}
-
-/* HOME_STABILITY_V1 - 메인 중복 잔상/모바일 과밀감 정리 */
-body.home .hero-written-ghost{opacity:0!important}
-body.home .hero .copy{min-width:0!important}
-body.home .hero .buttons .btn{white-space:nowrap!important}
-@media(max-width:800px){
-  body.home .hero .copy{padding-top:30px!important;padding-bottom:12px!important}
-  body.home .hero h1{margin-bottom:12px!important}
-  body.home .hero .hero-written-phrase{font-size:44px!important;min-height:88px!important;margin-top:24px!important}
-  body.home .hero .copy p{max-width:34em!important;margin-bottom:15px!important}
-  body.home .quick{padding-left:16px!important;padding-right:16px!important}
-  body.home .section .container{padding-left:16px!important;padding-right:16px!important}
-}
-@media(max-width:480px){
-  body.home .hero .hero-written-phrase{font-size:40px!important;min-height:80px!important;margin-top:20px!important}
-  body.home .hero .buttons{grid-template-columns:1fr 1fr!important}
-  body.home .hero .buttons .btn-dark{grid-column:1/-1!important}
-  body.home .quick{padding-left:16px!important;padding-right:16px!important}
-}
+/* CALCULATOR_ENGLISH_LABELS_OFF_V1 */
+body:has(.wrap) .hero>b,body:has(.wrap) .step{display:none!important}
+body:has(.wrap) .hero h1{margin-top:0!important}
