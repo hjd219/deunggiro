@@ -40,5 +40,7 @@ body:has(.re-main) .re-main>.container::after{content:"매매·증여·상속·�
 body:has(#posts) .section>.container>.label{display:none!important}
 body:has(#posts) .section>.container>.title{margin-top:0!important}
 
-/* RELATED_CALCULATOR_CTA_V1 */
-.related-posts-actions .dg-related-calc{background:var(--dg-primary)!important;border-color:var(--dg-primary)!important;color:#fff!important;font-weight:900!important}
+/* RELATED_CALCULATOR_CTA_V2 - 계산기 CTA를 확실한 채움형 버튼으로 통일 */
+.subhero-related-grid .related-posts-actions a.dg-related-calc,.related-posts-actions a.dg-related-calc{display:inline-flex!important;align-items:center!important;justify-content:center!important;background:#36a9e1!important;background-color:#36a9e1!important;border:1px solid #36a9e1!important;color:#fff!important;font-weight:900!important;border-radius:8px!important;text-decoration:none!important;padding:0 16px!important;min-height:36px!important;box-shadow:none!important}
+.subhero-related-grid .related-posts-actions a.dg-related-calc:hover,.related-posts-actions a.dg-related-calc:hover{background:#168dca!important;background-color:#168dca!important;border-color:#168dca!important;color:#fff!important}
+@media(max-width:700px){.subhero-related-grid .related-posts-actions a.dg-related-calc,.related-posts-actions a.dg-related-calc{min-height:40px!important;padding:0 14px!important}}
