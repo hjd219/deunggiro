@@ -101,3 +101,22 @@ p,.desc,.lead,.summary,.subtitle,.subtext,.helper,.help,.note{color:#4b5968!impo
   .subhero-related-grid .related-posts-actions{padding:9px!important;gap:7px!important}
   .subhero-related-grid .related-posts-actions a{min-height:32px!important}
 }
+
+/* HOME_STABILITY_V1 - 메인 중복 잔상/모바일 과밀감 정리 */
+body.home .hero-written-ghost{opacity:0!important}
+body.home .hero .copy{min-width:0!important}
+body.home .hero .buttons .btn{white-space:nowrap!important}
+@media(max-width:800px){
+  body.home .hero .copy{padding-top:30px!important;padding-bottom:12px!important}
+  body.home .hero h1{margin-bottom:12px!important}
+  body.home .hero .hero-written-phrase{font-size:44px!important;min-height:88px!important;margin-top:24px!important}
+  body.home .hero .copy p{max-width:34em!important;margin-bottom:15px!important}
+  body.home .quick{padding-left:16px!important;padding-right:16px!important}
+  body.home .section .container{padding-left:16px!important;padding-right:16px!important}
+}
+@media(max-width:480px){
+  body.home .hero .hero-written-phrase{font-size:40px!important;min-height:80px!important;margin-top:20px!important}
+  body.home .hero .buttons{grid-template-columns:1fr 1fr!important}
+  body.home .hero .buttons .btn-dark{grid-column:1/-1!important}
+  body.home .quick{padding-left:16px!important;padding-right:16px!important}
+}
