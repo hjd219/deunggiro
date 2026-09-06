@@ -38,7 +38,6 @@ body:not(.article-v2) .section.white{background:#fff!important}
 body:not(.article-v2) .section.soft{background:#eef6fb!important}
 body:not(.article-v2) #posts,body:not(.article-v2) #latest-posts,body:not(.article-v2) #related-posts,body:not(.article-v2) .latest-posts,body:not(.article-v2) .related-posts,body:not(.article-v2) .posts-section,body:not(.article-v2) .related-section{background:#fff!important}
 
-
 /* 전 페이지 글자 대비·선명도 통일 */
 :root{--muted:#4b5968!important}
 body{color:#182536!important;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
@@ -89,4 +88,10 @@ p,.desc,.lead,.summary,.subtitle,.subtext,.helper,.help,.note{color:#4b5968!impo
   .container{padding-left:16px!important;padding-right:16px!important}
   .dg-shell-header .dg-shell-inner{padding-left:16px!important;padding-right:16px!important}
   .dg-shell-contact .dg-shell-contact-grid,.dg-shell-footer .dg-shell-footer-grid{padding-left:16px!important;padding-right:16px!important}
+}
+
+/* DETAIL_PC_VERTICAL_GAP_V1 - 상세페이지 제목영역과 첫 본문 사이 과한 여백 축소 */
+@media(min-width:801px){
+  body:not(.home):not(.article-v2) .subhero{padding-bottom:30px!important}
+  body:not(.home):not(.article-v2) .subhero + .section{padding-top:36px!important}
 }
