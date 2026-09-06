@@ -90,8 +90,14 @@ p,.desc,.lead,.summary,.subtitle,.subtext,.helper,.help,.note{color:#4b5968!impo
   .dg-shell-contact .dg-shell-contact-grid,.dg-shell-footer .dg-shell-footer-grid{padding-left:16px!important;padding-right:16px!important}
 }
 
-/* DETAIL_PC_VERTICAL_GAP_V1 - 상세페이지 제목영역과 첫 본문 사이 과한 여백 축소 */
-@media(min-width:801px){
+/* DETAIL_PC_VERTICAL_GAP_V2 - 상세페이지 우측 법률정보 카드 자체를 압축해 실제 빈 공간 축소 */
+@media(min-width:1001px){
   body:not(.home):not(.article-v2) .subhero{padding-bottom:30px!important}
   body:not(.home):not(.article-v2) .subhero + .section{padding-top:36px!important}
+  .subhero-related-grid .related-posts-head{padding:14px 18px 10px!important}
+  .subhero-related-grid .related-posts-head h2{font-size:18px!important;margin:3px 0 2px!important}
+  .subhero-related-grid .related-posts-head p{font-size:11px!important;line-height:1.5!important}
+  .subhero-related-grid .related-posts-list a{padding:8px 14px!important}
+  .subhero-related-grid .related-posts-actions{padding:9px!important;gap:7px!important}
+  .subhero-related-grid .related-posts-actions a{min-height:32px!important}
 }
