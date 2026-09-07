@@ -9,6 +9,7 @@ on:
       - 'scripts/strip_naver_nonnumber_emoji.py'
       - 'scripts/ensure_section_dividers.py'
       - 'scripts/fix_divorce_categories.py'
+      - 'scripts/category_rules.py'
       - 'scripts/cleanup_duplicate_posts.py'
       - '.github/workflows/import-naver-blog.yml'
   schedule:
@@ -86,7 +87,7 @@ jobs:
           if bad:
               print('POSTPROCESS_BAD_LIST',','.join(bad)); raise SystemExit(1)
           PY
-          python -m py_compile scripts/import_naver_blog.py scripts/refresh_naver_format.py scripts/strip_naver_nonnumber_emoji.py scripts/strip_naver_consultation_footer.py scripts/ensure_section_dividers.py scripts/fix_divorce_categories.py scripts/cleanup_duplicate_posts.py
+          python -m py_compile scripts/category_rules.py scripts/import_naver_blog.py scripts/import_naver_blog_clean.py scripts/refresh_naver_format.py scripts/strip_naver_nonnumber_emoji.py scripts/strip_naver_consultation_footer.py scripts/ensure_section_dividers.py scripts/fix_divorce_categories.py scripts/cleanup_duplicate_posts.py
           git diff --check
       - name: Commit
         shell: bash
