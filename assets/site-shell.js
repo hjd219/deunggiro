@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     '/family.html':{title:'가족관계와 이해관계가 복잡한 경우',desc:'미성년자 친권·특별대리인, 성년후견·한정후견, 개명·가족관계등록 정정처럼 당사자 관계에 따라 절차가 달라지는 경우에는 현재 가족관계를 확인한 후 진행방법을 안내합니다.'}
   };
   const contactInfo=contactByPath[current]||genericContact;
-  const contact=`<section class="dg-shell-contact" id="contact"><div class="dg-shell-contact-grid"><div><h2>${contactInfo.title}</h2><p>${contactInfo.desc}</p></div><a class="dg-shell-phone" href="tel:0324251500">032-425-1500 상담</a></div></section>`;
+  const contact=`<section class="dg-shell-contact" id="contact"><div class="dg-shell-contact-grid"><div class="dg-shell-contact-copy"><h2>${contactInfo.title}</h2><p>${contactInfo.desc}</p></div><a class="dg-shell-phone" href="tel:0324251500">032-425-1500 상담</a></div></section>`;
   const footer=`<footer class="dg-shell-footer"><div class="dg-shell-footer-grid"><div><div class="dg-shell-footer-brand">등기로</div><div class="dg-shell-footer-office">현재두 법무사 사무소</div><div class="dg-shell-footer-info"><div><strong>주소</strong> 인천 미추홀구 경원대로 873, 201호(주안동, 인성빌딩) · 인천가정법원 옆</div><div><strong>전화</strong> <a href="tel:0324251500">032-425-1500</a></div><div><strong>이메일</strong> <a href="mailto:hjd21@naver.com">hjd21@naver.com</a></div></div><div class="dg-shell-channel-row"><a class="dg-shell-social" href="https://blog.naver.com/hjd21" target="_blank" rel="noopener noreferrer"><span class="dg-shell-social-icon naver">N</span>네이버 블로그</a><span class="dg-shell-dot">·</span><a class="dg-shell-social" href="https://youtube.com/channel/UCHs3WtBFAiV8bOsQUB-n-Ew?si=tTUgTZWRKg98bvYa" target="_blank" rel="noopener noreferrer"><span class="dg-shell-social-icon youtube">▶</span>유튜브</a></div></div><div class="dg-shell-route"><div class="dg-shell-route-title">찾아오시는 길</div><div class="dg-shell-route-sub">인천가정법원 옆 · 인성빌딩 2층</div><div class="dg-shell-route-list"><div class="dg-shell-route-item"><span>🚇</span><span><b>1호선</b> 주안역·간석역 1번 출구 도보 이용</span></div><div class="dg-shell-route-item"><span>🚇</span><span><b>인천지하철 2호선</b> 석바위시장역 하차 후 석바위 지하상가 5번 출구 도보 이용</span></div><div class="dg-shell-route-item"><span>⏱</span><span><b>도보시간</b> 간석역 약 15분 · 주안역 약 19분 · 석바위시장역 약 12분</span></div></div><div class="dg-shell-route-actions"><a href="https://map.naver.com/p/search/%EC%9D%B8%EC%B2%9C%20%EB%AF%B8%EC%B6%94%ED%99%80%EA%B5%AC%20%EA%B2%BD%EC%9B%90%EB%8C%80%EB%A1%9C%20873" target="_blank" rel="noopener noreferrer">네이버 지도에서 보기 →</a><a href="tel:0324251500">방문문의 032-425-1500</a></div></div></div><div class="dg-shell-legal"><span>Copyright © 2026 현재두 법무사 사무소</span><nav aria-label="법적 안내"><a href="/privacy.html">개인정보처리방침</a><span>·</span><a href="/disclaimer.html">면책고지</a></nav></div></footer>`;
   const replaceFirst=(selectors,html)=>{for(const s of selectors){const el=document.querySelector(s);if(el){el.outerHTML=html;return true}}return false};
   if(!replaceFirst(['header.header','header.dg-shell-header'],header)) document.body.insertAdjacentHTML('afterbegin',header);
@@ -24,6 +24,26 @@ document.addEventListener('DOMContentLoaded',()=>{
     document.body.insertAdjacentHTML('beforeend',contact);
   }
   if(!replaceFirst(['footer.footer','footer.dg-shell-footer'],footer)) document.body.insertAdjacentHTML('beforeend',footer);
+
+  // 상담 설명문은 제목의 실제 표시 폭을 넘지 않도록 맞춘다.
+  const syncContactCopyWidth=()=>{
+    const copy=document.querySelector('.dg-shell-contact-copy');
+    if(!copy) return;
+    const heading=copy.querySelector('h2');
+    const desc=copy.querySelector('p');
+    if(!heading||!desc) return;
+    desc.style.maxWidth='';
+    requestAnimationFrame(()=>{
+      const width=Math.ceil(heading.getBoundingClientRect().width);
+      if(width>0) desc.style.maxWidth=width+'px';
+    });
+  };
+  syncContactCopyWidth();
+  let contactResizeTimer;
+  window.addEventListener('resize',()=>{
+    clearTimeout(contactResizeTimer);
+    contactResizeTimer=setTimeout(syncContactCopyWidth,120);
+  });
 
   /* DETAIL_TITLE_V1: 개별 상세페이지 본문 제목만 통일 */
   const detailTitles={
