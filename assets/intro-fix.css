@@ -1,4 +1,5 @@
 /* 등기로 소개 팝업 최종 보정 */
 body.home .dg-intro-sign{overflow:visible!important;min-height:56px!important;padding-bottom:4px!important;align-items:center!important}
-body.home .dg-intro-stamp{content:url('/assets/deunggiro-stamp.png?v=20260907-2053')!important;display:block!important;width:42px!important;height:42px!important;max-width:42px!important;flex:0 0 42px!important;object-fit:contain!important;object-position:center center!important;padding:3px!important;box-sizing:content-box!important;overflow:visible!important;opacity:1!important;visibility:visible!important;transform:none!important}
+body.home .dg-intro-stamp{display:none!important}
+body.home .dg-intro-sign::after{content:""!important;display:block!important;width:48px!important;height:48px!important;flex:0 0 48px!important;background-image:url('/assets/deunggiro-stamp.png?v=20260907-2100')!important;background-repeat:no-repeat!important;background-position:center!important;background-size:contain!important;opacity:1!important;visibility:visible!important}
 @media(max-width:600px){body.home .dg-intro-modal h2{font-size:17px!important;line-height:1.35!important;letter-spacing:-1.15px!important;white-space:nowrap!important}body.home .dg-intro-sign{overflow:visible!important}}
