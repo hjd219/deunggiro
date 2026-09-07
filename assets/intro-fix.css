@@ -1,0 +1,4 @@
+/* 등기로 소개 팝업 최종 보정 */
+body.home .dg-intro-sign{overflow:visible!important;min-height:54px!important;padding-bottom:4px!important}
+body.home .dg-intro-stamp{display:block!important;width:46px!important;height:50px!important;max-width:none!important;flex:0 0 46px!important;object-fit:contain!important;object-position:center center!important;overflow:visible!important;opacity:1!important;visibility:visible!important}
+@media(max-width:600px){body.home .dg-intro-modal h2{font-size:17px!important;line-height:1.35!important;letter-spacing:-1.15px!important;white-space:nowrap!important}body.home .dg-intro-sign{overflow:visible!important}}
