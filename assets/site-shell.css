@@ -534,3 +534,39 @@ a.dg-phone-cta:hover,
     font-size:14px!important;
   }
 }
+
+
+/* DG_MOBILE_WIDTH_LOCK_V1 */
+html,body{max-width:100%;overflow-x:hidden}
+.dg-shell-header,
+.dg-shell-contact,
+.dg-shell-footer{
+  width:100%!important;
+  max-width:100%!important;
+  margin-left:0!important;
+  margin-right:0!important;
+}
+@media(max-width:800px){
+  .dg-shell-header,
+  .dg-shell-contact,
+  .dg-shell-footer{
+    box-sizing:border-box!important;
+    left:0!important;
+    right:0!important;
+  }
+  .dg-shell-contact .dg-shell-contact-grid,
+  .dg-shell-footer .dg-shell-footer-grid,
+  .dg-shell-legal{
+    width:100%!important;
+    max-width:100%!important;
+    box-sizing:border-box!important;
+  }
+  .dg-shell-footer-info,
+  .dg-shell-route,
+  .dg-shell-route-item,
+  .dg-shell-route-item span{
+    min-width:0!important;
+    overflow-wrap:anywhere!important;
+    word-break:keep-all;
+  }
+}
