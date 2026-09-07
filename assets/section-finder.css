@@ -1,0 +1,30 @@
+.dg-section-finder{margin-top:30px;padding-top:24px;border-top:1px solid rgba(54,169,225,.25);max-width:640px}
+.dg-section-finder h2{margin:0 0 13px;font-size:21px;line-height:1.4;letter-spacing:-.8px;color:#172840}
+.dg-section-search-row{display:grid;grid-template-columns:minmax(0,1fr) 88px;gap:7px}
+.dg-section-combo{position:relative}
+.dg-section-combo:before{content:"⌕";position:absolute;left:15px;top:5px;color:#7193a6;font-size:24px;z-index:2}
+.dg-section-query{width:100%;height:48px;padding:0 52px 0 44px;border:1px solid #c7d5df;border-radius:9px;background:#fff;color:#26313a;font-size:14px;outline:none}
+.dg-section-query:focus{border-color:#36a9e1;box-shadow:0 0 0 3px rgba(54,169,225,.13)}
+.dg-section-toggle{position:absolute;right:0;top:0;width:48px;height:48px;border:0;background:transparent;color:#26313a;font-size:13px;cursor:pointer}
+.dg-section-search-button{height:48px;border:0;border-radius:9px;background:#36a9e1;color:#fff;font-size:14px;font-weight:900;cursor:pointer}
+.dg-section-results{display:none;position:absolute;left:0;right:0;top:53px;z-index:80;max-height:310px;overflow:auto;margin:0;padding:7px;list-style:none;border:1px solid #d0dbe3;border-radius:9px;background:#fff;box-shadow:0 12px 28px rgba(26,52,70,.17)}
+.dg-section-results.is-open{display:block}
+.dg-section-results a{display:block;padding:11px 12px;border-radius:6px;color:#26313a;font-size:14px;line-height:1.45;text-decoration:none}
+.dg-section-results a:hover{background:#eaf7fd;color:#168dca}
+.dg-section-result-type{display:inline-block;margin-right:7px;color:#168dca;font-size:11px;font-weight:900}
+.dg-section-empty{padding:14px 12px;color:#707b85;font-size:14px}
+.dg-section-search-status{min-height:20px;margin:6px 0 0 2px;color:#587080;font-size:12px;font-weight:700}
+.dg-section-search-status.is-active{color:#168dca}
+.dg-section-quick{display:flex;gap:7px;margin-top:8px}
+.dg-section-quick button{flex:1 1 0;min-width:0;min-height:36px;padding:5px 8px;border:1px solid #d2dee6;border-radius:999px;background:#fff;color:#506572;font-size:12px;font-weight:800;white-space:nowrap;cursor:pointer}
+.dg-section-quick button:hover{border-color:#36a9e1;color:#168dca;background:#f2fbff}
+@media(max-width:800px){
+ .dg-section-finder{margin-top:24px;padding-top:20px;max-width:none}
+ .dg-section-finder h2{font-size:19px}
+ .dg-section-search-row{grid-template-columns:minmax(0,1fr) 76px}
+ .dg-section-query{font-size:13px;padding-left:41px}
+ .dg-section-combo:before{left:13px}
+ .dg-section-search-button{font-size:12px}
+ .dg-section-quick{gap:6px}
+ .dg-section-quick button{font-size:11px;padding:5px 6px}
+}
