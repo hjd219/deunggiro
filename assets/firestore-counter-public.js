@@ -1,4 +1,4 @@
-/* DG_CALCULATOR_COUNTER_V3 */
+/* DG_CALCULATOR_COUNTER_V4 */
 (()=>{
   const PROJECT_ID='project-b08e5f3c-fa49-4ae6-933';
   const DATABASE_ID='default';
@@ -34,11 +34,8 @@
 
   window.DGCounter={
     countOnce:async function(kind){
-      const key='dg-counter-counted-'+String(kind||'calculator');
       try{
-        if(sessionStorage.getItem(key)==='1') return;
         await incrementCount(kind);
-        sessionStorage.setItem(key,'1');
         await render();
       }catch(e){}
     },
