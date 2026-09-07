@@ -1,9 +1,10 @@
-/* DG_FIREBASE_COUNTER_V5 */
+/* DG_FIRESTORE_REST_COUNTER_V7 */
 (()=>{
-  const pending=[];
-  let ready=false, doCount=null, doRender=null;
+  const PROJECT_ID="project-b08e5f3c-fa49-4ae6-933";
+  const DATABASE_ID='default';
+  const API_KEY="AIzaSyAlXYOrj7V-XtDrK13Cbxw6hWzbfhGf_do";
+  const DOC_PATH='counters/calculator';
   const DEBUG=new URLSearchParams(location.search).get('counterdebug')==='1';
-
   function status(msg){
     if(!DEBUG) return;
     let el=document.getElementById('dg-counter-debug');
@@ -15,67 +16,47 @@
     }
     el.textContent='COUNTER: '+msg;
   }
-
-  window.DGCounter={
-    countOnce:function(kind){
-      status('click received');
-      if(ready && doCount) return doCount(kind);
-      pending.push(String(kind||'calculator'));
-      status('queued until Firebase ready');
-    },
-    refresh:function(){ if(ready&&doRender) return doRender(); }
-  };
-
-  (async()=>{
-    const firebaseConfig={
-      apiKey:"AIzaSyAlXYOrj7V-XtDrK13Cbxw6hWzbfhGf_do",
-      authDomain:"project-b08e5f3c-fa49-4ae6-933.firebaseapp.com",
-      projectId:"project-b08e5f3c-fa49-4ae6-933",
-      storageBucket:"project-b08e5f3c-fa49-4ae6-933.firebasestorage.app",
-      messagingSenderId:"209298170572",
-      appId:"1:209298170572:web:2c47a3779cf4a331039869"
-    };
+  const base='https://firestore.googleapis.com/v1/projects/'+encodeURIComponent(PROJECT_ID)+'/databases/'+encodeURIComponent(DATABASE_ID)+'/documents/';
+  const docUrl=base+DOC_PATH+'?key='+encodeURIComponent(API_KEY);
+  const commitUrl='https://firestore.googleapis.com/v1/projects/'+encodeURIComponent(PROJECT_ID)+'/databases/'+encodeURIComponent(DATABASE_ID)+'/documents:commit?key='+encodeURIComponent(API_KEY);
+  async function readCount(){
+    const r=await fetch(docUrl,{cache:'no-store'});
+    if(!r.ok) throw new Error('READ '+r.status);
+    const j=await r.json(),v=j&&j.fields&&j.fields.count;
+    return Number((v&&(v.integerValue??v.doubleValue))||0);
+  }
+  async function incrementCount(){
+    const name='projects/'+PROJECT_ID+'/databases/'+DATABASE_ID+'/documents/'+DOC_PATH;
+    const body={writes:[{transform:{document:name,fieldTransforms:[{fieldPath:'count',increment:{integerValue:'1'}}]}}]};
+    const r=await fetch(commitUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(!r.ok) throw new Error('WRITE '+r.status);
+  }
+  async function render(){
+    const el=document.getElementById('dg-calculator-usage');
     try{
-      status('loading Firebase SDK');
-      const [{initializeApp},fs]=await Promise.all([
-        import("https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js"),
-        import("https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js")
-      ]);
-      const {initializeFirestore,doc,getDoc,updateDoc,increment}=fs;
-      const app=initializeApp(firebaseConfig);
-      const db=initializeFirestore(app,{},"default");
-      const ref=doc(db,"counters","calculator");
-
-      doRender=async()=>{
-        const el=document.getElementById('dg-calculator-usage');
-        try{
-          const snap=await getDoc(ref);
-          status('read ok: '+(snap.exists()?JSON.stringify(snap.data()):'document missing'));
-          if(!el||!snap.exists()) return;
-          const n=Number(snap.data().count||0);
-          const num=el.querySelector('[data-count]');
-          if(num) num.textContent=n.toLocaleString('ko-KR')+'회';
-          el.hidden=false;
-        }catch(e){status('READ ERROR '+(e.code||'')+' '+e.message);}
-      };
-
-      doCount=async(kind)=>{
-        const key='dg-counter-counted-'+String(kind||'calculator');
-        try{
-          if(sessionStorage.getItem(key)==='1'){status('already counted this session');return;}
-          status('writing to database "default"');
-          await updateDoc(ref,{count:increment(1)});
-          sessionStorage.setItem(key,'1');
-          status('WRITE OK');
-          await doRender();
-        }catch(e){status('WRITE ERROR '+(e.code||'')+' '+e.message);}
-      };
-
-      ready=true;
-      status('Firebase ready');
-      while(pending.length) await doCount(pending.shift());
-      if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',doRender);
-      else doRender();
-    }catch(e){status('INIT ERROR '+(e.code||'')+' '+e.message);}
-  })();
+      const n=await readCount();
+      status('READ OK '+n);
+      if(el){
+        const num=el.querySelector('[data-count]');
+        if(num) num.textContent=n.toLocaleString('ko-KR')+'회';
+        el.hidden=false;
+      }
+    }catch(e){status(e.message);}
+  }
+  window.DGCounter={
+    countOnce:async function(kind){
+      const key='dg-counter-counted-'+String(kind||'calculator');
+      try{
+        status('WRITE START');
+        if(sessionStorage.getItem(key)==='1'){status('ALREADY COUNTED THIS SESSION');return;}
+        await incrementCount();
+        sessionStorage.setItem(key,'1');
+        status('WRITE OK');
+        await render();
+      }catch(e){status(e.message);}
+    },
+    refresh:render
+  };
+  status('V7 LOADED');
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',render); else render();
 })();
