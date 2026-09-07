@@ -222,3 +222,44 @@ html body #auto-related-posts a:hover .related-badge{
   border-color:#b9e0f2!important;
   color:#168dca!important;
 }
+
+
+/* DETAIL_INNER_TEXT_CONTRAST_V1 */
+/* 개별페이지 내부 회색 본문·서류목록·보조설명 선명도 통일 */
+body:not(.home) .subhero p,
+body:not(.home) .info-card p,
+body:not(.home) .docs-card ul,
+body:not(.home) .docs-note,
+body:not(.home) .related-posts-head p,
+body:has(.inheritance-flow) .flow-step p,
+body:has(.inheritance-flow) .muted-deadline,
+body:has(.inheritance-flow) .inheritance-note,
+body:has(.inheritance-flow) .faq-acc p,
+body:has(.corp-guide) .corp-head p,
+body:has(.corp-guide) .corp-row span,
+body:has(.corp-guide) .corp-note,
+body:has(.corp-guide) .corp-faq-a,
+body:has(.corp-guide) .corp-auth-desc,
+body:has(.corp-guide) .corp-auth-sub,
+body:has(.re-main) .re-intro p,
+body:has(.re-main) .re-answer-head p,
+body:has(.re-main) .re-row span,
+body:has(.re-main) .re-note,
+body:has(.re-main) .re-info p,
+body:has(.re-main) .re-check p,
+body:has(.re-main) .re-faq details p,
+body:has(.re-main) .re-mortgage-tabs label,
+body:has(.re-main) .re-mortgage-line p,
+body:has(.re-main) .re-mortgage-note,
+body:has(.renunciation-flow) .renunciation-flow p,
+body:has(.renunciation-flow) .ren-note,
+body:has(.renunciation-flow) .ren-doc-card ul,
+body:has(.renunciation-flow) .ren-faq details p,
+body:has(.family-service-card) .family-service-card p,
+body:has(.family-service-card) .family-items,
+body:has(.family-service-card) .family-faq details p{
+  color:#526273!important;
+  font-weight:600!important;
+}
+
+/* 날짜·화살표·순번처럼 정보 위계상 더 약해야 하는 요소는 기존 톤 유지 */
