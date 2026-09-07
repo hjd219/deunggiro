@@ -263,3 +263,92 @@ body:has(.family-service-card) .family-faq details p{
 }
 
 /* 날짜·화살표·순번처럼 정보 위계상 더 약해야 하는 요소는 기존 톤 유지 */
+
+
+/* SITE_READABILITY_TYPOGRAPHY_V1 */
+/* ChatGPT처럼 또렷한 본문 리듬: 색상·굵기·줄간격 중심. 메인 손글씨 '등기로'는 제외 */
+html body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR","Malgun Gothic",sans-serif;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+/* 메인페이지 일반 설명문 */
+body.home .copy p{
+  color:#3f4650!important;
+  font-weight:500!important;
+  line-height:1.72!important;
+  letter-spacing:-.12px!important;
+}
+body.home .quick-item p,
+body.home .desc,
+body.home .calc-card p,
+body.home .info-box p,
+body.home .dg-latest-desc{
+  color:#3f4650!important;
+  font-weight:500!important;
+  line-height:1.68!important;
+  letter-spacing:-.08px!important;
+}
+body.home .quick-item p{font-size:13px!important}
+body.home .desc,
+body.home .calc-card p,
+body.home .info-box p{font-size:14px!important}
+
+/* 개별페이지 내부 본문·서류목록·설명문구 */
+body:not(.home) .subhero p,
+body:not(.home) .info-card p,
+body:not(.home) .docs-card ul,
+body:not(.home) .docs-note,
+body:not(.home) .related-posts-head p,
+body:has(.inheritance-flow) .flow-step p,
+body:has(.inheritance-flow) .inheritance-note,
+body:has(.inheritance-flow) .faq-acc p,
+body:has(.corp-guide) .corp-head p,
+body:has(.corp-guide) .corp-row span,
+body:has(.corp-guide) .corp-note,
+body:has(.corp-guide) .corp-faq-a,
+body:has(.corp-guide) .corp-auth-desc,
+body:has(.corp-guide) .corp-auth-sub,
+body:has(.re-main) .re-intro p,
+body:has(.re-main) .re-answer-head p,
+body:has(.re-main) .re-row span,
+body:has(.re-main) .re-note,
+body:has(.re-main) .re-info p,
+body:has(.re-main) .re-check p,
+body:has(.re-main) .re-faq details p,
+body:has(.re-main) .re-mortgage-line p,
+body:has(.re-main) .re-mortgage-note,
+body:has(.renunciation-flow) .renunciation-flow p,
+body:has(.renunciation-flow) .ren-note,
+body:has(.renunciation-flow) .ren-doc-card ul,
+body:has(.renunciation-flow) .ren-faq details p,
+body:has(.family-service-card) .family-service-card p,
+body:has(.family-service-card) .family-items,
+body:has(.family-service-card) .family-faq details p{
+  color:#3f4650!important;
+  font-weight:500!important;
+  line-height:1.68!important;
+  letter-spacing:-.08px!important;
+}
+
+/* 제목은 무겁게, 본문과 대비 */
+body.home .title,
+body:not(.home) .title,
+body:not(.home) .docs-card h3,
+body:not(.home) .faq-acc summary{
+  font-weight:800!important;
+}
+
+/* 메인 히어로의 손글씨 '등기로'는 기존 Nanum Pen Script 그대로 유지 */
+body.home .hero-written-phrase,
+body.home .hero-written-phrase *,
+body.home .hero-written-brand,
+body.home .hero-written-message{
+  font-family:"Nanum Pen Script","Noto Sans KR","Malgun Gothic",sans-serif!important;
+}
+body.home .hero-written-phrase,
+body.home .hero-written-brand,
+body.home .hero-written-message{
+  font-weight:400!important;
+}
