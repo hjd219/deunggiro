@@ -1,22 +1,21 @@
-/* DG_CALCULATOR_COUNTER_V2 */
+/* DG_CALCULATOR_COUNTER_V3 */
 (()=>{
   const PROJECT_ID='project-b08e5f3c-fa49-4ae6-933';
   const DATABASE_ID='default';
-  const DOC_PATH='counters/calculator';
   const base='https://firestore.googleapis.com/v1/projects/'+PROJECT_ID+'/databases/'+DATABASE_ID+'/documents/';
-  const docUrl=base+DOC_PATH;
   const commitUrl='https://firestore.googleapis.com/v1/projects/'+PROJECT_ID+'/databases/'+DATABASE_ID+'/documents:commit';
 
-  async function readCount(){
-    const r=await fetch(docUrl,{cache:'no-store'});
+  function docPath(kind){return 'counters/'+(String(kind||'calculator')==='pdf'?'pdf':'calculator')}
+  async function readCount(kind){
+    const r=await fetch(base+docPath(kind),{cache:'no-store'});
     if(!r.ok) throw new Error('counter read '+r.status);
     const j=await r.json();
     const v=j&&j.fields&&j.fields.count;
     return Number((v&&(v.integerValue??v.doubleValue))||0);
   }
 
-  async function incrementCount(){
-    const name='projects/'+PROJECT_ID+'/databases/'+DATABASE_ID+'/documents/'+DOC_PATH;
+  async function incrementCount(kind){
+    const name='projects/'+PROJECT_ID+'/databases/'+DATABASE_ID+'/documents/'+docPath(kind);
     const body={writes:[{transform:{document:name,fieldTransforms:[{fieldPath:'count',increment:{integerValue:'1'}}]}}]};
     const r=await fetch(commitUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     if(!r.ok) throw new Error('counter write '+r.status);
@@ -26,7 +25,7 @@
     const el=document.getElementById('dg-calculator-usage');
     if(!el) return;
     try{
-      const n=await readCount();
+      const n=await readCount('calculator');
       const num=el.querySelector('[data-count]');
       if(num) num.textContent=n.toLocaleString('ko-KR')+'회';
       el.hidden=false;
@@ -38,7 +37,7 @@
       const key='dg-counter-counted-'+String(kind||'calculator');
       try{
         if(sessionStorage.getItem(key)==='1') return;
-        await incrementCount();
+        await incrementCount(kind);
         sessionStorage.setItem(key,'1');
         await render();
       }catch(e){}
