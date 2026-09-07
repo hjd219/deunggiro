@@ -492,3 +492,9 @@ body:has(.re-main) .re-mortgage-line{
 body:has(.family-service-card) .family-items{
   border-top-color:var(--detail-inner-divider)!important;
 }
+
+.dg-shell-legal{width:100%;max-width:var(--dg-max);margin:30px auto 0;padding:22px 22px 0;border-top:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:space-between;gap:18px;color:#b9c8da;font-size:12px}
+.dg-shell-legal nav{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.dg-shell-legal a{color:#dce6f3!important;text-decoration:none!important;font-weight:750}
+.dg-shell-legal a:hover{text-decoration:underline!important}
+@media(max-width:700px){.dg-shell-legal{margin-top:24px;padding:19px 16px 0;display:block;line-height:1.7}.dg-shell-legal nav{margin-top:8px;gap:10px}}
