@@ -33,7 +33,7 @@
       ]);
       const { getFirestore, doc, getDoc, updateDoc, increment } = firestore;
       const app = initializeApp(firebaseConfig);
-      const db = getFirestore(app);
+      const db = getFirestore(app,"default");
       const ref = doc(db,"counters","calculator");
 
       doRender=async function(){
