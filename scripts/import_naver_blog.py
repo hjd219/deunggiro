@@ -206,7 +206,7 @@ def main() -> None:
                 summary = (re.sub(r'^\s*\[[^\]]+\]\s*', '', title) + '의 핵심 절차와 준비사항을 정리합니다.')[:100]
                 post = {
                     'title': title,
-                    'category': core.category(title + ' ' + text[:500]),
+                    'category': core.category(title),
                     'date': date,
                     'slug': slug,
                     'keywords': title,
