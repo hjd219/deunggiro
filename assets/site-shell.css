@@ -358,7 +358,6 @@ body.home .hero-written-message{
 /* 개별페이지의 필요서류·업무 내부 소제목을 큰 하늘색 사각 배지로 통일 */
 body:not(.home) .docs-card h3,
 body:has(.renunciation-flow) .ren-doc-head h3,
-body:has(.corp-guide) .corp-card-top h3,
 body:has(.re-main) .re-itop b{
   display:inline-flex!important;
   align-items:center!important;
@@ -379,7 +378,6 @@ body:has(.re-main) .re-itop b{
 }
 
 /* 아이콘 옆에 붙는 카드 제목은 기존 정렬을 유지 */
-body:has(.corp-guide) .corp-card-top h3,
 body:has(.re-main) .re-itop b{
   margin:0!important;
 }
@@ -396,10 +394,63 @@ body:has(.renunciation-flow) .ren-doc-head h3{
 @media(max-width:600px){
   body:not(.home) .docs-card h3,
   body:has(.renunciation-flow) .ren-doc-head h3,
-  body:has(.corp-guide) .corp-card-top h3,
   body:has(.re-main) .re-itop b{
     min-height:32px!important;
     padding:5px 10px!important;
     font-size:13px!important;
+  }
+}
+
+
+/* CORPORATE_CARD_TITLE_AUTH_STYLE_V1 */
+/* 법인 본문 업무카드 제목: 전자서명·인증 카드와 같은 아이콘 + 일반 큰 제목 */
+body:has(.corp-guide) .corp-card-top{
+  display:flex!important;
+  align-items:center!important;
+  gap:14px!important;
+}
+body:has(.corp-guide) .corp-card-top .corp-no{
+  display:none!important;
+}
+body:has(.corp-guide) .corp-card-top .corp-icon{
+  width:60px!important;
+  height:60px!important;
+  flex:0 0 60px!important;
+  border-radius:18px!important;
+}
+body:has(.corp-guide) .corp-card-top h3{
+  display:block!important;
+  width:auto!important;
+  max-width:none!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:#20242b!important;
+  box-shadow:none!important;
+  font-size:24px!important;
+  line-height:1.25!important;
+  font-weight:800!important;
+  letter-spacing:-1px!important;
+  white-space:normal!important;
+}
+@media(max-width:900px){
+  body:has(.corp-guide) .corp-card-top h3{
+    font-size:22px!important;
+  }
+}
+@media(max-width:560px){
+  body:has(.corp-guide) .corp-card-top{
+    gap:12px!important;
+  }
+  body:has(.corp-guide) .corp-card-top .corp-icon{
+    width:56px!important;
+    height:56px!important;
+    flex-basis:56px!important;
+  }
+  body:has(.corp-guide) .corp-card-top h3{
+    font-size:20px!important;
   }
 }
