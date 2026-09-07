@@ -454,3 +454,41 @@ body:has(.corp-guide) .corp-card-top h3{
     font-size:20px!important;
   }
 }
+
+
+/* DETAIL_INNER_DIVIDER_CONTRAST_V1 */
+/* 개별페이지 내부 항목 구분선만 선명하게 통일 */
+:root{--detail-inner-divider:#b7d3e0}
+
+/* 상속·가사 등 필요서류 목록 */
+body:not(.home) .docs-card li + li{
+  border-top:1px solid var(--detail-inner-divider)!important;
+  padding-top:7px!important;
+}
+
+/* 상속포기·한정승인 필요서류 목록 */
+body:has(.renunciation-flow) .ren-doc-card li + li{
+  border-top:1px solid var(--detail-inner-divider)!important;
+  padding-top:6px!important;
+}
+body:has(.renunciation-flow) .ren-doc-head{
+  border-bottom-color:var(--detail-inner-divider)!important;
+}
+
+/* 법인등기 카드 내부 항목 */
+body:has(.corp-guide) .corp-row{
+  border-top-color:var(--detail-inner-divider)!important;
+}
+
+/* 부동산등기 카드 내부 항목 */
+body:has(.re-main) .re-row,
+body:has(.re-main) .re-check,
+body:has(.re-main) .re-faq details,
+body:has(.re-main) .re-mortgage-line{
+  border-top-color:var(--detail-inner-divider)!important;
+}
+
+/* 가사 업무카드 설명/세부업무 구분 */
+body:has(.family-service-card) .family-items{
+  border-top-color:var(--detail-inner-divider)!important;
+}
