@@ -29,8 +29,10 @@ jobs:
           import urllib.request
 
           sources = [
-              "https://dbbond.co.kr/sub/_sale.php",
-              "https://lawss.co.kr/lawpro/homepage/siga/auto_siga_kjaa.php",
+              # Official source first, then KB and Jangsu Bond as fallbacks.
+              "https://nhuf.molit.go.kr/FP/FP07/FP0705/FP070503.jsp",
+              "https://okbfex.kbstar.com/quics?page=C028010",
+              "https://jsbond.co.kr/main/index.php",
           ]
           headers = {"User-Agent": "Mozilla/5.0 (deunggiro bond-rate updater)"}
           found = None
