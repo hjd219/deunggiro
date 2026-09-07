@@ -498,3 +498,39 @@ body:has(.family-service-card) .family-items{
 .dg-shell-legal a{color:#dce6f3!important;text-decoration:none!important;font-weight:750}
 .dg-shell-legal a:hover{text-decoration:underline!important}
 @media(max-width:700px){.dg-shell-legal{margin-top:24px;padding:19px 16px 0;display:block;line-height:1.7}.dg-shell-legal nav{margin-top:8px;gap:10px}}
+
+
+/* DG_PHONE_CTA_UNIFIED_V1 */
+a.dg-phone-cta,
+.dg-shell-contact .dg-shell-phone{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-height:48px!important;
+  padding:0 22px!important;
+  border-radius:8px!important;
+  background:#36a9e1!important;
+  border:1px solid #36a9e1!important;
+  color:#fff!important;
+  font-size:16px!important;
+  font-weight:900!important;
+  line-height:1!important;
+  text-decoration:none!important;
+  white-space:nowrap!important;
+  box-shadow:none!important;
+}
+a.dg-phone-cta:hover,
+.dg-shell-contact .dg-shell-phone:hover{
+  background:#168dca!important;
+  border-color:#168dca!important;
+  color:#fff!important;
+}
+@media(max-width:800px){
+  a.dg-phone-cta,
+  .dg-shell-contact .dg-shell-phone{
+    min-height:44px!important;
+    padding:0 16px!important;
+    border-radius:8px!important;
+    font-size:14px!important;
+  }
+}
