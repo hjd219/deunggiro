@@ -258,6 +258,51 @@ body{background:var(--detail-sky)!important}
 </style>
 
 <script src="/assets/analytics.js" defer></script>
+
+<style>
+/* REALESTATE_DOC_LABEL_BADGES_V1 */
+/* 매매·증여·상속·이혼 재산분할 필요서류 내부 항목을 배지로 통일 */
+.re-row{grid-template-columns:88px minmax(0,1fr)!important;gap:12px!important;align-items:start!important}
+.re-row b,
+.re-mortgage-line b{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:max-content!important;
+  max-width:100%!important;
+  min-height:28px!important;
+  padding:4px 10px!important;
+  border:1px solid #b9e0f2!important;
+  border-radius:999px!important;
+  background:#eaf7fd!important;
+  color:#168dca!important;
+  font-size:12px!important;
+  line-height:1.2!important;
+  font-weight:800!important;
+  white-space:nowrap!important;
+}
+.re-note::before{
+  content:"추가 확인";
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:24px;
+  padding:2px 8px;
+  margin-right:8px;
+  border:1px solid #b9e0f2;
+  border-radius:999px;
+  background:#fff;
+  color:#168dca;
+  font-size:10px;
+  line-height:1.2;
+  font-weight:800;
+  vertical-align:middle;
+}
+@media(max-width:700px){
+  .re-row{grid-template-columns:82px minmax(0,1fr)!important}
+  .re-row b,.re-mortgage-line b{font-size:11px!important;padding:4px 8px!important}
+}
+</style>
 </head><body><header class="header">
   <div class="container header-inner">
     <a class="logo" href="/"><span>등기로</span><small>현재두 법무사 사무소 · 인천</small></a>
