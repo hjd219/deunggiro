@@ -68,7 +68,7 @@
     const box=document.createElement('section');
     box.className='dg-topic-cta';
     box.setAttribute('aria-label','상담 안내');
-    box.innerHTML=`<div class="dg-topic-cta-kicker">CONSULTATION</div><h2>${esc(title)}</h2><p>${esc(desc)}</p><div class="dg-topic-cta-actions"><a class="dg-topic-call" href="tel:0324251500">032-425-1500 전화상담</a><a class="dg-topic-list" href="/posts.html?category=${encodeURIComponent(category)}">같은 분야 글 보기</a></div>`;
+    box.innerHTML=`<h2>${esc(title)}</h2><p>${esc(desc)}</p><div class="dg-topic-cta-actions"><a class="dg-topic-call" href="tel:0324251500">032-425-1500 전화상담</a><a class="dg-topic-list" href="/posts.html?category=${encodeURIComponent(category)}">같은 분야 글 보기</a></div>`;
 
     const related=article.querySelector('.related');
     if(related)related.parentNode.insertBefore(box,related);
