@@ -67,7 +67,9 @@ def _text(value: str) -> str:
 
 
 def _has_any(text: str, words: tuple[str, ...]) -> bool:
-    return any(word in text for word in words)
+    # 띄어쓰기 차이(예: "성본변경" / "성본 변경") 때문에 분류가 빗나가지 않도록 함께 비교한다.
+    compact_text = re.sub(r'\s+', '', text)
+    return any(word in text or re.sub(r'\s+', '', word) in compact_text for word in words)
 
 
 def classify_title_with_reason(title: str, current: str = '') -> tuple[str, str]:
