@@ -9,7 +9,7 @@ addon=r'''
 let dgCategoryAutoWriting=false;
 function dgInferCategory(title){
   const t=String(title||'').replace(/\s+/g,' ').trim();
-  const has=words=>words.some(w=>t.includes(w));
+  const compact=s=>String(s||'').replace(/\s+/g,'');const ct=compact(t);const has=words=>words.some(w=>t.includes(w)||ct.includes(compact(w)));
   if(has(['법인등기','법인설립','법인주소','법인 본점','법인 상호','법인 목적','법인 대표','1인 법인','1인법인','주식회사','유한회사','유한책임회사','농업회사법인','영농조합법인','대표이사','주주총회','이사회','본점이전','본점주소','자본금','가수금','증자','감자','회사계속','해산간주','청산종결간주','합명회사','합자회사','법인인감','법인도장','정관']))return '법인등기';
   if(has(['상속재산분할심판','상속재산분할청구','상속재산분할협의서','상속재산분할협의','상속분쟁','기여분','특별수익','유류분','상속회복청구']))return '상속재산분할';
   if(has(['재산분할등기','부동산 이전','부동산이전','공동명의·단독명의 이전','공동명의 단독명의 이전','촉탁등기','소유권이전등기','매매예약가등기','가등기','근저당','전세권','등기권리증','등기필증','신탁등기','부동산 등기부','부동산등기비용','취득세율']))return '부동산등기';
