@@ -187,3 +187,19 @@ html body .inheritance-pc-lower .docs-card,
 html body .inheritance-pc-lower .faq-acc{
   border-color:#b9e0f2!important;
 }
+
+
+/* RELATED_BADGE_PRIMARY_BG_V1 */
+html body .related-badge,
+html body .related-posts-list .related-badge,
+html body #auto-related-posts .related-badge{
+  background:#36a9e1!important;
+  border-color:#36a9e1!important;
+  color:#fff!important;
+}
+html body .related-posts-list a:hover .related-badge,
+html body #auto-related-posts a:hover .related-badge{
+  background:#168dca!important;
+  border-color:#168dca!important;
+  color:#fff!important;
+}
