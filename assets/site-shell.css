@@ -44,3 +44,127 @@ body:has(#posts) .section>.container>.title{margin-top:0!important}
 .subhero-related-grid .related-posts-actions a.dg-related-calc,.related-posts-actions a.dg-related-calc{display:inline-flex!important;align-items:center!important;justify-content:center!important;background:#36a9e1!important;background-color:#36a9e1!important;border:1px solid #36a9e1!important;color:#fff!important;font-weight:900!important;border-radius:8px!important;text-decoration:none!important;padding:0 16px!important;min-height:36px!important;box-shadow:none!important}
 .subhero-related-grid .related-posts-actions a.dg-related-calc:hover,.related-posts-actions a.dg-related-calc:hover{background:#168dca!important;background-color:#168dca!important;border-color:#168dca!important;color:#fff!important}
 @media(max-width:700px){.subhero-related-grid .related-posts-actions a.dg-related-calc,.related-posts-actions a.dg-related-calc{min-height:40px!important;padding:0 14px!important}}
+
+
+/* SITE_BORDER_COLOR_UNIFY_V1 */
+/* 회색 계열 테두리만 등기로 하늘색 계열로 통일. 배경/글자/간격/그림자는 변경하지 않음. */
+:root{
+  --line:#b9e0f2!important;
+  --dg-line:#b9e0f2!important;
+}
+
+/* 공통 헤더·메뉴·버튼·카드 */
+html body .btn-border,
+html body .tags a,
+html body .quick-item,
+html body .quick-icon,
+html body .social-links-under-photo a,
+html body .mobile-menu-panel,
+html body .mobile-menu-grid a,
+html body .header .nav a,
+html body .dg-shell-mobile-panel,
+html body .dg-shell-mobile-grid a{
+  border-color:#b9e0f2!important;
+}
+
+/* 주요업무/상세페이지 공통 박스 */
+html body .calculator,
+html body input,
+html body select,
+html body textarea,
+html body .result,
+html body .result-total,
+html body .chip,
+html body .editor-toolbar,
+html body .editor-toolbar button,
+html body .editor,
+html body .preview-box,
+html body .hero-badge,
+html body #services .card,
+html body .service-icon,
+html body .feature-item,
+html body .calc-launch,
+html body .page-jump a,
+html body .related-posts-list a,
+html body .faq-acc{
+  border-color:#b9e0f2!important;
+}
+
+/* 상속 페이지 */
+html body .inheritance-flow .flow-icon,
+html body .inheritance-flow .flow-step .flow-icon,
+html body .inheritance-pc-lower .docs-section,
+html body .inheritance-pc-lower .faq-block{
+  border-color:#b9e0f2!important;
+}
+
+/* 법인 페이지 */
+html body .corp-icon,
+html body .corp-faq-item,
+html body .corp-auth-card,
+html body .corp-auth-icon{
+  border-color:#b9e0f2!important;
+}
+
+/* 부동산 페이지 */
+html body .re-box,
+html body .re-home,
+html body .re-tabs label,
+html body .re-ico,
+html body .re-pre,
+html body .re-faq,
+html body .re-num{
+  border-color:#b9e0f2!important;
+}
+
+/* 상속포기·한정승인 페이지 */
+html body .renunciation-flow,
+html body .renunciation-flow .flow-icon,
+html body .ren-doc-card,
+html body .ren-faq details{
+  border-color:#b9e0f2!important;
+}
+
+/* 가사 페이지 */
+html body .family-service-card,
+html body .family-icon,
+html body .family-doc-panel,
+html body .family-faq-panel,
+html body .family-faq details{
+  border-color:#b9e0f2!important;
+}
+
+/* 법률정보/최신글 */
+html body .search-wrap input,
+html body .page-btn,
+html body .dg-latest-card,
+html body .dg-latest-thumb{
+  border-color:#b9e0f2!important;
+}
+
+/* 계산기 내부 박스 및 구분선 */
+html body:has(.wrap) .card,
+html body:has(.wrap) .opt,
+html body:has(.wrap) .field input,
+html body:has(.wrap) .field select,
+html body:has(.wrap) .property,
+html body:has(.wrap) .section,
+html body:has(.wrap) .row,
+html body:has(.wrap) .documents,
+html body:has(.wrap) .print-footer,
+html body:has(.wrap) .print-col .row,
+html body:has(.wrap) .office-footer,
+html body:has(.wrap) .box,
+html body:has(.wrap) .sub,
+html body:has(.wrap) .check{
+  border-color:#b9e0f2!important;
+}
+
+/* 표·아코디언·기본 구분선 */
+html body table,
+html body th,
+html body td,
+html body details,
+html body hr{
+  border-color:#b9e0f2!important;
+}
