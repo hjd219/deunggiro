@@ -168,3 +168,22 @@ html body details,
 html body hr{
   border-color:#b9e0f2!important;
 }
+
+
+/* SITE_BORDER_COLOR_UNIFY_V1_ADDON */
+/* 사진에서 확인된 관련법률정보·상속절차·필요서류·FAQ의 누락 테두리 보완 */
+html body .related-posts-panel,
+html body .related-posts-head,
+html body .related-posts-list a,
+html body .related-badge,
+html body .related-posts-actions a,
+html body .inheritance-flow,
+html body .inheritance-note,
+html body .deadline,
+html body .muted-deadline,
+html body .docs-card,
+html body .faq-acc,
+html body .inheritance-pc-lower .docs-card,
+html body .inheritance-pc-lower .faq-acc{
+  border-color:#b9e0f2!important;
+}
