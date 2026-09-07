@@ -6,19 +6,16 @@ from pathlib import Path
 from urllib.parse import urljoin,urlparse,parse_qs
 import requests
 from bs4 import BeautifulSoup,NavigableString,Tag
+from category_rules import classify_title
 ROOT=Path(__file__).resolve().parents[1]; POSTS_JSON=ROOT/'data'/'posts.json'; POSTS_DIR=ROOT/'posts'; MEDIA_ROOT=ROOT/'assets'/'naver-images'
 BLOG_ID='hjd21'; RSS_URL=f'https://rss.blog.naver.com/{BLOG_ID}.xml'; BASE='https://www.deunggiro.kr'; MAX_IMPORT=3; MAX_REPAIR=100
 UA={'User-Agent':'Mozilla/5.0 (compatible; DeunggiroBlogImporter/4.1; +https://www.deunggiro.kr/)'}
 MOJIBAKE=('êµ','ë“','ë¡','ì§','ì—','ì›','ë¹','ê³','ë°','ì„','ìƒ','ìž','í•','ì‹','ìš','ìœ','ì•','ë¶','ì¶','ì ','ì²')
-CATEGORY_RULES=[('상속포기·한정승인',('상속포기','한정승인','특별한정승인','상속채무')),('상속재산분할',('상속재산분할','상속분쟁','기여분','특별수익','협조거부','연락두절')),('법인등기',('법인','주식회사','유한회사','대표이사','이사','감사','주주','본점이전','자본금','증자','감자','상호변경','목적변경')),('가사',('협의이혼','재판이혼','이혼','개명','후견','친권','양육비')),('부동산등기',('근저당','가압류','등기권리증','매매','증여','전세권','부동산','재산분할등기')),('상속등기',('상속등기','대습상속','상속취득세','상속인','상속지분','상속재산','유언','부모님 사망'))]
 def get(url):
  r=requests.get(url,headers=UA,timeout=25); r.raise_for_status(); r.encoding='utf-8'; return r
 def norm(v): return re.sub(r'[^0-9A-Za-z가-힣]+','',html.unescape(v or '')).lower()
-def category(text):
- if '이혼' in text: return '가사'
- for c,words in CATEGORY_RULES:
-  if any(w in text for w in words): return c
- return '기타'
+def category(title):
+ return classify_title(title)
 def logno(url):
  m=re.search(r'/(\d{6,})(?:\?|$)',url); return m.group(1) if m else (parse_qs(urlparse(url).query).get('logNo') or [''])[0]
 def view_url(url):
@@ -106,7 +103,7 @@ def repair(posts):
   try:
    body,text,imgs=extract(url,slug); chars,moji=quality_text(text); print('REPAIR_CANDIDATE',slug,'reason='+reason,'old='+str(oldchars),'new='+str(chars),'mojibake='+str(moji),'images='+str(imgs))
    if chars<500 or moji: continue
-   p['category']=category((p.get('title') or '')+' '+text[:500]); p['summary']=p.get('summary') or ((p.get('title') or '')+'의 핵심 절차와 준비사항을 정리합니다.')[:100]
+   p['category']=category(p.get('title') or ''); p['summary']=p.get('summary') or ((p.get('title') or '')+'의 핵심 절차와 준비사항을 정리합니다.')[:100]
    saved=save_post(p,body); repaired+=1; print('REPAIRED',slug,'saved='+str(saved))
   except Exception as e: print('REPAIR_SKIP',slug,e)
  print('REPAIRED_TOTAL',repaired)
@@ -129,7 +126,7 @@ def main():
   try:
    body,text,imgs=extract(url,slug); chars,moji=quality_text(text); print('CANDIDATE',n,'chars='+str(chars),'mojibake='+str(moji),'images='+str(imgs))
    if chars<500 or moji: continue
-   sm=(re.sub(r'^\s*\[[^\]]+\]\s*','',title)+'의 핵심 절차와 준비사항을 정리합니다.')[:100]; p={'title':title,'category':category(title+' '+text[:500]),'date':date,'slug':slug,'keywords':title,'summary':sm,'source_url':url,'source':'naver-blog'}
+   sm=(re.sub(r'^\s*\[[^\]]+\]\s*','',title)+'의 핵심 절차와 준비사항을 정리합니다.')[:100]; p={'title':title,'category':category(title),'date':date,'slug':slug,'keywords':title,'summary':sm,'source_url':url,'source':'naver-blog'}
    saved=save_post(p,body); posts.insert(0,p); sources.add(url); titles.add(norm(title)); imported+=1; print('IMPORTED_NEW',slug,'saved='+str(saved))
   except Exception as e: print('SKIP',n,e)
  POSTS_JSON.write_text(json.dumps(posts,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'); validate_all(posts); print('IMPORT_SCAN',checked,'IMPORTED',imported)
