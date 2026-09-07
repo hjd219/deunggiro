@@ -305,6 +305,65 @@ body{background:var(--detail-sky)!important}
 .corp-auth-link{margin-top:auto;display:flex;align-items:center;justify-content:center;min-height:48px;border-radius:10px;background:#36a9e1;color:#fff!important;font-size:14px;font-weight:900}.corp-auth-note{text-align:center;font-size:11px;color:#8b949e;margin-top:9px}
 @media(max-width:800px){.corp-faq-layout{grid-template-columns:1fr}.corp-auth-card{padding:23px}}
 </style><script src="/assets/analytics.js" defer></script>
+
+<style>
+/* CORPORATE_DOC_LABEL_BADGES_V1 */
+/* 법인설립·임원변경·증자·회사계속 등 필요서류 내부 항목을 배지로 통일 */
+.corp-row{grid-template-columns:112px minmax(0,1fr)!important;gap:10px!important;align-items:start!important}
+.corp-row b{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:max-content!important;
+  max-width:100%!important;
+  min-height:28px!important;
+  padding:4px 10px!important;
+  border:1px solid #b9e0f2!important;
+  border-radius:999px!important;
+  background:#eaf7fd!important;
+  color:#168dca!important;
+  font-size:12px!important;
+  line-height:1.2!important;
+  font-weight:800!important;
+  white-space:nowrap!important;
+}
+.corp-note strong{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-height:24px!important;
+  padding:2px 8px!important;
+  margin:0 0 7px!important;
+  border:1px solid #b9e0f2!important;
+  border-radius:999px!important;
+  background:#fff!important;
+  color:#168dca!important;
+  font-size:10px!important;
+  line-height:1.2!important;
+  font-weight:800!important;
+}
+.corp-note:not(:has(strong))::before{
+  content:"추가 확인";
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:24px;
+  padding:2px 8px;
+  margin:0 8px 0 0;
+  border:1px solid #b9e0f2;
+  border-radius:999px;
+  background:#fff;
+  color:#168dca;
+  font-size:10px;
+  line-height:1.2;
+  font-weight:800;
+  vertical-align:middle;
+}
+@media(max-width:560px){
+  .corp-row{grid-template-columns:1fr!important;gap:6px!important}
+  .corp-row b{font-size:11px!important;padding:4px 8px!important}
+}
+</style>
 </head><body><header class="header">
   <div class="container header-inner">
     <a class="logo" href="/"><span>등기로</span><small>현재두 법무사 사무소 · 인천</small></a>
