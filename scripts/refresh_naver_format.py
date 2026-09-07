@@ -96,8 +96,17 @@ def saveimg(candidates,slug,i,skip_if_small=False):
  return '/'+p.relative_to(ROOT).as_posix()
 def promo_start_text(v):
  v=re.sub(r'\s+','',v)
- fixed=('현재두법무사사무소상담안내','현재두법무사상담안내','현재두법무사사무소상담','상속상담안내','법인상담안내','부동산상담안내','가사상담안내','이혼상담안내','032-425-1500','032-425-15')
- return any(k in v for k in fixed) or (len(v)<=40 and '상담안내' in v)
+ fixed=(
+  '현재두법무사사무소상담안내','현재두법무사상담안내','현재두법무사사무소상담',
+  '상속상담안내','법인상담안내','부동산상담안내','가사상담안내','이혼상담안내',
+  '032-425-1500','032-425-15',
+  '저의사무실이궁금하신분','저희사무실이궁금하신분','사무실이궁금하신분은아래링크'
+ )
+ return (
+  any(k in v for k in fixed)
+  or (len(v)<=80 and '상담안내' in v)
+  or (len(v)<=120 and '사무실' in v and '아래링크' in v)
+ )
 def is_link_component(c):
  cl=' '.join(c.get('class',[])).lower()
  return ('se-oglink' in cl or 'se-module-oglink' in cl or 'se-module-link' in cl or c.select_one('.se-oglink-info,.se-module-oglink,.se-module-link,.se-link-preview') is not None)
