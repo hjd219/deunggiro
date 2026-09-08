@@ -570,3 +570,103 @@ html,body{max-width:100%;overflow-x:hidden}
     word-break:keep-all;
   }
 }
+
+
+/* MOBILE_POLISH_20260908_V1 */
+/* 모바일 공통 미세정리: 구조/콘텐츠는 유지하고 여백·터치영역·푸터·계산기 가독성만 통일 */
+@media(max-width:700px){
+  html{-webkit-text-size-adjust:100%}
+  body{min-width:0}
+
+  /* 공통 좌우 여백 16px */
+  .container,
+  .dg-shell-header .dg-shell-inner,
+  .dg-shell-contact .dg-shell-contact-grid,
+  .dg-shell-footer .dg-shell-footer-grid,
+  .dg-shell-legal{
+    padding-left:16px!important;
+    padding-right:16px!important;
+  }
+
+  /* 모바일에서 상담/푸터가 화면 위로 떠 보이지 않도록 일반 문서 흐름으로 고정 */
+  .dg-shell-contact,
+  .dg-shell-footer,
+  .dg-shell-legal{
+    position:static!important;
+    inset:auto!important;
+    transform:none!important;
+  }
+
+  /* 터치 버튼 최소 높이 통일 */
+  .buttons .btn,
+  .related-posts-actions a,
+  .dg-shell-route-actions a,
+  .dg-shell-mobile-grid a{
+    min-height:44px!important;
+  }
+
+  /* 개인정보처리방침·면책고지 모바일 통일 */
+  body:has(.policy-wrap){
+    min-height:100dvh;
+    display:flex;
+    flex-direction:column;
+  }
+  body:has(.policy-wrap) .policy-wrap{
+    width:100%!important;
+    max-width:900px!important;
+    flex:1 0 auto;
+    padding:36px 16px 52px!important;
+  }
+  body:has(.policy-wrap) .policy-wrap h1{
+    font-size:28px!important;
+    line-height:1.28!important;
+    letter-spacing:-1.2px!important;
+  }
+  body:has(.policy-wrap) .policy-lead{
+    margin-bottom:24px!important;
+    font-size:14px!important;
+    line-height:1.72!important;
+  }
+  body:has(.policy-wrap) .policy-card{
+    padding:20px 16px!important;
+    border-radius:14px!important;
+  }
+  body:has(.policy-wrap) .policy-card h2{
+    margin-top:26px!important;
+    font-size:18px!important;
+    line-height:1.4!important;
+  }
+  body:has(.policy-wrap) .policy-card h2:first-child{margin-top:0!important}
+  body:has(.policy-wrap) .policy-card p,
+  body:has(.policy-wrap) .policy-card li{
+    font-size:14px!important;
+    line-height:1.75!important;
+  }
+
+  /* 계산기: 결과 숫자·행·입력부 모바일 가독성 통일 */
+  body:has(.wrap) .wrap{
+    width:calc(100% - 32px)!important;
+    max-width:100%!important;
+  }
+  body:has(.wrap) .form,
+  body:has(.wrap) .result{
+    padding:18px 16px!important;
+  }
+  body:has(.wrap) .result .row{
+    gap:10px!important;
+    font-size:13px!important;
+    line-height:1.5!important;
+  }
+  body:has(.wrap) .total strong{
+    font-size:26px!important;
+    line-height:1.25!important;
+  }
+  body:has(.wrap) .opt,
+  body:has(.wrap) input,
+  body:has(.wrap) select,
+  body:has(.wrap) button.calc,
+  body:has(.wrap) button.add,
+  body:has(.wrap) .pdf-download{
+    min-height:46px!important;
+  }
+}
