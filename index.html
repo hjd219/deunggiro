@@ -1423,6 +1423,40 @@ body.home .hero .buttons .dg-intro-open{cursor:pointer;font-family:inherit}
 .dg-intro-sign{margin-top:16px;color:#172840;font-size:17px;font-weight:900;display:flex;align-items:center;justify-content:flex-end;gap:9px}.dg-intro-stamp{width:46px;height:46px;display:block!important;opacity:1!important;visibility:visible!important;flex:0 0 46px;transform:none!important;object-fit:contain;object-position:center;clip-path:none!important;background:#fff;}
 @media(max-width:600px){.dg-intro-modal{padding:36px 22px 28px}.dg-intro-modal h2{font-size:24px}.dg-intro-copy{font-size:15px;text-align:left}.dg-intro-sign{text-align:right}}
 </style>
+
+<style id="HOME_WRITING_SAFE_APPLY_V1">
+/* 손글씨 위치/폭 유지: 뒤 중복 문구는 레이아웃 공간을 유지한 채 완전 투명 처리 */
+.hero-written-phrase::before{
+  content:"등기로에서 쉽게!" !important;
+  display:inline-block !important;
+  opacity:0 !important;
+  visibility:hidden !important;
+  color:transparent !important;
+  white-space:nowrap !important;
+  pointer-events:none !important;
+}
+/* 글씨를 따라 움직이던 파란 점만 제거 */
+.hero-written-phrase::after{
+  display:none !important;
+  animation:none !important;
+}
+</style>
+
+<style id="INTRO_CARD_TEXT_APPLY_V1">
+/* 메인 '등기로 소개' 팝업 가독성 개선 */
+.dg-intro-kicker{font-size:14px!important}
+.dg-intro-modal h2{font-size:32px!important;line-height:1.35!important}
+.dg-intro-copy{font-size:17px!important;line-height:1.9!important}
+.dg-intro-credential{font-size:15px!important}
+.dg-intro-sign{font-size:18px!important}
+@media(max-width:600px){
+  .dg-intro-kicker{font-size:13px!important}
+  .dg-intro-modal h2{font-size:26px!important;line-height:1.4!important}
+  .dg-intro-copy{font-size:16px!important;line-height:1.85!important}
+  .dg-intro-credential{font-size:14.5px!important}
+  .dg-intro-sign{font-size:17.5px!important}
+}
+</style>
 </head>
 <body class="home">
 
