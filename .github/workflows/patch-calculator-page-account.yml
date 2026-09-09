@@ -106,3 +106,5 @@ jobs:
           git add acquisition-calculator.html corporate-calculator.html
           git commit -m "계산기 계좌 중복 제거 및 준비서류 화면 숨김"
           git push
+
+# rerun 2026-09-09
