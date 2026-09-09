@@ -57,8 +57,6 @@ jobs:
     if(!result) return;
     const pdf=result.querySelector('.pdf-download');
     if(!pdf) return;
-
-    // 새 단일 계좌박스 외 기존 계좌 영역을 모두 제거한다.
     const candidates=new Set();
     result.querySelectorAll('.account-box,.bank-account,.account-info,.deposit-account,.dg-estimate-account').forEach(el=>candidates.add(el));
     result.querySelectorAll('*').forEach(el=>{
@@ -74,16 +72,10 @@ jobs:
       }
     });
     candidates.forEach(el=>{if(el.isConnected) el.remove()});
-
     let single=result.querySelector('.dg-calc-account-single');
-    if(!single){
-      pdf.insertAdjacentHTML('beforebegin',accountHtml);
-      single=result.querySelector('.dg-calc-account-single');
-    }else if(single.nextElementSibling!==pdf){
-      pdf.insertAdjacentElement('beforebegin',single);
-    }
+    if(!single){pdf.insertAdjacentHTML('beforebegin',accountHtml);single=result.querySelector('.dg-calc-account-single')}
+    else if(single.nextElementSibling!==pdf){pdf.insertAdjacentElement('beforebegin',single)}
   }
-
   let busy=false;
   const schedule=()=>{if(busy)return;busy=true;requestAnimationFrame(()=>{busy=false;clean()})};
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',schedule,{once:true}); else schedule();
@@ -101,8 +93,7 @@ jobs:
                   continue
               if '</body>' not in text:
                   raise SystemExit(f'{path}: </body> not found')
-              text = text.replace('</body>', patch + '\n</body>', 1)
-              path.write_text(text, encoding='utf-8')
+              path.write_text(text.replace('</body>', patch + '\n</body>', 1), encoding='utf-8')
           PY
       - name: Commit changes
         run: |
