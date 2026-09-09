@@ -1,0 +1,33 @@
+name: Align inheritance detail title
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/align-inheritance-detail-title.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Align title and underline
+        run: |
+          cat >> assets/inheritance-detail.css <<'EOF'
+
+/* DETAIL_TITLE_ALIGNMENT_V1 */
+.hero .title-row{margin-top:6px!important}
+.hero .hero-line{width:min(690px,100%)!important;height:3px!important;background:#82cef1!important;border-radius:2px!important;margin-top:14px!important;margin-bottom:20px!important}
+@media(max-width:560px){
+  .hero .title-row{margin-top:4px!important}
+  .hero .hero-line{width:100%!important;margin-top:12px!important}
+}
+EOF
+      - name: Commit
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add assets/inheritance-detail.css
+          git diff --cached --quiet && exit 0
+          git commit -m "상속 상세페이지 제목 위치와 밑줄 정렬"
+          git push
