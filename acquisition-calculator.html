@@ -118,33 +118,19 @@
 }
 </style>
 <script src="/assets/analytics.js" defer></script>
-<style id="calc-account-ui-v1">
-/* 계산기 입금계좌 + 필요서류 가독성 */
+<style id="calc-documents-ui-v1">
+/* 계산기 필요서류 가독성 */
 .documents h3{font-size:17px!important;line-height:1.35!important;font-weight:900!important;color:#172840!important;margin:0 0 11px!important}
 .doc-line{font-size:14px!important;line-height:1.65!important;font-weight:700!important;color:#354b60!important;margin:7px 0!important}
 .doc-line b{font-size:14px!important;color:#172840!important;font-weight:900!important}
-.account-box{margin-top:14px;padding:16px 17px;border:1px solid #b9e0f2;border-radius:14px;background:linear-gradient(180deg,#f7fcff,#eef8fd);box-shadow:0 6px 18px rgba(54,169,225,.06)}
-.account-title{display:flex;align-items:center;gap:8px;margin-bottom:11px;color:#172840;font-size:15px;font-weight:900;letter-spacing:-.2px}
-.account-title:before{content:'입금계좌';display:inline-flex;align-items:center;justify-content:center;min-height:28px;padding:4px 9px;border:1px solid #b9e0f2;border-radius:8px;background:#eaf7fd;color:#168dca;font-size:12px;font-weight:900}
-.account-title span{font-size:12px;color:#607286;font-weight:700}
-.account-list{display:grid;gap:8px}
-.account-row{display:grid;grid-template-columns:72px minmax(0,1fr);gap:10px;align-items:center;padding:10px 12px;border:1px solid #d7ebf5;border-radius:10px;background:#fff}
-.account-bank{color:#168dca;font-size:12px;font-weight:900}
-.account-main{min-width:0}
-.account-number{display:block;color:#0b2137;font-size:16px;font-weight:900;letter-spacing:.15px;white-space:nowrap}
-.account-holder{display:block;margin-top:2px;color:#627487;font-size:11px;font-weight:750}
 @media(max-width:800px){
-  .documents h3{font-size:16px!important}.doc-line,.doc-line b{font-size:13.5px!important;line-height:1.65!important}
-  .account-box{padding:14px 13px}.account-row{grid-template-columns:66px minmax(0,1fr);padding:9px 10px}.account-number{font-size:15px}.account-holder{font-size:10.5px}
+  .documents h3{font-size:16px!important}
+  .doc-line,.doc-line b{font-size:13.5px!important;line-height:1.65!important}
 }
 @media print{
   .documents{padding:14px 16px!important}
   .documents h3{font-size:15px!important;margin-bottom:8px!important}
   .doc-line,.doc-line b{font-size:11.5px!important;line-height:1.5!important;margin:4px 0!important}
-  .account-box{display:block!important;margin-top:10px!important;padding:10px 12px!important;border:1px solid #91adbf!important;border-radius:9px!important;background:#f2faff!important;box-shadow:none!important;break-inside:avoid!important}
-  .account-title{margin-bottom:7px!important;font-size:11px!important}.account-title:before{min-height:22px!important;padding:2px 7px!important;font-size:9.5px!important}.account-title span{font-size:9px!important}
-  .account-list{gap:5px!important}.account-row{grid-template-columns:58px 1fr!important;gap:7px!important;padding:6px 8px!important;border-color:#b9d6e5!important;border-radius:7px!important}
-  .account-bank{font-size:9.5px!important}.account-number{font-size:11.5px!important}.account-holder{font-size:9px!important}
 }
 </style>
 </head><body><header class="header"><div class="head"><div class="logo">등기로<small>현재두 법무사 사무소</small></div></div></header>
