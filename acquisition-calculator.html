@@ -117,7 +117,7 @@
  .office-footer b,.print-footer b{font-size:14px!important;font-weight:900!important}
 }
 </style>
-<script src="/assets/html2pdf.bundle.min.js?v=20260909"></script><script src="/assets/analytics.js" defer></script>
+<script src="/assets/analytics.js" defer></script>
 </head><body><header class="header"><div class="head"><div class="logo">등기로<small>현재두 법무사 사무소</small></div></div></header>
 <section class="hero"><b>REAL ESTATE TAX</b><h1>상속·증여·매매·이혼 재산분할 부동산등기 비용 계산기</h1><p>상속·증여·매매·이혼 재산분할 부동산의 취득세와 등기비용, 법무사 보수를 간편하게 계산합니다.</p></section>
 <main class="wrap">
@@ -155,64 +155,162 @@ async function printEstimate(){
   window.DGCounter?.countOnce('pdf');
   const btn=document.querySelector('.pdf-download');
   const result=document.querySelector('.result');
-  if(!result||!window.html2pdf){alert('이미지 생성 기능을 불러오지 못했습니다.');return;}
+  if(!result){alert('견적 내용을 찾을 수 없습니다.');return;}
   const oldText=btn?btn.textContent:'';
   if(btn){btn.disabled=true;btn.textContent='이미지 생성 중...';}
-  let clone;
+
+  const visible=el=>el&&!el.classList.contains('hidden')&&getComputedStyle(el).display!=='none';
+  const textOf=el=>(el?.textContent||'').replace(/\s+/g,' ').trim();
+
   try{
-    if(document.fonts&&document.fonts.ready)await document.fonts.ready;
-    clone=result.cloneNode(true);
-    clone.style.position='fixed';
-    clone.style.left='-10000px';
-    clone.style.top='0';
-    clone.style.width='720px';
-    clone.style.background='#fff';
-    clone.style.padding='28px';
-    clone.style.boxShadow='none';
-    clone.style.borderRadius='0';
-    clone.querySelectorAll('.pdf-download,.consult').forEach(el=>el.remove());
-    const pt=clone.querySelector('.print-title');if(pt)pt.style.display='flex';
-    clone.querySelectorAll('.print-footer').forEach(el=>el.style.display='block');
-    const docs=clone.querySelector('.documents');if(docs)docs.style.setProperty('display','block','important');
-    document.body.appendChild(clone);
+    const W=1000, M=64, CW=W-M*2;
+    const rows=[];
+    const selected=textOf(result.querySelector('.selected'));
+    result.querySelectorAll('.print-col').forEach(col=>{
+      if(!visible(col))return;
+      const title=textOf(col.querySelector('h3'));
+      const rs=[...col.querySelectorAll('.row')].filter(visible).map(r=>({
+        label:textOf(r.querySelector('span')),
+        value:textOf(r.querySelector('b,strong'))
+      }));
+      if(title||rs.length)rows.push({type:'section',title,rows:rs});
+    });
+    const totals=[...result.querySelectorAll('.total')].filter(visible).map(t=>({
+      label:textOf(t.querySelector('span')),
+      value:textOf(t.querySelector('strong'))
+    }));
+    const docs=[...result.querySelectorAll('.documents .doc-line')].filter(visible).map(textOf).filter(Boolean);
 
-    const dataUrl=await html2pdf()
-      .set({
-        image:{type:'png',quality:1},
-        html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff',scrollY:0}
-      })
-      .from(clone)
-      .outputImg('datauristring');
+    const measure=document.createElement('canvas').getContext('2d');
+    function wrappedLines(txt,maxWidth,font){
+      measure.font=font;
+      const chars=[...String(txt||'')];
+      const out=[];let line='';
+      for(const ch of chars){
+        const next=line+ch;
+        if(line&&measure.measureText(next).width>maxWidth){out.push(line);line=ch;}
+        else line=next;
+      }
+      if(line)out.push(line);
+      return out.length?out:[''];
+    }
 
-    if(!dataUrl||!String(dataUrl).startsWith('data:image/'))throw new Error('image-data');
+    let H=120;
+    if(selected)H+=48;
+    rows.forEach(sec=>{
+      H+=54;
+      sec.rows.forEach(r=>{
+        const ll=wrappedLines(r.label,CW*.58,'700 24px sans-serif').length;
+        H+=Math.max(54,ll*31+18);
+      });
+      H+=12;
+    });
+    totals.forEach(()=>H+=92);
+    if(docs.length){
+      H+=64;
+      docs.forEach(d=>H+=wrappedLines(d,CW,'700 22px sans-serif').length*31+14);
+      H+=20;
+    }
+    H+=120;
+
+    const canvas=document.createElement('canvas');
+    canvas.width=W*2;canvas.height=H*2;
+    const ctx=canvas.getContext('2d');
+    ctx.scale(2,2);
+    ctx.fillStyle='#ffffff';ctx.fillRect(0,0,W,H);
+
+    let y=58;
+    ctx.fillStyle='#35a9e1';ctx.font='900 42px sans-serif';ctx.fillText('등기로',M,y);
+    ctx.fillStyle='#172840';ctx.font='900 30px sans-serif';ctx.fillText('부동산등기 예상 견적서',M+190,y);
+    ctx.textAlign='right';ctx.fillStyle='#60758a';ctx.font='600 17px sans-serif';
+    ctx.fillText('견적일 '+new Date().toLocaleDateString('ko-KR'),W-M,y);
+    ctx.textAlign='left';
+    y+=28;ctx.fillStyle='#35a9e1';ctx.fillRect(M,y,CW,4);y+=38;
+
+    if(selected){
+      ctx.fillStyle='#526171';ctx.font='700 20px sans-serif';ctx.fillText(selected,M,y);
+      y+=44;
+    }
+
+    for(const sec of rows){
+      if(sec.title){
+        ctx.fillStyle='#172840';ctx.font='900 27px sans-serif';ctx.fillText(sec.title,M,y);
+        y+=32;
+      }
+      for(const r of sec.rows){
+        const labelLines=wrappedLines(r.label,CW*.58,'700 24px sans-serif');
+        const rowH=Math.max(54,labelLines.length*31+18);
+        ctx.fillStyle='#263e53';ctx.font='700 24px sans-serif';
+        labelLines.forEach((line,i)=>ctx.fillText(line,M,y+31*i));
+        ctx.textAlign='right';ctx.fillStyle='#0b2137';ctx.font='900 25px sans-serif';
+        ctx.fillText(r.value,W-M,y);
+        ctx.textAlign='left';
+        y+=rowH-10;
+        ctx.fillStyle='#c6dbe8';ctx.fillRect(M,y,CW,1);
+        y+=11;
+      }
+      y+=10;
+    }
+
+    for(const t of totals){
+      ctx.fillStyle='#eef8fd';
+      ctx.beginPath();ctx.roundRect(M,y,CW,78,18);ctx.fill();
+      ctx.fillStyle='#263e53';ctx.font='800 20px sans-serif';ctx.fillText(t.label,M+24,y+31);
+      ctx.textAlign='right';ctx.fillStyle='#1284ba';ctx.font='900 34px sans-serif';ctx.fillText(t.value,W-M-24,y+50);
+      ctx.textAlign='left';y+=92;
+    }
+
+    if(docs.length){
+      ctx.fillStyle='#172840';ctx.font='900 27px sans-serif';ctx.fillText('고객 준비서류',M,y);y+=38;
+      ctx.fillStyle='#e8f6fc';ctx.fillRect(M,y,CW,1);
+      y+=26;
+      ctx.fillStyle='#354b60';ctx.font='700 22px sans-serif';
+      for(const d of docs){
+        const lines=wrappedLines(d,CW-36,'700 22px sans-serif');
+        ctx.fillText('•',M,y);
+        lines.forEach((line,i)=>ctx.fillText(line,M+28,y+i*31));
+        y+=lines.length*31+14;
+      }
+      y+=10;
+    }
+
+    ctx.fillStyle='#f2faff';ctx.fillRect(M,y,CW,82);
+    ctx.fillStyle='#168dca';ctx.font='900 20px sans-serif';ctx.fillText('등기로 | 현재두 법무사 사무소',M+20,y+28);
+    ctx.fillStyle='#263e53';ctx.font='700 16px sans-serif';
+    ctx.fillText('인천 미추홀구 경원대로 873, 201호 · 032-425-1500 · www.deunggiro.kr',M+20,y+57);
+
+    const blob=await new Promise((resolve,reject)=>{
+      if(canvas.toBlob)canvas.toBlob(b=>b?resolve(b):reject(new Error('blob')),'image/png',1);
+      else{
+        try{
+          const data=canvas.toDataURL('image/png');
+          const bin=atob(data.split(',')[1]), bytes=new Uint8Array(bin.length);
+          for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+          resolve(new Blob([bytes],{type:'image/png'}));
+        }catch(e){reject(e);}
+      }
+    });
 
     const name='등기로_부동산등기_예상견적서.png';
-    let shared=false;
-    if(typeof File!=='undefined'&&navigator.canShare){
+    const file=new File([blob],name,{type:'image/png'});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){
       try{
-        const base64=dataUrl.split(',')[1];
-        const bin=atob(base64);
-        const bytes=new Uint8Array(bin.length);
-        for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
-        const file=new File([bytes],name,{type:'image/png'});
-        if(navigator.canShare({files:[file]})){
-          await navigator.share({files:[file],title:'부동산등기 예상 견적서'});
-          shared=true;
-        }
+        await navigator.share({files:[file],title:'부동산등기 예상 견적서'});
+        return;
       }catch(e){
         if(e&&e.name==='AbortError')return;
       }
     }
-    if(!shared){
-      const a=document.createElement('a');
-      a.href=dataUrl;a.download=name;a.style.display='none';
-      document.body.appendChild(a);a.click();a.remove();
-      setTimeout(()=>{try{location.href=dataUrl}catch(e){}},350);
-    }
+
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;a.download=name;a.style.display='none';
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>{try{location.href=url}catch(e){}},400);
+    setTimeout(()=>URL.revokeObjectURL(url),60000);
   }catch(e){
     alert('이미지 저장에 실패했습니다. 다시 시도해주세요.');
   }finally{
-    if(clone&&clone.parentNode)clone.parentNode.removeChild(clone);
     if(btn){btn.disabled=false;btn.textContent=oldText||'견적서 이미지 저장';}
   }
 }document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{document.querySelectorAll('.opt').forEach(x=>x.classList.remove('on'));b.classList.add('on');mode=b.dataset.mode;syncLabels();calc()});$('add').onclick=()=>{property();calc()};$('calc').onclick=()=>{window.DGCounter?.countOnce('calculator');calc()};['heirs','foreign','oneHouse','inheritDivision','divorceType','homes','area','size'].forEach(id=>$(id).onchange=calc);let requestedMode=new URLSearchParams(location.search).get('mode');if(!requestedMode){const ref=document.referrer||'';if(/\/inheritance\.html(?:[?#]|$)/.test(ref))requestedMode='inherit';else if(/\/family\.html(?:[?#]|$)/.test(ref))requestedMode='divorce'}if(['sale','gift','inherit','divorce'].includes(requestedMode)){mode=requestedMode;document.querySelectorAll('.opt').forEach(x=>x.classList.toggle('on',x.dataset.mode===mode))}property();syncLabels();calc();
