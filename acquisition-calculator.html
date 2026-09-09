@@ -147,6 +147,15 @@
   .account-bank{font-size:9.5px!important}.account-number{font-size:11.5px!important}.account-holder{font-size:9px!important}
 }
 </style>
+<style id="calc-account-screen-hide-v3">
+/* Account numbers are hidden on the calculator UI and appear only when printing/saving PDF. */
+@media screen {
+  .account-box { display:none !important; }
+}
+@media print {
+  .account-box { display:block !important; }
+}
+</style>
 </head><body><header class="header"><div class="head"><div class="logo">등기로<small>현재두 법무사 사무소</small></div></div></header>
 <section class="hero"><b>REAL ESTATE TAX</b><h1>상속·증여·매매·이혼 재산분할 부동산등기 비용 계산기</h1><p>상속·증여·매매·이혼 재산분할 부동산의 취득세와 등기비용, 법무사 보수를 간편하게 계산합니다.</p></section>
 <main class="wrap">
@@ -195,9 +204,3 @@ document.addEventListener('DOMContentLoaded',function(){
 });
 </script>
 </body></html>
-
-<style id="calc-account-print-only-v2">
-/* CALC_ACCOUNT_PRINT_ONLY_V2 */
-.account-box{display:none!important}
-@media print{.account-box{display:block!important}}
-</style>
