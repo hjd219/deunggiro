@@ -89,13 +89,35 @@ jobs:
           PY
           python -m py_compile scripts/category_rules.py scripts/import_naver_blog.py scripts/import_naver_blog_clean.py scripts/refresh_naver_format.py scripts/strip_naver_nonnumber_emoji.py scripts/strip_naver_consultation_footer.py scripts/ensure_section_dividers.py scripts/fix_divorce_categories.py scripts/cleanup_duplicate_posts.py
           git diff --check
-      - name: Commit
+      - name: Commit and push safely
         shell: bash
         run: |
           set -euo pipefail
-          if git diff --quiet && [ -z "$(git status --porcelain --untracked-files=normal)" ]; then echo "No changes"; exit 0; fi
+          if git diff --quiet && [ -z "$(git status --porcelain --untracked-files=normal)" ]; then
+            echo "No changes"
+            exit 0
+          fi
+
           git add data/posts.json data/seo-report.json posts posts.html assets/posts assets/naver-images index.html inheritance.html renunciation.html corporate.html realestate.html family.html sitemap.xml rss.xml admin.html
           git commit -m "네이버 블로그 미수집 글 자동 반영"
-          git push origin HEAD:main
 
-# Manual trigger marker: 2026-09-02-section-divider
+          for attempt in 1 2 3; do
+            echo "Push attempt ${attempt}/3"
+            git fetch origin main
+            if git rebase origin/main; then
+              if git push origin HEAD:main; then
+                echo "Push success"
+                exit 0
+              fi
+            else
+              echo "Rebase conflict detected"
+              git rebase --abort || true
+              exit 1
+            fi
+            sleep $((attempt * 5))
+          done
+
+          echo "Push failed after 3 attempts"
+          exit 1
+
+# Manual trigger marker: 2026-09-09-safe-push-retry
