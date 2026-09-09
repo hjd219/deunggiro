@@ -157,6 +157,7 @@
   if($('estInspector').value==='needed')lines.push('<b>조사보고인</b> 인감증명서 · 주민등록초본 · 인감도장');
  }
  if(selected.has('off')){
+  lines.push('<b>임원변경 · 주주</b> 주주 전원의 인감도장 · 인감증명서 1통 · 주주가 법인인 경우 법인등기부');
   const t=$('offType').value;
   if(t==='appoint')lines.push('<b>임원 취임</b> 취임 임원의 인감증명서 · 주민등록초본 · 인감도장');
   if(t==='reappoint')lines.push('<b>임원 중임</b> 중임 임원의 인감증명서 · 인감도장');
