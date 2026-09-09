@@ -165,29 +165,50 @@ async function printEstimate(){
     clone.style.position='fixed';
     clone.style.left='-10000px';
     clone.style.top='0';
-    clone.style.width=Math.min(760,Math.max(360,result.getBoundingClientRect().width))+'px';
+    clone.style.width='720px';
     clone.style.background='#fff';
     clone.style.padding='28px';
     clone.style.boxShadow='none';
     clone.style.borderRadius='0';
     clone.querySelectorAll('.pdf-download,.consult').forEach(el=>el.remove());
     const pt=clone.querySelector('.print-title');if(pt)pt.style.display='flex';
-    const pf=clone.querySelectorAll('.print-footer');pf.forEach(el=>el.style.display='block');
-    const docs=clone.querySelector('.documents');if(docs)docs.style.display='block';
+    clone.querySelectorAll('.print-footer').forEach(el=>el.style.display='block');
+    const docs=clone.querySelector('.documents');if(docs)docs.style.setProperty('display','block','important');
     document.body.appendChild(clone);
-    const worker=html2pdf().set({html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff',scrollY:0}}).from(clone).toCanvas();
-    const canvas=await worker.get('canvas');
-    const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png',1));
-    if(!blob)throw new Error('image');
+
+    const dataUrl=await html2pdf()
+      .set({
+        image:{type:'png',quality:1},
+        html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff',scrollY:0}
+      })
+      .from(clone)
+      .outputImg('datauristring');
+
+    if(!dataUrl||!String(dataUrl).startsWith('data:image/'))throw new Error('image-data');
+
     const name='등기로_부동산등기_예상견적서.png';
-    const file=new File([blob],name,{type:'image/png'});
-    if(navigator.canShare&&navigator.canShare({files:[file]})){
-      try{await navigator.share({files:[file],title:'부동산등기 예상 견적서'});return;}catch(e){if(e&&e.name==='AbortError')return;}
+    let shared=false;
+    if(typeof File!=='undefined'&&navigator.canShare){
+      try{
+        const base64=dataUrl.split(',')[1];
+        const bin=atob(base64);
+        const bytes=new Uint8Array(bin.length);
+        for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+        const file=new File([bytes],name,{type:'image/png'});
+        if(navigator.canShare({files:[file]})){
+          await navigator.share({files:[file],title:'부동산등기 예상 견적서'});
+          shared=true;
+        }
+      }catch(e){
+        if(e&&e.name==='AbortError')return;
+      }
     }
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement('a');a.href=url;a.download=name;a.style.display='none';document.body.appendChild(a);a.click();a.remove();
-    setTimeout(()=>{try{location.href=url}catch(e){}},350);
-    setTimeout(()=>URL.revokeObjectURL(url),60000);
+    if(!shared){
+      const a=document.createElement('a');
+      a.href=dataUrl;a.download=name;a.style.display='none';
+      document.body.appendChild(a);a.click();a.remove();
+      setTimeout(()=>{try{location.href=dataUrl}catch(e){}},350);
+    }
   }catch(e){
     alert('이미지 저장에 실패했습니다. 다시 시도해주세요.');
   }finally{
