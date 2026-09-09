@@ -1,0 +1,41 @@
+name: Sync detail pages with main shell
+on:
+  push:
+    branches: [main]
+jobs:
+  sync:
+    if: contains(github.event.head_commit.message, 'SYNC_DETAIL_MAIN_SHELL')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add common main shell assets to inheritance detail pages
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          pages = [
+            'inheritance-missing-heir.html',
+            'inheritance-overseas-heir.html',
+            'inheritance-minor-heir.html',
+            'inheritance-substitute-succession.html',
+            'inheritance-division.html',
+          ]
+          for name in pages:
+              p=Path(name)
+              s=p.read_text(encoding='utf-8')
+              if '/assets/site-shell.css' not in s:
+                  s=s.replace('<link rel="stylesheet" href="/assets/inheritance-detail.css">','<link rel="stylesheet" href="/assets/site-shell.css"><link rel="stylesheet" href="/assets/inheritance-detail.css">')
+              if '/assets/site-shell.js' not in s:
+                  s=s.replace('<script src="/assets/detail-shell.js?v=1" defer></script>','<script src="/assets/site-shell.js" defer></script><script src="/assets/detail-shell.js?v=1" defer></script>')
+              p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commit synchronized shell
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add inheritance-*.html
+          git diff --cached --quiet && exit 0
+          git commit -m "상속 상세페이지 상단을 메인 공통 헤더로 통일"
+          git pull --rebase origin main
+          git push origin main
