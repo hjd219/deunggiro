@@ -1,0 +1,40 @@
+name: Patch corporate officer shareholder documents
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add shareholder documents to officer changes
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('corporate-calculator.html')
+          s=p.read_text(encoding='utf-8')
+          marker="<b>임원변경 · 주주</b>"
+          if marker in s:
+              print('already patched')
+              raise SystemExit
+          old="if(selected.has('off')){\n  const t=$('offType').value;"
+          new="if(selected.has('off')){\n  lines.push('<b>임원변경 · 주주</b> 주주 전원의 인감도장 · 인감증명서 1통 · 주주가 법인인 경우 법인등기부');\n  const t=$('offType').value;"
+          if old not in s:
+              raise SystemExit('target block not found')
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
+          PY
+      - name: Commit change
+        run: |
+          if git diff --quiet -- corporate-calculator.html; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add corporate-calculator.html
+          git commit -m "임원변경 필요서류에 주주 서류 추가"
+          git push
