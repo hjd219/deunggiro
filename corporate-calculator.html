@@ -118,55 +118,60 @@
   const textOf=el=>(el?.textContent||'').replace(/\s+/g,' ').trim();
 
   try{
-    const W=1000, M=64, CW=W-M*2;
-    const rows=[];
-    const selected=textOf(result.querySelector('.selected'));
-    result.querySelectorAll('.print-col').forEach(col=>{
-      if(!visible(col))return;
-      const title=textOf(col.querySelector('h3'));
-      const rs=[...col.querySelectorAll('.row')].filter(visible).map(r=>({
-        label:textOf(r.querySelector('span')),
-        value:textOf(r.querySelector('b,strong'))
-      }));
-      if(title||rs.length)rows.push({type:'section',title,rows:rs});
-    });
-    const totals=[...result.querySelectorAll('.total')].filter(visible).map(t=>({
-      label:textOf(t.querySelector('span')),
-      value:textOf(t.querySelector('strong'))
-    }));
-    const docs=[...result.querySelectorAll('.documents .doc-line')].filter(visible).map(textOf).filter(Boolean);
+    if(document.fonts&&document.fonts.ready)await document.fonts.ready;
 
+    const W=1180,M=58,GAP=28,COL=(W-M*2-GAP)/2;
     const measure=document.createElement('canvas').getContext('2d');
-    function wrappedLines(txt,maxWidth,font){
+    const wrap=(txt,max,font)=>{
       measure.font=font;
-      const chars=[...String(txt||'')];
       const out=[];let line='';
-      for(const ch of chars){
+      for(const ch of [...String(txt||'')]){
         const next=line+ch;
-        if(line&&measure.measureText(next).width>maxWidth){out.push(line);line=ch;}
-        else line=next;
+        if(line&&measure.measureText(next).width>max){out.push(line);line=ch;}else line=next;
       }
       if(line)out.push(line);
       return out.length?out:[''];
-    }
+    };
 
-    let H=120;
-    if(selected)H+=48;
-    rows.forEach(sec=>{
-      H+=54;
-      sec.rows.forEach(r=>{
-        const ll=wrappedLines(r.label,CW*.58,'700 24px sans-serif').length;
-        H+=Math.max(54,ll*31+18);
+    const cols=[...result.querySelectorAll('.print-col')].filter(visible).slice(0,2).map(col=>({
+      title:textOf(col.querySelector('h3')),
+      rows:[...col.querySelectorAll('.row')].filter(visible).map(r=>({
+        label:textOf(r.querySelector('span')),
+        value:textOf(r.querySelector('b,strong'))
+      })),
+      totals:[...col.querySelectorAll('.total')].filter(visible).map(t=>({
+        label:textOf(t.querySelector('span')),
+        value:textOf(t.querySelector('strong'))
+      }))
+    }));
+
+    while(cols.length<2)cols.push({title:'',rows:[],totals:[]});
+
+    const outsideTotals=[...result.querySelectorAll('.total')].filter(t=>visible(t)&&!t.closest('.print-col')).map(t=>({
+      label:textOf(t.querySelector('span')),
+      value:textOf(t.querySelector('strong'))
+    }));
+    const selected=textOf(result.querySelector('.selected'));
+    const docs=[...result.querySelectorAll('.documents .doc-line')].filter(visible).map(textOf).filter(Boolean);
+
+    const colHeight=col=>{
+      let h=44;
+      col.rows.forEach(r=>{
+        const n=wrap(r.label,COL*.58,'700 22px Pretendard, sans-serif').length;
+        h+=Math.max(54,n*29+16);
       });
-      H+=12;
-    });
-    totals.forEach(()=>H+=92);
+      col.totals.forEach(()=>h+=86);
+      return h;
+    };
+    let yTop=150+(selected?44:0);
+    let H=yTop+Math.max(colHeight(cols[0]),colHeight(cols[1]))+20;
+    H+=outsideTotals.length*94;
     if(docs.length){
-      H+=64;
-      docs.forEach(d=>H+=wrappedLines(d,CW,'700 22px sans-serif').length*31+14);
-      H+=20;
+      H+=72;
+      docs.forEach(d=>H+=wrap(d,W-M*2-44,'700 20px Pretendard, sans-serif').length*28+10);
+      H+=34;
     }
-    H+=120;
+    H+=126;
 
     const canvas=document.createElement('canvas');
     canvas.width=W*2;canvas.height=H*2;
@@ -174,94 +179,109 @@
     ctx.scale(2,2);
     ctx.fillStyle='#ffffff';ctx.fillRect(0,0,W,H);
 
-    let y=58;
-    ctx.fillStyle='#35a9e1';ctx.font='900 42px sans-serif';ctx.fillText('등기로',M,y);
-    ctx.fillStyle='#172840';ctx.font='900 30px sans-serif';ctx.fillText('법인등기 예상 견적서',M+190,y);
-    ctx.textAlign='right';ctx.fillStyle='#60758a';ctx.font='600 17px sans-serif';
+    let y=62;
+    ctx.fillStyle='#35a9e1';ctx.font='900 38px Pretendard, sans-serif';ctx.fillText('등기로',M,y);
+    ctx.fillStyle='#172840';ctx.font='900 27px Pretendard, sans-serif';ctx.fillText('법인등기 예상 견적서',M+195,y);
+    ctx.textAlign='right';ctx.fillStyle='#718096';ctx.font='600 15px Pretendard, sans-serif';
     ctx.fillText('견적일 '+new Date().toLocaleDateString('ko-KR'),W-M,y);
     ctx.textAlign='left';
-    y+=28;ctx.fillStyle='#35a9e1';ctx.fillRect(M,y,CW,4);y+=38;
+    y+=25;ctx.fillStyle='#35a9e1';ctx.fillRect(M,y,W-M*2,4);y+=34;
 
     if(selected){
-      ctx.fillStyle='#526171';ctx.font='700 20px sans-serif';ctx.fillText(selected,M,y);
-      y+=44;
+      ctx.fillStyle='#263e53';ctx.font='700 18px Pretendard, sans-serif';ctx.fillText(selected,M,y);
+      y+=38;
     }
+    yTop=y;
 
-    for(const sec of rows){
-      if(sec.title){
-        ctx.fillStyle='#172840';ctx.font='900 27px sans-serif';ctx.fillText(sec.title,M,y);
-        y+=32;
-      }
-      for(const r of sec.rows){
-        const labelLines=wrappedLines(r.label,CW*.58,'700 24px sans-serif');
-        const rowH=Math.max(54,labelLines.length*31+18);
-        ctx.fillStyle='#263e53';ctx.font='700 24px sans-serif';
-        labelLines.forEach((line,i)=>ctx.fillText(line,M,y+31*i));
-        ctx.textAlign='right';ctx.fillStyle='#0b2137';ctx.font='900 25px sans-serif';
-        ctx.fillText(r.value,W-M,y);
+    function drawCol(col,x){
+      let cy=yTop;
+      ctx.fillStyle='#10263d';ctx.font='800 24px Pretendard, sans-serif';
+      if(col.title)ctx.fillText(col.title,x,cy);
+      cy+=34;
+
+      for(const r of col.rows){
+        const lines=wrap(r.label,COL*.58,'700 22px Pretendard, sans-serif');
+        const rh=Math.max(54,lines.length*29+16);
+        ctx.fillStyle='#10263d';ctx.font='700 22px Pretendard, sans-serif';
+        lines.forEach((line,i)=>ctx.fillText(line,x,cy+i*29));
+        ctx.textAlign='right';ctx.fillStyle='#091f33';ctx.font='800 22px Pretendard, sans-serif';
+        ctx.fillText(r.value,x+COL,cy);
         ctx.textAlign='left';
-        y+=rowH-10;
-        ctx.fillStyle='#c6dbe8';ctx.fillRect(M,y,CW,1);
-        y+=11;
+        cy+=rh-10;
+        ctx.fillStyle='#7899af';ctx.fillRect(x,cy,COL,1);
+        cy+=11;
       }
-      y+=10;
+
+      for(const t of col.totals){
+        cy+=7;
+        ctx.fillStyle='#f0f9fd';ctx.fillRect(x,cy,COL,72);
+        ctx.fillStyle='#263e53';ctx.font='800 18px Pretendard, sans-serif';ctx.fillText(t.label,x+18,cy+28);
+        ctx.textAlign='right';ctx.fillStyle='#1284ba';ctx.font='800 28px Pretendard, sans-serif';ctx.fillText(t.value,x+COL-18,cy+49);
+        ctx.textAlign='left';cy+=86;
+      }
+      return cy;
     }
 
-    for(const t of totals){
-      ctx.fillStyle='#eef8fd';
-      ctx.beginPath();ctx.roundRect(M,y,CW,78,18);ctx.fill();
-      ctx.fillStyle='#263e53';ctx.font='800 20px sans-serif';ctx.fillText(t.label,M+24,y+31);
-      ctx.textAlign='right';ctx.fillStyle='#1284ba';ctx.font='900 34px sans-serif';ctx.fillText(t.value,W-M-24,y+50);
-      ctx.textAlign='left';y+=92;
+    const end1=drawCol(cols[0],M);
+    const end2=drawCol(cols[1],M+COL+GAP);
+    y=Math.max(end1,end2)+12;
+
+    for(const t of outsideTotals){
+      ctx.fillStyle='#f0f9fd';ctx.fillRect(M,y,W-M*2,78);
+      ctx.fillStyle='#263e53';ctx.font='800 19px Pretendard, sans-serif';ctx.fillText(t.label,M+22,y+31);
+      ctx.textAlign='right';ctx.fillStyle='#1284ba';ctx.font='800 31px Pretendard, sans-serif';ctx.fillText(t.value,W-M-22,y+53);
+      ctx.textAlign='left';y+=94;
     }
 
     if(docs.length){
-      ctx.fillStyle='#172840';ctx.font='900 27px sans-serif';ctx.fillText('고객 준비서류',M,y);y+=38;
-      ctx.fillStyle='#e8f6fc';ctx.fillRect(M,y,CW,1);
-      y+=26;
-      ctx.fillStyle='#354b60';ctx.font='700 22px sans-serif';
+      y+=6;
+      ctx.fillStyle='#e8f6fc';ctx.fillRect(M,y,W-M*2,54);
+      ctx.fillStyle='#10263d';ctx.font='900 22px Pretendard, sans-serif';ctx.fillText('고객 준비서류',M+18,y+34);
+      y+=54;
+      ctx.fillStyle='#e8f6fc';
+      const docStart=y;
+      let dy=y+20;
+      ctx.fillStyle='#354b60';ctx.font='700 20px Pretendard, sans-serif';
       for(const d of docs){
-        const lines=wrappedLines(d,CW-36,'700 22px sans-serif');
-        ctx.fillText('•',M,y);
-        lines.forEach((line,i)=>ctx.fillText(line,M+28,y+i*31));
-        y+=lines.length*31+14;
+        const lines=wrap(d,W-M*2-54,'700 20px Pretendard, sans-serif');
+        ctx.fillText('•',M+18,dy);
+        lines.forEach((line,i)=>ctx.fillText(line,M+42,dy+i*28));
+        dy+=lines.length*28+10;
       }
-      y+=10;
+      ctx.strokeStyle='#91adbf';ctx.lineWidth=1;
+      ctx.strokeRect(M,docStart-54,W-M*2,dy-docStart+64);
+      y=dy+20;
     }
 
-    ctx.fillStyle='#f2faff';ctx.fillRect(M,y,CW,82);
-    ctx.fillStyle='#168dca';ctx.font='900 20px sans-serif';ctx.fillText('등기로 | 현재두 법무사 사무소',M+20,y+28);
-    ctx.fillStyle='#263e53';ctx.font='700 16px sans-serif';
-    ctx.fillText('인천 미추홀구 경원대로 873, 201호 · 032-425-1500 · www.deunggiro.kr',M+20,y+57);
+    y+=8;
+    ctx.fillStyle='#f2faff';ctx.fillRect(M,y,W-M*2,90);
+    ctx.strokeStyle='#91adbf';ctx.strokeRect(M,y,W-M*2,90);
+    ctx.fillStyle='#168dca';ctx.font='900 19px Pretendard, sans-serif';ctx.fillText('등기로 | 현재두 법무사 사무소',M+18,y+28);
+    ctx.fillStyle='#263e53';ctx.font='700 15px Pretendard, sans-serif';
+    ctx.fillText('인천 미추홀구 경원대로 873, 201호(주안동, 인성빌딩) · 인천가정법원 옆',M+18,y+52);
+    ctx.fillText('전화 032-425-1500   이메일 hjd21@naver.com   홈페이지 www.deunggiro.kr',M+18,y+74);
 
     const blob=await new Promise((resolve,reject)=>{
-      if(canvas.toBlob)canvas.toBlob(b=>b?resolve(b):reject(new Error('blob')),'image/jpeg',0.95);
-      else{
-        try{
-          const data=canvas.toDataURL('image/jpeg');
-          const bin=atob(data.split(',')[1]), bytes=new Uint8Array(bin.length);
-          for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
-          resolve(new Blob([bytes],{type:'image/jpeg'}));
-        }catch(e){reject(e);}
-      }
+      canvas.toBlob(b=>b?resolve(b):reject(new Error('blob')),'image/jpeg',0.95);
     });
-
     const name='등기로_법인등기_예상견적서.jpg';
     const file=new File([blob],name,{type:'image/jpeg'});
     if(navigator.canShare&&navigator.canShare({files:[file]})){
-      try{
-        await navigator.share({files:[file],title:'법인등기 예상 견적서'});
-        return;
-      }catch(e){
-        if(e&&e.name==='AbortError')return;
-      }
+      try{await navigator.share({files:[file],title:'법인등기 예상 견적서'});return;}
+      catch(e){if(e&&e.name==='AbortError')return;}
     }
-
     const url=URL.createObjectURL(blob);
-    const a=document.createElement('a');
-    a.href=url;a.download=name;a.style.display='none';
-    document.body.appendChild(a);a.click();a.remove();
-    setTimeout(()=>{try{location.href=url}catch(e){}},400);
+    const isMobile=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+    if(!isMobile){
+      const win=window.open('', '_blank');
+      if(win){
+        win.document.write('<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>법인등기 예상 견적서</title><style>body{margin:0;padding:20px;background:#f5f8fb;text-align:center;font-family:sans-serif}.bar{margin-bottom:14px}.bar a{display:inline-block;padding:11px 17px;border-radius:10px;background:#35a9e1;color:#fff;text-decoration:none;font-weight:800}img{max-width:100%;height:auto;background:#fff;border:1px solid #dfe8ef}</style></head><body><div class="bar"><a href="'+url+'" download="'+name+'">JPG 저장</a></div><img src="'+url+'"></body></html>');
+        win.document.close();
+      }else location.href=url;
+    }else{
+      const a=document.createElement('a');a.href=url;a.download=name;a.style.display='none';document.body.appendChild(a);a.click();a.remove();
+      setTimeout(()=>{try{location.href=url}catch(e){}},400);
+    }
     setTimeout(()=>URL.revokeObjectURL(url),60000);
   }catch(e){
     alert('이미지 저장에 실패했습니다. 다시 시도해주세요.');
