@@ -1424,9 +1424,26 @@ body.home .hero .buttons .dg-intro-open{cursor:pointer;font-family:inherit}
 @media(max-width:600px){.dg-intro-modal{padding:36px 22px 28px}.dg-intro-modal h2{font-size:24px}.dg-intro-copy{font-size:15px;text-align:left}.dg-intro-sign{text-align:right}}
 </style>
 
-<style id="HOME_WRITING_CLEAN_PREVIEW_V2">
-.hero-written-phrase::before{content:none!important;display:none!important}
-.hero-written-phrase::after{content:none!important;display:none!important}
+<style id="HOME_WRITING_SAFE_PREVIEW_V3">
+/*
+  안전 미리보기:
+  - ::before의 글자는 삭제하지 않고 투명 처리하여 기존 폭/높이/좌표를 그대로 유지
+  - 파란 펜 점(::after)만 시각적으로 제거
+  - 실제 메인(index.html)은 수정하지 않음
+*/
+.hero-written-phrase::before{
+  content:"등기로에서 쉽게!" !important;
+  display:inline-block !important;
+  opacity:0 !important;
+  visibility:hidden !important;
+  color:transparent !important;
+  white-space:nowrap !important;
+  pointer-events:none !important;
+}
+.hero-written-phrase::after{
+  display:none !important;
+  animation:none !important;
+}
 </style>
 </head>
 <body class="home">
