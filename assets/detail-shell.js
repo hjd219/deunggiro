@@ -64,7 +64,7 @@
     document.addEventListener('keydown',e=>{if(e.key==='Escape') setOpen(false)});
   }
 
-  /* DETAIL_PROCESS_ICONS_FAQ_V2 */
+  /* DETAIL_PROCESS_ICONS_FAQ_V3 */
   const style=document.createElement('style');
   style.textContent=`
     .proc-icon{width:62px!important;height:62px!important;border:1px solid #b9def0!important;border-radius:15px!important;background:#fff!important;display:grid!important;place-items:center!important;margin:0 auto 15px!important;font-size:0!important;box-shadow:0 4px 10px rgba(31,71,104,.035)!important}
@@ -75,7 +75,14 @@
     .faq-table th{width:27%;background:#f1f6f9;color:#17304a;font-weight:900}
     .faq-table td{color:#29445d;background:#fff}
     .faq-kicker{font-size:11px;color:#168dca;font-weight:900;letter-spacing:.04em;margin-bottom:5px}
-    @media(max-width:560px){.faq-table{font-size:12.5px}.faq-table th{width:36%;padding:10px}.faq-table td{padding:10px}.proc-icon{width:58px!important;height:58px!important}.proc-icon svg{width:31px!important;height:31px!important}}
+    .dg-detail-popover{position:fixed;z-index:2500;width:min(360px,calc(100vw - 24px));display:none;background:#fff;border:1px solid #cfe2ec;border-radius:13px;box-shadow:0 16px 38px rgba(28,55,77,.16);overflow:hidden}
+    .dg-detail-popover.open{display:block}
+    .dg-detail-popover-title{padding:13px 15px;background:#eef8fd;color:#168dca;font-size:13px;font-weight:900;border-bottom:1px solid #dbeaf2}
+    .dg-detail-popover a{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 15px;border-bottom:1px solid #edf2f5;color:#324b60;font-size:13px;font-weight:800;background:#fff}
+    .dg-detail-popover a:last-child{border-bottom:0}
+    .dg-detail-popover a:hover,.dg-detail-popover a.active{background:#f1f9fd;color:#168dca}
+    .dg-detail-popover a span{color:#82a3b8;font-size:18px;line-height:1}
+    @media(max-width:560px){.faq-table{font-size:12.5px}.faq-table th{width:36%;padding:10px}.faq-table td{padding:10px}.proc-icon{width:58px!important;height:58px!important}.proc-icon svg{width:31px!important;height:31px!important}.dg-detail-popover{width:min(330px,calc(100vw - 24px))}}
   `;
   document.head.appendChild(style);
 
@@ -137,5 +144,45 @@
       document.querySelector('article')?.appendChild(faqSection);
     }
     faqSection.innerHTML=`<div class="faq-kicker">FAQ</div><h2>자주 묻는 질문</h2><div class="faq"><table class="faq-table"><tbody>${rows.map(r=>`<tr><th>${r[0]}</th><td>${r[1]}</td></tr>`).join('')}</tbody></table></div>`;
+  }
+
+  /* DETAIL_GUIDE_POPOVER_V1 */
+  const detailTrigger=[...document.querySelectorAll('.hero .actions .btn-border')].find(el=>el.textContent.includes('상속등기 세부안내'));
+  if(detailTrigger){
+    detailTrigger.setAttribute('href','#');
+    detailTrigger.setAttribute('role','button');
+    detailTrigger.setAttribute('aria-haspopup','true');
+    detailTrigger.setAttribute('aria-expanded','false');
+    const items=[
+      ['/inheritance-missing-heir.html','연락두절 상속인'],
+      ['/inheritance-overseas-heir.html','해외거주·외국인 상속인'],
+      ['/inheritance-minor-heir.html','미성년 상속인'],
+      ['/inheritance-substitute-succession.html','대습상속'],
+      ['/inheritance-division.html','상속재산분할']
+    ];
+    const pop=document.createElement('div');
+    pop.className='dg-detail-popover';
+    pop.setAttribute('role','menu');
+    pop.innerHTML=`<div class="dg-detail-popover-title">상속등기 세부안내</div>${items.map(([href,label])=>`<a href="${href}" class="${location.pathname===href?'active':''}" role="menuitem">${label}<span>›</span></a>`).join('')}`;
+    document.body.appendChild(pop);
+    const place=()=>{
+      const r=detailTrigger.getBoundingClientRect();
+      const w=Math.min(360,window.innerWidth-24);
+      let left=r.left;
+      if(left+w>window.innerWidth-12) left=window.innerWidth-w-12;
+      if(left<12) left=12;
+      pop.style.left=`${left}px`;
+      pop.style.top=`${r.bottom+8}px`;
+    };
+    const setPopover=open=>{
+      if(open){place();pop.classList.add('open')}else pop.classList.remove('open');
+      detailTrigger.setAttribute('aria-expanded',open?'true':'false');
+    };
+    detailTrigger.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();setPopover(!pop.classList.contains('open'))});
+    pop.addEventListener('click',e=>e.stopPropagation());
+    document.addEventListener('click',()=>setPopover(false));
+    document.addEventListener('keydown',e=>{if(e.key==='Escape') setPopover(false)});
+    window.addEventListener('resize',()=>{if(pop.classList.contains('open')) place()});
+    window.addEventListener('scroll',()=>{if(pop.classList.contains('open')) place()},{passive:true});
   }
 })();
