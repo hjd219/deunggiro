@@ -35,14 +35,22 @@ html,body{margin:0;padding:0;background:#eef4f8;font-family:Pretendard,"Noto San
 .paper .print-footer{display:block!important;margin-top:8px!important;padding-top:8px!important;font-size:8px!important;color:#263e53!important;font-weight:700!important}
 .paper .office-footer{display:block!important;margin-top:12px!important;padding:10px 12px!important;border:1px solid #91adbf!important;border-radius:9px!important;background:#f2faff!important;color:#1d354b!important;font-size:9px!important;line-height:1.55!important}
 .paper .office-footer b{display:block!important;margin:0 0 3px!important;color:#168dca!important;font-size:11px!important;font-weight:900!important}
+#stage{width:100%;display:flex;justify-content:center;align-items:flex-start;overflow:hidden}
 @media(max-width:700px){
  .toolbar{padding:8px}.toolbar button{flex:1;max-width:180px}
- .paper{width:calc(100% - 12px);min-height:0;margin:8px auto 20px;padding:14px}
- .paper .print-title b{font-size:22px!important}.paper .print-title span{font-size:16px!important}
- .paper .print-columns{grid-template-columns:1.2fr .8fr!important;gap:12px!important}
- .paper .print-col .row{display:block!important}
- .paper .print-col .row span,.paper .print-col .row b{display:block!important;max-width:none!important;text-align:left!important}
- .paper .print-col .row b{margin-top:2px!important}
+ .guide{font-size:12px;line-height:1.4;padding:8px 16px 0}
+ .paper{
+   flex:0 0 794px!important;
+   width:794px!important;
+   min-height:1123px!important;
+   margin:8px 0 20px!important;
+   padding:45px!important;
+   transform-origin:top center!important;
+ }
+ .paper .print-columns{grid-template-columns:1fr 1fr!important;gap:18px!important}
+ .paper .print-col .row{display:flex!important;justify-content:space-between!important;gap:10px!important}
+ .paper .print-col .row span{display:block!important;max-width:68%!important;text-align:left!important}
+ .paper .print-col .row b{display:block!important;text-align:right!important;margin-top:0!important}
 }
 @media print{
  @page{size:A4;margin:12mm}
@@ -59,7 +67,7 @@ html,body{margin:0;padding:0;background:#eef4f8;font-family:Pretendard,"Noto San
   <button class="print" type="button" onclick="window.print()">PDF 저장 / 인쇄</button>
 </div>
 <div class="guide">견적서 화면입니다. 인쇄창이 열리지 않는 앱에서는 브라우저 메뉴의 공유·인쇄 기능을 이용할 수 있습니다.</div>
-<main class="paper" id="paper"></main>
+<div id="stage"><main class="paper" id="paper"></main></div>
 <script>
 (function(){
   const raw=sessionStorage.getItem('deunggiroEstimatePreview');
@@ -70,7 +78,23 @@ html,body{margin:0;padding:0;background:#eef4f8;font-family:Pretendard,"Noto San
   try{
     const data=JSON.parse(raw);
     document.title=(data.title||'등기로 예상 견적서');
-    document.getElementById('paper').innerHTML=data.html||'';
+    const paper=document.getElementById('paper');
+    const stage=document.getElementById('stage');
+    paper.innerHTML=data.html||'';
+
+    function fitPaper(){
+      if(window.innerWidth>700){
+        paper.style.transform='';
+        stage.style.height='';
+        return;
+      }
+      const available=Math.max(280,window.innerWidth-12);
+      const scale=Math.min(1,available/794);
+      paper.style.transform='scale('+scale+')';
+      stage.style.height=(paper.scrollHeight*scale+16)+'px';
+    }
+    requestAnimationFrame(()=>requestAnimationFrame(fitPaper));
+    window.addEventListener('resize',fitPaper);
   }catch(e){
     document.getElementById('paper').textContent='견적서를 표시하지 못했습니다.';
   }
