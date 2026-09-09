@@ -11,5 +11,6 @@
 
 
 
-/* DETAIL_MOBILE_HIDE_LEGAL_BAR_V10 */
-@media(max-width:900px){body .dg-shell-contact{display:block!important}body .dg-shell-footer{display:block!important}body .dg-shell-footer .dg-shell-legal{display:none!important}}
+
+/* DETAIL_MOBILE_HIDE_BOTTOM_CONTACT_V11 */
+@media(max-width:900px){body .dg-shell-footer{display:block!important}body .dg-shell-footer .dg-shell-legal{display:flex!important}body .dg-shell-contact{display:none!important}}
