@@ -147,15 +147,6 @@
   .account-bank{font-size:9.5px!important}.account-number{font-size:11.5px!important}.account-holder{font-size:9px!important}
 }
 </style>
-<style id="calc-account-screen-hide-v3">
-/* Account numbers are hidden on the calculator UI and appear only when printing/saving PDF. */
-@media screen {
-  .account-box { display:none !important; }
-}
-@media print {
-  .account-box { display:block !important; }
-}
-</style>
 </head><body><header class="header"><div class="head"><div class="logo">등기로<small>현재두 법무사 사무소</small></div></div></header>
 <section class="hero"><b>REAL ESTATE TAX</b><h1>상속·증여·매매·이혼 재산분할 부동산등기 비용 계산기</h1><p>상속·증여·매매·이혼 재산분할 부동산의 취득세와 등기비용, 법무사 보수를 간편하게 계산합니다.</p></section>
 <main class="wrap">
@@ -191,16 +182,4 @@ function syncLabels(){document.querySelectorAll('.priceLabel').forEach(x=>x.text
 function calc(){updateDocuments();let value=0,bondBuy=0,count=0,acq=0,edu=0,rural=0,allHouse=true;document.querySelectorAll('.property').forEach(d=>{const k=d.querySelector('.kind').value,p=num(d.querySelector('.price').value),s=num(d.querySelector('.bondStd').value),house=k==='condo'||k==='single',[a,e,r]=taxes(p,k);value+=p;acq+=a;edu+=e;rural+=r;allHouse=allHouse&&house;count+=(k==='single'||k==='general')?2:1;bondBuy+=Math.round((s*bondRate(s,house))/10000)*10000});const discount=bondBuy*(DAILY_BOND_RATE/100),registry=count*15000,stampTax=stamp(value,allHouse),travel=80000,cert=count*20000,publicTotal=acq+edu+rural+discount+registry+stampTax+travel+cert;let base=fee(value);if(mode==='inherit'){const surcharge=(Number($('heirs').value)>=5||$('foreign').value==='yes')?1:.5;base*=1+surcharge;$('rule').textContent=surcharge===1?'상속인 5인 이상 또는 외국인 포함: 기본보수 100% 가산 자동 적용':'일반 상속등기: 기본보수 50% 가산 자동 적용'}const agency=90000,vat=(base+agency)*.1,legal=base+agency+vat;$('acq').textContent=won(acq);$('edu').textContent=won(edu);$('rural').textContent=won(rural);$('bond').textContent=won(bondBuy);$('discountCost').textContent=won(discount);$('registry').textContent=won(registry);$('travelOut').textContent=won(travel);$('certOut').textContent=won(cert);$('stamp').textContent=won(stampTax);$('publicTotal').textContent=won(publicTotal);$('basic').textContent=won(base);$('vat').textContent=won(vat);$('legalTotal').textContent=won(legal);$('grand').textContent=won(publicTotal+legal)}
 function printEstimate(){window.DGCounter?.countOnce('pdf');$('printDate').textContent='견적일 '+new Date().toLocaleDateString('ko-KR');const result=document.querySelector('.result');if(!result){alert('견적 내용을 찾을 수 없습니다.');return;}try{sessionStorage.setItem('deunggiroEstimatePreview',JSON.stringify({title:'등기로 부동산등기 예상 견적서',html:result.outerHTML}));location.href='/estimate-preview.html?v=20260909';}catch(e){window.print();}}document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{document.querySelectorAll('.opt').forEach(x=>x.classList.remove('on'));b.classList.add('on');mode=b.dataset.mode;syncLabels();calc()});$('add').onclick=()=>{property();calc()};$('calc').onclick=()=>{window.DGCounter?.countOnce('calculator');calc()};['heirs','foreign','oneHouse','inheritDivision','divorceType','homes','area','size'].forEach(id=>$(id).onchange=calc);let requestedMode=new URLSearchParams(location.search).get('mode');if(!requestedMode){const ref=document.referrer||'';if(/\/inheritance\.html(?:[?#]|$)/.test(ref))requestedMode='inherit';else if(/\/family\.html(?:[?#]|$)/.test(ref))requestedMode='divorce'}if(['sale','gift','inherit','divorce'].includes(requestedMode)){mode=requestedMode;document.querySelectorAll('.opt').forEach(x=>x.classList.toggle('on',x.dataset.mode===mode))}property();syncLabels();calc();
 </script><script src="/assets/site-shell.js?v=7"></script><script src="/assets/firestore-counter-public.js?v=4"></script><!-- DG_COUNTER_DEPLOY_SYNC_V6 -->
-<script id="calc-account-ui-script-v1">
-document.addEventListener('DOMContentLoaded',function(){
-  var result=document.querySelector('.result');
-  if(!result || result.querySelector('.account-box')) return;
-  var box=document.createElement('section');
-  box.className='account-box';
-  box.setAttribute('aria-label','입금계좌');
-  box.innerHTML='<div class="account-title"><span>현재두 법무사 사무소</span></div><div class="account-list"><div class="account-row"><div class="account-bank">신한은행</div><div class="account-main"><strong class="account-number">110-482-692656</strong><span class="account-holder">현재두법무사사무소</span></div></div><div class="account-row"><div class="account-bank">카카오뱅크</div><div class="account-main"><strong class="account-number">3333-07-6560416</strong><span class="account-holder">현재두법무사사무소</span></div></div></div>';
-  var docs=result.querySelector('.documents');
-  if(docs) docs.insertAdjacentElement('afterend',box); else result.appendChild(box);
-});
-</script>
 </body></html>
