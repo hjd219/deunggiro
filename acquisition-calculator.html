@@ -1,2 +1,197 @@
 <!doctype html>
-<html lang="ko"><head><meta charset="utf-8"><title>복구중</title></head><body></body></html>
+<html lang="ko">
+<head>
+<link rel="icon" type="image/png" href="/favicon.png?v=4"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>상속등기 비용 계산기 | 증여·매매·이혼 재산분할 취득세·등기비용 - 등기로</title>
+<link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<meta name="description" content="상속·증여·매매·이혼 재산분할 부동산의 취득세와 등기비용, 법무사 보수를 간편하게 계산합니다.">
+<link rel="canonical" href="https://www.deunggiro.kr/acquisition-calculator.html"><meta property="og:type" content="website"><meta property="og:site_name" content="등기로"><meta property="og:url" content="https://www.deunggiro.kr/acquisition-calculator.html"><meta property="og:title" content="상속등기 비용 계산기 | 증여·매매·이혼 재산분할 취득세·등기비용 - 등기로"><meta property="og:description" content="상속·증여·매매·이혼 재산분할 부동산의 취득세와 등기비용, 법무사 보수를 간편하게 계산합니다."><meta property="og:image" content="https://www.deunggiro.kr/images/acquisition-calculator-thumbnail.png?v=3"><meta property="og:image:secure_url" content="https://www.deunggiro.kr/images/acquisition-calculator-thumbnail.png?v=3"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1254"><meta property="og:image:height" content="1254"><meta property="og:image:alt" content="상속·증여·매매·이혼 재산분할 부동산등기 비용 계산기 | 등기로"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://www.deunggiro.kr/images/acquisition-calculator-thumbnail.png?v=3">
+<style>
+*{box-sizing:border-box}body{margin:0;padding-bottom:35px;background:#f3f6fa;color:#202936;font-family:Pretendard,-apple-system,BlinkMacSystemFont,"Noto Sans KR","Malgun Gothic",sans-serif}.hero{text-align:center;padding:34px 16px 22px}.hero b,.step{font-size:12px;color:#168dca;letter-spacing:1px}.hero h1{margin:7px 0;font-size:34px;color:#172840}.hero p{color:#718096;font-size:14px}.wrap{width:min(1120px,calc(100% - 24px));margin:auto;display:grid;grid-template-columns:1.25fr .75fr;gap:20px;align-items:start}.card{background:#fff;border:1px solid #e4ebf1;border-radius:20px;box-shadow:0 14px 40px rgba(23,40,64,.07)}.form,.result{padding:26px}.form h2,.result h3{margin:7px 0 18px;color:#172840}.opts{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:25px}.opt{height:50px;border:1px solid #dce5ed;border-radius:12px;background:#fff;font-weight:850;cursor:pointer}.opt.on{border:2px solid #35a9e1;background:#effaff;color:#137fb4}.lookup-links{display:flex;flex-wrap:wrap;gap:8px;margin:-8px 0 15px}.lookup-link{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:8px 13px;border:1px solid #9bdaf4;border-radius:10px;background:#effaff;color:#087fb7;text-decoration:none;font-size:13px;font-weight:850}.lookup-link:hover{background:#dff4fd;border-color:#35a9e1}.lookup-link::after{content:'↗';margin-left:6px;font-size:12px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field label{display:block;margin-bottom:7px;font-size:12px;font-weight:800;color:#4b5969}.field input,.field select{width:100%;height:49px;border:1px solid #d9e3eb;border-radius:11px;padding:0 12px;background:#fbfdff;font:inherit}.full{grid-column:1/-1}.hidden{display:none!important}.property{position:relative;padding:15px;margin-bottom:12px;border:1px solid #dce8ef;border-radius:14px;background:#fbfdff}.property-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:10px}.remove{position:absolute;right:10px;top:8px;border:0;background:transparent;color:#98a4af;cursor:pointer}.add,.calc{width:100%;height:52px;margin-top:12px;border:0;border-radius:12px;font-weight:900;cursor:pointer}.add{background:#eaf8fe;color:#168dca}.calc{background:#35a9e1;color:#fff}.result{position:sticky;top:15px;padding:21px}.result h3{margin:4px 0 10px}.section{margin-top:12px;padding-top:12px;border-top:2px solid #e7eef4}.row{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid #edf1f5;font-size:13px;color:#657386}.row b{color:#26384b;text-align:right}.total{margin-top:10px;padding:13px;border-radius:14px;background:#f0f9fd}.total span{font-size:12px;color:#5d7180;font-weight:800}.total strong{display:block;margin-top:3px;color:#1284ba;font-size:23px}.grand{background:#e7f7fe;border:1px solid #b9e5f8}.result-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:5px}.result-head h3{margin:4px 0}.rate-inline{display:flex;align-items:center;gap:7px;padding:7px 11px;border:1px solid #9bdaf4;border-radius:10px;background:#eaf8fe;color:#087fb7;white-space:nowrap}.rate-inline span{font-size:11px;font-weight:800}.rate-inline strong{font-size:16px}.rate-inline small{font-size:10px;color:#718096}.hint{font-size:11px;color:#718096;line-height:1.55;margin:12px 0}.badge{padding:12px;border-radius:12px;background:#effaff;color:#168dca;font-size:12px;font-weight:800;text-align:center;margin-top:14px}.print-title,.print-footer{display:none}.documents{display:none;margin-top:14px;padding:14px;border:1px solid #91adbf;border-radius:12px;background:#e8f6fc}.documents h3{margin:0 0 9px;font-size:14px;color:#172840}.doc-line{margin:6px 0;font-size:11px;line-height:1.55;color:#354b60;font-weight:700}.doc-line b{color:#172840}.pdf-download{display:flex;align-items:center;justify-content:center;width:100%;height:52px;margin-top:14px;border:1px solid #35a9e1;border-radius:12px;background:#fff;color:#168dca;font-size:15px;font-weight:900;cursor:pointer}.consult{display:flex;align-items:center;justify-content:center;height:52px;margin-top:16px;border-radius:12px;background:#35a9e1;color:#fff;text-decoration:none;font-size:15px;font-weight:900}@media(max-width:800px){.result-head{align-items:flex-start}.rate-inline{gap:4px;padding:6px 8px}.rate-inline span{display:none}.rate-inline strong{font-size:14px}.rate-inline small{font-size:9px}.wrap{grid-template-columns:1fr}.grid,.property-grid{grid-template-columns:1fr}.opts{grid-template-columns:1fr 1fr}.lookup-links{display:grid;grid-template-columns:1fr 1fr}.lookup-link{padding:8px 7px;font-size:12px}.result{position:static}.hero h1{font-size:28px}.form,.result{padding:18px 15px}}
+ .header{height:76px;background:#fff;border-bottom:3px solid #35a9e1;display:flex;align-items:center}.head{width:min(1180px,calc(100% - 32px));margin:auto}.logo{font-size:28px;font-weight:900;color:#35a9e1}.logo small{display:block;font-size:11px;color:#777;font-weight:500}
+@media print{@page{size:A4;margin:10mm}html,body{width:100%;height:auto}body{background:#fff;padding:0!important}body>header,body>section,body>footer,.site-footer,.site-shell-footer,.floating-actions,.mobile-nav{display:none!important;padding:0}.header,.hero,.form,.consult,.pdf-download,.step{display:none!important}.wrap{display:block;width:100%;margin:0}.result{position:static!important;width:118%!important;padding:0!important;border:0;box-shadow:none;zoom:.84;transform-origin:top left}.print-title{display:flex;align-items:end;justify-content:space-between;padding-bottom:16px;margin-bottom:18px;border-bottom:3px solid #35a9e1}.print-title b{font-size:28px;color:#35a9e1}.print-title span{font-size:20px;font-weight:900;color:#172840}.print-title small{font-size:9px;color:#718096}.print-columns{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}.print-col{min-width:0}.print-col .row{font-size:10px}.print-col .row span{max-width:62%}.print-col .total strong{font-size:18px}.legal-col .section{margin-top:0;padding-top:0;border-top:0}.print-footer b{display:inline-block;margin-bottom:4px;font-size:11px;color:#35a9e1}.print-footer{display:block;margin-top:10px;padding-top:10px;border-top:1px solid #91adbf;font-size:8.5px;color:#354b60}.documents{margin-top:11px;padding:11px}.documents h3{font-size:11px;margin-bottom:5px}.doc-line{margin:3px 0;font-size:8.5px;line-height:1.4}.row{padding:7px 0}.total{break-inside:avoid}.result-head{margin-top:0}}
+
+@media print{
+ @page{size:A4;margin:12mm}
+ *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}
+ html,body{width:100%!important;height:auto!important;font-family:Pretendard,"Noto Sans KR",sans-serif!important}
+ .wrap{display:block!important;width:100%!important;margin:0!important}
+ .result{position:static!important;width:89.3%!important;padding:0!important;border:0!important;box-shadow:none!important;zoom:1.12!important;transform-origin:top left!important;transform:none!important}
+ .print-title{padding-bottom:12px!important;margin-bottom:14px!important;border-bottom:3px solid #35a9e1!important}
+ .print-title b{font-size:25px!important}.print-title span{font-size:18px!important}.print-title small{font-size:9px!important}
+ .print-columns{display:block!important}
+ .print-col{width:100%!important;margin:0 0 14px!important}
+ .print-col h3,.result h3{font-size:14px!important;margin:6px 0 9px!important}
+ .print-col .row{font-size:10.5px!important;padding:6px 0!important;border-bottom:1px solid #91adbf!important}
+ .print-col .row span{max-width:72%!important}.print-col .row b{font-size:10.5px!important}
+ .print-col .total{margin-top:7px!important;padding:10px 13px!important}.print-col .total strong{font-size:17px!important}
+ .documents{display:block!important;margin-top:12px!important;padding:13px 15px!important;border:1px solid #91adbf!important;background:#e8f6fc!important}
+ .documents h3{font-size:11px!important;margin:0 0 5px!important}.doc-line{font-size:8.5px!important;line-height:1.4!important;margin:3px 0!important}
+ .print-footer{display:block!important;margin-top:8px!important;padding-top:8px!important;font-size:8px!important}
+}
+</style><style>@media print{
+ .result,.result *{font-family:Pretendard,"Noto Sans KR","Malgun Gothic",sans-serif!important;text-rendering:geometricPrecision!important}
+ .result h3,.print-col h3,.documents h3{color:#10263d!important;font-weight:800!important}
+ .print-col .row{border-bottom-color:#7899af!important}
+ .print-col .row span{color:#10263d!important;font-size:11px!important;font-weight:700!important}
+ .print-col .row b{color:#091f33!important;font-size:11px!important;font-weight:800!important}
+ .total span,.selected,.doc-line,.print-footer{color:#263e53!important;font-weight:700!important}
+ .total strong{font-weight:800!important}
+ .doc-line{font-size:9px!important}
+}</style><link rel="stylesheet" href="/assets/site-shell.css?v=9"><style>
+.result .row{font-size:14px!important}
+.result .row span{color:#263e53!important;font-weight:700!important;letter-spacing:-.1px}
+.result .row b{color:#0b2137!important;font-weight:800!important}
+.result .total span{color:#263e53!important;font-weight:800!important}
+</style>
+<style>
+@media print{
+ .office-footer{display:block!important;margin-top:12px!important;padding:10px 12px!important;border:1px solid #91adbf!important;border-radius:9px!important;background:#f2faff!important;color:#1d354b!important;font-size:9px!important;line-height:1.55!important}
+ .office-footer b{display:block!important;margin:0 0 3px!important;color:#168dca!important;font-size:11px!important;font-weight:900!important}
+ .office-footer .office-address,.office-footer .office-contact{color:#263e53!important;font-weight:700!important}
+}
+</style>
+<style>
+@media screen and (max-width:800px){
+ .result{padding:22px 12px!important}
+ .result .print-columns{display:grid!important;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr)!important;gap:14px!important;align-items:start!important}
+ .result .print-col{min-width:0!important}
+ .result .print-col h3{margin:8px 0 6px!important;font-size:16px!important;line-height:1.25!important;color:#172840!important}
+ .result .print-col .row{display:block!important;padding:10px 0!important;font-size:14px!important;line-height:1.35!important}
+ .result .print-col .row span{display:block!important;max-width:none!important;color:#263e53!important;font-size:13px!important;font-weight:750!important;white-space:normal!important}
+ .result .print-col .row b{display:block!important;margin-top:4px!important;color:#0b2137!important;font-size:15px!important;font-weight:850!important;text-align:left!important;white-space:nowrap!important}
+ .result .total span{font-size:13px!important}
+ .result .total strong{font-size:27px!important}
+}
+</style>
+<style>
+@media screen and (min-width:801px){
+ .wrap{width:min(1380px,calc(100% - 32px))!important;grid-template-columns:minmax(0,1fr) minmax(610px,1fr)!important;gap:24px!important}
+ .result{padding:28px!important}
+ .result .print-columns{display:grid!important;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr)!important;gap:24px!important;align-items:start!important}
+ .result .print-col{min-width:0!important}
+ .result .legal-col .section{margin-top:0!important;padding-top:0!important;border-top:0!important}
+ .result .print-col h3{font-size:18px!important;line-height:1.3!important;margin:8px 0 10px!important}
+ .result .print-col .row{display:block!important;padding:11px 0!important;line-height:1.35!important}
+ .result .print-col .row span{display:block!important;max-width:none!important;font-size:14px!important;font-weight:750!important;color:#263e53!important;white-space:normal!important}
+ .result .print-col .row b{display:block!important;margin-top:4px!important;font-size:16px!important;font-weight:850!important;color:#0b2137!important;text-align:left!important;white-space:nowrap!important}
+ .result .total{padding:16px!important}
+ .result .total span{font-size:14px!important}
+ .result .total strong{font-size:29px!important}
+}
+</style>
+<style id="estimate-layout-fix">
+@media screen and (min-width:801px){
+ .wrap{width:min(1120px,calc(100% - 28px))!important;grid-template-columns:minmax(0,1.28fr) minmax(380px,.72fr)!important;gap:20px!important}
+ .result{padding:25px!important}
+}
+@media screen{
+ .result .print-columns{display:block!important}
+ .result .print-col{width:100%!important;margin:0!important}
+ .result .legal-col{margin-top:22px!important}
+ .result .print-col .row{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:16px!important}
+ .result .print-col .row span{display:block!important;margin:0!important;font-size:14px!important}
+ .result .print-col .row b{display:block!important;margin:0!important;font-size:16px!important;text-align:right!important}
+}
+@media print{
+ .result .print-columns{display:grid!important;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr)!important;gap:18px!important;align-items:start!important}
+ .result .print-col{width:auto!important;margin:0!important}
+ .result .legal-col{margin-top:0!important}
+}
+</style>
+<style id="estimate-pdf-font-fix">
+@media print{
+ .print-title b{font-size:30px!important}
+ .print-title span{font-size:22px!important}
+ .print-title small{font-size:12px!important}
+ .selected{font-size:13px!important}
+ .print-col h3{font-size:17px!important}
+ .print-col .row{padding:8px 0!important}
+ .print-col .row span,.print-col .row b{font-size:14px!important;line-height:1.35!important}
+ .total span{font-size:13px!important}
+ .total strong{font-size:26px!important}
+ .documents{padding:14px 16px!important}
+ .documents h3{font-size:14px!important;margin-bottom:8px!important;font-weight:900!important}
+ .doc-line{font-size:13px!important;line-height:1.45!important;margin:5px 0!important;font-weight:750!important}
+ .print-footer,.office-footer{font-size:12.5px!important;line-height:1.5!important;font-weight:750!important}
+ .office-footer b,.print-footer b{font-size:14px!important;font-weight:900!important}
+}
+</style>
+<script src="/assets/analytics.js" defer></script>
+<style id="calc-account-ui-v1">
+/* 계산기 입금계좌 + 필요서류 가독성 */
+.documents h3{font-size:17px!important;line-height:1.35!important;font-weight:900!important;color:#172840!important;margin:0 0 11px!important}
+.doc-line{font-size:14px!important;line-height:1.65!important;font-weight:700!important;color:#354b60!important;margin:7px 0!important}
+.doc-line b{font-size:14px!important;color:#172840!important;font-weight:900!important}
+.account-box{margin-top:14px;padding:16px 17px;border:1px solid #b9e0f2;border-radius:14px;background:linear-gradient(180deg,#f7fcff,#eef8fd);box-shadow:0 6px 18px rgba(54,169,225,.06)}
+.account-title{display:flex;align-items:center;gap:8px;margin-bottom:11px;color:#172840;font-size:15px;font-weight:900;letter-spacing:-.2px}
+.account-title:before{content:'입금계좌';display:inline-flex;align-items:center;justify-content:center;min-height:28px;padding:4px 9px;border:1px solid #b9e0f2;border-radius:8px;background:#eaf7fd;color:#168dca;font-size:12px;font-weight:900}
+.account-title span{font-size:12px;color:#607286;font-weight:700}
+.account-list{display:grid;gap:8px}
+.account-row{display:grid;grid-template-columns:72px minmax(0,1fr);gap:10px;align-items:center;padding:10px 12px;border:1px solid #d7ebf5;border-radius:10px;background:#fff}
+.account-bank{color:#168dca;font-size:12px;font-weight:900}
+.account-main{min-width:0}
+.account-number{display:block;color:#0b2137;font-size:16px;font-weight:900;letter-spacing:.15px;white-space:nowrap}
+.account-holder{display:block;margin-top:2px;color:#627487;font-size:11px;font-weight:750}
+@media(max-width:800px){
+  .documents h3{font-size:16px!important}.doc-line,.doc-line b{font-size:13.5px!important;line-height:1.65!important}
+  .account-box{padding:14px 13px}.account-row{grid-template-columns:66px minmax(0,1fr);padding:9px 10px}.account-number{font-size:15px}.account-holder{font-size:10.5px}
+}
+@media print{
+  .documents{padding:14px 16px!important}
+  .documents h3{font-size:15px!important;margin-bottom:8px!important}
+  .doc-line,.doc-line b{font-size:11.5px!important;line-height:1.5!important;margin:4px 0!important}
+  .account-box{display:block!important;margin-top:10px!important;padding:10px 12px!important;border:1px solid #91adbf!important;border-radius:9px!important;background:#f2faff!important;box-shadow:none!important;break-inside:avoid!important}
+  .account-title{margin-bottom:7px!important;font-size:11px!important}.account-title:before{min-height:22px!important;padding:2px 7px!important;font-size:9.5px!important}.account-title span{font-size:9px!important}
+  .account-list{gap:5px!important}.account-row{grid-template-columns:58px 1fr!important;gap:7px!important;padding:6px 8px!important;border-color:#b9d6e5!important;border-radius:7px!important}
+  .account-bank{font-size:9.5px!important}.account-number{font-size:11.5px!important}.account-holder{font-size:9px!important}
+}
+</style>
+</head><body><header class="header"><div class="head"><div class="logo">등기로<small>현재두 법무사 사무소</small></div></div></header>
+<section class="hero"><b>REAL ESTATE TAX</b><h1>상속·증여·매매·이혼 재산분할 부동산등기 비용 계산기</h1><p>상속·증여·매매·이혼 재산분할 부동산의 취득세와 등기비용, 법무사 보수를 간편하게 계산합니다.</p></section>
+<main class="wrap">
+<section class="card form"><div class="step">STEP 01</div><h2>취득 원인</h2><div class="opts"><button class="opt on" data-mode="sale">매매</button><button class="opt" data-mode="gift">증여</button><button class="opt" data-mode="inherit">상속</button><button class="opt" data-mode="divorce">이혼 재산분할</button></div>
+<div class="step">STEP 02</div><h2 id="propertyTitle">취득 부동산</h2><div class="lookup-links"><a class="lookup-link" href="https://www.wetax.go.kr/tcp/loi/J030901M01.do" target="_blank" rel="noopener noreferrer">시가인정액 조회</a><a class="lookup-link" href="https://www.wetax.go.kr/tcp/loi/J030401M01.do" target="_blank" rel="noopener noreferrer">시가표준액 조회</a></div><div id="properties"></div><button class="add" id="add">+ 부동산 추가</button>
+<h2 style="margin-top:25px">계산 조건</h2><div class="grid">
+<div class="field saleOnly"><label>취득 후 주택 수</label><select id="homes"><option value="1">1주택</option><option value="2">2주택</option><option value="3">3주택</option><option value="4">4주택 이상</option></select></div>
+<div class="field saleGift"><label>조정대상지역</label><select id="area"><option value="non">이외</option><option value="adj">조정대상지역</option></select></div>
+<div class="field saleGift"><label>전용면적</label><select id="size"><option value="small">85㎡ 이하</option><option value="large">85㎡ 초과</option></select></div>
+<div class="field inheritOnly hidden"><label>상속인 수</label><input id="heirs" type="number" min="1" value="5"></div>
+<div class="field inheritOnly hidden"><label>외국인 상속인</label><select id="foreign"><option value="no">없음</option><option value="yes">있음</option></select></div>
+<div class="field inheritOnly hidden"><label>상속 1가구 1주택</label><select id="oneHouse"><option value="no">아니오</option><option value="yes">예</option></select></div><div class="field inheritOnly hidden"><label>상속등기 방식</label><select id="inheritDivision"><option value="agreement">협의분할</option><option value="statutory">법정지분</option></select></div><div class="field divorceOnly hidden"><label>재산분할 방식</label><select id="divorceType"><option value="agreement">협의</option><option value="judgment">판결·조정</option></select></div>
+</div><div class="badge hidden" id="rule">상속인 5인 이상: 기본보수 100% 가산 자동 적용</div><button class="calc" id="calc">취득비용 계산하기</button></section>
+<aside class="card result"><div class="print-title"><b>등기로</b><span>부동산등기 예상 견적서</span><small id="printDate"></small></div><div class="print-columns"><div class="print-col public-col"><div class="step">PUBLIC CHARGES</div><div class="result-head"><h3>공과금</h3><div class="rate-inline"><span>오늘 채권 할인율</span><strong id="dailyBondRate">15.71479%</strong><small id="dailyBondDate">2026.09.09 기준</small></div></div>
+<div class="row"><span>취득세</span><b id="acq">0원</b></div><div class="row"><span>지방교육세</span><b id="edu">0원</b></div><div class="row"><span>농어촌특별세</span><b id="rural">0원</b></div><div class="row"><span>국민주택채권 매입액</span><b id="bond">0원</b></div><div class="row"><span>채권 할인금액</span><b id="discountCost">0원</b></div><div class="row"><span>등기신청수수료</span><b id="registry">0원</b></div><div class="row"><span>교통비</span><b id="travelOut">80,000원</b></div><div class="row"><span>제증명 비용</span><b id="certOut">0원</b></div><div class="row" id="stampRow"><span>매매계약서 인지세(계약금액 기준)</span><b id="stamp">0원</b></div><div class="total"><span>예상 공과금 합계</span><strong id="publicTotal">0원</strong></div>
+</div><div class="print-col legal-col"><div class="section"><div class="step">LEGAL SERVICE FEE</div><h3>법무사 보수</h3></div>
+<div class="row"><span id="basicLabel">소유권이전 보수</span><b id="basic">0원</b></div><div class="row"><span>취득세 신고·채권 매입 대행</span><b id="agency">90,000원</b></div><div class="row"><span>부가가치세 10%</span><b id="vat">0원</b></div><div class="total"><span>예상 법무사 보수 합계</span><strong id="legalTotal">0원</strong></div><div class="total grand"><span>전체 예상비용</span><strong id="grand">0원</strong></div>
+</div></div><div class="documents"><h3>고객 준비서류</h3><div id="documentList"></div></div><button class="pdf-download" type="button" onclick="printEstimate()">견적서 PDF 받기</button><a class="consult" href="tel:0324251500">032-425-1500 상담</a><div class="print-footer office-footer"><b>등기로 | 현재두 법무사 사무소</b><div class="office-address">인천 미추홀구 경원대로 873, 201호(주안동, 인성빌딩) · 인천가정법원 옆</div><div class="office-contact">전화 032-425-1500　이메일 hjd21@naver.com　홈페이지 www.deunggiro.kr</div></div></aside>
+</main>
+<script>
+const DAILY_BOND_RATE=15.71479;
+const $=id=>document.getElementById(id),won=v=>Math.round(v).toLocaleString('ko-KR')+'원',num=v=>Number(String(v).replace(/[^0-9]/g,''))||0;
+let mode='sale',seq=0;
+function property(){seq++;const d=document.createElement('div');d.className='property';d.innerHTML=`<button class="remove" title="삭제">✕</button><div class="property-grid"><div class="field"><label>부동산 종류</label><select class="kind"><option value="condo">아파트·빌라(집합건물 1건)</option><option value="single">단독주택(토지+건물 2건)</option><option value="noncondo">주택 외 집합건물 1건</option><option value="general">일반건물(토지+건물 2건)</option><option value="land">토지 1건</option><option value="farm">농지 1건</option></select></div><div class="field"><label class="priceLabel">취득가액</label><input class="price" inputmode="numeric" value="${seq===1?'500,000,000':'100,000,000'}"></div><div class="field"><label>채권용 시가표준액</label><input class="bondStd" inputmode="numeric" value="${seq===1?'300,000,000':'100,000,000'}"></div></div>`;d.querySelector('.remove').onclick=()=>{if(document.querySelectorAll('.property').length>1)d.remove();calc()};d.querySelectorAll('input').forEach(format);d.querySelectorAll('input,select').forEach(x=>x.onchange=calc);$('properties').appendChild(d);syncLabels()}
+function format(x){x.oninput=()=>{const v=x.value.replace(/[^0-9]/g,'');x.value=v?Number(v).toLocaleString('ko-KR'):''}}
+function fee(v){if(v<=5e7)return 210000;if(v<=1e8)return 210000+(v-5e7)*.001;if(v<=3e8)return 260000+(v-1e8)*.0009;if(v<=5e8)return 440000+(v-3e8)*.0008;if(v<=1e9)return 600000+(v-5e8)*.0007;if(v<=2e9)return 950000+(v-1e9)*.0005;if(v<=2e10)return 1450000+(v-2e9)*.0004;return 8650000+(v-2e10)*.0001}
+function normalRate(v){if(v<=6e8)return .01;if(v>9e8)return .03;return Math.round(((v*2/3e8-3)*.01)*10000)/10000}
+function bondRate(v,house){if(!house)return .025;if(v<2e7)return 0;if(v<5e7)return .013;if(v<1e8)return .019;if(v<1.6e8)return .021;if(v<2.6e8)return .023;if(v<6e8)return .026;return .031}
+function stamp(v,house){if(mode!=='sale'||v<=1e7||(house&&v<=1e8))return 0;if(v<=3e7)return 20000;if(v<=5e7)return 40000;if(v<=1e8)return 70000;if(v<=1e9)return 150000;return 350000}
+function taxes(p,k){const house=k==='condo'||k==='single',small=$('size').value==='small';if(mode==='inherit')return[p*.028,p*.0016,($('oneHouse').value==='yes'&&house)?0:p*.002];if(mode==='divorce')return[p*.015,p*.003,small?0:p*.002];if(mode==='gift'){const high=house&&$('area').value==='adj'&&p>=3e8;return[p*(high?.12:.035),p*(high?.004:.003),small?0:p*(high?.01:.002)]}if(house){const homes=Number($('homes').value),adj=$('area').value==='adj';let r=(adj&&homes===2)||(!adj&&homes===3)?.08:(adj&&homes>=3)||(!adj&&homes>=4)?.12:normalRate(p);return[p*r,p*(r>=.08?.004:r*.1),small?0:p*(r>=.08?(r===.08?.006:.01):.002)]}if(k==='farm')return[p*.03,p*.002,p*.002];return[p*.04,p*.004,p*.002]}
+function updateDocuments(){let lines=[];if(mode==='sale'){lines=['<b>매도인</b> 등기필증 · 부동산매도용 인감증명서 · 주소변동 포함 주민등록초본 · 인감도장 · 신분증','<b>매수인</b> 주민등록등본 · 가족관계증명서(상세) · 도장 · 신분증 · 매매계약서'];}else if(mode==='gift'){lines=['<b>증여자</b> 등기필증 · 인감증명서 · 주소변동 포함 주민등록초본 · 인감도장 · 신분증','<b>수증자</b> 주민등록등본 · 가족관계증명서(상세) · 도장 · 신분증'];}else if(mode==='inherit'){lines=['<b>피상속인</b> 기본·가족·혼인·입양·친양자입양관계증명서 각 상세 · 말소자 주민등록초본 · 필요시 제적등본','<b>상속인</b> 기본증명서·가족관계증명서 각 상세 · 취득 상속인의 주민등록등본 · 신분증'];if($('inheritDivision').value==='agreement')lines.push('<b>협의분할 추가</b> 상속인 전원의 인감증명서 · 인감도장');else lines.push('<b>법정지분</b> 상속인 전원의 인감증명서·인감도장 원칙적으로 불필요');}else{if($('divorceType').value==='agreement'){lines=['<b>양도자</b> 등기필증 · 인감증명서 · 주소변동 포함 주민등록초본 · 가족관계증명서(상세) · 혼인관계증명서(상세·이혼 기재) · 인감도장 · 신분증','<b>양수인</b> 주민등록등본 · 가족관계증명서(상세) · 혼인관계증명서(상세·이혼 기재) · 도장 · 신분증','<b>공통</b> 재산분할협의서'];}else{lines=['<b>재판서류</b> 판결문 또는 조정조서 · 확정증명원·송달증명원 등 사건별 서류','<b>취득자</b> 주민등록등본 · 가족관계증명서(상세) · 혼인관계증명서(상세·이혼 기재) · 도장 · 신분증'];}}$('documentList').innerHTML=lines.map(x=>'<div class="doc-line">'+x+'</div>').join('');}
+function syncLabels(){document.querySelectorAll('.priceLabel').forEach(x=>x.textContent=mode==='sale'?'취득가액':mode==='gift'?'시가인정액':'시가표준액');$('propertyTitle').textContent=mode==='inherit'?'상속 부동산':'취득 부동산';document.querySelectorAll('.saleOnly').forEach(x=>x.classList.toggle('hidden',mode!=='sale'));document.querySelectorAll('.saleGift').forEach(x=>x.classList.toggle('hidden',!['sale','gift','divorce'].includes(mode)));document.querySelectorAll('.inheritOnly').forEach(x=>x.classList.toggle('hidden',mode!=='inherit'));document.querySelectorAll('.divorceOnly').forEach(x=>x.classList.toggle('hidden',mode!=='divorce'));$('rule').classList.toggle('hidden',mode!=='inherit');$('stampRow').classList.toggle('hidden',mode!=='sale');$('basicLabel').textContent=mode==='inherit'?'상속등기 보수':mode==='divorce'?'재산분할등기 보수':'소유권이전 보수';$('calc').textContent=(mode==='inherit'?'상속':mode==='divorce'?'재산분할':'취득')+' 비용 계산하기';updateDocuments()}
+function calc(){updateDocuments();let value=0,bondBuy=0,count=0,acq=0,edu=0,rural=0,allHouse=true;document.querySelectorAll('.property').forEach(d=>{const k=d.querySelector('.kind').value,p=num(d.querySelector('.price').value),s=num(d.querySelector('.bondStd').value),house=k==='condo'||k==='single',[a,e,r]=taxes(p,k);value+=p;acq+=a;edu+=e;rural+=r;allHouse=allHouse&&house;count+=(k==='single'||k==='general')?2:1;bondBuy+=Math.round((s*bondRate(s,house))/10000)*10000});const discount=bondBuy*(DAILY_BOND_RATE/100),registry=count*15000,stampTax=stamp(value,allHouse),travel=80000,cert=count*20000,publicTotal=acq+edu+rural+discount+registry+stampTax+travel+cert;let base=fee(value);if(mode==='inherit'){const surcharge=(Number($('heirs').value)>=5||$('foreign').value==='yes')?1:.5;base*=1+surcharge;$('rule').textContent=surcharge===1?'상속인 5인 이상 또는 외국인 포함: 기본보수 100% 가산 자동 적용':'일반 상속등기: 기본보수 50% 가산 자동 적용'}const agency=90000,vat=(base+agency)*.1,legal=base+agency+vat;$('acq').textContent=won(acq);$('edu').textContent=won(edu);$('rural').textContent=won(rural);$('bond').textContent=won(bondBuy);$('discountCost').textContent=won(discount);$('registry').textContent=won(registry);$('travelOut').textContent=won(travel);$('certOut').textContent=won(cert);$('stamp').textContent=won(stampTax);$('publicTotal').textContent=won(publicTotal);$('basic').textContent=won(base);$('vat').textContent=won(vat);$('legalTotal').textContent=won(legal);$('grand').textContent=won(publicTotal+legal)}
+function printEstimate(){window.DGCounter?.countOnce('pdf');$('printDate').textContent='견적일 '+new Date().toLocaleDateString('ko-KR');const result=document.querySelector('.result');if(!result){alert('견적 내용을 찾을 수 없습니다.');return;}try{sessionStorage.setItem('deunggiroEstimatePreview',JSON.stringify({title:'등기로 부동산등기 예상 견적서',html:result.outerHTML}));location.href='/estimate-preview.html?v=20260909';}catch(e){window.print();}}document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{document.querySelectorAll('.opt').forEach(x=>x.classList.remove('on'));b.classList.add('on');mode=b.dataset.mode;syncLabels();calc()});$('add').onclick=()=>{property();calc()};$('calc').onclick=()=>{window.DGCounter?.countOnce('calculator');calc()};['heirs','foreign','oneHouse','inheritDivision','divorceType','homes','area','size'].forEach(id=>$(id).onchange=calc);let requestedMode=new URLSearchParams(location.search).get('mode');if(!requestedMode){const ref=document.referrer||'';if(/\/inheritance\.html(?:[?#]|$)/.test(ref))requestedMode='inherit';else if(/\/family\.html(?:[?#]|$)/.test(ref))requestedMode='divorce'}if(['sale','gift','inherit','divorce'].includes(requestedMode)){mode=requestedMode;document.querySelectorAll('.opt').forEach(x=>x.classList.toggle('on',x.dataset.mode===mode))}property();syncLabels();calc();
+</script><script src="/assets/site-shell.js?v=7"></script><script src="/assets/firestore-counter-public.js?v=4"></script><!-- DG_COUNTER_DEPLOY_SYNC_V6 -->
+<script id="calc-account-ui-script-v1">
+document.addEventListener('DOMContentLoaded',function(){
+  var result=document.querySelector('.result');
+  if(!result || result.querySelector('.account-box')) return;
+  var box=document.createElement('section');
+  box.className='account-box';
+  box.setAttribute('aria-label','입금계좌');
+  box.innerHTML='<div class="account-title"><span>현재두 법무사 사무소</span></div><div class="account-list"><div class="account-row"><div class="account-bank">신한은행</div><div class="account-main"><strong class="account-number">110-482-692656</strong><span class="account-holder">현재두법무사사무소</span></div></div><div class="account-row"><div class="account-bank">카카오뱅크</div><div class="account-main"><strong class="account-number">3333-07-6560416</strong><span class="account-holder">현재두법무사사무소</span></div></div></div>';
+  var docs=result.querySelector('.documents');
+  if(docs) docs.insertAdjacentElement('afterend',box); else result.appendChild(box);
+});
+</script>
+</body></html>
