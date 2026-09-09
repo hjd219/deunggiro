@@ -14,3 +14,37 @@
 
 /* DETAIL_MOBILE_HIDE_BOTTOM_CONTACT_V11 */
 @media(max-width:900px){body .dg-shell-footer{display:block!important}body .dg-shell-footer .dg-shell-legal{display:flex!important}body .dg-shell-contact{display:none!important}}
+
+/* DETAIL_MOBILE_LEGAL_LAYOUT_V12 */
+@media(max-width:900px){
+  body .dg-shell-footer .dg-shell-legal{
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:flex-start!important;
+    justify-content:flex-start!important;
+    gap:8px!important;
+    padding:18px 22px 22px!important;
+    text-align:left!important;
+  }
+  body .dg-shell-footer .dg-shell-legal>span{
+    display:block!important;
+    width:100%!important;
+    white-space:nowrap!important;
+    font-size:12px!important;
+    line-height:1.45!important;
+  }
+  body .dg-shell-footer .dg-shell-legal nav{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    flex-wrap:nowrap!important;
+    gap:7px!important;
+    width:100%!important;
+    font-size:12px!important;
+    line-height:1.45!important;
+  }
+  body .dg-shell-footer .dg-shell-legal nav a,
+  body .dg-shell-footer .dg-shell-legal nav span{
+    white-space:nowrap!important;
+  }
+}
