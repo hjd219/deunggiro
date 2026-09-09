@@ -3,32 +3,105 @@ const PATH=location.pathname;
 const detailPaths=['/inheritance-missing-heir.html','/inheritance-overseas-heir.html','/inheritance-minor-heir.html','/inheritance-substitute-succession.html','/inheritance-division.html'];
 if(!detailPaths.includes(PATH))return;
 
+const labels={
+'/inheritance-missing-heir.html':'연락두절 상속인이 있는 경우',
+'/inheritance-overseas-heir.html':'해외거주·외국인 상속인이 있는 경우',
+'/inheritance-minor-heir.html':'미성년 상속인이 있는 경우',
+'/inheritance-substitute-succession.html':'대습상속',
+'/inheritance-division.html':'상속재산분할이 필요한 경우'
+};
+
 const mainIcon=document.querySelector('.main-icon');
 if(mainIcon)mainIcon.innerHTML=`<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M12 7h18l7 7v27H12z" stroke="#258ed0" stroke-width="3" fill="none"/><path d="M30 7v8h7M18 25l4 4 9-10" stroke="#25a8df" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
 const style=document.createElement('style');
-style.id='dg-detail-unified-style-v2';
+style.id='dg-detail-unified-style-v4';
 style.textContent=`
-/* DETAIL_UNIFIED_V2 - 홈페이지 공통 하늘색 스타일 */
 :root{--dg-detail-line:#9fd3ec;--dg-detail-line-strong:#8fcbea}
-.hero{padding:52px 0 42px!important}.breadcrumb{margin-bottom:18px!important;font-size:13px!important}.title-row{gap:14px!important}.main-icon{width:46px!important;height:46px!important;border:1px solid #b9def0!important;border-radius:13px!important;background:#fff!important}.main-icon svg{width:29px!important;height:29px!important}.hero h1{font-size:clamp(34px,4.4vw,49px)!important;line-height:1.16!important;letter-spacing:-2.8px!important;font-weight:900!important}.hero-line{width:min(430px,100%)!important;height:3px!important;margin:11px 0 20px!important;background:#6bc5eb!important}
-.summary,.key,.process-box,.doc-table,.faq-item,.case-card{border-color:var(--dg-detail-line)!important}.section{border-bottom-color:var(--dg-detail-line)!important}.doc-table th,.doc-table td{border-color:var(--dg-detail-line)!important}.doc-table th{background:#eef8fd!important}.notice,.badge{border-color:var(--dg-detail-line)!important}
-/* 진행절차: 동일한 흰색 라운드 박스 + 컬러 라인 아이콘 */
-.process-box{border:1px solid var(--dg-detail-line-strong)!important;background:#fff!important}.proc-icon{width:62px!important;height:62px!important;border:1px solid var(--dg-detail-line-strong)!important;border-radius:17px!important;background:#fff!important;font-size:0!important;box-shadow:0 2px 8px rgba(19,93,132,.04)!important}.proc-icon svg{width:35px!important;height:35px!important}.arrow{color:#9daebe!important;padding-top:27px!important}.proc b{font-size:14px!important}.proc small{font-size:11px!important}.badge{background:#eaf7fd!important;color:#1288c1!important}
-/* 우측 상속등기 세부안내: 캡처 규격 + 스크롤 고정 */
-.sidebar{align-self:stretch!important;position:relative!important}.side-card{position:sticky!important;top:96px!important;z-index:20!important;padding:0!important;border:1px solid var(--dg-detail-line-strong)!important;border-radius:0!important;background:#fff!important;box-shadow:none!important;overflow:hidden!important}.side-title{height:38px!important;display:flex!important;align-items:center!important;margin:0!important;padding:0 11px!important;background:#eef8fd!important;color:#0789ca!important;font-size:13px!important;font-weight:900!important;border-bottom:1px solid var(--dg-detail-line-strong)!important}.side-link{min-height:52px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;padding:0 11px!important;border-bottom:1px solid var(--dg-detail-line)!important;background:#fff!important;color:#10243b!important;font-size:13px!important;font-weight:900!important}.side-link.active{background:#fff!important;color:#10243b!important}.side-link::after{content:'›';color:#008fd2;font-size:22px;font-weight:700;line-height:1}.side-link:last-of-type{border-bottom:1px solid var(--dg-detail-line)!important}.side-phone{margin:0!important;padding:11px!important;border-top:0!important;background:#fff!important}.side-call-btn{width:100%!important;height:44px!important;border-radius:9px!important;background:#2099d7!important;color:#fff!important;font-size:13px!important;font-weight:900!important}
-/* FAQ 내부선도 홈페이지 하늘색 */
-.faq{display:block!important;margin-top:12px!important}.faq-table{width:100%;border-collapse:collapse;background:#fff;font-size:13px;table-layout:fixed}.faq-table th,.faq-table td{border:1px solid var(--dg-detail-line)!important;padding:9px 11px;text-align:left;vertical-align:middle;line-height:1.4}.faq-table th{width:43%;background:#eef8fd;color:#17304a;font-weight:900;white-space:nowrap}.faq-table td{color:#29445d;background:#fff}.faq-kicker{display:inline-block;font-size:10px;color:#168dca;font-weight:900;margin:0 7px 0 0}
-/* 상단 세부안내 팝업도 동일 간격 */
-.dg-detail-pop-trigger{position:relative;cursor:pointer!important}.dg-detail-trigger-arrow{display:inline-block!important;width:0!important;height:0!important;border-left:5px solid transparent!important;border-right:5px solid transparent!important;border-top:7px solid #36a9e1!important;margin-left:9px!important}.dg-detail-popover{display:none;position:fixed;z-index:3000;width:min(360px,calc(100vw - 24px));background:#fff;border:1px solid var(--dg-detail-line-strong);border-radius:0;box-shadow:0 16px 38px rgba(25,41,68,.15);overflow:hidden}.dg-detail-popover.open{display:block}.dg-detail-pop-title{height:38px;display:flex;align-items:center;padding:0 11px;background:#eef8fd;border-bottom:1px solid var(--dg-detail-line-strong);color:#0789ca;font-size:13px;font-weight:900}.dg-detail-popover a{min-height:52px;width:100%;border-bottom:1px solid var(--dg-detail-line);background:#fff;color:#10243b;display:flex;align-items:center;justify-content:space-between;padding:0 11px;font-size:13px;font-weight:900}.dg-detail-popover a.active{background:#fff;color:#10243b}.dg-detail-popover a span{color:#008fd2;font-size:22px}
-@media(max-width:900px){.side-card{position:static!important;top:auto!important}.hero{padding:34px 0 30px!important}}
-@media(max-width:800px){.hero h1{font-size:clamp(20px,6.2vw,27px)!important;line-height:1.16!important;letter-spacing:-1.65px!important}.main-icon{width:38px!important;height:38px!important}.main-icon svg{width:25px!important;height:25px!important}}
-@media(max-width:700px){.faq-table{font-size:11px}.faq-table th{width:50%;padding:8px 6px;white-space:nowrap;letter-spacing:-.45px}.faq-table td{padding:8px 7px}.faq-kicker{font-size:9px;margin-right:4px}}
-@media(max-width:360px){.hero h1{font-size:19px!important}}
+/* 개별페이지와 제목 영역 시작 높이·크기 통일 */
+body .hero{padding:78px 0 64px!important}
+body .hero .breadcrumb{margin:0 0 18px!important;padding:0!important;font-size:13px!important;line-height:1.5!important;color:#5b7185!important}
+body .title-row{gap:14px!important}
+body .main-icon{width:46px!important;height:46px!important;border:1px solid #b9def0!important;border-radius:14px!important;background:#fff!important}
+body .main-icon svg{width:28px!important;height:28px!important}
+body .hero h1{font-size:clamp(34px,4.4vw,49px)!important;line-height:1.16!important;letter-spacing:-2.8px!important;font-weight:900!important}
+body .hero-line{width:min(430px,100%)!important;height:3px!important;margin:12px 0 20px!important;background:#6bc5eb!important}
+body .hero-desc,body .summary p,body .section p{color:#4f6275!important}
+
+/* 상세페이지 모든 주요 박스 라운드 + 홈페이지 하늘색 선 */
+body .summary{border-color:var(--dg-detail-line)!important;border-radius:18px!important}
+body .key{border-color:var(--dg-detail-line)!important;border-radius:14px!important}
+body .section{border-bottom-color:var(--dg-detail-line)!important}
+body .process-box{border:1px solid var(--dg-detail-line-strong)!important;border-radius:20px!important;background:#fff!important;overflow:hidden!important}
+body .proc-icon{width:62px!important;height:62px!important;border:1px solid var(--dg-detail-line-strong)!important;border-radius:16px!important;background:#fff!important;font-size:0!important;box-shadow:none!important}
+body .proc-icon svg{width:35px!important;height:35px!important}
+body .proc b{font-size:14px!important;margin-bottom:8px!important}
+body .proc small{display:block!important;color:#465b6e!important;font-size:11px!important;line-height:1.5!important;min-height:34px!important}
+body .badge{display:inline-block!important;margin-top:9px!important;padding:5px 9px!important;border-radius:999px!important;background:#edf8fe!important;border:1px solid var(--dg-detail-line)!important;color:#168dca!important;font-size:10px!important;font-weight:900!important}
+body .arrow{color:#9daebe!important;padding-top:27px!important}
+body .doc-table{border-collapse:separate!important;border-spacing:0!important;border:1px solid var(--dg-detail-line)!important;border-radius:14px!important;overflow:hidden!important}
+body .doc-table th,body .doc-table td{border:0!important;border-right:1px solid var(--dg-detail-line)!important;border-bottom:1px solid var(--dg-detail-line)!important}
+body .doc-table tr:last-child th,body .doc-table tr:last-child td{border-bottom:0!important}
+body .doc-table th:last-child,body .doc-table td:last-child{border-right:0!important}
+body .doc-table th{background:#eef8fd!important}
+body .notice,body .faq-item{border-color:var(--dg-detail-line)!important;border-radius:14px!important}
+body .case-card{border-color:var(--dg-detail-line)!important;border-radius:18px!important}
+
+/* 오른쪽 본문 세부안내만 스크롤 따라오기 */
+body .layout{align-items:start!important;overflow:visible!important}
+body .sidebar{min-width:0!important}
+@media(min-width:901px){
+  body .layout>.sidebar{position:sticky!important;top:92px!important;align-self:start!important;height:max-content!important;overflow:visible!important;z-index:25!important;margin:0!important;padding:0!important}
+  body .layout>.sidebar>.side-card{position:relative!important;top:auto!important;margin:0!important}
+}
+body .side-card{padding:0!important;border:1px solid var(--dg-detail-line-strong)!important;border-radius:14px!important;background:#fff!important;box-shadow:none!important;overflow:hidden!important}
+body .side-title{height:38px!important;display:flex!important;align-items:center!important;margin:0!important;padding:0 11px!important;background:#eef8fd!important;color:#0789ca!important;font-size:13px!important;font-weight:900!important;border-bottom:1px solid var(--dg-detail-line-strong)!important}
+body .side-link{min-height:52px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;padding:0 11px!important;border-bottom:1px solid var(--dg-detail-line)!important;background:#fff!important;color:#40566a!important;font-size:13px!important;font-weight:800!important}
+body .side-link>span{display:none!important}
+body .side-link::after{content:'›';color:#008fd2;font-size:22px;font-weight:700;line-height:1}
+body .side-phone{margin:0!important;padding:12px!important;border:0!important;background:#fff!important}
+body .side-call-btn{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;width:100%!important;height:54px!important;padding:0 10px!important;border-radius:10px!important;background:#279ed7!important;color:#fff!important;font-size:13px!important;font-weight:900!important;line-height:1.15!important;white-space:nowrap!important;overflow:visible!important}
+body .side-call-btn small{display:block!important;margin-top:4px!important;font-size:10px!important;font-weight:700!important;color:#fff!important}
+
+/* FAQ */
+body .faq{display:block!important;margin-top:12px!important}
+body .faq-table{width:100%;border-collapse:separate;border-spacing:0;background:#fff;font-size:13px;table-layout:fixed;border:1px solid var(--dg-detail-line);border-radius:14px;overflow:hidden}
+body .faq-table th,body .faq-table td{padding:9px 11px;text-align:left;vertical-align:middle;line-height:1.4;border-bottom:1px solid var(--dg-detail-line)}
+body .faq-table tr:last-child th,body .faq-table tr:last-child td{border-bottom:0}
+body .faq-table th{width:43%;background:#eef8fd;color:#17304a;font-weight:900;white-space:nowrap;border-right:1px solid var(--dg-detail-line)}
+body .faq-table td{color:#29445d;background:#fff}
+body .faq-kicker{display:inline-block;font-size:10px;color:#168dca;font-weight:900;margin:0 7px 0 0}
+
+/* 상단 버튼 팝업은 버튼 위치에 붙고 페이지 스크롤과 함께 사라짐 */
+.dg-detail-pop-trigger{position:relative;cursor:pointer!important}
+.dg-detail-trigger-arrow{display:inline-block!important;width:0!important;height:0!important;border-left:5px solid transparent!important;border-right:5px solid transparent!important;border-top:7px solid #36a9e1!important;margin-left:9px!important}
+.dg-detail-popover{display:none;position:absolute;z-index:3000;width:min(360px,calc(100vw - 24px));background:#fff;border:1px solid var(--dg-detail-line-strong);border-radius:14px;box-shadow:0 16px 38px rgba(25,41,68,.15);overflow:hidden}
+.dg-detail-popover.open{display:block}
+.dg-detail-pop-title{height:38px;display:flex;align-items:center;padding:0 11px;background:#eef8fd;border-bottom:1px solid var(--dg-detail-line-strong);color:#0789ca;font-size:13px;font-weight:900}
+.dg-detail-popover a{min-height:52px;width:100%;border-bottom:1px solid var(--dg-detail-line);background:#fff;color:#10243b;display:flex;align-items:center;justify-content:space-between;padding:0 11px;font-size:13px;font-weight:900}
+.dg-detail-popover a:last-child{border-bottom:0}
+.dg-detail-popover a span{color:#008fd2;font-size:22px}
+
+@media(max-width:900px){
+  body .hero{padding:70px 0 66px!important}
+  body .sidebar{position:static!important;top:auto!important}
+  body .proc small{min-height:auto!important}
+}
+@media(max-width:800px){
+  body .hero h1{font-size:clamp(20px,6.2vw,27px)!important;letter-spacing:-1.65px!important}
+  body .main-icon{width:38px!important;height:38px!important}
+  body .main-icon svg{width:24px!important;height:24px!important}
+}
+@media(max-width:700px){
+  body .faq-table{font-size:11px}
+  body .faq-table th{width:50%;padding:8px 6px;letter-spacing:-.45px}
+  body .faq-table td{padding:8px 7px}
+  body .faq-kicker{font-size:9px;margin-right:4px}
+}
+@media(max-width:360px){body .main-icon{width:34px!important;height:34px!important}body .hero h1{font-size:19px!important}}
 `;
 document.head.appendChild(style);
 
-/* 진행절차 아이콘을 페이지 공통 형식으로 통일하되 단계별 의미는 기존 문구 유지 */
 const icons=[
 `<svg viewBox="0 0 48 48"><path d="M13 7h19v28H13zM18 13h9M18 19h9M18 25h6" fill="none" stroke="#2d8df0" stroke-width="3" stroke-linecap="round"/><circle cx="31" cy="31" r="6" fill="none" stroke="#2d8df0" stroke-width="3"/><path d="M28 31l2 2 4-5" fill="none" stroke="#2d8df0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
 `<svg viewBox="0 0 48 48"><path d="M12 8h20v25H12zM17 14h10M17 20h8" fill="none" stroke="#22b8a5" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="29" r="7" fill="none" stroke="#22b8a5" stroke-width="3"/><path d="M37 34l5 5" stroke="#22b8a5" stroke-width="3" stroke-linecap="round"/></svg>`,
@@ -36,7 +109,30 @@ const icons=[
 `<svg viewBox="0 0 48 48"><circle cx="18" cy="18" r="6" fill="#9965df"/><circle cx="30" cy="17" r="5" fill="#b47cec"/><circle cx="25" cy="29" r="7" fill="#8f5ed6"/><path d="M9 38c1-7 6-11 12-11M39 38c-1-7-5-11-11-11" fill="none" stroke="#9b68df" stroke-width="3" stroke-linecap="round"/></svg>`,
 `<svg viewBox="0 0 48 48"><path d="M8 24l16-12 16 12M12 22v18h24V22M20 40V29h8v11" fill="none" stroke="#45b86b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M32 11l3 3 6-7" fill="none" stroke="#45b86b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`
 ];
-document.querySelectorAll('.process-row .proc').forEach((proc,i)=>{const el=proc.querySelector('.proc-icon');if(el&&icons[i])el.innerHTML=icons[i]});
+
+const processData={
+'/inheritance-missing-heir.html':[
+['상속인 확인','가족관계·제적등본으로<br>전체 상속인 확인','상속관계 확정'],['주소·연락 확인','초본·해외주소 등<br>확인자료 검토','연락 가능성 확인'],['처리방법 결정','협의·법정지분·<br>법원절차 판단','방법 선택'],['협의 또는 심판','협의 가능 여부에 따라<br>절차 진행','절차 진행'],['상속등기','취득세 신고 후<br>등기신청','등기 완료']],
+'/inheritance-overseas-heir.html':[
+['신분 확인','재외국민·영주권자·<br>외국국적자 구분','신분 구분'],['필요서류 작성','위임장·주소증명 등<br>필요서류 작성','서류 준비'],['현지 인증','공증·아포스티유·<br>영사확인 검토','인증 진행'],['번역·정리','외국어 서류 번역 및<br>제출형식 정리','번역 완료'],['상속등기','취득세 신고 후<br>등기신청','등기 완료']],
+'/inheritance-minor-heir.html':[
+['상속인 확인','가족관계서류로<br>상속인 구성 확인','상속관계 확정'],['대리인 확인','친권자·후견인 등<br>법정대리인 확인','대리권 확인'],['이해상반 판단','법정대리인과 미성년자<br>이해상반 여부 검토','이해상반 검토'],['특별대리인','필요한 경우 법원에<br>선임절차 진행','대리인 선임'],['상속등기','협의서류 정리 후<br>등기신청','등기 완료']],
+'/inheritance-substitute-succession.html':[
+['가족관계 확인','피상속인과 선사망자의<br>가족관계 확인','관계 확인'],['사망순서 확인','피상속인과 상속인의<br>사망순서 확인','순서 확인'],['대습자 확정','자녀·배우자 등<br>대습상속인 확정','대습자 확정'],['상속분 계산','대습상속 구조에 따라<br>지분 계산','지분 계산'],['상속등기','취득세 신고 후<br>등기신청','등기 완료']],
+'/inheritance-division.html':[
+['상속인 확정','가족관계서류로<br>상속인 전원 확정','상속인 확정'],['재산 확인','부동산·예금 등<br>분할대상 재산 확인','재산 파악'],['협의 시도','상속인 전원의<br>분할협의 진행','협의 진행'],['분할심판','협의가 어렵다면<br>가정법원 절차 진행','심판 진행'],['상속등기','분할 결과에 따라<br>등기신청','등기 완료']]
+};
+
+document.querySelectorAll('.process-row .proc').forEach((proc,i)=>{
+ const d=processData[PATH]?.[i]; if(!d)return;
+ proc.innerHTML=`<div class="proc-icon">${icons[i]||''}</div><b>${d[0]}</b><small>${d[1]}</small><span class="badge">${d[2]}</span>`;
+});
+
+/* 우측 세부안내를 모든 상세페이지에서 동일 구조로 통일 */
+const sideCard=document.querySelector('.sidebar .side-card');
+if(sideCard){
+ sideCard.innerHTML=`<div class="side-title">상속등기 세부안내</div>${detailPaths.map(p=>`<a class="side-link ${PATH===p?'active':''}" href="${p}">${labels[p]}<span>›</span></a>`).join('')}<div class="side-phone"><a class="side-call-btn" href="tel:0324251500"><span>032-425-1500 상담</span><small>현재두 법무사 사무소</small></a></div>`;
+}
 
 const faqData={
 '/inheritance-missing-heir.html':[['연락이 안 되는 상속인을 빼고 협의할 수 있나요?','협의분할은 원칙적으로 상속인 전원이 참여해야 합니다.'],['연락두절 상태에서도 상속등기를 먼저 할 수 있나요?','사안에 따라 법정지분 등기 등 가능한 방법을 검토할 수 있습니다.'],['주소도 모르는 경우에는 어떻게 하나요?','가족관계와 확인 가능한 주소자료를 먼저 정리한 뒤 송달 및 법원절차 가능성을 검토합니다.']],
@@ -44,8 +140,20 @@ const faqData={
 '/inheritance-minor-heir.html':[['미성년 상속인이 있으면 특별대리인이 항상 필요한가요?','항상 필요한 것은 아니며 법정대리인과 미성년자 사이의 이해상반 여부를 먼저 판단합니다.'],['부모가 미성년 자녀를 대신해 협의할 수 있나요?','부모의 공동상속 여부와 협의내용에 따라 직접 대리 가능 여부가 달라집니다.'],['특별대리인이 필요하면 등기를 바로 못 하나요?','필요한 경우 먼저 특별대리인 선임결정을 받은 뒤 협의와 등기절차를 진행합니다.']],
 '/inheritance-substitute-succession.html':[['대습상속은 언제 발생하나요?','원래 상속인이 될 사람이 피상속인보다 먼저 사망한 경우 등 법정 요건을 충족할 때 발생합니다.'],['배우자도 상속인이 되나요?','사망순서와 혼인관계 등 구체적인 가족관계에 따라 달라집니다.'],['지분은 어떻게 계산하나요?','피대습자의 상속분을 기준으로 대습상속인 구성에 따라 계산합니다.']],
 '/inheritance-division.html':[['상속인 전원이 합의하지 않으면 어떻게 하나요?','협의가 되지 않으면 가정법원에 상속재산분할심판을 청구해 분할방법을 정할 수 있습니다.'],['한 명이 부동산을 받고 다른 상속인에게 돈을 줄 수 있나요?','사안에 따라 특정 상속인이 부동산을 취득하고 다른 상속인에게 정산금을 지급하는 방식이 가능합니다.'],['연락두절 상속인이 있어도 분할심판이 가능한가요?','가능 여부와 송달방법 등을 검토해 법원절차를 진행할 수 있습니다.']]};
-const faq=document.querySelector('.faq');if(faq&&faqData[PATH])faq.innerHTML='<table class="faq-table"><tbody>'+faqData[PATH].map(([q,a])=>`<tr><th><span class="faq-kicker">Q</span>${q}</th><td>${a}</td></tr>`).join('')+'</tbody></table>';
+const faq=document.querySelector('.faq');
+if(faq&&faqData[PATH])faq.innerHTML='<table class="faq-table"><tbody>'+faqData[PATH].map(([q,a])=>`<tr><th><span class="faq-kicker">Q</span>${q}</th><td>${a}</td></tr>`).join('')+'</tbody></table>';
 
+/* 상단 버튼 팝업: 고정하지 않고 버튼에 붙여 표시 */
 const trigger=[...document.querySelectorAll('a.btn-border')].find(a=>a.textContent.includes('상속등기 세부안내'));
-if(trigger){trigger.classList.add('dg-detail-pop-trigger');trigger.removeAttribute('href');trigger.setAttribute('role','button');const tri=trigger.querySelector('.tri');if(tri)tri.remove();trigger.insertAdjacentHTML('beforeend','<span class="dg-detail-trigger-arrow"></span>');const pop=document.createElement('div');pop.className='dg-detail-popover';const labels={'/inheritance-missing-heir.html':'연락두절 상속인','/inheritance-overseas-heir.html':'해외거주·외국인 상속인','/inheritance-minor-heir.html':'미성년 상속인','/inheritance-substitute-succession.html':'대습상속','/inheritance-division.html':'상속재산분할'};pop.innerHTML=`<div class="dg-detail-pop-title">상속등기 세부안내</div>${detailPaths.map(p=>`<a href="${p}" class="${PATH===p?'active':''}">${labels[p]}<span>›</span></a>`).join('')}`;document.body.appendChild(pop);const pos=()=>{const r=trigger.getBoundingClientRect(),w=Math.min(360,innerWidth-24);pop.style.left=Math.max(12,Math.min(innerWidth-w-12,r.left))+'px';pop.style.top=r.bottom+9+'px'};trigger.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(pop.classList.contains('open'))pop.classList.remove('open');else{pos();pop.classList.add('open')}});document.addEventListener('click',e=>{if(!pop.contains(e.target)&&e.target!==trigger)pop.classList.remove('open')});}
+if(trigger){
+ trigger.classList.add('dg-detail-pop-trigger');trigger.removeAttribute('href');trigger.setAttribute('role','button');
+ const tri=trigger.querySelector('.tri');if(tri)tri.remove();
+ trigger.insertAdjacentHTML('beforeend','<span class="dg-detail-trigger-arrow"></span>');
+ const pop=document.createElement('div');pop.className='dg-detail-popover';
+ pop.innerHTML=`<div class="dg-detail-pop-title">상속등기 세부안내</div>${detailPaths.map(p=>`<a href="${p}">${labels[p]}<span>›</span></a>`).join('')}`;
+ document.body.appendChild(pop);
+ const pos=()=>{const r=trigger.getBoundingClientRect(),w=Math.min(360,innerWidth-24);pop.style.left=(scrollX+Math.max(12,Math.min(innerWidth-w-12,r.left)))+'px';pop.style.top=(scrollY+r.bottom+9)+'px'};
+ trigger.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(pop.classList.contains('open'))pop.classList.remove('open');else{pos();pop.classList.add('open')}});
+ document.addEventListener('click',e=>{if(!pop.contains(e.target)&&e.target!==trigger)pop.classList.remove('open')});
+}
 })();
