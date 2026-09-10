@@ -39,3 +39,28 @@
     line-height:1!important;
   }
 }
+
+/* INHERITANCE_IOS_ROOT_SCROLL_TEST_V1 - 상속등기 페이지 한정 근본 테스트 */
+@media (max-width:900px){
+  html:has(body .inheritance-overview){
+    height:100%;
+    min-height:100%;
+    overflow:hidden!important;
+    background:#172840!important;
+  }
+  html:has(body .inheritance-overview) body{
+    height:100svh!important;
+    min-height:0!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+    overscroll-behavior-y:contain;
+    -webkit-overflow-scrolling:touch;
+    display:block!important;
+    background:#eef6fb;
+  }
+  html:has(body .inheritance-overview) body>.dg-shell-footer,
+  html:has(body .inheritance-overview) body>footer,
+  html:has(body .inheritance-overview) body>.footer{
+    margin-top:0!important;
+  }
+}
