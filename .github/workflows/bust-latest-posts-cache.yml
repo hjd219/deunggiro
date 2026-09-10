@@ -14,6 +14,7 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
+          import re
           files=['inheritance.html','renunciation.html','corporate.html','realestate.html','family.html','index.html']
           for f in files:
               p=Path(f)
@@ -21,7 +22,6 @@ jobs:
                   continue
               s=p.read_text(encoding='utf-8')
               if '/assets/latest-posts.js?v=' in s:
-                  import re
                   s=re.sub(r'/assets/latest-posts\.js\?v=[^"\']+', '/assets/latest-posts.js?v=13', s)
                   p.write_text(s,encoding='utf-8')
           PY
