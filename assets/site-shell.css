@@ -41,3 +41,13 @@
     line-height:1!important;
   }
 }
+
+/* SUBPAGE_MOBILE_TITLE_SPACING_V1 - 메인 제외 모바일 페이지 제목을 위로 정리 */
+@media (max-width:800px){
+  body:not(.home) > .subhero{
+    padding-top:50px!important;
+  }
+  body:not(.home) > .hero{
+    padding-top:18px!important;
+  }
+}
