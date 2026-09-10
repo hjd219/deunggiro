@@ -42,12 +42,10 @@
   }
 }
 
-/* SUBPAGE_MOBILE_TITLE_SPACING_V1 - 메인 제외 모바일 페이지 제목을 위로 정리 */
+/* SUBPAGE_MOBILE_TITLE_SPACING_V2 - 메인 제외 전체 상단 여백을 상속 세부페이지와 동일하게 통일 */
 @media (max-width:800px){
+  body:not(.home) > .hero,
   body:not(.home) > .subhero{
-    padding-top:50px!important;
-  }
-  body:not(.home) > .hero{
-    padding-top:18px!important;
+    padding:34px 0 30px!important;
   }
 }
