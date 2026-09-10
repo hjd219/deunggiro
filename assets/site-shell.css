@@ -1,27 +1,29 @@
 @import url('/assets/site-shell-core.css?v=20260910-2025');
 
-/* MOBILE_FOOTER_FLOW_V3 - 모바일 전체 페이지 하단 공통 처리 */
+/* MOBILE_IOS_ROOT_SCROLL_V1 - 모바일 전체 페이지 하단 스크롤 구조 통일 */
 @media (max-width:900px){
   html{
+    height:100%;
     min-height:100%;
-    background:#172840;
+    overflow:hidden!important;
+    background:#172840!important;
   }
   body{
-    min-height:100svh;
-    display:flex;
-    flex-direction:column;
-    margin:0;
+    height:100svh!important;
+    min-height:0!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+    overscroll-behavior-y:contain;
+    -webkit-overflow-scrolling:touch;
+    display:block!important;
+    margin:0!important;
   }
+  body>.dg-shell-footer,
   body>footer,
-  body>.footer,
-  body>.dg-shell-footer{
-    margin-top:auto!important;
+  body>.footer{
+    margin-top:0!important;
     margin-bottom:0!important;
-    flex:0 0 auto!important;
     width:100%!important;
-  }
-  body>.dg-shell-contact{
-    flex:0 0 auto!important;
   }
 }
 
@@ -37,30 +39,5 @@
     font-size:16px!important;
     font-weight:900!important;
     line-height:1!important;
-  }
-}
-
-/* INHERITANCE_IOS_ROOT_SCROLL_TEST_V1 - 상속등기 페이지 한정 근본 테스트 */
-@media (max-width:900px){
-  html:has(body .inheritance-overview){
-    height:100%;
-    min-height:100%;
-    overflow:hidden!important;
-    background:#172840!important;
-  }
-  html:has(body .inheritance-overview) body{
-    height:100svh!important;
-    min-height:0!important;
-    overflow-x:hidden!important;
-    overflow-y:auto!important;
-    overscroll-behavior-y:contain;
-    -webkit-overflow-scrolling:touch;
-    display:block!important;
-    background:#eef6fb;
-  }
-  html:has(body .inheritance-overview) body>.dg-shell-footer,
-  html:has(body .inheritance-overview) body>footer,
-  html:has(body .inheritance-overview) body>.footer{
-    margin-top:0!important;
   }
 }
