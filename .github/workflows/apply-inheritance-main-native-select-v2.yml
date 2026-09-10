@@ -1,0 +1,85 @@
+name: Apply inheritance main native select v2
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/apply-inheritance-main-native-select-v2.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch inheritance main detail menu
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          js_path=Path('assets/latest-posts.js')
+          s=js_path.read_text(encoding='utf-8')
+          marker='/* INHERITANCE_MAIN_NATIVE_SELECT_V2 */'
+          if marker not in s:
+              needle='/* DETAIL_POPOVERS_V8 */\n(()=>{const configs={'
+              repl="/* DETAIL_POPOVERS_V8 */\n(()=>{if(location.pathname==='/inheritance.html')return;const configs={"
+              if needle not in s:
+                  raise SystemExit('DETAIL_POPOVERS_V8 marker not found')
+              s=s.replace(needle,repl,1)
+              s += r'''
+
+/* INHERITANCE_MAIN_NATIVE_SELECT_V2 */
+(()=>{
+  if(location.pathname!=='/inheritance.html') return;
+  const items=[
+    ['/inheritance-missing-heir.html','연락두절 상속인'],
+    ['/inheritance-overseas-heir.html','해외거주·외국인 상속인'],
+    ['/inheritance-minor-heir.html','미성년 상속인'],
+    ['/inheritance-substitute-succession.html','대습상속'],
+    ['/inheritance-division.html','상속재산분할']
+  ];
+  const mount=()=>{
+    const actions=document.querySelector('.subhero-copy .buttons,.subhero .buttons,.subhero-copy .actions,.subhero .actions');
+    if(!actions || actions.querySelector('.dg-inheritance-native-select')) return;
+    const old=[...actions.querySelectorAll('a,button')].find(el=>el.textContent.includes('관련 법률정보')||el.textContent.includes('상속등기 세부안내'));
+    if(!old) return;
+    const wrap=document.createElement('label');
+    wrap.className='dg-inheritance-native-select-wrap';
+    const select=document.createElement('select');
+    select.className='dg-inheritance-native-select';
+    select.setAttribute('aria-label','상속등기 세부안내');
+    const head=document.createElement('option');
+    head.value=''; head.textContent='상속등기 세부안내'; head.selected=true;
+    select.appendChild(head);
+    items.forEach(([href,label])=>{
+      const o=document.createElement('option'); o.value=href; o.textContent=label; select.appendChild(o);
+    });
+    select.addEventListener('change',()=>{if(select.value) location.href=select.value});
+    wrap.appendChild(select);
+    old.replaceWith(wrap);
+    if(!document.getElementById('dg-inheritance-native-select-style-v2')){
+      const style=document.createElement('style');
+      style.id='dg-inheritance-native-select-style-v2';
+      style.textContent=`.dg-inheritance-native-select-wrap{display:inline-flex;min-width:210px;min-height:48px}.dg-inheritance-native-select{width:100%;min-height:48px;padding:0 38px 0 16px;border:1px solid #84c9ed;border-radius:8px;background:#fff;color:#20242b;font:inherit;font-size:15px;font-weight:900;box-shadow:0 8px 18px rgba(54,169,225,.20);appearance:auto;-webkit-appearance:menulist;cursor:pointer}@media(max-width:700px){.dg-inheritance-native-select-wrap{flex:1 1 210px;min-width:0}.dg-inheritance-native-select{font-size:15px}}`;
+      document.head.appendChild(style);
+    }
+  };
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',mount); else mount();
+})();
+'''
+              js_path.write_text(s,encoding='utf-8')
+
+          html_path=Path('inheritance.html')
+          h=html_path.read_text(encoding='utf-8')
+          h2=re.sub(r'/assets/latest-posts\.js(?:\?v=[^\"\']*)?', '/assets/latest-posts.js?v=20260910-2155', h)
+          if h2==h and '/assets/latest-posts.js' not in h:
+              raise SystemExit('inheritance.html latest-posts.js reference not found')
+          html_path.write_text(h2,encoding='utf-8')
+          PY
+      - name: Commit changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/latest-posts.js inheritance.html
+          git commit -m '상속등기 메인 세부안내를 모바일 기본 선택메뉴로 변경'
+          git push
