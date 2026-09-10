@@ -1,0 +1,3 @@
+Backup reference before unifying all non-home mobile page title top gaps to the inheritance detail-page visual spacing.
+Base commit: bc540e2469b7cf18e36e6eb5efed8855b01eed3e
+Target: keep home/index unchanged; set non-home direct hero/subhero mobile top padding to 70px, matching inheritance detail runtime spacing.
