@@ -1,0 +1,672 @@
+/* 등기로 공통 헤더 · 상담 · 푸터 */
+:root{--dg-primary:#36a9e1;--dg-primary-dark:#168dca;--dg-navy:#172840;--dg-max:1180px}
+/* 메인/상세 공통 로고 색상 */
+.header .logo>span,.dg-shell-logo{color:var(--dg-primary)!important}.header .logo small,.dg-shell-logo small{color:#20242b!important}
+.dg-shell-header{position:sticky!important;top:0!important;z-index:1200!important;background:rgba(255,255,255,.98)!important;border-bottom:3px solid var(--dg-primary)!important;box-shadow:0 2px 8px rgba(54,169,225,.08)!important;backdrop-filter:blur(10px)!important}
+.dg-shell-header .dg-shell-inner{width:100%;max-width:var(--dg-max);margin:auto;padding:0 22px;min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:22px}
+.dg-shell-logo{font-size:28px;font-weight:900;letter-spacing:-1.5px;text-decoration:none!important;line-height:1.15}.dg-shell-logo small{display:block;font-size:13px;font-weight:800;margin-top:3px;letter-spacing:-.15px;color:var(--dg-navy)!important}
+.dg-shell-nav{display:flex;gap:20px;align-items:center;font-size:14px;font-weight:800}.dg-shell-nav a{color:#20242b!important;text-decoration:none!important;white-space:nowrap}.dg-shell-nav a:hover,.dg-shell-nav a[aria-current="page"]{color:var(--dg-primary)!important}
+.dg-shell-mobile-menu-btn,.dg-shell-mobile-call,.dg-shell-mobile-panel{display:none}
+body.article-v2 .article-body img,.article .article-body img{display:block!important;margin-left:0!important;margin-right:auto!important;max-width:100%!important;height:auto!important}
+.dg-shell-contact{background:var(--dg-navy)!important;color:#fff!important;padding:54px 0!important}.dg-shell-contact .dg-shell-contact-grid{width:100%;max-width:var(--dg-max);margin:auto;padding:0 22px;display:grid;grid-template-columns:1fr auto;gap:30px;align-items:center}.dg-shell-contact .dg-shell-contact-copy{min-width:0}.dg-shell-contact .dg-shell-label{color:#9fd9f4;font-size:12px;font-weight:900;letter-spacing:1.3px}.dg-shell-contact h2{display:inline-block;max-width:100%;font-size:34px;line-height:1.35;letter-spacing:-1.4px;margin:5px 0 10px;color:#fff!important}.dg-shell-contact p{color:#cbd5e1!important;margin:0;font-size:15px}.dg-shell-contact .dg-shell-phone{font-size:31px;font-weight:900;color:#fff!important;text-decoration:none!important;white-space:nowrap}
+.dg-shell-footer{background:var(--dg-navy)!important;color:#c9d5e7!important;border-top:1px solid rgba(255,255,255,.1)!important;padding:38px 0 44px!important;font-size:13px}.dg-shell-footer .dg-shell-footer-grid{width:100%;max-width:var(--dg-max);margin:auto;padding:0 22px;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(360px,.95fr);gap:64px;align-items:start}.dg-shell-footer-brand{font-size:24px;color:#fff;font-weight:900;margin-bottom:5px}.dg-shell-footer-office{font-size:16px;color:#e8eef8;font-weight:800;margin-bottom:17px}.dg-shell-footer-info{font-size:14px;line-height:2}.dg-shell-footer-info strong{display:inline-block;width:44px;color:#fff}.dg-shell-footer-info a{color:#fff!important;text-decoration:none!important;font-weight:800}.dg-shell-channel-row{display:flex;align-items:center;gap:8px;margin-top:15px;flex-wrap:wrap}.dg-shell-social{display:inline-flex;align-items:center;gap:6px;color:#fff!important;text-decoration:none!important;font-size:13px;font-weight:800}.dg-shell-social-icon{display:inline-flex;width:19px;height:19px;border-radius:5px;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:900}.dg-shell-social-icon.naver{background:#03c75a}.dg-shell-social-icon.youtube{background:#ff0033}.dg-shell-dot{color:#7e91aa}
+.dg-shell-route{padding-left:34px;border-left:1px solid rgba(255,255,255,.13)}.dg-shell-route-title{color:#fff;font-size:21px;font-weight:900;letter-spacing:-.7px;margin-bottom:3px}.dg-shell-route-sub{color:#9fb9df;font-size:12px;font-weight:800;margin-bottom:16px}.dg-shell-route-list{display:grid;gap:9px;font-size:13px;line-height:1.55}.dg-shell-route-item{display:grid;grid-template-columns:24px 1fr;gap:7px;align-items:start}.dg-shell-route-item b{color:#fff;margin-right:7px}.dg-shell-route-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:17px}.dg-shell-route-actions a{display:inline-flex;align-items:center;min-height:37px;padding:0 12px;border:1px solid rgba(255,255,255,.22);border-radius:7px;color:#fff!important;font-size:11px;font-weight:900;background:rgba(255,255,255,.045);text-decoration:none!important}
+@media(max-width:900px){.dg-shell-header{border-bottom-width:2px!important}.dg-shell-nav{display:none}.dg-shell-header .dg-shell-inner{min-height:64px;padding:0 12px;gap:8px}.dg-shell-logo{font-size:24px}.dg-shell-logo small{display:none}.dg-shell-mobile-menu-btn,.dg-shell-mobile-call{display:inline-flex;align-items:center;justify-content:center;min-height:40px;border-radius:8px;font-size:13px;font-weight:900}.dg-shell-mobile-menu-btn{border:0;padding:0 12px;background:#eef3f8;color:#1f2937;cursor:pointer}.dg-shell-mobile-call{padding:0 13px;background:var(--dg-primary);color:#fff!important;text-decoration:none!important}.dg-shell-mobile-panel{position:fixed;top:64px;left:0;right:0;z-index:1199;background:#fff;border-bottom:1px solid #dfe4ea;box-shadow:0 12px 24px rgba(20,35,55,.14);padding:12px 14px 15px}.dg-shell-mobile-panel.open{display:block}.dg-shell-mobile-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.dg-shell-mobile-grid a{display:flex;align-items:center;min-height:44px;padding:0 12px;border:1px solid #e1e7ee;border-radius:9px;background:#f6f8fb;color:#17202d!important;text-decoration:none!important;font-size:13px;font-weight:850}.dg-shell-mobile-grid a:first-child{grid-column:1/-1;background:#eef8fd;color:#168dca!important}.dg-shell-mobile-close{width:100%;height:38px;margin-top:9px;border:0;background:transparent;color:#667384;font-size:13px;font-weight:800;cursor:pointer}.dg-shell-contact .dg-shell-contact-grid,.dg-shell-footer .dg-shell-footer-grid{grid-template-columns:1fr;gap:24px}.dg-shell-route{padding-left:0;padding-top:24px;border-left:0;border-top:1px solid rgba(255,255,255,.13)}}
+@media(max-width:700px){.dg-shell-contact{padding:38px 0!important}.dg-shell-contact .dg-shell-contact-grid,.dg-shell-footer .dg-shell-footer-grid{padding-left:14px;padding-right:14px}.dg-shell-contact h2{font-size:25px;line-height:1.4}.dg-shell-contact p{font-size:13px}.dg-shell-contact .dg-shell-phone{font-size:24px}.dg-shell-footer{padding:30px 0 34px!important}.dg-shell-footer-brand{font-size:21px}.dg-shell-footer-office{font-size:14px}.dg-shell-footer-info{font-size:12px;line-height:1.8}.dg-shell-route-title{font-size:18px}.dg-shell-route-list{font-size:12px}.dg-shell-route-actions a{font-size:10px}}
+
+/* 법인등기 FAQ: 다른 상세페이지와 동일한 방향 + 질문 높이 정상화 */
+@media(min-width:801px){.corp-faq-layout{grid-template-columns:minmax(300px,.65fr) minmax(0,1.35fr)!important;align-items:start!important}.corp-auth-card{grid-column:1!important;grid-row:1!important}.corp-faq{grid-column:2!important;grid-row:1!important;align-content:start!important;align-self:start!important}.corp-faq-item{align-self:start!important;height:auto!important;min-height:0!important}.corp-faq-q{min-height:64px!important;padding:14px 16px!important}}
+@media(max-width:800px){.corp-faq-layout{grid-template-columns:1fr!important;align-items:start!important}.corp-auth-card{order:1!important}.corp-faq{order:2!important;align-content:start!important}.corp-faq-q{min-height:58px!important;padding:13px!important}}
+
+body:not(.article-v2){background:#eef6fb!important}body:not(.article-v2) .subhero{background:#eef6fb!important}body:not(.article-v2) .subhero::before,body:not(.article-v2) .subhero::after{background:transparent!important}body:not(.article-v2) .section{background:#eef6fb!important}body:not(.article-v2) .section.white{background:#fff!important}body:not(.article-v2) .section.soft{background:#eef6fb!important}body:not(.article-v2) #posts,body:not(.article-v2) #latest-posts,body:not(.article-v2) #related-posts,body:not(.article-v2) .latest-posts,body:not(.article-v2) .related-posts,body:not(.article-v2) .posts-section,body:not(.article-v2) .related-section{background:#fff!important}
+:root{--muted:#4b5968!important}body{color:#182536!important;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}p,.desc,.lead,.summary,.subtitle,.subtext,.helper,.help,.note{color:#4b5968!important;font-weight:550}.hero p,.subhero p,.service-hero p,.copy p{color:#405064!important;font-weight:600!important}.quick-item p,.card p,.info-box p,.calc-card p,.calc-launch p,.post-card p,.feature-item p{color:#465568!important;font-weight:600!important}.post-meta,.meta,.date,.selected,.field label,.form-group label{color:#465568!important;font-weight:700!important}.article-body{color:#202d3d!important}.article-body p,.article-body li{color:#26384b!important;font-weight:500}.article-body blockquote{color:#31465a!important;font-weight:600}.result .row span,.result-row span,.calculator .notice,.admin-help{color:#263e53!important;font-weight:700!important}.dg-shell-contact p{color:#e6eef8!important;font-weight:650!important;opacity:1!important;line-height:1.7!important}.dg-shell-footer{color:#dce6f3!important}.dg-shell-footer-info,.dg-shell-route-list{color:#e1e9f4!important;font-weight:600}.dg-shell-route-sub{color:#c8d9ec!important}.dg-shell-social,.dg-shell-route-actions a{font-weight:850!important}
+@media(max-width:700px){p,.desc,.lead,.summary,.subtitle,.subtext,.helper,.help,.note{font-weight:600}.container{padding-left:16px!important;padding-right:16px!important}.dg-shell-header .dg-shell-inner{padding-left:16px!important;padding-right:16px!important}.dg-shell-contact .dg-shell-contact-grid,.dg-shell-footer .dg-shell-footer-grid{padding-left:16px!important;padding-right:16px!important}}
+@media(min-width:1001px){body.home .hero .hero-written-phrase{font-size:50px!important;letter-spacing:.005em!important;min-height:1.62em!important;margin-top:.12em!important;transform:scaleX(1.14)!important;transform-origin:left center!important}body.home .hero .hero-written-brand{font-size:1.46em!important;letter-spacing:-.035em!important}body.home .hero .hero-written-message{letter-spacing:.005em!important}body.home .hero .hero-written-line{width:99%!important}body.home .hero .hero-written-line.second{width:84%!important}body:not(.home):not(.article-v2) .subhero{padding-bottom:30px!important}body:not(.home):not(.article-v2) .subhero + .section{padding-top:36px!important}.subhero-related-grid .related-posts-head{padding:14px 18px 10px!important}.subhero-related-grid .related-posts-head h2{font-size:18px!important;margin:3px 0 2px!important}.subhero-related-grid .related-posts-head p{font-size:11px!important;line-height:1.5!important}.subhero-related-grid .related-posts-list a{padding:8px 14px!important}.subhero-related-grid .related-posts-actions{padding:9px!important;gap:7px!important}.subhero-related-grid .related-posts-actions a{min-height:32px!important}}
+body.home .hero-written-ghost{opacity:0!important}body.home .hero .copy{min-width:0!important}body.home .hero .buttons .btn{white-space:nowrap!important}
+@media(max-width:800px){body.home .hero .copy{padding-top:30px!important;padding-bottom:12px!important}body.home .hero h1{margin-bottom:12px!important}body.home .hero .hero-written-phrase{font-size:44px!important;min-height:88px!important;margin-top:24px!important}body.home .hero .copy p{max-width:34em!important;margin-bottom:15px!important}body.home .quick{padding-left:16px!important;padding-right:16px!important}body.home .section .container{padding-left:16px!important;padding-right:16px!important}}
+@media(max-width:480px){body.home .hero .hero-written-phrase{font-size:40px!important;min-height:80px!important;margin-top:20px!important}body.home .hero .buttons{grid-template-columns:1fr 1fr!important}body.home .hero .buttons .btn-dark{grid-column:1/-1!important}body.home .quick{padding-left:16px!important;padding-right:16px!important}}
+
+/* CALCULATOR_ENGLISH_LABELS_OFF_V1 */
+body:has(.wrap) .hero>b,body:has(.wrap) .step{display:none!important}
+body:has(.wrap) .hero h1{margin-top:0!important}
+
+/* REALESTATE_SECTION_HEADING_V1 - 흰색 유형 선택 박스 바깥에 제목/설명 추가 */
+body:has(.re-main) .re-main>.container{position:relative!important;padding-top:82px!important}
+body:has(.re-main) .re-main>.container::before{content:"부동산등기 유형별 서류·비용 안내";position:absolute;left:22px;right:22px;top:0;font-size:28px;line-height:1.3;font-weight:900;letter-spacing:-1.2px;color:#182536}
+body:has(.re-main) .re-main>.container::after{content:"매매·증여·상속·재산분할에 필요한 서류와 비용을 확인하세요.";position:absolute;left:22px;right:22px;top:42px;font-size:14px;line-height:1.6;font-weight:600;color:#596979}
+@media(max-width:700px){body:has(.re-main) .re-main>.container{padding-top:72px!important}body:has(.re-main) .re-main>.container::before{left:16px;right:16px;font-size:22px;letter-spacing:-.9px}body:has(.re-main) .re-main>.container::after{left:16px;right:16px;top:35px;font-size:13px}}
+
+/* LEGAL_INFO_ENGLISH_OFF_V1 - 법률정보 목록 상단 영문 라벨 숨김 */
+body:has(#posts) .section>.container>.label{display:none!important}
+body:has(#posts) .section>.container>.title{margin-top:0!important}
+
+/* RELATED_CALCULATOR_CTA_V2 - 계산기 CTA를 확실한 채움형 버튼으로 통일 */
+.subhero-related-grid .related-posts-actions a.dg-related-calc,.related-posts-actions a.dg-related-calc{display:inline-flex!important;align-items:center!important;justify-content:center!important;background:#36a9e1!important;background-color:#36a9e1!important;border:1px solid #36a9e1!important;color:#fff!important;font-weight:900!important;border-radius:8px!important;text-decoration:none!important;padding:0 16px!important;min-height:36px!important;box-shadow:none!important}
+.subhero-related-grid .related-posts-actions a.dg-related-calc:hover,.related-posts-actions a.dg-related-calc:hover{background:#168dca!important;background-color:#168dca!important;border-color:#168dca!important;color:#fff!important}
+@media(max-width:700px){.subhero-related-grid .related-posts-actions a.dg-related-calc,.related-posts-actions a.dg-related-calc{min-height:40px!important;padding:0 14px!important}}
+
+
+/* SITE_BORDER_COLOR_UNIFY_V1 */
+/* 회색 계열 테두리만 등기로 하늘색 계열로 통일. 배경/글자/간격/그림자는 변경하지 않음. */
+:root{
+  --line:#b9e0f2!important;
+  --dg-line:#b9e0f2!important;
+}
+
+/* 공통 헤더·메뉴·버튼·카드 */
+html body .btn-border,
+html body .tags a,
+html body .quick-item,
+html body .quick-icon,
+html body .social-links-under-photo a,
+html body .mobile-menu-panel,
+html body .mobile-menu-grid a,
+html body .header .nav a,
+html body .dg-shell-mobile-panel,
+html body .dg-shell-mobile-grid a{
+  border-color:#b9e0f2!important;
+}
+
+/* 주요업무/상세페이지 공통 박스 */
+html body .calculator,
+html body input,
+html body select,
+html body textarea,
+html body .result,
+html body .result-total,
+html body .chip,
+html body .editor-toolbar,
+html body .editor-toolbar button,
+html body .editor,
+html body .preview-box,
+html body .hero-badge,
+html body #services .card,
+html body .service-icon,
+html body .feature-item,
+html body .calc-launch,
+html body .page-jump a,
+html body .related-posts-list a,
+html body .faq-acc{
+  border-color:#b9e0f2!important;
+}
+
+/* 상속 페이지 */
+html body .inheritance-flow .flow-icon,
+html body .inheritance-flow .flow-step .flow-icon,
+html body .inheritance-pc-lower .docs-section,
+html body .inheritance-pc-lower .faq-block{
+  border-color:#b9e0f2!important;
+}
+
+/* 법인 페이지 */
+html body .corp-icon,
+html body .corp-faq-item,
+html body .corp-auth-card,
+html body .corp-auth-icon{
+  border-color:#b9e0f2!important;
+}
+
+/* 부동산 페이지 */
+html body .re-box,
+html body .re-home,
+html body .re-tabs label,
+html body .re-ico,
+html body .re-pre,
+html body .re-faq,
+html body .re-num{
+  border-color:#b9e0f2!important;
+}
+
+/* 상속포기·한정승인 페이지 */
+html body .renunciation-flow,
+html body .renunciation-flow .flow-icon,
+html body .ren-doc-card,
+html body .ren-faq details{
+  border-color:#b9e0f2!important;
+}
+
+/* 가사 페이지 */
+html body .family-service-card,
+html body .family-icon,
+html body .family-doc-panel,
+html body .family-faq-panel,
+html body .family-faq details{
+  border-color:#b9e0f2!important;
+}
+
+/* 법률정보/최신글 */
+html body .search-wrap input,
+html body .page-btn,
+html body .dg-latest-card,
+html body .dg-latest-thumb{
+  border-color:#b9e0f2!important;
+}
+
+/* 계산기 내부 박스 및 구분선 */
+html body:has(.wrap) .card,
+html body:has(.wrap) .opt,
+html body:has(.wrap) .field input,
+html body:has(.wrap) .field select,
+html body:has(.wrap) .property,
+html body:has(.wrap) .section,
+html body:has(.wrap) .row,
+html body:has(.wrap) .documents,
+html body:has(.wrap) .print-footer,
+html body:has(.wrap) .print-col .row,
+html body:has(.wrap) .office-footer,
+html body:has(.wrap) .box,
+html body:has(.wrap) .sub,
+html body:has(.wrap) .check{
+  border-color:#b9e0f2!important;
+}
+
+/* 표·아코디언·기본 구분선 */
+html body table,
+html body th,
+html body td,
+html body details,
+html body hr{
+  border-color:#b9e0f2!important;
+}
+
+
+/* SITE_BORDER_COLOR_UNIFY_V1_ADDON */
+/* 사진에서 확인된 관련법률정보·상속절차·필요서류·FAQ의 누락 테두리 보완 */
+html body .related-posts-panel,
+html body .related-posts-head,
+html body .related-posts-list a,
+html body .related-badge,
+html body .related-posts-actions a,
+html body .inheritance-flow,
+html body .inheritance-note,
+html body .deadline,
+html body .muted-deadline,
+html body .docs-card,
+html body .faq-acc,
+html body .inheritance-pc-lower .docs-card,
+html body .inheritance-pc-lower .faq-acc{
+  border-color:#b9e0f2!important;
+}
+
+
+/* RELATED_BADGE_PRIMARY_BG_V1 */
+html body .related-badge,
+html body .related-posts-list .related-badge,
+html body #auto-related-posts .related-badge{
+  background:#36a9e1!important;
+  border-color:#36a9e1!important;
+  color:#fff!important;
+}
+html body .related-posts-list a:hover .related-badge,
+html body #auto-related-posts a:hover .related-badge{
+  background:#168dca!important;
+  border-color:#168dca!important;
+  color:#fff!important;
+}
+
+
+/* DETAIL_CATEGORY_BADGE_SOFT_V1 */
+/* 개별페이지 관련 법률정보 카테고리 배지: 기한 배지와 같은 연한 하늘색 톤 */
+html body .related-badge,
+html body .related-posts-list .related-badge,
+html body #auto-related-posts .related-badge{
+  background:#eaf7fd!important;
+  background-image:none!important;
+  border:1px solid #b9e0f2!important;
+  color:#168dca!important;
+  font-weight:900!important;
+}
+html body .related-posts-list a:hover .related-badge,
+html body #auto-related-posts a:hover .related-badge{
+  background:#eaf7fd!important;
+  border-color:#b9e0f2!important;
+  color:#168dca!important;
+}
+
+
+/* DETAIL_INNER_TEXT_CONTRAST_V1 */
+/* 개별페이지 내부 회색 본문·서류목록·보조설명 선명도 통일 */
+body:not(.home) .subhero p,
+body:not(.home) .info-card p,
+body:not(.home) .docs-card ul,
+body:not(.home) .docs-note,
+body:not(.home) .related-posts-head p,
+body:has(.inheritance-flow) .flow-step p,
+body:has(.inheritance-flow) .muted-deadline,
+body:has(.inheritance-flow) .inheritance-note,
+body:has(.inheritance-flow) .faq-acc p,
+body:has(.corp-guide) .corp-head p,
+body:has(.corp-guide) .corp-row span,
+body:has(.corp-guide) .corp-note,
+body:has(.corp-guide) .corp-faq-a,
+body:has(.corp-guide) .corp-auth-desc,
+body:has(.corp-guide) .corp-auth-sub,
+body:has(.re-main) .re-intro p,
+body:has(.re-main) .re-answer-head p,
+body:has(.re-main) .re-row span,
+body:has(.re-main) .re-note,
+body:has(.re-main) .re-info p,
+body:has(.re-main) .re-check p,
+body:has(.re-main) .re-faq details p,
+body:has(.re-main) .re-mortgage-tabs label,
+body:has(.re-main) .re-mortgage-line p,
+body:has(.re-main) .re-mortgage-note,
+body:has(.renunciation-flow) .renunciation-flow p,
+body:has(.renunciation-flow) .ren-note,
+body:has(.renunciation-flow) .ren-doc-card ul,
+body:has(.renunciation-flow) .ren-faq details p,
+body:has(.family-service-card) .family-service-card p,
+body:has(.family-service-card) .family-items,
+body:has(.family-service-card) .family-faq details p{
+  color:#526273!important;
+  font-weight:600!important;
+}
+
+/* 날짜·화살표·순번처럼 정보 위계상 더 약해야 하는 요소는 기존 톤 유지 */
+
+
+/* SITE_READABILITY_TYPOGRAPHY_V1 */
+/* ChatGPT처럼 또렷한 본문 리듬: 색상·굵기·줄간격 중심. 메인 손글씨 '등기로'는 제외 */
+html body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR","Malgun Gothic",sans-serif;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+/* 메인페이지 일반 설명문 */
+body.home .copy p{
+  color:#3f4650!important;
+  font-weight:500!important;
+  line-height:1.72!important;
+  letter-spacing:-.12px!important;
+}
+body.home .quick-item p,
+body.home .desc,
+body.home .calc-card p,
+body.home .info-box p,
+body.home .dg-latest-desc{
+  color:#3f4650!important;
+  font-weight:500!important;
+  line-height:1.68!important;
+  letter-spacing:-.08px!important;
+}
+body.home .quick-item p{font-size:13px!important}
+body.home .desc,
+body.home .calc-card p,
+body.home .info-box p{font-size:14px!important}
+
+/* 개별페이지 내부 본문·서류목록·설명문구 */
+body:not(.home) .subhero p,
+body:not(.home) .info-card p,
+body:not(.home) .docs-card ul,
+body:not(.home) .docs-note,
+body:not(.home) .related-posts-head p,
+body:has(.inheritance-flow) .flow-step p,
+body:has(.inheritance-flow) .inheritance-note,
+body:has(.inheritance-flow) .faq-acc p,
+body:has(.corp-guide) .corp-head p,
+body:has(.corp-guide) .corp-row span,
+body:has(.corp-guide) .corp-note,
+body:has(.corp-guide) .corp-faq-a,
+body:has(.corp-guide) .corp-auth-desc,
+body:has(.corp-guide) .corp-auth-sub,
+body:has(.re-main) .re-intro p,
+body:has(.re-main) .re-answer-head p,
+body:has(.re-main) .re-row span,
+body:has(.re-main) .re-note,
+body:has(.re-main) .re-info p,
+body:has(.re-main) .re-check p,
+body:has(.re-main) .re-faq details p,
+body:has(.re-main) .re-mortgage-line p,
+body:has(.re-main) .re-mortgage-note,
+body:has(.renunciation-flow) .renunciation-flow p,
+body:has(.renunciation-flow) .ren-note,
+body:has(.renunciation-flow) .ren-doc-card ul,
+body:has(.renunciation-flow) .ren-faq details p,
+body:has(.family-service-card) .family-service-card p,
+body:has(.family-service-card) .family-items,
+body:has(.family-service-card) .family-faq details p{
+  color:#3f4650!important;
+  font-weight:500!important;
+  line-height:1.68!important;
+  letter-spacing:-.08px!important;
+}
+
+/* 제목은 무겁게, 본문과 대비 */
+body.home .title,
+body:not(.home) .title,
+body:not(.home) .docs-card h3,
+body:not(.home) .faq-acc summary{
+  font-weight:800!important;
+}
+
+/* 메인 히어로의 손글씨 '등기로'는 기존 Nanum Pen Script 그대로 유지 */
+body.home .hero-written-phrase,
+body.home .hero-written-phrase *,
+body.home .hero-written-brand,
+body.home .hero-written-message{
+  font-family:"Nanum Pen Script","Noto Sans KR","Malgun Gothic",sans-serif!important;
+}
+body.home .hero-written-phrase,
+body.home .hero-written-brand,
+body.home .hero-written-message{
+  font-weight:400!important;
+}
+
+
+/* DETAIL_SUBTITLE_BADGES_V1 */
+/* 개별페이지의 필요서류·업무 내부 소제목을 큰 하늘색 사각 배지로 통일 */
+body:not(.home) .docs-card h3,
+body:has(.renunciation-flow) .ren-doc-head h3,
+body:has(.re-main) .re-itop b{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:max-content!important;
+  max-width:100%!important;
+  min-height:34px!important;
+  margin:0 0 10px!important;
+  padding:6px 12px!important;
+  border:1px solid #b9e0f2!important;
+  border-radius:8px!important;
+  background:#eaf7fd!important;
+  color:#168dca!important;
+  font-size:14px!important;
+  line-height:1.3!important;
+  font-weight:800!important;
+  letter-spacing:-.2px!important;
+}
+
+/* 아이콘 옆에 붙는 카드 제목은 기존 정렬을 유지 */
+body:has(.re-main) .re-itop b{
+  margin:0!important;
+}
+
+/* 상속포기·한정승인 카드의 번호와 소제목 간격 */
+body:has(.renunciation-flow) .ren-doc-head{
+  align-items:center!important;
+  gap:8px!important;
+}
+body:has(.renunciation-flow) .ren-doc-head h3{
+  margin:0!important;
+}
+
+@media(max-width:600px){
+  body:not(.home) .docs-card h3,
+  body:has(.renunciation-flow) .ren-doc-head h3,
+  body:has(.re-main) .re-itop b{
+    min-height:32px!important;
+    padding:5px 10px!important;
+    font-size:13px!important;
+  }
+}
+
+
+/* CORPORATE_CARD_TITLE_AUTH_STYLE_V1 */
+/* 법인 본문 업무카드 제목: 전자서명·인증 카드와 같은 아이콘 + 일반 큰 제목 */
+body:has(.corp-guide) .corp-card-top{
+  display:flex!important;
+  align-items:center!important;
+  gap:14px!important;
+}
+body:has(.corp-guide) .corp-card-top .corp-no{
+  display:none!important;
+}
+body:has(.corp-guide) .corp-card-top .corp-icon{
+  width:60px!important;
+  height:60px!important;
+  flex:0 0 60px!important;
+  border-radius:18px!important;
+}
+body:has(.corp-guide) .corp-card-top h3{
+  display:block!important;
+  width:auto!important;
+  max-width:none!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:#20242b!important;
+  box-shadow:none!important;
+  font-size:24px!important;
+  line-height:1.25!important;
+  font-weight:800!important;
+  letter-spacing:-1px!important;
+  white-space:normal!important;
+}
+@media(max-width:900px){
+  body:has(.corp-guide) .corp-card-top h3{
+    font-size:22px!important;
+  }
+}
+@media(max-width:560px){
+  body:has(.corp-guide) .corp-card-top{
+    gap:12px!important;
+  }
+  body:has(.corp-guide) .corp-card-top .corp-icon{
+    width:56px!important;
+    height:56px!important;
+    flex-basis:56px!important;
+  }
+  body:has(.corp-guide) .corp-card-top h3{
+    font-size:20px!important;
+  }
+}
+
+
+/* DETAIL_INNER_DIVIDER_CONTRAST_V1 */
+/* 개별페이지 내부 항목 구분선만 선명하게 통일 */
+:root{--detail-inner-divider:#b7d3e0}
+
+/* 상속·가사 등 필요서류 목록 */
+body:not(.home) .docs-card li + li{
+  border-top:1px solid var(--detail-inner-divider)!important;
+  padding-top:7px!important;
+}
+
+/* 상속포기·한정승인 필요서류 목록 */
+body:has(.renunciation-flow) .ren-doc-card li + li{
+  border-top:1px solid var(--detail-inner-divider)!important;
+  padding-top:6px!important;
+}
+body:has(.renunciation-flow) .ren-doc-head{
+  border-bottom-color:var(--detail-inner-divider)!important;
+}
+
+/* 법인등기 카드 내부 항목 */
+body:has(.corp-guide) .corp-row{
+  border-top-color:var(--detail-inner-divider)!important;
+}
+
+/* 부동산등기 카드 내부 항목 */
+body:has(.re-main) .re-row,
+body:has(.re-main) .re-check,
+body:has(.re-main) .re-faq details,
+body:has(.re-main) .re-mortgage-line{
+  border-top-color:var(--detail-inner-divider)!important;
+}
+
+/* 가사 업무카드 설명/세부업무 구분 */
+body:has(.family-service-card) .family-items{
+  border-top-color:var(--detail-inner-divider)!important;
+}
+
+.dg-shell-legal{width:100%;max-width:var(--dg-max);margin:30px auto 0;padding:22px 22px 0;border-top:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:space-between;gap:18px;color:#b9c8da;font-size:12px}
+.dg-shell-legal nav{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.dg-shell-legal a{color:#dce6f3!important;text-decoration:none!important;font-weight:750}
+.dg-shell-legal a:hover{text-decoration:underline!important}
+@media(max-width:700px){.dg-shell-legal{margin-top:24px;padding:19px 16px 0;display:block;line-height:1.7}.dg-shell-legal nav{margin-top:8px;gap:10px}}
+
+
+/* DG_PHONE_CTA_UNIFIED_V1 */
+a.dg-phone-cta,
+.dg-shell-contact .dg-shell-phone{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-height:48px!important;
+  padding:0 22px!important;
+  border-radius:8px!important;
+  background:#36a9e1!important;
+  border:1px solid #36a9e1!important;
+  color:#fff!important;
+  font-size:16px!important;
+  font-weight:900!important;
+  line-height:1!important;
+  text-decoration:none!important;
+  white-space:nowrap!important;
+  box-shadow:none!important;
+}
+a.dg-phone-cta:hover,
+.dg-shell-contact .dg-shell-phone:hover{
+  background:#168dca!important;
+  border-color:#168dca!important;
+  color:#fff!important;
+}
+@media(max-width:800px){
+  a.dg-phone-cta,
+  .dg-shell-contact .dg-shell-phone{
+    min-height:44px!important;
+    padding:0 16px!important;
+    border-radius:8px!important;
+    font-size:14px!important;
+  }
+}
+
+
+/* DG_MOBILE_WIDTH_LOCK_V1 */
+html,body{max-width:100%;overflow-x:hidden}
+.dg-shell-header,
+.dg-shell-contact,
+.dg-shell-footer{
+  width:100%!important;
+  max-width:100%!important;
+  margin-left:0!important;
+  margin-right:0!important;
+}
+@media(max-width:800px){
+  .dg-shell-header,
+  .dg-shell-contact,
+  .dg-shell-footer{
+    box-sizing:border-box!important;
+    left:0!important;
+    right:0!important;
+  }
+  .dg-shell-contact .dg-shell-contact-grid,
+  .dg-shell-footer .dg-shell-footer-grid,
+  .dg-shell-legal{
+    width:100%!important;
+    max-width:100%!important;
+    box-sizing:border-box!important;
+  }
+  .dg-shell-footer-info,
+  .dg-shell-route,
+  .dg-shell-route-item,
+  .dg-shell-route-item span{
+    min-width:0!important;
+    overflow-wrap:anywhere!important;
+    word-break:keep-all;
+  }
+}
+
+
+/* MOBILE_POLISH_20260908_V1 */
+/* 모바일 공통 미세정리: 구조/콘텐츠는 유지하고 여백·터치영역·푸터·계산기 가독성만 통일 */
+@media(max-width:700px){
+  html{-webkit-text-size-adjust:100%}
+  body{min-width:0}
+
+  /* 공통 좌우 여백 16px */
+  .container,
+  .dg-shell-header .dg-shell-inner,
+  .dg-shell-contact .dg-shell-contact-grid,
+  .dg-shell-footer .dg-shell-footer-grid,
+  .dg-shell-legal{
+    padding-left:16px!important;
+    padding-right:16px!important;
+  }
+
+  /* 모바일에서 상담/푸터가 화면 위로 떠 보이지 않도록 일반 문서 흐름으로 고정 */
+  .dg-shell-contact,
+  .dg-shell-footer,
+  .dg-shell-legal{
+    position:static!important;
+    inset:auto!important;
+    transform:none!important;
+  }
+
+  /* 터치 버튼 최소 높이 통일 */
+  .buttons .btn,
+  .related-posts-actions a,
+  .dg-shell-route-actions a,
+  .dg-shell-mobile-grid a{
+    min-height:44px!important;
+  }
+
+  /* 개인정보처리방침·면책고지 모바일 통일 */
+  body:has(.policy-wrap){
+    min-height:100dvh;
+    display:flex;
+    flex-direction:column;
+  }
+  body:has(.policy-wrap) .policy-wrap{
+    width:100%!important;
+    max-width:900px!important;
+    flex:1 0 auto;
+    padding:36px 16px 52px!important;
+  }
+  body:has(.policy-wrap) .policy-wrap h1{
+    font-size:28px!important;
+    line-height:1.28!important;
+    letter-spacing:-1.2px!important;
+  }
+  body:has(.policy-wrap) .policy-lead{
+    margin-bottom:24px!important;
+    font-size:14px!important;
+    line-height:1.72!important;
+  }
+  body:has(.policy-wrap) .policy-card{
+    padding:20px 16px!important;
+    border-radius:14px!important;
+  }
+  body:has(.policy-wrap) .policy-card h2{
+    margin-top:26px!important;
+    font-size:18px!important;
+    line-height:1.4!important;
+  }
+  body:has(.policy-wrap) .policy-card h2:first-child{margin-top:0!important}
+  body:has(.policy-wrap) .policy-card p,
+  body:has(.policy-wrap) .policy-card li{
+    font-size:14px!important;
+    line-height:1.75!important;
+  }
+
+  /* 계산기: 결과 숫자·행·입력부 모바일 가독성 통일 */
+  body:has(.wrap) .wrap{
+    width:calc(100% - 32px)!important;
+    max-width:100%!important;
+  }
+  body:has(.wrap) .form,
+  body:has(.wrap) .result{
+    padding:18px 16px!important;
+  }
+  body:has(.wrap) .result .row{
+    gap:10px!important;
+    font-size:13px!important;
+    line-height:1.5!important;
+  }
+  body:has(.wrap) .total strong{
+    font-size:26px!important;
+    line-height:1.25!important;
+  }
+  body:has(.wrap) .opt,
+  body:has(.wrap) input,
+  body:has(.wrap) select,
+  body:has(.wrap) button.calc,
+  body:has(.wrap) button.add,
+  body:has(.wrap) .pdf-download{
+    min-height:46px!important;
+  }
+}
