@@ -55,25 +55,47 @@
 
 (()=>{
   if(location.pathname!='/renunciation.html'&&location.pathname!='/renunciation') return;
+  const cleanText=el=>String(el?.textContent||'').replace(/\s+/g,'');
+  const killPopover=()=>{
+    document.querySelectorAll('[id*="popover"],[class*="popover"],[data-detail-popover]').forEach(el=>{
+      if(!el.closest('.subhero .buttons')) el.remove();
+    });
+  };
   const apply=()=>{
-    const buttons=[...document.querySelectorAll('.subhero .buttons a')];
-    const old=buttons.find(a=>a.textContent.replace(/\s+/g,'').includes('상속포기·한정승인세부안내')) || buttons.find(a=>a.textContent.replace(/\s+/g,'')==='관련법률정보');
+    const controls=[...document.querySelectorAll('.subhero .buttons a,.subhero .buttons button')];
+    const old=controls.find(el=>cleanText(el).includes('상속포기·한정승인세부안내')) || controls.find(el=>cleanText(el)==='관련법률정보');
     if(!old) return false;
-    if(old.dataset.legalInfoFixed==='1') return true;
+    if(old.tagName==='A'&&old.dataset.legalInfoFixed==='1') { killPopover(); return true; }
     const fresh=document.createElement('a');
     fresh.href='/posts.html';
     fresh.className='btn btn-border';
     fresh.textContent='관련 법률정보';
     fresh.dataset.legalInfoFixed='1';
     old.replaceWith(fresh);
-    document.querySelectorAll('.dg-detail-popover,.dg-detail-popover-menu,[data-detail-popover]').forEach(el=>el.remove());
+    killPopover();
     return true;
   };
+  const style=document.createElement('style');
+  style.textContent='body[data-ren-law-fixed="1"] [id*="popover"],body[data-ren-law-fixed="1"] [class*="popover"]{display:none!important;visibility:hidden!important;pointer-events:none!important}';
+  document.head.appendChild(style);
+  document.body.dataset.renLawFixed='1';
   apply();
   window.addEventListener('DOMContentLoaded',apply,{once:true});
   window.addEventListener('load',apply,{once:true});
-  setTimeout(apply,300);
-  setTimeout(apply,900);
+  setTimeout(apply,100);
+  setTimeout(apply,400);
+  setTimeout(apply,1000);
+  const observer=new MutationObserver(()=>{apply();killPopover();});
+  observer.observe(document.documentElement,{childList:true,subtree:true});
+  document.addEventListener('click',e=>{
+    const el=e.target.closest('.subhero .buttons a,.subhero .buttons button');
+    if(!el||cleanText(el)!=='관련법률정보') return;
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    killPopover();
+    window.location.href='/posts.html';
+  },true);
 })();
 
 (()=>{
