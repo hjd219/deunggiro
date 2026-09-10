@@ -58,13 +58,19 @@ def draw_logo(img,d,category):
    icon=Image.open(fav).convert('RGBA');icon.thumbnail((126,126),Image.Resampling.LANCZOS);img.paste(icon,(58,58),icon)
   except:pass
  d.text((202,68),'등기로',font=font(56,True),fill=BLUE);d.text((204,136),category or '법률정보',font=font(30,True),fill=INK)
+def draw_case_badge(d,raw_title):
+ if not re.match(r'^\s*\[처리사례\]', raw_title or ''):return
+ label='처리사례';f=font(40,True);box=d.textbbox((0,0),label,font=f);tw=box[2]-box[0];th=box[3]-box[1]
+ pad_x=28;pad_y=17;right=1018;top=72;left=right-(tw+pad_x*2);bottom=top+th+pad_y*2
+ d.rounded_rectangle((left,top,right,bottom),radius=30,fill=BLUE)
+ d.text((left+pad_x,top+pad_y-5),label,font=f,fill=WHITE)
 def highlighted(d,line,f,y,point):
  total=d.textbbox((0,0),line,font=f)[2];x=(SIZE-total)//2
  if point and point in line:
   before,after=line.split(point,1);d.text((x,y),before,font=f,fill=INK);bw=d.textbbox((0,0),before,font=f)[2];d.text((x+bw,y),point,font=f,fill=BLUE);pw=d.textbbox((0,0),point,font=f)[2];d.text((x+bw+pw,y),after,font=f,fill=INK)
  else:d.text((x,y),line,font=f,fill=INK)
 def create_thumbnail(post,path):
- img=Image.new('RGBA',(SIZE,SIZE),WHITE);d=ImageDraw.Draw(img);d.rounded_rectangle((18,18,SIZE-18,SIZE-18),radius=34,fill=WHITE,outline=SKY,width=12);draw_logo(img,d,post.get('category',''));title=short_title(post.get('title',''));point=pick_point(title,post.get('category',''));tf,lines=fit_title(d,title,900,4);lh=int(tf.size*1.2);block=lh*len(lines);sy=max(275,(SIZE-block)//2+45)
+ img=Image.new('RGBA',(SIZE,SIZE),WHITE);d=ImageDraw.Draw(img);d.rounded_rectangle((18,18,SIZE-18,SIZE-18),radius=34,fill=WHITE,outline=SKY,width=12);draw_logo(img,d,post.get('category',''));draw_case_badge(d,post.get('title',''));title=short_title(post.get('title',''));point=pick_point(title,post.get('category',''));tf,lines=fit_title(d,title,900,4);lh=int(tf.size*1.2);block=lh*len(lines);sy=max(275,(SIZE-block)//2+45)
  for i,line in enumerate(lines):highlighted(d,line,tf,sy+i*lh,point)
  img.convert('RGB').save(path,'PNG',optimize=True)
 def patch_article(post,thumb):
@@ -105,5 +111,5 @@ def main():
   slug=post.get('slug')
   if not slug:continue
   out=OUT_DIR/f'{slug}-thumbnail.png';create_thumbnail(post,out);post['thumbnail']='/assets/posts/'+out.name;patch_article(post,out.relative_to(ROOT))
- POSTS_JSON.write_text(json.dumps(posts,ensure_ascii=False,indent=2)+'\n',encoding='utf-8');print('generated',len(posts),'thumbnails without icons and with automatic per-article highlights')
+ POSTS_JSON.write_text(json.dumps(posts,ensure_ascii=False,indent=2)+'\n',encoding='utf-8');print('generated',len(posts),'thumbnails with automatic highlights and case badges')
 if __name__=='__main__':main()
