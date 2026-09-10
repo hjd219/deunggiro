@@ -69,4 +69,71 @@ const sideCard=document.querySelector('.sidebar .side-card');if(sideCard)sideCar
 const faqData={'/inheritance-missing-heir.html':[['연락이 안 되는 상속인을 빼고 협의할 수 있나요?','협의분할은 원칙적으로 상속인 전원이 참여해야 합니다.'],['연락두절 상태에서도 상속등기를 먼저 할 수 있나요?','사안에 따라 법정지분 등기 등 가능한 방법을 검토할 수 있습니다.'],['주소도 모르는 경우에는 어떻게 하나요?','가족관계와 확인 가능한 주소자료를 먼저 정리한 뒤 송달 및 법원절차 가능성을 검토합니다.']],'/inheritance-overseas-heir.html':[['해외 상속인이 한국에 입국해야 하나요?','적절한 위임과 인증서류를 갖추면 국내 입국 없이 진행 가능한 경우가 있습니다.'],['아포스티유가 항상 필요한가요?','서류 종류와 발급국, 인증방식에 따라 달라질 수 있습니다.'],['미국 시민권자와 영주권자의 서류가 같은가요?','국적과 체류자격이 다르면 필요한 주소증명·서명·인증 방식도 달라질 수 있습니다.']],'/inheritance-minor-heir.html':[['미성년 상속인이 있으면 특별대리인이 항상 필요한가요?','항상 필요한 것은 아니며 법정대리인과 미성년자 사이의 이해상반 여부를 먼저 판단합니다.'],['부모가 미성년 자녀를 대신해 협의할 수 있나요?','부모의 공동상속 여부와 협의내용에 따라 직접 대리 가능 여부가 달라집니다.'],['특별대리인이 필요하면 등기를 바로 못 하나요?','필요한 경우 먼저 특별대리인 선임결정을 받은 뒤 협의와 등기절차를 진행합니다.']],'/inheritance-substitute-succession.html':[['대습상속은 언제 발생하나요?','원래 상속인이 될 사람이 피상속인보다 먼저 사망한 경우 등 법정 요건을 충족할 때 발생합니다.'],['배우자도 상속인이 되나요?','사망순서와 혼인관계 등 구체적인 가족관계에 따라 달라집니다.'],['지분은 어떻게 계산하나요?','피대습자의 상속분을 기준으로 대습상속인 구성에 따라 계산합니다.']],'/inheritance-division.html':[['상속인 전원이 합의하지 않으면 어떻게 하나요?','협의가 되지 않으면 가정법원에 상속재산분할심판을 청구해 분할방법을 정할 수 있습니다.'],['한 명이 부동산을 받고 다른 상속인에게 돈을 줄 수 있나요?','사안에 따라 특정 상속인이 부동산을 취득하고 다른 상속인에게 정산금을 지급하는 방식이 가능합니다.'],['연락두절 상속인이 있어도 분할심판이 가능한가요?','가능 여부와 송달방법 등을 검토해 법원절차를 진행할 수 있습니다.']]};
 const faq=document.querySelector('.faq');if(faq&&faqData[PATH])faq.innerHTML='<table class="faq-table"><tbody>'+faqData[PATH].map(([q,a])=>`<tr><th><span class="faq-kicker">Q</span>${q}</th><td>${a}</td></tr>`).join('')+'</tbody></table>';
 const trigger=[...document.querySelectorAll('a.btn-border')].find(a=>a.textContent.includes('상속등기 세부안내'));if(trigger){trigger.classList.add('dg-detail-pop-trigger');trigger.removeAttribute('href');trigger.setAttribute('role','button');const tri=trigger.querySelector('.tri');if(tri)tri.remove();trigger.insertAdjacentHTML('beforeend','<span class="dg-detail-trigger-arrow"></span>');const pop=document.createElement('div');pop.className='dg-detail-popover';pop.innerHTML=`<div class="dg-detail-pop-title">상속등기 세부안내</div>${detailPaths.map(p=>`<a href="${p}">${labels[p]}<span>›</span></a>`).join('')}`;document.body.appendChild(pop);const pos=()=>{const r=trigger.getBoundingClientRect(),w=Math.min(360,innerWidth-24);pop.style.left=(scrollX+Math.max(12,Math.min(innerWidth-w-12,r.left)))+'px';pop.style.top=(scrollY+r.bottom+9)+'px'};trigger.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(pop.classList.contains('open'))pop.classList.remove('open');else{pos();pop.classList.add('open')}});document.addEventListener('click',e=>{if(!pop.contains(e.target)&&e.target!==trigger)pop.classList.remove('open')})}
+
+/* DETAIL_COMPACT_FOOTER_V1
+   상속등기 세부상세페이지 5개 공통:
+   본문 아래 상담 CTA를 먼저 배치하고, 푸터는 신뢰정보 중심으로 축약 */
+document.querySelectorAll('.dg-shell-contact').forEach(el=>el.remove());
+
+const oldFooter=document.querySelector('.dg-shell-footer, footer.footer');
+if(oldFooter){
+  const consult=document.createElement('section');
+  consult.className='dg-detail-bottom-consult';
+  consult.innerHTML=`
+    <div class="dg-detail-bottom-consult-inner">
+      <div class="dg-detail-bottom-copy">
+        <h2>일반적인 상속등기로 해결되지 않는 경우</h2>
+        <p>연락두절 상속인, 미성년자, 해외 상속인, 상속재산분할 등<br>상황에 따라 필요한 절차와 준비서류를 확인해 안내합니다.</p>
+      </div>
+      <a class="dg-detail-bottom-call" href="tel:0324251500">032-425-1500 상담</a>
+    </div>`;
+  oldFooter.parentNode.insertBefore(consult,oldFooter);
+
+  const compact=document.createElement('footer');
+  compact.className='dg-detail-compact-footer';
+  compact.innerHTML=`
+    <div class="dg-detail-compact-footer-inner">
+      <div class="dg-detail-compact-office">
+        <div class="dg-detail-compact-brand">등기로</div>
+        <div>현재두 법무사 사무소 · 인천 미추홀구 경원대로 873, 201호</div>
+        <div>032-425-1500 · hjd21@naver.com</div>
+      </div>
+      <div class="dg-detail-compact-legal">
+        <span>© 2026 현재두 법무사 사무소</span>
+        <span>·</span>
+        <a href="/privacy.html">개인정보처리방침</a>
+        <span>·</span>
+        <a href="/disclaimer.html">면책고지</a>
+      </div>
+    </div>`;
+  oldFooter.replaceWith(compact);
+}
+
+const footerStyle=document.createElement('style');
+footerStyle.id='dg-detail-compact-footer-style-v1';
+footerStyle.textContent=`
+.dg-detail-bottom-consult{background:#172840!important;color:#fff!important;padding:44px 0!important}
+.dg-detail-bottom-consult-inner{width:100%;max-width:1180px;margin:auto;padding:0 22px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:28px;align-items:center}
+.dg-detail-bottom-copy h2{margin:0 0 8px!important;color:#fff!important;font-size:31px!important;line-height:1.3!important;letter-spacing:-1.25px!important}
+.dg-detail-bottom-copy p{margin:0!important;color:#c8d5e2!important;font-size:14px!important;line-height:1.7!important}
+.dg-detail-bottom-call{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-height:52px!important;padding:0 24px!important;border-radius:10px!important;background:#36a9e1!important;color:#fff!important;font-size:18px!important;font-weight:900!important;white-space:nowrap!important;text-decoration:none!important}
+.dg-detail-bottom-call:hover{background:#168dca!important}
+.dg-detail-compact-footer{background:#111f31!important;color:#b9c7d4!important;border-top:1px solid rgba(255,255,255,.08)!important;padding:22px 0 24px!important;font-size:13px!important}
+.dg-detail-compact-footer-inner{width:100%;max-width:1180px;margin:auto;padding:0 22px;display:flex;justify-content:space-between;gap:28px;align-items:flex-end}
+.dg-detail-compact-brand{margin-bottom:5px;color:#fff!important;font-size:20px!important;font-weight:900!important}
+.dg-detail-compact-office{font-size:13px!important;line-height:1.8!important}
+.dg-detail-compact-legal{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;font-size:12px!important;line-height:1.6!important}
+.dg-detail-compact-legal a{color:#b9c7d4!important;text-decoration:none!important}
+@media(max-width:760px){
+  .dg-detail-bottom-consult{padding:32px 0!important}
+  .dg-detail-bottom-consult-inner{grid-template-columns:1fr!important;padding:0 16px!important;gap:20px!important}
+  .dg-detail-bottom-copy h2{font-size:23px!important;letter-spacing:-.8px!important}
+  .dg-detail-bottom-copy p{font-size:13px!important}
+  .dg-detail-bottom-copy p br{display:none!important}
+  .dg-detail-bottom-call{width:100%!important;font-size:16px!important}
+  .dg-detail-compact-footer-inner{display:block!important;padding:0 16px!important}
+  .dg-detail-compact-legal{justify-content:flex-start!important;margin-top:10px!important}
+}`;
+document.head.appendChild(footerStyle);
+
 })();
