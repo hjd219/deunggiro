@@ -59,7 +59,7 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:Pretendard,"Noto S
 .paper .dg-summary-sync{display:grid!important;grid-template-columns:1fr 1fr!important;gap:14px!important;align-items:stretch!important;margin-top:10px!important}
 .paper .dg-summary-sync .total{height:50px!important;margin-top:0!important}
 @media(max-width:700px){.toolbar{padding:8px}.toolbar button{flex:1;max-width:180px}.guide{font-size:12px}.paper{flex:0 0 794px!important;width:794px!important;min-height:1123px!important;margin:8px 0 20px!important;padding:45px!important;transform-origin:top center!important}}
-@media print{@page{size:A4;margin:12mm}html,body{background:#fff!important}.toolbar,.guide{display:none!important}.paper{width:100%!important;min-height:0!important;margin:0!important;padding:0!important;box-shadow:none!important}*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}}
+@media print{@page{size:A4;margin:12mm}html,body{background:#fff!important}.toolbar,.guide{display:none!important}#stage{display:block!important;height:auto!important;overflow:visible!important}.paper{width:100%!important;min-height:0!important;margin:0!important;padding:0!important;box-shadow:none!important;transform:none!important;transform-origin:top left!important;flex:none!important}*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}}
 </style>
 </head>
 <body>
@@ -102,6 +102,7 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:Pretendard,"Noto S
   function fit(){if(innerWidth>700){paper.style.transform='';stage.style.height='';return}const s=Math.min(1,Math.max(280,innerWidth-12)/794);paper.style.transform='scale('+s+')';stage.style.height=(paper.scrollHeight*s+16)+'px'}
   requestAnimationFrame(()=>requestAnimationFrame(fit));
   addEventListener('resize',fit);
+  addEventListener('afterprint',fit);
  }catch(e){document.getElementById('paper').textContent='견적서를 표시하지 못했습니다.'}
 })();
 </script>
