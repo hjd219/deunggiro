@@ -7,14 +7,15 @@
     ['/inheritance-substitute-succession.html','대습상속'],
     ['/inheritance-division.html','상속재산분할']
   ];
-  if(!items.some(([p])=>p===PATH)) return;
+  const allowed=new Set(['/inheritance.html',...items.map(([p])=>p)]);
+  if(!allowed.has(PATH)) return;
 
   const mount=()=>{
-    const actions=document.querySelector('.hero .actions');
+    const actions=document.querySelector('.subhero .buttons,.subhero .actions,.hero .buttons,.hero .actions');
     if(!actions || actions.querySelector('.dg-native-detail-select-wrap')) return;
 
-    const old=[...actions.querySelectorAll('a,button')].find(el=>el.textContent.includes('상속등기 세부안내'));
-    if(old) old.remove();
+    const old=[...actions.querySelectorAll('a,button,select')].find(el=>el.textContent.includes('상속등기 세부안내'));
+    if(old && !old.classList.contains('dg-native-detail-select')) old.remove();
 
     const wrap=document.createElement('label');
     wrap.className='dg-native-detail-select-wrap';
