@@ -52,3 +52,20 @@
   section.innerHTML=`<div class="container"><div class="ren-aftercare-card"><div class="ren-aftercare-title">심판 후에는 상속포기와 한정승인의 후속절차가 다릅니다.</div><div class="ren-aftercare-grid"><div class="ren-aftercare-box"><h3>상속포기 후속절차</h3><p>후순위 상속인에게 상속포기 사실을 알리고, 필요한 경우 상속포기 심판문을 제공합니다. 상속채권자는 상속포기 사실을 모른 상태에서 소송을 제기할 수 있으므로, 소장을 받은 경우 답변서 제출이 필요합니다.</p><div class="ren-aftercare-key"><strong>핵심</strong> 후순위 상속인 통지 · 심판문 제공 · 소송 제기 시 답변서 제출</div></div><div class="ren-aftercare-box"><h3>한정승인 후속절차</h3><p>장례비·화장비용 등 상속비용이 적극재산을 초과하는 경우에는 별도 청산절차가 필요하지 않을 수 있으나, 채권자에게 내용증명 등으로 한정승인 사실을 통지합니다. 반대로 적극재산이 상속비용보다 많다면 별도 청산절차를 진행합니다.</p><div class="ren-aftercare-key"><strong>청산방법</strong> 적극재산이 현금성 재산만 있는 경우 임의청산을 검토하고, 부동산 등 환가가 어려운 재산이 있는 경우에는 법원에서 진행하는 상속재산파산을 검토합니다.</div></div></div></div></div>`;
   process.insertAdjacentElement('afterend',section);
 })();
+
+(()=>{
+  if(location.pathname!='/renunciation.html'&&location.pathname!='/renunciation') return;
+  const apply=()=>{
+    const buttons=[...document.querySelectorAll('.subhero .buttons a')];
+    const detailBtn=buttons.find(a=>a.textContent.replace(/\s+/g,'').includes('상속포기·한정승인세부안내'));
+    if(!detailBtn) return false;
+    detailBtn.href='/posts.html';
+    detailBtn.textContent='관련 법률정보';
+    detailBtn.classList.remove('dg-detail-popover-trigger');
+    detailBtn.removeAttribute('id');
+    detailBtn.removeAttribute('aria-haspopup');
+    detailBtn.removeAttribute('aria-expanded');
+    return true;
+  };
+  if(!apply()) window.addEventListener('DOMContentLoaded',apply,{once:true});
+})();
