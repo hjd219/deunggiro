@@ -76,3 +76,38 @@ body .dg-detail-title-line{
     letter-spacing:-.9px!important;
   }
 }
+
+/* POSTS_CASE_BADGE_V1 - 법률정보 목록에서 처리사례만 썸네일 우측 상단 표시 */
+.post-card:has(>img.post-thumb[alt^="[처리사례]"]){
+  position:relative!important;
+}
+.post-card:has(>img.post-thumb[alt^="[처리사례]"])::after{
+  content:'처리사례';
+  position:absolute;
+  top:27px;
+  left:93px;
+  z-index:3;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:27px;
+  padding:4px 9px;
+  border-radius:999px;
+  background:#36a9e1;
+  color:#fff;
+  font-size:11px;
+  font-weight:900;
+  line-height:1;
+  white-space:nowrap;
+  box-shadow:0 3px 10px rgba(23,40,64,.13);
+  pointer-events:none;
+}
+@media(max-width:800px){
+  .post-card:has(>img.post-thumb[alt^="[처리사례]"])::after{
+    top:20px;
+    left:58px;
+    min-height:22px;
+    padding:3px 7px;
+    font-size:9px;
+  }
+}
