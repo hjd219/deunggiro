@@ -3,11 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="format-detection" content="telephone=no,email=no,address=no,date=no">
 <title>등기로 예상 견적서</title>
 <style>
 :root{--sky:#35a9e1;--sky-deep:#1898d8;--ink:#10263d;--muted:#486176;--line:#90abbb;--bg:#eef4f8;--row-h:42px;--pre-h:52px}
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:var(--bg);font-family:Pretendard,"Noto Sans KR","Malgun Gothic",sans-serif;color:#172840}
+a[x-apple-data-detectors],a[href^="tel:"],a[href^="mailto:"]{color:inherit!important;text-decoration:none!important;border:0!important}
 .toolbar{position:sticky;top:0;z-index:10;display:flex;gap:8px;justify-content:center;padding:10px;background:rgba(255,255,255,.96);border-bottom:1px solid #d6e2ea}
 .toolbar button{border:0;border-radius:10px;padding:11px 16px;font-size:14px;font-weight:800;cursor:pointer}
 .back{background:#eaf1f5;color:#263e53}.print{background:var(--sky);color:#fff}
@@ -45,7 +47,8 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:Pretendard,"Noto S
 .paper .dg-estimate-account-number{display:block!important;color:#0a2035!important;font-size:11.9px!important;font-weight:900!important}
 .paper .dg-estimate-account-holder{display:block!important;margin-top:2px!important;color:#50697e!important;font-size:10.4px!important;font-weight:800!important}
 .paper .print-footer{display:block!important}
-.paper .office-footer{display:block!important;margin-top:10px!important;padding:10px 12px!important;border:1.25px solid #88aabd!important;border-radius:8px!important;background:#f3fbff!important;color:#17324a!important;font-size:11.4px!important;line-height:1.55!important;font-weight:800!important}
+.paper .office-footer{display:block!important;margin-top:10px!important;padding:10px 12px!important;border:1.25px solid #88aabd!important;border-radius:8px!important;background:#f3fbff!important;color:#17324a!important;font-size:11.4px!important;line-height:1.55!important;font-weight:800!important;text-decoration:none!important}
+.paper .office-footer *{text-decoration:none!important}
 .paper .office-footer b{display:block!important;margin:0 0 4px!important;color:var(--sky-deep)!important;font-size:11.8px!important;font-weight:900!important}
 .paper.acquisition-preview .public-col .result-head{display:block!important;min-height:84px!important;margin:0!important}
 .paper.acquisition-preview .public-col .result-head h3{margin:2px 0 8px!important}
@@ -75,7 +78,8 @@ html,body{margin:0;padding:0;background:var(--bg);font-family:Pretendard,"Noto S
  .paper .dg-estimate-account{margin-top:9px!important;padding:8px 10px 9px!important}
  .paper .dg-estimate-account-title{margin-bottom:6px!important}
  .paper .dg-estimate-account-row{padding:7px 9px!important}
- .paper .office-footer{margin-top:8px!important;padding:8px 10px!important;line-height:1.4!important}
+ .paper .office-footer{margin-top:8px!important;padding:8px 10px!important;line-height:1.4!important;text-decoration:none!important}
+ .paper .office-footer,.paper .office-footer *,.paper .office-footer a,.paper a[x-apple-data-detectors]{text-decoration:none!important;border-bottom:0!important}
  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
 }
 </style>
