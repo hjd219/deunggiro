@@ -26,15 +26,20 @@ document.addEventListener('DOMContentLoaded',()=>{
     a.textContent='032-425-1500 상담';
   });
 
-  const noBottomContactPaths=new Set([
-    '/inheritance-division.html',
-    '/inheritance-minor-heir.html',
-    '/inheritance-missing-heir.html',
-    '/inheritance-overseas-heir.html',
-    '/inheritance-substitute-succession.html'
-  ]);
+  /* DETAIL_PAGE_STANDARD_V1
+     상속 세부상세페이지는 현재 5개뿐 아니라 앞으로 /inheritance-*.html 로 추가되는
+     모든 페이지에 동일 규칙을 자동 적용한다. */
+  const isInheritanceDetail=/^\/inheritance-[^/]+\.html$/.test(current);
+  const noBottomContactPaths=new Set([]);
+  /* 미래 상속 세부상세페이지도 공통 상세 CSS를 자동 사용 */
+  if(isInheritanceDetail && !document.querySelector('link[href*="inheritance-detail.css"]')){
+    const link=document.createElement('link');
+    link.rel='stylesheet';
+    link.href='/assets/inheritance-detail.css?v=12';
+    document.head.appendChild(link);
+  }
   const managedContactPaths=new Set(['/','/index.html','/posts.html','/inheritance.html','/renunciation.html','/corporate.html','/realestate.html','/family.html','/acquisition-calculator.html','/corporate-calculator.html']);
-  if(noBottomContactPaths.has(current)){
+  if(isInheritanceDetail || noBottomContactPaths.has(current)){
     document.querySelectorAll('section.contact,section.cta,section.dg-shell-contact').forEach(el=>el.remove());
   }else if(managedContactPaths.has(current)){
     if(!replaceFirst(['section.contact','section.cta','section.dg-shell-contact'],contact)) document.body.insertAdjacentHTML('beforeend',contact);
