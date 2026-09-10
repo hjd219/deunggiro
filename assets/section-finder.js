@@ -57,30 +57,34 @@
   if(location.pathname!='/renunciation.html'&&location.pathname!='/renunciation') return;
   const apply=()=>{
     const buttons=[...document.querySelectorAll('.subhero .buttons a')];
-    const target=buttons.find(a=>a.textContent.replace(/\s+/g,'').includes('상속포기·한정승인세부안내')) || buttons.find(a=>a.textContent.replace(/\s+/g,'')==='관련법률정보');
-    if(!target) return false;
-    target.href='/posts.html';
-    target.textContent='관련 법률정보';
-    target.className='btn btn-border';
-    target.removeAttribute('id');
-    target.removeAttribute('aria-haspopup');
-    target.removeAttribute('aria-expanded');
+    const old=buttons.find(a=>a.textContent.replace(/\s+/g,'').includes('상속포기·한정승인세부안내')) || buttons.find(a=>a.textContent.replace(/\s+/g,'')==='관련법률정보');
+    if(!old) return false;
+    if(old.dataset.legalInfoFixed==='1') return true;
+    const fresh=document.createElement('a');
+    fresh.href='/posts.html';
+    fresh.className='btn btn-border';
+    fresh.textContent='관련 법률정보';
+    fresh.dataset.legalInfoFixed='1';
+    old.replaceWith(fresh);
+    document.querySelectorAll('.dg-detail-popover,.dg-detail-popover-menu,[data-detail-popover]').forEach(el=>el.remove());
     return true;
   };
   apply();
+  window.addEventListener('DOMContentLoaded',apply,{once:true});
   window.addEventListener('load',apply,{once:true});
-  setTimeout(apply,700);
+  setTimeout(apply,300);
+  setTimeout(apply,900);
 })();
 
 (()=>{
   if(location.pathname!='/renunciation.html'&&location.pathname!='/renunciation') return;
   const style=document.createElement('style');
   style.textContent=`
-    .ren-lower-section .ren-docs,.ren-lower-section .ren-faq-wrap{background:#fff;border:1px solid #a9ddf4;border-radius:22px;padding:24px;box-shadow:0 6px 18px rgba(31,41,55,.035)}
-    .ren-lower-section .ren-docs>.title,.ren-lower-section .ren-faq-wrap>.title{margin:0 0 18px;padding-bottom:14px;border-bottom:1px solid #dcebf3;font-size:28px;line-height:1.3;letter-spacing:-1.3px}
+    .ren-lower-section .ren-docs,.ren-lower-section .ren-faq-wrap{background:#fff!important;border:1px solid #a9ddf4!important;border-radius:22px!important;padding:24px!important;box-shadow:0 6px 18px rgba(31,41,55,.035)!important}
+    .ren-lower-section .ren-docs>.title,.ren-lower-section .ren-faq-wrap>.title{margin:0 0 18px!important;padding:0 0 14px!important;border-bottom:1px solid #dcebf3!important;font-size:28px!important;line-height:1.3!important;letter-spacing:-1.3px!important}
     @media(max-width:800px){
-      .ren-lower-section .ren-docs,.ren-lower-section .ren-faq-wrap{padding:18px;border-radius:18px}
-      .ren-lower-section .ren-docs>.title,.ren-lower-section .ren-faq-wrap>.title{font-size:24px;margin-bottom:15px;padding-bottom:12px}
+      .ren-lower-section .ren-docs,.ren-lower-section .ren-faq-wrap{padding:18px!important;border-radius:18px!important}
+      .ren-lower-section .ren-docs>.title,.ren-lower-section .ren-faq-wrap>.title{font-size:24px!important;margin-bottom:15px!important;padding-bottom:12px!important}
     }
   `;
   document.head.appendChild(style);
