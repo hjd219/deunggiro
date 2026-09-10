@@ -45,7 +45,6 @@ jobs:
               s=s[:pos]+block+s[pos:]
               p.write_text(s,encoding='utf-8')
 
-          # Give the five detail pages a clear contextual path back to the hub if one is not already present.
           detail_pages=[
               'inheritance-missing-heir.html',
               'inheritance-minor-heir.html',
