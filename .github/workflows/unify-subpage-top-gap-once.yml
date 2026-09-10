@@ -1,0 +1,42 @@
+name: Unify subpage top gap once
+on:
+  push:
+    branches: [main]
+jobs:
+  apply:
+    if: contains(github.event.head_commit.message, 'APPLY_SUBPAGE_TOP_GAP_70')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update CSS and cache version
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('assets/site-shell.css')
+          s=p.read_text(encoding='utf-8')
+          old='''/* SUBPAGE_MOBILE_TITLE_TOP_GAP_V3 - 메인 제외 제목 위 여백만 상속 세부페이지 기준 통일 */\n@media (max-width:800px){\n  body:not(.home) > .hero,\n  body:not(.home) > .subhero{\n    padding-top:34px!important;\n  }\n}\n'''
+          new='''/* SUBPAGE_MOBILE_TITLE_TOP_GAP_V4 - 메인 제외 전체 페이지 제목 위 여백을 상속등기 세부페이지 실제 간격과 동일하게 */\n@media (max-width:800px){\n  body:not(.home) > .hero,\n  body:not(.home) > .subhero{\n    padding-top:70px!important;\n  }\n}\n'''
+          if old not in s:
+              raise SystemExit('target CSS block not found')
+          p.write_text(s.replace(old,new),encoding='utf-8')
+          for f in Path('.').rglob('*.html'):
+              if any(part in {'.git','backups'} for part in f.parts):
+                  continue
+              t=f.read_text(encoding='utf-8')
+              nt=re.sub(r'/assets/site-shell\.css(?:\?v=[^"\']+)?','/assets/site-shell.css?v=20260910-2135',t)
+              if nt!=t:
+                  f.write_text(nt,encoding='utf-8')
+          PY
+      - name: Remove one-shot workflow and commit
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          rm -f .github/workflows/unify-subpage-top-gap-once.yml
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m "메인 제외 모바일 제목 위 여백 70px 통일"
+          git pull --rebase origin main
+          git push origin main
