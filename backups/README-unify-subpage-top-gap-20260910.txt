@@ -1,0 +1,1 @@
+This marker records the pre-change state for the mobile subpage top-gap unification. The repository state immediately before CSS modification is commit 2d4a09494f21d85646d3f6f0eb3c891f1ba49c47; the prior functional state is bc540e2469b7cf18e36e6eb5efed8855b01eed3e.
