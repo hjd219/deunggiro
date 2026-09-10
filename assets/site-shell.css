@@ -18,3 +18,18 @@
     flex:0 0 auto;
   }
 }
+
+/* HOME_MOBILE_HERO_BUTTON_TEXT_V1 - 메인 상단 3개 버튼 글자 크기 통일 */
+@media (max-width:800px){
+  body.home .hero .buttons .btn{
+    font-size:16px!important;
+    font-weight:900!important;
+    line-height:1!important;
+  }
+  body.home .hero .buttons .btn span,
+  body.home .hero .buttons .btn small{
+    font-size:16px!important;
+    font-weight:900!important;
+    line-height:1!important;
+  }
+}
