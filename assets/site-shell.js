@@ -26,8 +26,17 @@ document.addEventListener('DOMContentLoaded',()=>{
     a.textContent='032-425-1500 상담';
   });
 
+  const noBottomContactPaths=new Set([
+    '/inheritance-division.html',
+    '/inheritance-minor-heir.html',
+    '/inheritance-missing-heir.html',
+    '/inheritance-overseas-heir.html',
+    '/inheritance-substitute-succession.html'
+  ]);
   const managedContactPaths=new Set(['/','/index.html','/posts.html','/inheritance.html','/renunciation.html','/corporate.html','/realestate.html','/family.html','/acquisition-calculator.html','/corporate-calculator.html']);
-  if(managedContactPaths.has(current)){
+  if(noBottomContactPaths.has(current)){
+    document.querySelectorAll('section.contact,section.cta,section.dg-shell-contact').forEach(el=>el.remove());
+  }else if(managedContactPaths.has(current)){
     if(!replaceFirst(['section.contact','section.cta','section.dg-shell-contact'],contact)) document.body.insertAdjacentHTML('beforeend',contact);
   }else if(!document.querySelector('section.contact,section.cta,section.dg-shell-contact')){
     document.body.insertAdjacentHTML('beforeend',contact);
