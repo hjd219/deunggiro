@@ -1,0 +1,2 @@
+Pre-change checkpoint: dd9c658a19895fd9d3df96dab97d4c21167339f1
+Intended change: only mobile non-home direct .hero/.subhero padding-top, to match inheritance detail page actual visual gap (70px). Home page excluded.
