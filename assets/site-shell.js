@@ -26,23 +26,37 @@ document.addEventListener('DOMContentLoaded',()=>{
     a.textContent='032-425-1500 상담';
   });
 
-  /* DETAIL_PAGE_STANDARD_V2
-     상속·법인·부동산·상속포기/한정승인·가사 세부상세페이지는
-     현재 페이지뿐 아니라 앞으로 새로 생성되는 category-*.html 페이지까지
-     상속 세부상세페이지와 동일한 공통 레이아웃 규칙을 자동 적용한다. */
-  const detailCategoryPrefixes=['inheritance','corporate','realestate','renunciation','family'];
+  /* DETAIL_PAGE_STANDARD_V3
+     각 메뉴별 세부상세페이지는 카테고리 단위로 통일한다.
+     레이아웃/간격/카드/절차/FAQ/사이드바/모바일 기준은
+     상속 세부상세페이지(inheritance-detail.css)를 공통 기준으로 사용한다.
+     앞으로 prefix-*.html 형식으로 새 페이지가 생겨도 자동 적용된다. */
+  const detailCategoryRules=[
+    {prefix:'inheritance', category:'상속등기'},
+    {prefix:'corporate',   category:'법인등기'},
+    {prefix:'realestate',  category:'부동산등기'},
+    {prefix:'renunciation',category:'상속포기·한정승인'},
+    {prefix:'family',      category:'가사'}
+  ];
   const detailPageExclusions=new Set([
     '/corporate-calculator.html',
     '/acquisition-calculator.html'
   ]);
-  const isStandardDetailPage=detailCategoryPrefixes.some(prefix=>
-    new RegExp('^/'+prefix+'-[^/]+\\.html
-  /* 모든 카테고리의 현재·미래 세부상세페이지가 동일한 상세 CSS를 자동 사용 */
-  if(isStandardDetailPage && !document.querySelector('link[href*="inheritance-detail.css"]')){
-    const link=document.createElement('link');
-    link.rel='stylesheet';
-    link.href='/assets/inheritance-detail.css?v=12';
-    document.head.appendChild(link);
+  const detailRule=detailCategoryRules.find(rule=>
+    new RegExp('^/'+rule.prefix+'-[^/]+\\.html$').test(current)
+  );
+  const isStandardDetailPage=!!detailRule && !detailPageExclusions.has(current);
+  const noBottomContactPaths=new Set();
+
+  if(isStandardDetailPage){
+    document.body.dataset.detailPage='standard';
+    document.body.dataset.detailCategory=detailRule.category;
+    if(!document.querySelector('link[href*="inheritance-detail.css"]')){
+      const link=document.createElement('link');
+      link.rel='stylesheet';
+      link.href='/assets/inheritance-detail.css?v=12';
+      document.head.appendChild(link);
+    }
   }
   const managedContactPaths=new Set(['/','/index.html','/posts.html','/inheritance.html','/renunciation.html','/corporate.html','/realestate.html','/family.html','/acquisition-calculator.html','/corporate-calculator.html']);
   if(isStandardDetailPage || noBottomContactPaths.has(current)){
