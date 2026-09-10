@@ -701,3 +701,12 @@ html,body{max-width:100%;overflow-x:hidden}
     color:#36a9e1!important;
   }
 }
+
+
+/* HEADER_SKYLINE_RESTORE_V1
+   상단 헤더의 하늘색 강조선을 제거하고 이전의 얇은 중립선으로 복원 */
+html body .header,
+html body .dg-shell-header{
+  border-bottom:1px solid #e5e7eb!important;
+  box-shadow:none!important;
+}
