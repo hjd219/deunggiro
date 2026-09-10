@@ -25,49 +25,64 @@ jobs:
           from pathlib import Path
           import re
 
-          # 1) Latest cards: remove HTML/CSS overlay badge. The PNG itself owns the badge.
           js=Path('assets/latest-posts.js')
           s=js.read_text(encoding='utf-8')
-          s,n=re.subn(r"\$\{isCase\?'<span class=\\\"dg-case-overlay-badge\\\">처리사례</span>':''\}", '', s, count=1)
-          if n!=1:
-              raise SystemExit(f'latest-post overlay replacement count={n}')
-          s,n2=re.subn(r"function ensureCaseBadgeStyle\(\)\{.*?\}function init\(\)\{ensureCaseBadgeStyle\(\);", "function init(){", s, count=1, flags=re.S)
-          if n2!=1:
-              raise SystemExit(f'latest-post style removal count={n2}')
+
+          # Remove the latest-card HTML overlay using the exact source string.
+          overlay='${isCase?\'<span class="dg-case-overlay-badge">처리사례</span>\':\'\'}'
+          if overlay in s:
+              s=s.replace(overlay,'',1)
+          elif 'dg-case-overlay-badge' not in s:
+              print('latest-post overlay already absent')
+          else:
+              raise SystemExit('latest-post overlay marker exists but exact overlay was not found')
+
+          # Remove the injected overlay CSS function and its init call.
+          if 'function ensureCaseBadgeStyle()' in s:
+              s,n=re.subn(r'function ensureCaseBadgeStyle\(\)\{.*?\}function init\(\)\{ensureCaseBadgeStyle\(\);', 'function init(){', s, count=1, flags=re.S)
+              if n!=1:
+                  raise SystemExit('latest-post overlay style removal failed')
           js.write_text(s,encoding='utf-8')
 
-          # 2) Posts listing: remove pseudo-element overlay badge CSS completely.
+          # Remove posts.html pseudo-element overlay CSS. Support both V1 and V2 markers.
           css=Path('assets/site-shell.css')
           c=css.read_text(encoding='utf-8')
-          c,n3=re.subn(r"\n/\* POSTS_CASE_BADGE_V1.*\Z", "\n", c, count=1, flags=re.S)
-          if n3!=1:
-              raise SystemExit(f'posts overlay CSS removal count={n3}')
+          marker=None
+          for m in ('/* POSTS_CASE_BADGE_V2','/* POSTS_CASE_BADGE_V1'):
+              if m in c:
+                  marker=m
+                  break
+          if marker:
+              c=c[:c.index(marker)].rstrip()+"\n"
+          else:
+              print('posts overlay CSS already absent')
           css.write_text(c,encoding='utf-8')
 
-          # 3) Force fresh frontend assets where those overlays were previously cached.
+          # Cache bust only the assets changed here.
           for name in ['index.html','inheritance.html','renunciation.html','corporate.html','realestate.html','family.html']:
               p=Path(name)
               if not p.exists():
                   continue
               t=p.read_text(encoding='utf-8')
-              t=re.sub(r'/assets/latest-posts\.js\?v=[^"\']+', '/assets/latest-posts.js?v=20260911-0025', t, count=1)
+              t=re.sub(r'/assets/latest-posts\.js\?v=[^"\']+', '/assets/latest-posts.js?v=20260911-0032', t, count=1)
               p.write_text(t,encoding='utf-8')
 
           p=Path('posts.html')
           t=p.read_text(encoding='utf-8')
-          t=re.sub(r'/assets/site-shell\.css\?v=[^"\']+', '/assets/site-shell.css?v=20260911-0025', t, count=1)
+          t=re.sub(r'/assets/site-shell\.css\?v=[^"\']+', '/assets/site-shell.css?v=20260911-0032', t, count=1)
           p.write_text(t,encoding='utf-8')
           PY
 
           python -u scripts/generate_thumbnails.py
-
           rm -rf scripts/__pycache__ || true
           find . -type f -name '*.pyc' -delete
           rm .github/workflows/unify-case-badge-in-thumbnail.yml
+
       - name: Commit unified badge system
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add assets/latest-posts.js assets/site-shell.css assets/posts data/posts.json posts index.html inheritance.html renunciation.html corporate.html realestate.html family.html posts.html .github/workflows/unify-case-badge-in-thumbnail.yml
           git commit -m "처리사례 배지를 자동생성 썸네일 내부로 통일 [skip ci]"
-          git push
+          git pull --rebase origin main
+          git push origin HEAD:main
