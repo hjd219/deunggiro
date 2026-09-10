@@ -1,0 +1,33 @@
+name: Cache bust subpage title once
+on:
+  push:
+    branches: [main]
+jobs:
+  bust:
+    if: contains(github.event.head_commit.message, 'CACHE_BUST_SUBPAGE_TITLE')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update site-shell cache version
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          old='site-shell.css?v=20260910-2100'
+          new='site-shell.css?v=20260910-2110'
+          for p in Path('.').glob('*.html'):
+              s=p.read_text(encoding='utf-8')
+              if old in s:
+                  p.write_text(s.replace(old,new),encoding='utf-8')
+          PY
+      - name: Remove one-time workflow and commit
+        run: |
+          rm -f .github/workflows/cache-bust-subpage-title-once.yml
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m "전체 HTML site-shell.css 캐시 버전 20260910-2110 적용"
+          git pull --rebase origin main
+          git push origin main
