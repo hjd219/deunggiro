@@ -26,9 +26,144 @@ document.addEventListener('DOMContentLoaded',()=>{
     a.textContent='032-425-1500 상담';
   });
 
-  /* DETAIL_PAGE_STANDARD_V1
-     상속 세부상세페이지는 현재 5개뿐 아니라 앞으로 /inheritance-*.html 로 추가되는
-     모든 페이지에 동일 규칙을 자동 적용한다. */
+  /* DETAIL_PAGE_STANDARD_V2
+     상속·법인·부동산·상속포기/한정승인·가사 세부상세페이지는
+     현재 페이지뿐 아니라 앞으로 새로 생성되는 category-*.html 페이지까지
+     상속 세부상세페이지와 동일한 공통 레이아웃 규칙을 자동 적용한다. */
+  const detailCategoryPrefixes=['inheritance','corporate','realestate','renunciation','family'];
+  const detailPageExclusions=new Set([
+    '/corporate-calculator.html',
+    '/acquisition-calculator.html'
+  ]);
+  const isStandardDetailPage=detailCategoryPrefixes.some(prefix=>
+    new RegExp('^/'+prefix+'-[^/]+\\.html
+  /* 모든 카테고리의 현재·미래 세부상세페이지가 동일한 상세 CSS를 자동 사용 */
+  if(isStandardDetailPage && !document.querySelector('link[href*="inheritance-detail.css"]')){
+    const link=document.createElement('link');
+    link.rel='stylesheet';
+    link.href='/assets/inheritance-detail.css?v=12';
+    document.head.appendChild(link);
+  }
+  const managedContactPaths=new Set(['/','/index.html','/posts.html','/inheritance.html','/renunciation.html','/corporate.html','/realestate.html','/family.html','/acquisition-calculator.html','/corporate-calculator.html']);
+  if(isStandardDetailPage || noBottomContactPaths.has(current)){
+    document.querySelectorAll('section.contact,section.cta,section.dg-shell-contact').forEach(el=>el.remove());
+  }else if(managedContactPaths.has(current)){
+    if(!replaceFirst(['section.contact','section.cta','section.dg-shell-contact'],contact)) document.body.insertAdjacentHTML('beforeend',contact);
+  }else if(!document.querySelector('section.contact,section.cta,section.dg-shell-contact')){
+    document.body.insertAdjacentHTML('beforeend',contact);
+  }
+  if(!replaceFirst(['footer.footer','footer.dg-shell-footer'],footer)) document.body.insertAdjacentHTML('beforeend',footer);
+
+  // 상담 설명문은 제목의 실제 표시 폭을 넘지 않도록 맞춘다.
+  const syncContactCopyWidth=()=>{
+    const copy=document.querySelector('.dg-shell-contact-copy');
+    if(!copy) return;
+    const heading=copy.querySelector('h2');
+    const desc=copy.querySelector('p');
+    if(!heading||!desc) return;
+    desc.style.maxWidth='';
+    requestAnimationFrame(()=>{
+      const width=Math.ceil(heading.getBoundingClientRect().width);
+      if(width>0) desc.style.maxWidth=width+'px';
+    });
+  };
+  syncContactCopyWidth();
+  let contactResizeTimer;
+  window.addEventListener('resize',()=>{
+    clearTimeout(contactResizeTimer);
+    contactResizeTimer=setTimeout(syncContactCopyWidth,120);
+  });
+
+  /* DETAIL_TITLE_V1: 개별 상세페이지 본문 제목만 통일 */
+  const detailTitles={
+    '/inheritance.html':{title:'상속등기는',icon:'<svg viewBox="0 0 48 48"><path d="M12 7h18l7 7v27H12z" stroke="#258ed0" stroke-width="3" fill="none"/><path d="M30 7v8h7M18 25l4 4 9-10" stroke="#25a8df" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>'},
+    '/corporate.html':{title:'법인등기는',icon:'<svg viewBox="0 0 48 48"><path d="M9 41h30M13 41V20h22v21M18 20v-7h12v7" stroke="#7766d5" stroke-width="3" fill="none"/><path d="M19 27h3m5 0h3m-11 7h3m5 0h3" stroke="#9a7be0" stroke-width="3" fill="none" stroke-linecap="round"/></svg>'},
+    '/realestate.html':{title:'부동산등기는',icon:'<svg viewBox="0 0 48 48"><path d="M7 23 24 9l17 14v18H12V24" stroke="#20a38e" stroke-width="3" fill="none"/><path d="M19 41V29h10v12" stroke="#53bba9" stroke-width="3" fill="none"/></svg>'},
+    '/renunciation.html':{title:'상속포기·한정승인은',icon:'<svg viewBox="0 0 48 48"><path d="M24 7 38 12v10c0 9-5.5 15.5-14 20-8.5-4.5-14-11-14-20V12z" stroke="#c89725" stroke-width="3" fill="none"/><path d="M16 22h16M24 16v12M18 22l-4 6h8zm12 0-4 6h8z" stroke="#c89725" stroke-width="2.5" fill="none"/></svg>'},
+    '/family.html':{title:'가사는',icon:'<svg viewBox="0 0 48 48"><circle cx="18" cy="18" r="6" stroke="#cf679d" stroke-width="3" fill="none"/><circle cx="31" cy="19" r="5" stroke="#7b6bd0" stroke-width="3" fill="none"/><path d="M8 39c1-8 5-12 10-12s9 4 10 12M26 30c5-3 12 1 13 9" stroke="#cf679d" stroke-width="3" fill="none" stroke-linecap="round"/></svg>'}
+  };
+  const detail=detailTitles[current];
+  if(detail){
+    const h1=document.querySelector('.subhero-copy h1,.service-hero h1,.subhero h1,.hero h1');
+    if(h1&&!document.querySelector('.dg-detail-title-block')){
+      const oldLabel=h1.previousElementSibling;
+      if(oldLabel&&oldLabel.classList.contains('label')) oldLabel.remove();
+      h1.innerHTML=`${detail.title} <span class="dg-detail-brand">등기로</span>`;
+      const block=document.createElement('div');block.className='dg-detail-title-block';
+      const row=document.createElement('div');row.className='dg-detail-title-row';
+      const icon=document.createElement('span');icon.className='dg-detail-title-icon';icon.innerHTML=detail.icon;
+      const line=document.createElement('div');line.className='dg-detail-title-line';
+      h1.parentNode.insertBefore(block,h1);block.appendChild(row);row.appendChild(icon);row.appendChild(h1);block.appendChild(line);
+      const style=document.createElement('style');style.id='dg-detail-title-v1';style.textContent=`
+        .dg-detail-title-block{display:inline-block;max-width:100%;margin-top:4px}
+        .dg-detail-title-row{display:flex;align-items:center;gap:11px;max-width:100%}
+        .dg-detail-title-icon{width:46px;height:46px;flex:0 0 46px;border:1px solid #e0e6ec;border-radius:13px;background:#fff;box-shadow:0 4px 12px rgba(31,41,55,.04);padding:8px;display:grid;place-items:center}
+        .dg-detail-title-icon svg{width:100%;height:100%;display:block}
+        .subhero .dg-detail-title-row h1,.service-hero .dg-detail-title-row h1,.hero .dg-detail-title-row h1{font-size:clamp(34px,4.4vw,49px)!important;line-height:1.16!important;letter-spacing:-2.8px!important;margin:0!important;font-weight:900!important;white-space:nowrap!important}
+        .dg-detail-brand{color:#36a9e1!important}
+        .dg-detail-title-line{height:3px;width:100%;background:#82cef1;border-radius:2px;margin-top:14px}
+        .dg-detail-title-block+p{margin-top:24px!important}
+        @media(max-width:800px){
+          .dg-detail-title-block{max-width:100%;margin-top:2px}
+          .dg-detail-title-row{gap:8px}
+          .dg-detail-title-icon{width:38px;height:38px;flex-basis:38px;border-radius:11px;padding:6px}
+          .subhero .dg-detail-title-row h1,.service-hero .dg-detail-title-row h1,.hero .dg-detail-title-row h1{font-size:clamp(20px,6.2vw,27px)!important;letter-spacing:-1.65px!important;white-space:nowrap!important}
+          .dg-detail-title-line{margin-top:11px}
+          .dg-detail-title-block+p{margin-top:21px!important}
+        }
+        @media(max-width:360px){
+          .dg-detail-title-row{gap:7px}
+          .dg-detail-title-icon{width:34px;height:34px;flex-basis:34px;padding:5px}
+          .subhero .dg-detail-title-row h1,.service-hero .dg-detail-title-row h1,.hero .dg-detail-title-row h1{font-size:19px!important;letter-spacing:-1.4px!important}
+        }`;
+      document.head.appendChild(style);
+    }
+  }
+
+  if(current==='/corporate.html'){
+    const cards=document.querySelector('.corp-cards');
+    if(cards&&!document.getElementById('service-4')){
+      cards.insertAdjacentHTML('beforeend',`<article class="corp-card" id="service-4"><div class="corp-card-top"><div class="corp-icon"><svg viewBox="0 0 64 64"><path d="M21 29v-6c0-8 5-13 12-13 5 0 9 3 11 7" fill="none" stroke="#d85b7d" stroke-width="3.8" stroke-linecap="round"/><rect x="16" y="28" width="34" height="25" rx="6" fill="none" stroke="#d85b7d" stroke-width="3.8"/><path d="M33 36v8" fill="none" stroke="#d85b7d" stroke-width="3.8" stroke-linecap="round"/><circle cx="33" cy="36" r="2.5" fill="#d85b7d"/><path d="M23 48h20" fill="none" stroke="#d85b7d" stroke-width="3" stroke-linecap="round"/></svg></div><div><h3>회사계속등기</h3></div></div><div class="corp-tags"><span>해산간주</span><span>회사계속</span><span>임원선임</span></div><div class="corp-row"><b>임원</b><span>인감도장 · 인감증명서 2통 · 주민등록초본 1통</span></div><div class="corp-row"><b>임원 아닌 주주</b><span>인감도장 · 인감증명서 1통</span></div><div class="corp-row"><b>법인</b><span>법인 인감도장 · 정관 2통 · 주주명부 1통 · 법인 인감카드</span></div><div class="corp-note"><strong>회사계속등기 확인사항</strong><br>현재 법인등기부상 해산간주 상태인지 먼저 확인하고, 회사계속 결의와 임원선임을 함께 진행합니다.</div><a class="corp-cost" href="tel:0324251500">회사계속등기 상담하기 <span>→</span></a></article>`);
+      const style=document.createElement('style');style.textContent='@media(min-width:901px){.corp-cards{grid-template-columns:repeat(4,minmax(0,1fr))!important}.corp-card{padding:20px 17px!important}.corp-row{grid-template-columns:82px minmax(0,1fr)!important;gap:8px!important}.corp-card h3{font-size:24px!important}}';document.head.appendChild(style);
+      const intro=document.querySelector('.corp-head p');if(intro) intro.textContent='법인설립·변경등기·자본금증자·회사계속등기에 필요한 핵심서류를 업무별로 확인하세요.';
+    }
+    const faqLayout=document.querySelector('.corp-faq-layout'),authCard=document.querySelector('.corp-auth-card'),faq=document.querySelector('.corp-faq');
+    if(faqLayout&&authCard&&faq&&!document.querySelector('.corp-penalty-card')){
+      const faqInner=faqLayout.parentElement,outerKicker=faqInner?.querySelector('.corp-faq-kicker'),outerTitle=faqInner?.querySelector(':scope > h2');
+      if(outerTitle) faq.insertBefore(outerTitle,faq.firstChild);
+      if(outerKicker) faq.insertBefore(outerKicker,faq.firstChild);
+      const authIcon=authCard.querySelector('.corp-auth-icon'),authTitle=authCard.querySelector('h3');
+      if(authIcon&&authTitle&&!authCard.querySelector('.corp-auth-head')){const head=document.createElement('div');head.className='corp-auth-head';authCard.insertBefore(head,authCard.firstChild);head.appendChild(authIcon);head.appendChild(authTitle)}
+      const penalty=document.createElement('section');penalty.className='corp-penalty-card';penalty.innerHTML=`<div class="corp-penalty-kicker">PENALTY GUIDE</div><h3>과태료 예상기준표</h3><p class="corp-penalty-desc">임원변경등기 지연 시 참고할 수 있는 실무상 예상기준입니다.</p><table class="corp-penalty-table"><thead><tr><th>등기 지연기간</th><th>예상기준</th></tr></thead><tbody><tr><td>1일 ~ 1개월</td><td>약 10만원 이내</td></tr><tr><td>1개월 ~ 2개월</td><td>약 20만원 이내</td></tr><tr><td>2개월 ~ 6개월</td><td>약 30만원 이내</td></tr><tr><td>6개월 ~ 1년</td><td>약 50만원 이내</td></tr><tr><td>1년 이상</td><td>사건별 상이</td></tr></tbody></table><div class="corp-penalty-note">※ 법원의 공식 과태료 산정표가 아닌 실무상 예상기준입니다. 실제 과태료는 지연기간, 등기사항, 위반 내용 및 법원의 판단에 따라 달라질 수 있습니다.</div>`;
+      faqLayout.appendChild(authCard);faqLayout.appendChild(penalty);faqLayout.appendChild(faq);
+      const items=[...faq.querySelectorAll('.corp-faq-item')].slice(0,4),qa=[['임원 임기가 만료되면 과태료가 나오나요?','임기만료 후 임원을 선임한 경우 <strong>주주총회 선임일 또는 취임승낙일부터 2주 이내</strong> 변경등기를 해야 하며, 기간을 넘기면 과태료가 부과될 수 있습니다.'],['해산간주된 법인을 다시 운영할 수 있나요?','<strong>해산간주 상태라면 회사계속등기가 가능합니다.</strong> 다만 청산종결간주된 법인은 회사계속이 불가능하며 청산사무 수행을 위한 부활등기만 가능합니다.'],['1인 법인·1인 주주도 주주총회를 꼭 해야 하나요?','<strong>1인 주주 법인은 주주전원 서면결의로 주주총회를 갈음할 수 있습니다.</strong>'],['대표이사의 주소가 변경되면 변경등기를 해야 하나요?','네. 대표이사의 주소가 변경된 경우 <strong>주소변경일로부터 2주 이내에 대표이사 주소변경등기</strong>를 해야 합니다.']];
+      items.forEach((item,i)=>{const q=item.querySelector('.corp-faq-q'),a=item.querySelector('.corp-faq-a');if(q){const mark=q.querySelector('.corp-qmark'),plus=q.querySelector('.corp-plus');q.innerHTML='';if(mark)q.appendChild(mark);const span=document.createElement('span');span.textContent=qa[i][0];q.appendChild(span);if(plus)q.appendChild(plus)}if(a)a.innerHTML=qa[i][1]});
+      const faqStyle=document.createElement('style');faqStyle.textContent=`
+      .corp-faq-inner{max-width:1180px!important}
+      .corp-faq-layout{display:grid!important;grid-template-columns:.82fr 1fr 1.35fr!important;gap:18px!important;align-items:stretch!important}
+      .corp-faq-layout>.corp-auth-card{grid-column:1!important;grid-row:1!important}
+      .corp-faq-layout>.corp-penalty-card{grid-column:2!important;grid-row:1!important}
+      .corp-faq-layout>.corp-faq{grid-column:3!important;grid-row:1!important}
+      .corp-faq-layout>.corp-auth-card,.corp-faq-layout>.corp-penalty-card,.corp-faq-layout>.corp-faq{background:#fff!important;border:1px solid #d7e1e8!important;border-radius:22px!important;padding:25px 22px!important;min-width:0!important;box-shadow:0 6px 20px rgba(31,41,55,.035)!important}
+      .corp-auth-head{display:flex!important;align-items:center!important;gap:13px!important;margin:0 0 15px!important}.corp-auth-head .corp-auth-icon{margin:0!important;flex:0 0 60px!important}.corp-auth-head h3{margin:0!important;font-size:24px!important;line-height:1.25!important;letter-spacing:-1px!important}
+      .corp-faq{display:block!important}
+      .corp-faq .corp-faq-kicker{display:block!important;color:#168dca!important;font-size:11px!important;font-weight:900!important;letter-spacing:.13em!important;margin:0 0 7px!important}
+      .corp-faq>h2{font-size:27px!important;line-height:1.22!important;letter-spacing:-1.4px!important;margin:0 0 18px!important;color:#111827!important}
+      .corp-faq-layout .corp-faq-item{background:#fff!important;border:1px solid #c9dbe8!important;border-radius:13px!important;margin:9px 0!important;overflow:hidden!important;box-shadow:none!important}
+      .corp-faq-layout .corp-faq-q{display:grid!important;grid-template-columns:28px minmax(0,1fr) 24px!important;align-items:center!important;gap:9px!important;padding:13px 12px!important;min-height:57px!important;font-size:12.5px!important;font-weight:900!important;line-height:1.45!important;color:#111827!important;background:#fff!important;border:0!important}
+      .corp-faq-layout .corp-qmark{display:flex!important;align-items:center!important;justify-content:center!important;width:27px!important;height:27px!important;border-radius:50%!important;background:#eaf7fd!important;color:#168dca!important;font-size:12px!important;font-weight:900!important}
+      .corp-faq-layout .corp-plus{color:#8ca0b2!important;font-size:21px!important;font-weight:300!important;text-align:center!important}
+      .corp-faq-layout .corp-faq-a{padding:0 13px 14px 49px!important;font-size:11.5px!important;line-height:1.7!important;color:#596572!important;background:#fff!important}
+      .corp-faq-layout .corp-faq-a strong{color:#168dca!important}
+      .corp-penalty-kicker{font-size:11px;font-weight:900;letter-spacing:.13em;color:#168dca;margin-bottom:7px}.corp-penalty-card h3{font-size:27px;line-height:1.22;letter-spacing:-1.4px;margin:0 0 16px;color:#20242b}.corp-penalty-desc{font-size:12.5px;color:#6b7680;line-height:1.6;margin:0 0 15px}.corp-penalty-table{width:100%;border-collapse:separate;border-spacing:0;font-size:11.5px;border:1px solid #dfe7ee;border-radius:11px;overflow:hidden}.corp-penalty-table th,.corp-penalty-table td{padding:8px 7px;text-align:center;border-bottom:1px solid #e5ebef}.corp-penalty-table tr:last-child td{border-bottom:0}.corp-penalty-table th{background:#f3f9fc;color:#365a70;font-weight:900}.corp-penalty-table td:first-child{font-weight:800;color:#4b5965}.corp-penalty-table td:last-child{font-weight:900;color:#168dca}.corp-penalty-note{margin-top:11px;padding:9px 10px;background:#f6fbfe;border:1px solid #dceef7;border-radius:10px;color:#687680;font-size:9.8px;line-height:1.55}
+      @media(max-width:950px){.corp-faq-layout{grid-template-columns:1fr 1fr!important}.corp-faq-layout>.corp-auth-card{grid-column:1!important;grid-row:1!important}.corp-faq-layout>.corp-penalty-card{grid-column:2!important;grid-row:1!important}.corp-faq-layout>.corp-faq{grid-column:1/-1!important;grid-row:2!important}}
+      @media(max-width:650px){.corp-faq-layout{grid-template-columns:1fr!important}.corp-faq-layout>.corp-auth-card{grid-column:1!important;grid-row:1!important}.corp-faq-layout>.corp-penalty-card{grid-column:1!important;grid-row:2!important}.corp-faq-layout>.corp-faq{grid-column:1!important;grid-row:3!important}.corp-faq-layout>.corp-auth-card,.corp-faq-layout>.corp-penalty-card,.corp-faq-layout>.corp-faq{padding:22px 18px!important}.corp-auth-head .corp-auth-icon{flex-basis:52px!important;width:52px!important;height:52px!important}.corp-auth-head h3{font-size:21px!important}}
+      `;document.head.appendChild(faqStyle);
+    }
+  }
+  const btn=document.getElementById('dg-shell-menu-btn'),panel=document.getElementById('dg-shell-mobile-panel'),close=document.getElementById('dg-shell-menu-close');if(btn&&panel){const setOpen=o=>{panel.classList.toggle('open',o);panel.setAttribute('aria-hidden',o?'false':'true');btn.setAttribute('aria-expanded',o?'true':'false')};btn.addEventListener('click',()=>setOpen(!panel.classList.contains('open')));close?.addEventListener('click',()=>setOpen(false));panel.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setOpen(false)));document.addEventListener('keydown',e=>{if(e.key==='Escape')setOpen(false)})}
+});).test(current)
+  ) && !detailPageExclusions.has(current);
   const isInheritanceDetail=/^\/inheritance-[^/]+\.html$/.test(current);
   const noBottomContactPaths=new Set([]);
   /* 미래 상속 세부상세페이지도 공통 상세 CSS를 자동 사용 */
