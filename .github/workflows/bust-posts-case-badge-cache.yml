@@ -1,0 +1,32 @@
+name: Bust posts case badge cache
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  patch:
+    if: contains(github.event.head_commit.message, 'BUST_POSTS_CASE_BADGE_CACHE')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Bump CSS cache and remove workflow
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('posts.html')
+          s=p.read_text(encoding='utf-8')
+          s=re.sub(r'/assets/site-shell\.css\?v=[^"\']+', '/assets/site-shell.css?v=20260910-2358', s)
+          p.write_text(s,encoding='utf-8')
+          Path('.github/workflows/bust-posts-case-badge-cache.yml').unlink()
+          PY
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add posts.html .github/workflows/bust-posts-case-badge-cache.yml
+          git commit -m "법률정보 처리사례 배지 캐시 갱신 [skip ci]"
+          git push
