@@ -1,0 +1,1 @@
+Temporary test marker for iOS mobile root-scroll containment on inheritance page. Safe to remove after validation.
