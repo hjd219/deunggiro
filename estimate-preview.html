@@ -25,7 +25,7 @@ a[x-apple-data-detectors],a[href^="tel:"],a[href^="mailto:"]{color:inherit!impor
 .paper .print-columns{display:grid!important;grid-template-columns:1fr 1fr!important;gap:14px!important;align-items:start!important}
 .paper .print-col{min-width:0!important;width:100%!important}
 .paper .print-col h3,.paper .result h3{font-size:16px!important;line-height:1.25!important;margin:2px 0 8px!important;color:#10263d!important;font-weight:900!important}
-.paper .print-col .row{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;gap:10px!important;min-height:var(--row-h)!important;padding:0!important;border-bottom:1.1px solid var(--line)!important}
+.paper .print-col .row{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;gap:10px!important;height:var(--row-h)!important;min-height:var(--row-h)!important;padding:0!important;border-bottom:1.1px solid var(--line)!important}
 .paper .print-col .row span{font-size:11.8px!important;line-height:1.25!important;color:#132c44!important;font-weight:800!important;max-width:none!important;text-align:left!important}
 .paper .print-col .row b{font-size:11.9px!important;color:#081d31!important;font-weight:900!important;text-align:right!important;white-space:nowrap!important}
 .paper .total{min-height:50px!important;padding:11px 13px!important;border:1.2px solid #b7dcec!important;border-radius:9px!important;background:#eaf6fc!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:14px!important;margin-top:10px!important;break-inside:avoid!important}
@@ -50,13 +50,13 @@ a[x-apple-data-detectors],a[href^="tel:"],a[href^="mailto:"]{color:inherit!impor
 .paper .office-footer{display:block!important;margin-top:10px!important;padding:10px 12px!important;border:1.25px solid #88aabd!important;border-radius:8px!important;background:#f3fbff!important;color:#17324a!important;font-size:11.4px!important;line-height:1.55!important;font-weight:800!important;text-decoration:none!important}
 .paper .office-footer *{text-decoration:none!important}
 .paper .office-footer b{display:block!important;margin:0 0 4px!important;color:var(--sky-deep)!important;font-size:11.8px!important;font-weight:900!important}
-.paper.acquisition-preview .public-col .result-head{display:block!important;min-height:84px!important;margin:0!important}
+.paper.acquisition-preview .public-col .result-head{display:block!important;height:84px!important;min-height:84px!important;max-height:84px!important;margin:0!important;overflow:visible!important}
 .paper.acquisition-preview .public-col .result-head h3{margin:2px 0 8px!important}
-.paper.acquisition-preview .public-col .rate-inline{display:flex!important;align-items:baseline!important;gap:7px!important;flex-wrap:wrap!important;min-height:52px!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;color:#163149!important;white-space:normal!important}
+.paper.acquisition-preview .public-col .rate-inline{display:flex!important;align-items:baseline!important;gap:7px!important;flex-wrap:wrap!important;height:52px!important;min-height:52px!important;max-height:52px!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;color:#163149!important;white-space:normal!important}
 .paper.acquisition-preview .public-col .rate-inline span{display:inline!important;font-size:12px!important;font-weight:900!important;color:#163149!important}
 .paper.acquisition-preview .public-col .rate-inline strong{font-size:13px!important;font-weight:900!important;color:#0f2338!important}
 .paper.acquisition-preview .public-col .rate-inline small{font-size:10px!important;font-weight:800!important;color:#486176!important}
-.paper.acquisition-preview .legal-col .section{min-height:84px!important;margin:0!important;padding:0!important;border:0!important}
+.paper.acquisition-preview .legal-col .section{display:block!important;height:84px!important;min-height:84px!important;max-height:84px!important;margin:0!important;padding:0!important;border:0!important;overflow:hidden!important}
 .paper.acquisition-preview .legal-col .section h3{margin:2px 0 8px!important}
 .paper.acquisition-preview .legal-col>.total:not(.grand){margin-top:10px!important}
 .paper .dg-summary-sync{display:grid!important;grid-template-columns:1fr 1fr!important;gap:14px!important;align-items:stretch!important;margin-top:10px!important}
