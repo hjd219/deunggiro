@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'scripts/import_naver_blog.py'
+      - 'scripts/generate_thumbnails.py'
       - 'scripts/refresh_naver_format.py'
       - 'scripts/strip_naver_consultation_footer.py'
       - 'scripts/strip_naver_nonnumber_emoji.py'
@@ -44,9 +45,14 @@ jobs:
           git fetch origin main
           git reset --hard origin/main
       - name: Import posts missing from website
+        shell: bash
         run: |
+          set +e
           sed -i 's/^MAX_IMPORT = 3$/MAX_IMPORT = 10/' scripts/import_naver_blog.py
           timeout 420s python -u scripts/import_naver_blog.py
+          status=$?
+          git restore scripts/import_naver_blog.py
+          exit $status
       - name: Preserve Naver body formatting
         run: timeout 420s python -u scripts/refresh_naver_format.py
       - name: Safe postprocess
@@ -101,6 +107,12 @@ jobs:
           git add data/posts.json data/seo-report.json posts posts.html assets/posts assets/naver-images index.html inheritance.html renunciation.html corporate.html realestate.html family.html sitemap.xml rss.xml admin.html
           git commit -m "네이버 블로그 미수집 글 자동 반영"
 
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "Unexpected uncommitted files remain before rebase:"
+            git status --short
+            exit 1
+          fi
+
           for attempt in 1 2 3; do
             echo "Push attempt ${attempt}/3"
             git fetch origin main
@@ -120,4 +132,4 @@ jobs:
           echo "Push failed after 3 attempts"
           exit 1
 
-# Manual trigger marker: 2026-09-09-safe-push-retry
+# Fixed 2026-09-10: restore temporary MAX_IMPORT edit before commit/rebase
