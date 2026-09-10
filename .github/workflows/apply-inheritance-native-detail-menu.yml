@@ -1,0 +1,35 @@
+name: Apply inheritance native detail menu
+on:
+  push:
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch inheritance main page
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('inheritance.html')
+          s=p.read_text(encoding='utf-8')
+          tag='<script src="/assets/inheritance-detail-native-select.js?v=20260910-2158" defer></script>'
+          if 'inheritance-detail-native-select.js' not in s:
+              s=s.replace('</body>', tag+'</body>')
+          else:
+              s=re.sub(r'<script[^>]+inheritance-detail-native-select\.js[^>]*></script>', tag, s)
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commit patch and remove workflow
+        run: |
+          rm -f .github/workflows/apply-inheritance-native-detail-menu.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add inheritance.html .github/workflows/apply-inheritance-native-detail-menu.yml
+          git diff --cached --quiet || git commit -m "상속등기 메인 세부안내 네이티브 선택메뉴 연결 [skip ci]"
+          git push
