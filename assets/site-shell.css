@@ -61,3 +61,18 @@ body .dg-detail-title-line{
     margin-left:46px!important;
   }
 }
+
+/* MOBILE_MID_CONTACT_TITLE_ONE_LINE_V1 - 전체 중간 상담영역 제목 모바일 한줄 통일 */
+@media(max-width:700px){
+  .dg-shell-contact .dg-shell-contact-copy h2{
+    display:block!important;
+    width:100%!important;
+    max-width:none!important;
+    white-space:nowrap!important;
+    word-break:keep-all!important;
+    overflow-wrap:normal!important;
+    font-size:clamp(12.5px,4vw,18px)!important;
+    line-height:1.35!important;
+    letter-spacing:-.9px!important;
+  }
+}
