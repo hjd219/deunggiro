@@ -42,10 +42,10 @@
   }
 }
 
-/* SUBPAGE_MOBILE_TITLE_SPACING_V2 - 메인 제외 전체 상단 여백을 상속 세부페이지와 동일하게 통일 */
+/* SUBPAGE_MOBILE_TITLE_TOP_GAP_V3 - 메인 제외 제목 위 여백만 상속 세부페이지 기준 통일 */
 @media (max-width:800px){
   body:not(.home) > .hero,
   body:not(.home) > .subhero{
-    padding:34px 0 30px!important;
+    padding-top:34px!important;
   }
 }
