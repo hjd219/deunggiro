@@ -33,7 +33,7 @@
     #ren-aftercare .ren-aftercare-title{font-size:18px;font-weight:900;letter-spacing:-.6px;margin:0 0 14px;color:#132f4c}
     #ren-aftercare .ren-aftercare-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
     #ren-aftercare .ren-aftercare-box{border:1px solid #d3e8f3;border-radius:15px;background:#fbfdff;padding:18px}
-    #ren-aftercare .ren-aftercare-box h3{margin:0 0 8px;color:#168dca;font-size:18px;letter-spacing:-.5px}
+    #ren-aftercare .ren-aftercare-box h3{display:inline-flex;align-items:center;min-height:34px;margin:0 0 12px;padding:0 12px;border:1px solid #a9ddf4;border-radius:8px;background:#eefaff;color:#168dca;font-size:14px;font-weight:900;letter-spacing:-.4px}
     #ren-aftercare .ren-aftercare-box p{margin:0;color:#324b61;font-size:14px;line-height:1.75}
     #ren-aftercare .ren-aftercare-key{margin-top:11px;padding:10px 12px;border-radius:10px;background:#eef7fc;color:#2b455b;font-size:13px;line-height:1.6}
     #ren-aftercare .ren-aftercare-key strong{color:#168dca}
@@ -57,15 +57,31 @@
   if(location.pathname!='/renunciation.html'&&location.pathname!='/renunciation') return;
   const apply=()=>{
     const buttons=[...document.querySelectorAll('.subhero .buttons a')];
-    const detailBtn=buttons.find(a=>a.textContent.replace(/\s+/g,'').includes('상속포기·한정승인세부안내'));
-    if(!detailBtn) return false;
-    detailBtn.href='/posts.html';
-    detailBtn.textContent='관련 법률정보';
-    detailBtn.classList.remove('dg-detail-popover-trigger');
-    detailBtn.removeAttribute('id');
-    detailBtn.removeAttribute('aria-haspopup');
-    detailBtn.removeAttribute('aria-expanded');
+    const target=buttons.find(a=>a.textContent.replace(/\s+/g,'').includes('상속포기·한정승인세부안내')) || buttons.find(a=>a.textContent.replace(/\s+/g,'')==='관련법률정보');
+    if(!target) return false;
+    target.href='/posts.html';
+    target.textContent='관련 법률정보';
+    target.className='btn btn-border';
+    target.removeAttribute('id');
+    target.removeAttribute('aria-haspopup');
+    target.removeAttribute('aria-expanded');
     return true;
   };
-  if(!apply()) window.addEventListener('DOMContentLoaded',apply,{once:true});
+  apply();
+  window.addEventListener('load',apply,{once:true});
+  setTimeout(apply,700);
+})();
+
+(()=>{
+  if(location.pathname!='/renunciation.html'&&location.pathname!='/renunciation') return;
+  const style=document.createElement('style');
+  style.textContent=`
+    .ren-lower-section .ren-docs,.ren-lower-section .ren-faq-wrap{background:#fff;border:1px solid #a9ddf4;border-radius:22px;padding:24px;box-shadow:0 6px 18px rgba(31,41,55,.035)}
+    .ren-lower-section .ren-docs>.title,.ren-lower-section .ren-faq-wrap>.title{margin:0 0 18px;padding-bottom:14px;border-bottom:1px solid #dcebf3;font-size:28px;line-height:1.3;letter-spacing:-1.3px}
+    @media(max-width:800px){
+      .ren-lower-section .ren-docs,.ren-lower-section .ren-faq-wrap{padding:18px;border-radius:18px}
+      .ren-lower-section .ren-docs>.title,.ren-lower-section .ren-faq-wrap>.title{font-size:24px;margin-bottom:15px;padding-bottom:12px}
+    }
+  `;
+  document.head.appendChild(style);
 })();
