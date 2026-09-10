@@ -64,21 +64,10 @@ a[x-apple-data-detectors],a[href^="tel:"],a[href^="mailto:"]{color:inherit!impor
 @media(max-width:700px){.toolbar{padding:8px}.toolbar button{flex:1;max-width:180px}.guide{font-size:12px}.paper{flex:0 0 794px!important;width:794px!important;min-height:1123px!important;margin:8px 0 20px!important;padding:45px!important;transform-origin:top center!important}}
 @media print{
  @page{size:A4;margin:8mm}
- html,body{background:#fff!important}.toolbar,.guide{display:none!important}
- #stage{display:block!important;height:auto!important;overflow:visible!important}
- .paper{width:100%!important;min-height:0!important;margin:0!important;padding:0!important;box-shadow:none!important;transform:none!important;transform-origin:top left!important;flex:none!important}
- .paper{--row-h:37px}
- .paper.acquisition-preview .public-col .result-head,.paper.acquisition-preview .legal-col .section{min-height:72px!important}
- .paper.acquisition-preview .public-col .rate-inline{min-height:42px!important}
- .paper .total{min-height:46px!important;padding:9px 12px!important;margin-top:8px!important}
- .paper .dg-summary-sync{margin-top:8px!important}.paper .dg-summary-sync .total{height:46px!important}
- .paper .documents{margin-top:9px!important;padding:10px 12px!important}
- .paper .documents h3{margin-bottom:5px!important}
- .paper .doc-line{margin:3px 0!important}
- .paper .dg-estimate-account{margin-top:9px!important;padding:8px 10px 9px!important}
- .paper .dg-estimate-account-title{margin-bottom:6px!important}
- .paper .dg-estimate-account-row{padding:7px 9px!important}
- .paper .office-footer{margin-top:8px!important;padding:8px 10px!important;line-height:1.4!important;text-decoration:none!important}
+ html,body{background:#fff!important}
+ .toolbar,.guide{display:none!important}
+ #stage{display:block!important;width:194mm!important;height:auto!important;overflow:visible!important}
+ .paper{width:210mm!important;min-height:297mm!important;margin:0!important;padding:12mm!important;box-shadow:none!important;transform:none!important;transform-origin:top left!important;flex:none!important;zoom:.9238!important}
  .paper .office-footer,.paper .office-footer *,.paper .office-footer a,.paper a[x-apple-data-detectors]{text-decoration:none!important;border-bottom:0!important}
  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
 }
@@ -121,7 +110,6 @@ a[x-apple-data-detectors],a[href^="tel:"],a[href^="mailto:"]{color:inherit!impor
   account.innerHTML='<div class="dg-estimate-account-title"><strong>입금계좌</strong><span>현재두 법무사 사무소</span></div><div class="dg-estimate-account-list"><div class="dg-estimate-account-row"><span class="dg-estimate-account-bank">신한은행</span><span class="dg-estimate-account-number">110-482-\u2060692656</span><span class="dg-estimate-account-holder">현재두법무사사무소</span></div><div class="dg-estimate-account-row"><span class="dg-estimate-account-bank">카카오뱅크</span><span class="dg-estimate-account-number">3333-07-\u20606560416</span><span class="dg-estimate-account-holder">현재두법무사사무소</span></div></div>';
   const docs=result.querySelector('.documents');
   if(docs)docs.insertAdjacentElement('afterend',account);else result.appendChild(account);
-  /* iOS가 PDF 생성 시 전화·이메일·웹주소를 자동 링크로 바꾸면서 생기는 밑줄 방지 */
   const footer=result.querySelector('.office-footer');
   if(footer){
    footer.innerHTML=footer.innerHTML
