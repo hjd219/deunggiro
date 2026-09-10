@@ -49,3 +49,15 @@
     padding-top:70px!important;
   }
 }
+
+/* INHERITANCE_DETAIL_TITLE_LINE_V1 - 세부페이지 제목 밑줄을 제목 폭 안에 맞춤 */
+body .dg-detail-title-line{
+  width:calc(100% - 57px)!important;
+  margin-left:57px!important;
+}
+@media(max-width:800px){
+  body .dg-detail-title-line{
+    width:calc(100% - 46px)!important;
+    margin-left:46px!important;
+  }
+}
