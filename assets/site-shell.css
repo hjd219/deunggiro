@@ -1,6 +1,6 @@
 @import url('/assets/site-shell-core.css?v=20260910-2025');
 
-/* MOBILE_FOOTER_FLOW_V2 - 공통 모바일 하단을 한 곳에서만 관리 */
+/* MOBILE_FOOTER_FLOW_V3 - 모바일 전체 페이지 하단 공통 처리 */
 @media (max-width:900px){
   html{
     min-height:100%;
@@ -12,10 +12,16 @@
     flex-direction:column;
     margin:0;
   }
+  body>footer,
+  body>.footer,
   body>.dg-shell-footer{
     margin-top:auto!important;
     margin-bottom:0!important;
-    flex:0 0 auto;
+    flex:0 0 auto!important;
+    width:100%!important;
+  }
+  body>.dg-shell-contact{
+    flex:0 0 auto!important;
   }
 }
 
