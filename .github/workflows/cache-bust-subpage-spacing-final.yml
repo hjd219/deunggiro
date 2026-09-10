@@ -1,0 +1,37 @@
+name: Cache bust subpage spacing final
+on:
+  push:
+    branches: [main]
+jobs:
+  update:
+    if: contains(github.event.head_commit.message, 'CACHE_BUST_SUBPAGE_SPACING_FINAL')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bump site-shell CSS version on all HTML
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          version='20260910-2130'
+          changed=[]
+          for p in Path('.').rglob('*.html'):
+              s=p.read_text(encoding='utf-8')
+              ns=re.sub(r'/assets/site-shell\.css(?:\?v=[^"\'<> ]+)?', f'/assets/site-shell.css?v={version}', s)
+              if ns!=s:
+                  p.write_text(ns,encoding='utf-8')
+                  changed.append(str(p))
+          print('updated', len(changed), 'html files')
+          PY
+      - name: Commit and remove one-off workflow
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          rm -f .github/workflows/cache-bust-subpage-spacing-final.yml
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m "전체 HTML site-shell.css 캐시 버전 20260910-2130 적용"
+          git pull --rebase origin main
+          git push origin main
