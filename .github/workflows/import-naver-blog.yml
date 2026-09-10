@@ -99,6 +99,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+
+          # py_compile/postprocess 과정에서 생기는 Python 캐시는 사이트 변경사항이 아니므로 먼저 제거
+          find . -type d -name __pycache__ -prune -exec rm -rf {} +
+          find . -type f -name '*.pyc' -delete
+
           if git diff --quiet && [ -z "$(git status --porcelain --untracked-files=normal)" ]; then
             echo "No changes"
             exit 0
