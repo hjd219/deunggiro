@@ -1,0 +1,33 @@
+name: Apply case badge
+on:
+  push:
+    branches: [main]
+jobs:
+  apply:
+    if: contains(github.event.head_commit.message, 'APPLY_CASE_BADGE')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Show case badge on main cards
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('assets/latest-posts.js')
+          s=p.read_text(encoding='utf-8')
+          old="const title=clean(p.title);const thumb=p.thumbnail||`/assets/posts/${p.slug}-thumbnail.png`;return `<a class=\"dg-latest-card\" href=\"/posts/${encodeURIComponent(p.slug)}.html\"><div class=\"dg-latest-thumb\"><img loading=\"lazy\" decoding=\"async\" src=\"${esc(thumb)}\" alt=\"${esc(title)}\" onerror=\"this.onerror=null;this.src='/favicon.png'\"></div><div class=\"dg-latest-body\"><div class=\"dg-latest-cat\">${esc(p.category||'법률정보')}</div>"
+          new="const title=clean(p.title);const isCase=/(처리사례|사례)/.test(String(p.title||''));const badge=isCase?'처리사례':(p.category||'법률정보');const thumb=p.thumbnail||`/assets/posts/${p.slug}-thumbnail.png`;return `<a class=\"dg-latest-card\" href=\"/posts/${encodeURIComponent(p.slug)}.html\"><div class=\"dg-latest-thumb\"><img loading=\"lazy\" decoding=\"async\" src=\"${esc(thumb)}\" alt=\"${esc(title)}\" onerror=\"this.onerror=null;this.src='/favicon.png'\"></div><div class=\"dg-latest-body\"><div class=\"dg-latest-cat\">${esc(badge)}</div>"
+          if old not in s:
+              raise SystemExit('target block not found')
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
+          PY
+      - name: Remove workflow and commit
+        run: |
+          rm -f .github/workflows/apply-case-badge.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/latest-posts.js .github/workflows/apply-case-badge.yml
+          git commit -m "업무 메인 처리사례 카드 표시 추가 [skip ci]"
+          git pull --rebase origin main
+          git push origin main
