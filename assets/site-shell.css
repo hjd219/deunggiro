@@ -77,25 +77,26 @@ body .dg-detail-title-line{
   }
 }
 
-/* POSTS_CASE_BADGE_V1 - 법률정보 목록에서 처리사례만 썸네일 우측 상단 표시 */
+/* POSTS_CASE_BADGE_V2 - 카드 높이와 무관하게 썸네일 내부 우측 상단에 고정 */
 .post-card:has(>img.post-thumb[alt^="[처리사례]"]){
   position:relative!important;
 }
 .post-card:has(>img.post-thumb[alt^="[처리사례]"])::after{
   content:'처리사례';
   position:absolute;
-  top:27px;
-  left:93px;
+  top:calc(50% - 67px);
+  left:92px;
   z-index:3;
+  width:60px;
+  min-height:26px;
+  padding:3px 6px;
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  min-height:27px;
-  padding:4px 9px;
   border-radius:999px;
   background:#36a9e1;
   color:#fff;
-  font-size:11px;
+  font-size:10.5px;
   font-weight:900;
   line-height:1;
   white-space:nowrap;
@@ -104,10 +105,11 @@ body .dg-detail-title-line{
 }
 @media(max-width:800px){
   .post-card:has(>img.post-thumb[alt^="[처리사례]"])::after{
-    top:20px;
-    left:58px;
+    top:calc(50% - 46px);
+    left:53px;
+    width:57px;
     min-height:22px;
-    padding:3px 7px;
+    padding:3px 5px;
     font-size:9px;
   }
 }
