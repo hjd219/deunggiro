@@ -1,0 +1,35 @@
+name: Cache bust site shell global once
+on:
+  push:
+    branches: [main]
+jobs:
+  bust:
+    if: contains(github.event.head_commit.message, 'CACHE_BUST_SITE_SHELL_GLOBAL')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update site-shell CSS version in all HTML
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          for p in Path('.').rglob('*.html'):
+              if any(part in {'.git','backups'} for part in p.parts):
+                  continue
+              s=p.read_text(encoding='utf-8')
+              ns=re.sub(r'/assets/site-shell\.css(?:\?v=[^\"\']+)?', '/assets/site-shell.css?v=20260910-2100', s)
+              if ns!=s:
+                  p.write_text(ns,encoding='utf-8')
+          PY
+      - name: Commit cache bust and remove one-shot workflow
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          rm -f .github/workflows/cache-bust-site-shell-global-once.yml
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m "전체 HTML site-shell.css 캐시 버전 20260910-2100 적용"
+          git pull --rebase origin main
+          git push origin main
