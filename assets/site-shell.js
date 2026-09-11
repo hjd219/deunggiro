@@ -35,17 +35,6 @@ document.addEventListener('DOMContentLoaded',()=>{
     .then(normalizePhoneCtas)
     .catch(()=>normalizePhoneCtas());
 
-  const servicePages=new Set([
-    '/inheritance.html',
-    '/renunciation.html',
-    '/corporate.html',
-    '/realestate.html',
-    '/family.html'
-  ]);
-  if(servicePages.has(current)){
-    loadScript('/assets/service-lead.js?v=20260911-1').catch(()=>{});
-  }
-
   if(current==='/corporate.html'){
     loadScript('/assets/corporate-extra.js?v=20260911-1').catch(()=>{});
   }
