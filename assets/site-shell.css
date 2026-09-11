@@ -1,4 +1,5 @@
 @import url('/assets/site-shell-core.css?v=20260910-2025');
+@import url('/assets/global-title-alignment.css?v=20260911-1138');
 
 /* MOBILE_IOS_ROOT_SCROLL_V1 - 모바일 전체 페이지 하단 스크롤 구조 통일 */
 @media (max-width:900px){
