@@ -1,4 +1,4 @@
-/* SITE_HEADER_V1 - 공통 헤더와 모바일 메뉴만 담당 */
+/* SITE_HEADER_V3 - 정적 헤더 우선, 미전환 페이지는 기존 방식 유지 */
 (function(){
   const current=location.pathname;
   const navItems=[
@@ -12,22 +12,35 @@
   ];
   const activePath=current.startsWith('/posts/')?'/posts.html':current;
   const navHtml=navItems.map(([href,label])=>`<a href="${href}"${activePath===href?' aria-current="page"':''}>${label}</a>`).join('');
-  const header=`<header class="dg-shell-header"><div class="dg-shell-inner"><a class="dg-shell-logo" href="/"><span>등기로</span><small>현재두 법무사 사무소 · 인천</small></a><nav class="dg-shell-nav">${navHtml}</nav><button class="dg-shell-mobile-menu-btn" id="dg-shell-menu-btn" type="button" aria-expanded="false">☰ 메뉴</button></div></header><div class="dg-shell-mobile-panel" id="dg-shell-mobile-panel" aria-hidden="true"><div class="dg-shell-mobile-grid">${navHtml}</div><button class="dg-shell-mobile-close" id="dg-shell-menu-close" type="button">메뉴 닫기 ↑</button></div>`;
 
-  const replaceFirst=(selectors,html)=>{
-    for(const selector of selectors){
-      const el=document.querySelector(selector);
-      if(el){
-        el.outerHTML=html;
-        return true;
-      }
+  let header=document.querySelector('header.dg-shell-header');
+
+  /* 아직 정적 헤더로 바꾸지 않은 페이지는 기존 정상 공통 헤더로 교체 */
+  if(!header){
+    const legacyHeader=document.querySelector('header.header');
+    const legacyPanel=document.getElementById('mobile-menu-panel');
+    const markup=`<header class="dg-shell-header"><div class="dg-shell-inner"><a class="dg-shell-logo" href="/"><span>등기로</span><small>현재두 법무사 사무소 · 인천</small></a><nav class="dg-shell-nav">${navHtml}</nav><button class="dg-shell-mobile-menu-btn" id="dg-shell-menu-btn" type="button" aria-expanded="false">☰ 메뉴</button></div></header><div class="dg-shell-mobile-panel" id="dg-shell-mobile-panel" aria-hidden="true"><div class="dg-shell-mobile-grid">${navHtml}</div><button class="dg-shell-mobile-close" id="dg-shell-menu-close" type="button">메뉴 닫기 ↑</button></div>`;
+    if(legacyPanel) legacyPanel.remove();
+    if(legacyHeader){
+      legacyHeader.outerHTML=markup;
+    }else{
+      document.body.insertAdjacentHTML('afterbegin',markup);
     }
-    return false;
-  };
-
-  if(!replaceFirst(['header.header','header.dg-shell-header'],header)){
-    document.body.insertAdjacentHTML('afterbegin',header);
+    header=document.querySelector('header.dg-shell-header');
   }
+
+  if(!header) return;
+
+  /* 정적 헤더에서는 현재 메뉴 표시만 갱신 */
+  header.querySelectorAll('nav a').forEach(a=>{
+    let path;
+    try{ path=new URL(a.href,location.origin).pathname; }catch(_){ return; }
+    if(path===activePath || (activePath==='/' && (path==='/'||path==='/index.html'))){
+      a.setAttribute('aria-current','page');
+    }else{
+      a.removeAttribute('aria-current');
+    }
+  });
 
   const btn=document.getElementById('dg-shell-menu-btn');
   const panel=document.getElementById('dg-shell-mobile-panel');
@@ -38,6 +51,7 @@
     panel.classList.toggle('open',open);
     panel.setAttribute('aria-hidden',open?'false':'true');
     btn.setAttribute('aria-expanded',open?'true':'false');
+    document.body.classList.toggle('mobile-menu-open',open);
   };
   btn.addEventListener('click',()=>setOpen(!panel.classList.contains('open')));
   close?.addEventListener('click',()=>setOpen(false));
