@@ -1,0 +1,34 @@
+name: Fix home button flash v2
+on:
+  push:
+    branches: [main]
+jobs:
+  patch:
+    if: contains(github.event.head_commit.message, 'HOME_BUTTON_FLASH_V2')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Keep home hero buttons hidden until all styles are loaded
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          old="""<script id=\"dg-home-ready-script\">\nrequestAnimationFrame(()=>requestAnimationFrame(()=>document.body.classList.add('dg-home-ready')));\n</script>"""
+          new="""<script id=\"dg-home-ready-script\">\n(function(){\n  const show=()=>document.body.classList.add('dg-home-ready');\n  if(document.readyState==='complete') show();\n  else window.addEventListener('load',show,{once:true});\n})();\n</script>"""
+          if old not in s:
+              raise SystemExit('index.html: existing home-ready script block not found')
+          s=s.replace(old,new,1)
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commit fix
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add index.html
+          git diff --cached --quiet && exit 0
+          git commit -m "메인 상단 버튼 새로고침 플래시 제거"
+          git pull --rebase origin main
+          git push origin main
