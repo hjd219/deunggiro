@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   };
 
   const coreModules=[
-    '/assets/site-header.js?v=20260911-1',
+    '/assets/site-header.js?v=20260912-1',
     '/assets/site-footer.js?v=20260911-1'
   ];
 
