@@ -150,3 +150,10 @@
   }
   html body.article-v2 .article > h1{margin-top:0!important}
 }
+
+/* HOME_HERO_BUTTONS_VISIBLE_FINAL_V1 - 메인 3개 버튼은 항상 표시 */
+html body.home .hero .buttons{
+  display:flex!important;
+  visibility:visible!important;
+  opacity:1!important;
+}
