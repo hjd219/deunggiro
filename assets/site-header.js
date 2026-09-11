@@ -1,14 +1,22 @@
-/* SITE_HEADER_V5 - 공통 헤더 + 모바일 전체화면 아이콘 메뉴 */
+/* SITE_HEADER_V6 - 공통 헤더 + 모바일 전체화면 아이콘 메뉴 + 계산기 헤더 통일 */
 (function(){
   const current=location.pathname;
   const activePath=current.startsWith('/posts/')?'/posts.html':current;
+  const isCalculator=current==='/acquisition-calculator.html'||current==='/corporate-calculator.html';
 
-  /* CALCULATOR_TYPE_TEXT_V2 - 부동산·법인 계산기 종류 선택 글씨 확대 */
-  if(current==='/acquisition-calculator.html' || current==='/corporate-calculator.html'){
+  if(isCalculator){
     const style=document.createElement('style');
     style.id='dg-calculator-type-text-v2';
     style.textContent='.opts .opt,.types .type,.type-tabs button,.calc-tabs button{font-size:16px!important;line-height:1.25!important;font-weight:850!important}@media(max-width:800px){.opts .opt,.types .type,.type-tabs button,.calc-tabs button{font-size:16px!important}}';
     document.head.appendChild(style);
+
+    const oldHeader=document.querySelector('body>header.header');
+    if(oldHeader && !document.querySelector('header.dg-shell-header')){
+      const shell=document.createElement('header');
+      shell.className='dg-shell-header';
+      shell.innerHTML=`<div class="dg-shell-inner"><a class="dg-shell-logo" href="/">등기로<small>현재두 법무사 사무소</small></a><nav class="dg-shell-nav" aria-label="주요 메뉴"><a href="/">홈</a><a href="/inheritance.html">상속등기</a><a href="/renunciation.html">상속포기·한정승인</a><a href="/corporate.html">법인등기</a><a href="/realestate.html">부동산등기</a><a href="/family.html">가사</a><a href="/posts.html">법률정보</a></nav><button class="dg-shell-mobile-menu-btn" id="dg-shell-menu-btn" type="button" aria-expanded="false">☰ 메뉴</button></div><div class="dg-shell-mobile-panel" id="dg-shell-mobile-panel" aria-hidden="true"></div>`;
+      oldHeader.replaceWith(shell);
+    }
   }
 
   const header=document.querySelector('header.dg-shell-header');
@@ -24,17 +32,14 @@
 
   header.querySelectorAll('nav a').forEach(a=>{
     let path;
-    try{ path=new URL(a.href,location.origin).pathname; }catch(_){ return; }
-    if(path===activePath || (activePath==='/' && (path==='/'||path==='/index.html'))){
-      a.setAttribute('aria-current','page');
-    }else{
-      a.removeAttribute('aria-current');
-    }
+    try{path=new URL(a.href,location.origin).pathname}catch(_){return}
+    if(path===activePath||(activePath==='/'&&(path==='/'||path==='/index.html')))a.setAttribute('aria-current','page');
+    else a.removeAttribute('aria-current');
   });
 
   const btn=document.getElementById('dg-shell-menu-btn');
   const panel=document.getElementById('dg-shell-mobile-panel');
-  if(!btn||!panel) return;
+  if(!btn||!panel)return;
 
   const icons={
     home:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v8"/><path d="M7.4 5.7a8 8 0 1 0 9.2 0"/></svg>',
@@ -47,7 +52,6 @@
     calc:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h2M12 11h2M8 15h2M12 15h2"/></svg>',
     consult:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h3l1.2 4-2 1.4c1.2 2.7 2.7 4.2 5.4 5.4l1.4-2L20 13v3c0 2.2-1.8 4-4 4C9.4 20 4 14.6 4 8c0-2.2 1.8-4 3-5z"/></svg>'
   };
-
   const items=[
     {kind:'home',label:'홈',href:'/',active:activePath==='/'||activePath==='/index.html'},
     {kind:'inherit',label:'상속등기',href:'/inheritance.html',active:activePath==='/inheritance.html'},
@@ -60,46 +64,10 @@
     {kind:'consult',label:'상담안내',href:'tel:0324251500',active:false}
   ];
 
-  panel.setAttribute('role','dialog');
-  panel.setAttribute('aria-modal','true');
-  panel.setAttribute('aria-label','전체 메뉴');
-  panel.innerHTML=`
-    <div class="dg-mm-top">
-      <a class="dg-mm-brand" href="/">등기로</a>
-      <button class="dg-mm-close" id="dg-shell-menu-close" type="button" aria-label="메뉴 닫기">×</button>
-    </div>
-    <div class="dg-mm-body">
-      <h2 class="dg-mm-title">전체 메뉴</h2>
-      <p class="dg-mm-sub">원하는 업무를 선택하세요.</p>
-      <nav class="dg-mm-grid" aria-label="모바일 전체 메뉴">
-        ${items.map(item=>`<a class="dg-mm-item dg-mm-${item.kind}${item.active?' is-current':''}" href="${item.href}"${item.active?' aria-current="page"':''}><span class="dg-mm-icon">${icons[item.kind]}</span><span class="dg-mm-label">${item.label}</span></a>`).join('')}
-      </nav>
-      <div class="dg-mm-divider"></div>
-      <div class="dg-mm-quick-title">빠른 이용</div>
-      <div class="dg-mm-quick">
-        <a class="dg-mm-calc-btn" href="/#calculator">비용 계산</a>
-        <a class="dg-mm-call-btn" href="tel:0324251500">032-425-1500 상담</a>
-      </div>
-      <div class="dg-mm-footer"><span class="dg-mm-footer-brand">등기로</span><span class="dg-mm-footer-sep">|</span><span>현재두 법무사 사무소</span></div>
-    </div>`;
+  panel.setAttribute('role','dialog');panel.setAttribute('aria-modal','true');panel.setAttribute('aria-label','전체 메뉴');
+  panel.innerHTML=`<div class="dg-mm-top"><a class="dg-mm-brand" href="/">등기로</a><button class="dg-mm-close" id="dg-shell-menu-close" type="button" aria-label="메뉴 닫기">×</button></div><div class="dg-mm-body"><h2 class="dg-mm-title">전체 메뉴</h2><p class="dg-mm-sub">원하는 업무를 선택하세요.</p><nav class="dg-mm-grid" aria-label="모바일 전체 메뉴">${items.map(item=>`<a class="dg-mm-item dg-mm-${item.kind}${item.active?' is-current':''}" href="${item.href}"${item.active?' aria-current="page"':''}><span class="dg-mm-icon">${icons[item.kind]}</span><span class="dg-mm-label">${item.label}</span></a>`).join('')}</nav><div class="dg-mm-divider"></div><div class="dg-mm-quick-title">빠른 이용</div><div class="dg-mm-quick"><a class="dg-mm-calc-btn" href="/#calculator">비용 계산</a><a class="dg-mm-call-btn" href="tel:0324251500">032-425-1500 상담</a></div><div class="dg-mm-footer"><span class="dg-mm-footer-brand">등기로</span><span class="dg-mm-footer-sep">|</span><span>현재두 법무사 사무소</span></div></div>`;
 
-  const close=panel.querySelector('#dg-shell-menu-close');
-  btn.setAttribute('aria-controls','dg-shell-mobile-panel');
-
-  const setOpen=open=>{
-    panel.classList.toggle('open',open);
-    panel.setAttribute('aria-hidden',open?'false':'true');
-    btn.setAttribute('aria-expanded',open?'true':'false');
-    document.body.classList.toggle('mobile-menu-open',open);
-    if(open){
-      requestAnimationFrame(()=>close?.focus({preventScroll:true}));
-    }else if(document.activeElement===close){
-      btn.focus({preventScroll:true});
-    }
-  };
-
-  btn.addEventListener('click',()=>setOpen(!panel.classList.contains('open')));
-  close?.addEventListener('click',()=>setOpen(false));
-  panel.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setOpen(false)));
-  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel.classList.contains('open')) setOpen(false)});
+  const close=panel.querySelector('#dg-shell-menu-close');btn.setAttribute('aria-controls','dg-shell-mobile-panel');
+  const setOpen=open=>{panel.classList.toggle('open',open);panel.setAttribute('aria-hidden',open?'false':'true');btn.setAttribute('aria-expanded',open?'true':'false');document.body.classList.toggle('mobile-menu-open',open);if(open)requestAnimationFrame(()=>close?.focus({preventScroll:true}));else if(document.activeElement===close)btn.focus({preventScroll:true})};
+  btn.addEventListener('click',()=>setOpen(!panel.classList.contains('open')));close?.addEventListener('click',()=>setOpen(false));panel.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setOpen(false)));document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel.classList.contains('open'))setOpen(false)});
 })();
