@@ -121,26 +121,26 @@
   const style=document.createElement('style');
   style.id='ren-special-cases-style';
   style.textContent=`
-    #ren-special-cases{background:var(--detail-sky,#eef6fb);padding:0 0 46px}
+    html body #ren-special-cases{background:#eef6fb!important;background-color:#eef6fb!important;background-image:none!important;border-top:0!important;border-bottom:0!important;box-shadow:none!important;padding:0 0 46px}
     #ren-special-cases .ren-special-title{margin:0 0 9px;font-size:30px;line-height:1.25;letter-spacing:-1px;font-weight:900;color:#14263f}
     #ren-special-cases .ren-special-desc{margin:0 0 18px;color:#52667a;font-size:14px;line-height:1.6;font-weight:700}
-    #ren-special-cases .ren-special-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
-    #ren-special-cases .ren-special-card{display:block;min-width:0;min-height:118px;padding:18px 16px 16px;background:#fff;border:1.5px solid #79c6ef;border-radius:16px;text-decoration:none;color:#23384d}
-    #ren-special-cases .ren-special-head{display:flex;align-items:center;gap:8px;margin-bottom:12px}
-    #ren-special-cases .ren-special-badge{display:inline-flex;align-items:center;justify-content:center;height:22px;padding:0 8px;border-radius:999px;background:#38a9ee;color:#fff;font-size:11px;font-weight:900;flex:0 0 auto}
-    #ren-special-cases .ren-special-name{margin:0;font-size:15px;line-height:1.25;letter-spacing:-.3px;font-weight:900;color:#23384d}
-    #ren-special-cases .ren-special-copy{margin:0;color:#42566b;font-size:12px;line-height:1.5;font-weight:700}
-    @media(max-width:1080px){#ren-special-cases .ren-special-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-    @media(max-width:760px){
-      #ren-special-cases{padding-bottom:34px}
-      #ren-special-cases .ren-special-title{font-size:24px;letter-spacing:-.8px}
-      #ren-special-cases .ren-special-desc{font-size:13px;margin-bottom:16px}
-      #ren-special-cases .ren-special-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-      #ren-special-cases .ren-special-card{min-height:auto;padding:16px 14px 14px;border-radius:14px}
-      #ren-special-cases .ren-special-head{gap:6px;margin-bottom:10px;align-items:flex-start}
-      #ren-special-cases .ren-special-badge{height:20px;padding:0 7px;font-size:10px}
-      #ren-special-cases .ren-special-name{font-size:14px;line-height:1.25}
-      #ren-special-cases .ren-special-copy{font-size:11px;line-height:1.45}
+    #ren-special-cases .ren-special-grid{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:12px!important;align-items:stretch!important}
+    #ren-special-cases .ren-special-card{box-sizing:border-box!important;width:100%!important;min-width:0!important;height:118px!important;min-height:118px!important;padding:18px 16px 16px!important;display:flex!important;flex-direction:column!important;justify-content:flex-start!important;background:#fff!important;border:1.5px solid #69b8ee!important;border-radius:14px!important;text-decoration:none!important;color:#24384f!important;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease!important}
+    #ren-special-cases .ren-special-card:hover{border-color:#36a9e1!important;transform:translateY(-2px)!important;box-shadow:0 8px 22px rgba(25,41,68,.08)!important}
+    #ren-special-cases .ren-special-head{display:flex!important;align-items:center!important;gap:7px!important;min-width:0!important;white-space:nowrap!important;margin:0!important}
+    #ren-special-cases .ren-special-badge{display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 auto!important;height:21px!important;padding:0 8px!important;border-radius:999px!important;background:#2fa6ef!important;color:#fff!important;font-size:11px!important;font-weight:800!important;line-height:21px!important;margin:0!important}
+    #ren-special-cases .ren-special-name{display:block!important;margin:0!important;color:#24384f!important;font-size:15px!important;font-weight:800!important;line-height:1.35!important;letter-spacing:-.3px!important;white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important}
+    #ren-special-cases .ren-special-copy{display:block!important;margin:12px 0 0!important;color:#3f4f63!important;font-size:12px!important;font-weight:700!important;line-height:1.45!important}
+    @media(max-width:1000px){#ren-special-cases .ren-special-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+    @media(max-width:700px){
+      #ren-special-cases{padding-bottom:34px!important}
+      #ren-special-cases .ren-special-title{font-size:24px!important;letter-spacing:-.8px!important}
+      #ren-special-cases .ren-special-desc{font-size:13px!important;margin-bottom:16px!important}
+      #ren-special-cases .ren-special-grid{grid-template-columns:1fr 1fr!important;gap:8px!important}
+      #ren-special-cases .ren-special-card{height:108px!important;min-height:108px!important;padding:14px 12px!important;border-radius:14px!important}
+      #ren-special-cases .ren-special-name{font-size:13px!important}
+      #ren-special-cases .ren-special-badge{height:19px!important;padding:0 7px!important;font-size:10px!important;line-height:19px!important}
+      #ren-special-cases .ren-special-copy{margin-top:9px!important;font-size:10.5px!important}
     }
   `;
   document.head.appendChild(style);
