@@ -1,4 +1,5 @@
-document.addEventListener('DOMContentLoaded',()=>{
+/* DETAIL_TITLE_V1 - 5개 업무페이지 제목 전용. 동적 로드 후 즉시 실행 */
+(function(){
   const current=location.pathname;
   const detailTitles={
     '/inheritance.html':{title:'상속등기는',icon:'<svg viewBox="0 0 48 48"><path d="M12 7h18l7 7v27H12z" stroke="#258ed0" stroke-width="3" fill="none"/><path d="M30 7v8h7M18 25l4 4 9-10" stroke="#25a8df" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>'},
@@ -42,4 +43,4 @@ document.addEventListener('DOMContentLoaded',()=>{
       .subhero .dg-detail-title-row h1,.service-hero .dg-detail-title-row h1,.hero .dg-detail-title-row h1{font-size:19px!important;letter-spacing:-1.4px!important}
     }`;
   document.head.appendChild(style);
-});
+})();
