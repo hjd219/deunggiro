@@ -121,7 +121,7 @@ body.home #services .quick-grid{
   margin:0!important;
   grid-template-columns:repeat(5,minmax(0,1fr))!important;
   gap:14px!important;
-  padding-top:80px!important;
+  padding-top:90px!important;
   box-sizing:border-box!important;
 }
 body.home #services .quick-grid::before{
