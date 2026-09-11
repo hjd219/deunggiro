@@ -54,8 +54,8 @@
       const hub=document.querySelector('.dg-inheritance-linkhub');
       if(hub){
         hub.classList.remove('white');
-        hub.style.setProperty('background','#eaf6ff','important');
-        hub.style.setProperty('background-color','#eaf6ff','important');
+        hub.style.setProperty('background','#eef6fb','important');
+        hub.style.setProperty('background-color','#eef6fb','important');
         hub.style.setProperty('background-image','none','important');
         hub.style.setProperty('border-top','0','important');
         hub.style.setProperty('border-bottom','0','important');
@@ -142,8 +142,8 @@
           html body section.section.dg-inheritance-linkhub,
           html body section.dg-inheritance-linkhub,
           html body .dg-inheritance-linkhub{
-            background:#eaf6ff!important;
-            background-color:#eaf6ff!important;
+            background:#eef6fb!important;
+            background-color:#eef6fb!important;
             background-image:none!important;
             border-top:0!important;
             border-bottom:0!important;
@@ -161,18 +161,18 @@
           .dg-inheritance-linkhub-grid strong{display:block!important;margin:0!important;color:#24384f!important;font-size:15px!important;font-weight:800!important;line-height:1.35!important;letter-spacing:-.3px!important;white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important}
           .dg-inheritance-linkhub-grid a>span:not(.dg-case-badge){display:block!important;margin-top:12px!important;color:#3f4f63!important;font-size:12px!important;font-weight:700!important;line-height:1.45!important}
 
-          .inheritance-pc-lower .docs-section{border:0!important;box-shadow:none!important;background:transparent!important;padding:22px 10px 24px!important}
+          .inheritance-pc-lower .docs-section{margin:0!important;padding:22px!important;max-width:none!important;width:100%!important;background:#fff!important;border:1px solid #dfe5ec!important;border-radius:18px!important;box-shadow:0 10px 28px rgba(31,41,55,.045)!important}
           .inheritance-pc-lower .docs-section>.container{width:100%!important;max-width:none!important;padding:0!important}
-          #documents .dg-docs-wrap-v3{width:100%!important;max-width:720px!important;margin:0 auto!important;background:#fff!important;border:1.5px solid #8bc8ed!important;border-radius:18px!important;padding:32px 18px 24px!important;box-shadow:none!important}
-          #documents .title{max-width:640px!important;margin:0 auto!important}
-          #documents .desc{max-width:640px!important;margin:14px auto 24px!important}
-          #documents .dg-docs-grid-v2{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;column-gap:18px!important;row-gap:14px!important;width:100%!important;max-width:640px!important;margin:0 auto!important;align-items:stretch!important}
-          #documents .dg-docs-card-v2{height:100%!important;background:#fff!important;border:1.5px solid #8bc8ed!important;border-radius:14px!important;padding:12px 6px!important;box-shadow:none!important}
+          #documents .dg-docs-wrap-v3{width:100%!important;max-width:none!important;margin:0!important;background:transparent!important;border:0!important;border-radius:0!important;padding:0!important;box-shadow:none!important}
+          #documents .title{max-width:none!important;margin:4px 0 14px!important;font-size:25px!important;line-height:1.3!important;letter-spacing:-1px!important}
+          #documents .desc{max-width:none!important;margin:0 0 14px!important;font-size:12px!important;line-height:1.6!important}
+          #documents .dg-docs-grid-v2{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;column-gap:18px!important;row-gap:14px!important;width:100%!important;max-width:none!important;margin:0!important;align-items:stretch!important}
+          #documents .dg-docs-card-v2{height:100%!important;background:#fff!important;border:1.5px solid #9fd4f3!important;border-radius:14px!important;padding:12px 6px!important;box-shadow:none!important}
           #documents .dg-docs-card-v2 h3{margin:0 0 12px!important;font-size:13px!important}
           #documents .dg-docs-badge{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-height:28px!important;padding:0 11px!important;border-radius:8px!important;background:#e7f5ff!important;border:1px solid #9ed3f2!important;color:#178ccb!important;font-size:13px!important;font-weight:900!important}
           #documents .dg-docs-card-v2 ul{margin:0!important;padding-left:18px!important;color:#24384f!important;font-size:13px!important;line-height:1.45!important}
-          #documents .dg-docs-card-v2 li{padding:8px 0!important;border-bottom:1px solid #b9d6e8!important}
-          #documents .dg-docs-card-v2 li:last-child{border-bottom:0!important}
+          #documents .dg-docs-card-v2 li{margin:0!important;padding:8px 0!important;border:0!important;box-shadow:none!important}
+          #documents .dg-docs-card-v2 li+li{border-top:1px solid #b9d6e8!important}
           #documents .dg-docs-subhead{display:inline-flex!important;align-items:center!important;min-height:26px!important;margin:14px 0 4px!important;padding:0 9px!important;border-radius:7px!important;background:#f3f9fd!important;border:1px solid #b8dcef!important;color:#2a6f98!important;font-size:12px!important;font-weight:900!important}
           #documents .dg-docs-note{margin:12px 0 0!important;padding-top:10px!important;border-top:1px dashed #abd0e7!important;color:#4f6073!important;font-size:12px!important;font-weight:700!important;line-height:1.55!important}
 
@@ -183,7 +183,7 @@
             .dg-inheritance-linkhub-grid strong{font-size:13px!important}
             .dg-case-badge{height:19px!important;padding:0 7px!important;font-size:10px!important;line-height:19px!important}
             .dg-inheritance-linkhub-grid a>span:not(.dg-case-badge){margin-top:9px!important;font-size:10.5px!important}
-            #documents .dg-docs-wrap-v3{max-width:none!important;padding:24px 14px 18px!important}
+            .inheritance-pc-lower .docs-section{padding:18px!important}
             #documents .dg-docs-grid-v2{grid-template-columns:1fr!important;gap:12px!important;max-width:none!important}
             #documents .title,#documents .desc{max-width:none!important}
           }
