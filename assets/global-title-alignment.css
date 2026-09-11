@@ -155,12 +155,7 @@
   html body.article-v2 .article > h1{margin-top:0!important}
 }
 
-/* HOME_BUTTON_FLASH_GUARD_V1
-   메인 첫 페인트에서 구형 버튼이 잠깐 보이는 현상 방지.
-   공통 JS가 준비되기 전에는 버튼 영역만 숨기고, DOM 준비 직후 최종 상태로 표시한다. */
-html body.home:not(.dg-home-buttons-ready) .hero .buttons{
-  visibility:hidden!important;
-}
-html body.home.dg-home-buttons-ready .hero .buttons{
-  visibility:visible!important;
+/* HOME_LEGACY_HERO_BUTTONS_OFF_V1 - 예전 상단 3개 버튼은 첫 페인트부터 완전히 숨김 */
+html body.home .hero .buttons{
+  display:none!important;
 }
