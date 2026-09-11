@@ -153,7 +153,7 @@ body.home #services .quick-item.quick-rich{
   body.home #services .quick-grid{
     grid-template-columns:1fr!important;
     gap:14px!important;
-    padding-top:68px!important;
+    padding-top:62px!important;
   }
   body.home #services .quick-grid::before{
     font-size:30px!important;
