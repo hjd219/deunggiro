@@ -168,8 +168,9 @@
           #documents .desc{max-width:none!important;margin:0 0 14px!important;font-size:12px!important;line-height:1.6!important}
           #documents .dg-docs-grid-v2{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;column-gap:18px!important;row-gap:14px!important;width:100%!important;max-width:none!important;margin:0!important;align-items:stretch!important}
           #documents .dg-docs-card-v2{height:100%!important;background:#fff!important;border:1.5px solid #9fd4f3!important;border-radius:14px!important;padding:12px 6px!important;box-shadow:none!important}
-          #documents .dg-docs-card-v2 h3{margin:0 0 12px!important;font-size:13px!important}
-          #documents .dg-docs-badge{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-height:28px!important;padding:0 11px!important;border-radius:8px!important;background:#eef7fd!important;border:1px solid #9fd4f3!important;box-shadow:none!important;outline:none!important;color:#168dca!important;font-size:13px!important;font-weight:900!important}
+          #documents .dg-docs-card-v2 h3{display:block!important;margin:0 0 12px!important;padding:0!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;outline:0!important;font-size:13px!important;line-height:1!important}
+          #documents .dg-docs-card-v2 h3::before,#documents .dg-docs-card-v2 h3::after{content:none!important;display:none!important}
+          #documents .dg-docs-badge{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-height:28px!important;padding:0 11px!important;border-radius:8px!important;background:#eef7fd!important;border:1px solid #9fd4f3!important;box-shadow:none!important;outline:none!important;color:#168dca!important;font-size:13px!important;font-weight:900!important;line-height:1!important}
           #documents .dg-docs-card-v2 ul{margin:0!important;padding-left:18px!important;color:#24384f!important;font-size:13px!important;line-height:1.45!important}
           #documents .dg-docs-card-v2 li{margin:0!important;padding:8px 0!important;border:0!important;box-shadow:none!important}
           #documents .dg-docs-card-v2 li+li{border-top:1px solid #b9d6e8!important}
