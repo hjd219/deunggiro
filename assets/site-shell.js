@@ -55,14 +55,6 @@ document.addEventListener('DOMContentLoaded',()=>{
     contactResizeTimer=setTimeout(syncContactCopyWidth,120);
   });
 
-  /* DETAIL_TITLE_LOADER_V1 - 상세페이지 제목 로직은 별도 파일에서 실행 */
-  if(new Set(['/inheritance.html','/renunciation.html','/corporate.html','/realestate.html','/family.html']).has(current)){
-    const detailScript=document.createElement('script');
-    detailScript.src='/assets/detail-title.js?v=20260911-1';
-    detailScript.defer=true;
-    document.head.appendChild(detailScript);
-  }
-
   /* CORPORATE_EXTRA_LOADER_V1 - 법인 전용 코드는 별도 파일에서만 실행 */
   if(current==='/corporate.html'){
     const script=document.createElement('script');
