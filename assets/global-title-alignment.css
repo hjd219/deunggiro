@@ -1,0 +1,127 @@
+/* GLOBAL_TITLE_ALIGNMENT_V1
+   메인페이지의 실제 히어로 간격을 기준으로
+   작은 보조문구/브레드크럼과 큰 H1 시작 높이를 전체 하위 페이지에 통일 */
+
+:root{
+  --dg-title-small-y:74px;
+  --dg-title-big-y:104px;
+  --dg-title-small-y-mobile:30px;
+  --dg-title-big-y-mobile:58px;
+}
+
+/* 일반 개별/업무/상세 페이지 */
+@media(min-width:801px){
+  html body:not(.home):not(.article-v2) > .hero,
+  html body:not(.home):not(.article-v2) > .subhero{
+    padding-top:0!important;
+    position:relative!important;
+  }
+
+  html body:not(.home):not(.article-v2) > .hero > .container,
+  html body:not(.home):not(.article-v2) > .subhero > .container{
+    position:relative!important;
+    padding-top:var(--dg-title-big-y)!important;
+  }
+
+  /* 작은 문구: 메인페이지 '등기로 · 현재두 법무사 사무소' 높이 */
+  html body:not(.home):not(.article-v2) > .hero .breadcrumb,
+  html body:not(.home):not(.article-v2) > .subhero .breadcrumb,
+  html body:not(.home):not(.article-v2) > .hero > .container > .hero-label,
+  html body:not(.home):not(.article-v2) > .subhero > .container > .hero-label,
+  html body:not(.home):not(.article-v2) > .hero > .container > .label,
+  html body:not(.home):not(.article-v2) > .subhero > .container > .label{
+    position:absolute!important;
+    top:var(--dg-title-small-y)!important;
+    left:22px!important;
+    margin:0!important;
+    z-index:3!important;
+  }
+
+  /* 큰 제목: 메인페이지 큰 H1 시작 높이 */
+  html body:not(.home):not(.article-v2) > .hero .title-row,
+  html body:not(.home):not(.article-v2) > .subhero .title-row{
+    margin-top:0!important;
+  }
+
+  html body:not(.home):not(.article-v2) > .hero > .container > h1,
+  html body:not(.home):not(.article-v2) > .subhero > .container > h1,
+  html body:not(.home):not(.article-v2) > .hero .title-row > h1,
+  html body:not(.home):not(.article-v2) > .subhero .title-row > h1{
+    margin-top:0!important;
+  }
+}
+
+/* 모바일도 메인의 작은문구/큰제목 간격 관계를 동일하게 유지 */
+@media(max-width:800px){
+  html body:not(.home):not(.article-v2) > .hero,
+  html body:not(.home):not(.article-v2) > .subhero{
+    padding-top:0!important;
+    position:relative!important;
+  }
+
+  html body:not(.home):not(.article-v2) > .hero > .container,
+  html body:not(.home):not(.article-v2) > .subhero > .container{
+    position:relative!important;
+    padding-top:var(--dg-title-big-y-mobile)!important;
+  }
+
+  html body:not(.home):not(.article-v2) > .hero .breadcrumb,
+  html body:not(.home):not(.article-v2) > .subhero .breadcrumb,
+  html body:not(.home):not(.article-v2) > .hero > .container > .hero-label,
+  html body:not(.home):not(.article-v2) > .subhero > .container > .hero-label,
+  html body:not(.home):not(.article-v2) > .hero > .container > .label,
+  html body:not(.home):not(.article-v2) > .subhero > .container > .label{
+    position:absolute!important;
+    top:var(--dg-title-small-y-mobile)!important;
+    left:16px!important;
+    margin:0!important;
+    z-index:3!important;
+  }
+
+  html body:not(.home):not(.article-v2) > .hero .title-row,
+  html body:not(.home):not(.article-v2) > .subhero .title-row{
+    margin-top:0!important;
+  }
+
+  html body:not(.home):not(.article-v2) > .hero > .container > h1,
+  html body:not(.home):not(.article-v2) > .subhero > .container > h1,
+  html body:not(.home):not(.article-v2) > .hero .title-row > h1,
+  html body:not(.home):not(.article-v2) > .subhero .title-row > h1{
+    margin-top:0!important;
+  }
+}
+
+/* 법률정보/게시글형 페이지: 상단 메타와 H1 간격을 같은 리듬으로 고정 */
+@media(min-width:801px){
+  html body.article-v2 .article{
+    position:relative!important;
+    padding-top:104px!important;
+  }
+  html body.article-v2 .article > .post-meta,
+  html body.article-v2 .article > .meta,
+  html body.article-v2 .article > .breadcrumb{
+    position:absolute!important;
+    top:74px!important;
+    left:54px!important;
+    right:54px!important;
+    margin:0!important;
+  }
+  html body.article-v2 .article > h1{margin-top:0!important}
+}
+
+@media(max-width:800px){
+  html body.article-v2 .article{
+    position:relative!important;
+    padding-top:58px!important;
+  }
+  html body.article-v2 .article > .post-meta,
+  html body.article-v2 .article > .meta,
+  html body.article-v2 .article > .breadcrumb{
+    position:absolute!important;
+    top:30px!important;
+    left:14px!important;
+    right:14px!important;
+    margin:0!important;
+  }
+  html body.article-v2 .article > h1{margin-top:0!important}
+}
