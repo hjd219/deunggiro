@@ -1,32 +1,41 @@
 document.addEventListener('DOMContentLoaded',()=>{
   const current=location.pathname;
 
-  /* SITE_HEADER_LOADER_V1 - 공통 헤더/모바일 메뉴는 별도 파일에서만 실행 */
-  const headerScript=document.createElement('script');
-  headerScript.src='/assets/site-header.js?v=20260911-1';
-  headerScript.defer=true;
-  document.head.appendChild(headerScript);
-
-  /* DG_PHONE_CTA_UNIFIED_V1 */
-  document.querySelectorAll('a[href^="tel:0324251500"]').forEach(a=>{
-    if(a.closest('footer,.footer,.dg-shell-footer')) return;
-    const isCta=a.matches('.btn,.phone,.dg-shell-phone,.dg-shell-mobile-call,.mobile-only')||a.closest('.buttons,.contact,.dg-shell-contact,.subhero,.hero,.header,.dg-shell-header');
-    if(!isCta) return;
-    a.classList.add('dg-phone-cta');
-    a.textContent='032-425-1500 상담';
+  const loadScript=(src)=>new Promise((resolve,reject)=>{
+    if(document.querySelector(`script[src="${src}"]`)){
+      resolve();
+      return;
+    }
+    const script=document.createElement('script');
+    script.src=src;
+    script.async=false;
+    script.onload=resolve;
+    script.onerror=reject;
+    document.head.appendChild(script);
   });
 
-  /* SITE_FOOTER_LOADER_V1 - 상담영역/푸터는 별도 파일에서만 실행 */
-  const footerScript=document.createElement('script');
-  footerScript.src='/assets/site-footer.js?v=20260911-1';
-  footerScript.defer=true;
-  document.head.appendChild(footerScript);
+  const normalizePhoneCtas=()=>{
+    document.querySelectorAll('a[href^="tel:0324251500"]').forEach(a=>{
+      if(a.closest('footer,.footer,.dg-shell-footer')) return;
+      const isCta=
+        a.matches('.btn,.phone,.dg-shell-phone,.dg-shell-mobile-call,.mobile-only') ||
+        a.closest('.buttons,.contact,.dg-shell-contact,.subhero,.hero,.header,.dg-shell-header');
+      if(!isCta) return;
+      a.classList.add('dg-phone-cta');
+      a.textContent='032-425-1500 상담';
+    });
+  };
 
-  /* CORPORATE_EXTRA_LOADER_V1 - 법인 전용 코드는 별도 파일에서만 실행 */
+  const coreModules=[
+    '/assets/site-header.js?v=20260911-1',
+    '/assets/site-footer.js?v=20260911-1'
+  ];
+
+  Promise.all(coreModules.map(loadScript))
+    .then(normalizePhoneCtas)
+    .catch(()=>normalizePhoneCtas());
+
   if(current==='/corporate.html'){
-    const script=document.createElement('script');
-    script.src='/assets/corporate-extra.js?v=20260911-1';
-    script.defer=true;
-    document.head.appendChild(script);
+    loadScript('/assets/corporate-extra.js?v=20260911-1').catch(()=>{});
   }
 });
