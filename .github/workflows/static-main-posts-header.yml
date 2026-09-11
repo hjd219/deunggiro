@@ -4,7 +4,7 @@ on:
     branches: [main]
 jobs:
   patch:
-    if: contains(github.event.head_commit.message, 'STATIC_MAIN_POSTS_HEADER')
+    if: contains(github.event.head_commit.message, 'STATIC_MAIN_POSTS_HEADER') || contains(github.event.head_commit.message, 'CLEAN_MAIN_HEADER')
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -43,19 +43,21 @@ jobs:
           for name,active in [('index.html','/'),('posts.html','/posts.html')]:
               p=Path(name)
               s=p.read_text(encoding='utf-8')
-              if '<header class="dg-shell-header">' in s:
-                  continue
-              pattern=r'<header class="header">.*?</header>(?:\s*<div class="mobile-menu-panel".*?</div>)?'
-              s2,n=re.subn(pattern,markup(active),s,count=1,flags=re.S)
-              if n!=1:
-                  raise SystemExit(f'{name}: legacy header replacement count={n}')
-              p.write_text(s2,encoding='utf-8')
+              if '<header class="dg-shell-header">' not in s:
+                  pattern=r'<header class="header">.*?</header>(?:\s*<div class="mobile-menu-panel".*?</div>)?'
+                  s,n=re.subn(pattern,markup(active),s,count=1,flags=re.S)
+                  if n!=1:
+                      raise SystemExit(f'{name}: legacy header replacement count={n}')
+              if name=='index.html':
+                  s=s.replace('<button type="button" class="mobile-menu-close" id="mobile-menu-close">메뉴 닫기 ↑</button></div>','')
+              p.write_text(s,encoding='utf-8')
 
           for name in ['index.html','posts.html']:
               s=Path(name).read_text(encoding='utf-8')
               assert '<header class="dg-shell-header">' in s
               assert '<header class="header">' not in s
               assert 'id="dg-shell-mobile-panel"' in s
+          assert 'id="mobile-menu-close"' not in Path('index.html').read_text(encoding='utf-8')
           PY
       - name: Commit static header conversion
         run: |
@@ -63,6 +65,6 @@ jobs:
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add index.html posts.html
           git diff --cached --quiet && exit 0
-          git commit -m "메인·법률정보 정적 공통 헤더 적용"
+          git commit -m "메인 헤더 잔여 구형 마크업 정리"
           git pull --rebase origin main
           git push origin main
