@@ -121,7 +121,7 @@ body.home #services .quick-grid{
   margin:0!important;
   grid-template-columns:repeat(5,minmax(0,1fr))!important;
   gap:14px!important;
-  padding-top:70px!important;
+  padding-top:80px!important;
   box-sizing:border-box!important;
 }
 body.home #services .quick-grid::before{
@@ -153,7 +153,7 @@ body.home #services .quick-item.quick-rich{
   body.home #services .quick-grid{
     grid-template-columns:1fr!important;
     gap:14px!important;
-    padding-top:60px!important;
+    padding-top:68px!important;
   }
   body.home #services .quick-grid::before{
     font-size:30px!important;
