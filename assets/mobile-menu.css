@@ -2,16 +2,22 @@
 @media (max-width:900px){
   body.mobile-menu-open{overflow:hidden!important;touch-action:none}
   .dg-shell-mobile-panel{
-    display:none;position:fixed!important;inset:0!important;z-index:1300!important;
+    display:block!important;position:fixed!important;inset:0!important;z-index:1300!important;
     width:100%!important;height:100dvh!important;max-height:none!important;margin:0!important;padding:0!important;
     overflow-y:auto!important;overscroll-behavior:contain;background:#fff!important;border:0!important;
     border-radius:0!important;box-shadow:none!important;color:#162537!important;
     -webkit-overflow-scrolling:touch;
+    transform:translate3d(100%,0,0);opacity:0;visibility:hidden;pointer-events:none;
+    transition:transform .34s cubic-bezier(.22,.61,.36,1),opacity .2s ease,visibility 0s linear .34s;
+    will-change:transform;
   }
-  .dg-shell-mobile-panel.open{display:block!important}
+  .dg-shell-mobile-panel.open{
+    transform:translate3d(0,0,0);opacity:1;visibility:visible;pointer-events:auto;
+    transition:transform .34s cubic-bezier(.22,.61,.36,1),opacity .2s ease,visibility 0s linear 0s;
+  }
   .dg-mm-top{
     position:sticky;top:0;z-index:2;height:66px;display:flex;align-items:center;justify-content:space-between;
-    padding:0 18px;background:rgba(255,255,255,.98);border-bottom:1px solid #e8edf2;
+    padding:0 18px;background:rgba(255,255,255,.98);border-bottom:2px solid #35a8df;
     -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)
   }
   .dg-mm-brand{color:#35a8df!important;text-decoration:none!important;font-size:27px;font-weight:900;letter-spacing:-1.5px;line-height:1}
@@ -51,5 +57,8 @@
   .dg-mm-icon svg{width:27px;height:27px}
   .dg-mm-item{font-size:12px}
   .dg-mm-footer{font-size:14px}
+}
+@media (prefers-reduced-motion:reduce){
+  .dg-shell-mobile-panel{transition:none!important}
 }
 @media (min-width:901px){.dg-shell-mobile-panel{display:none!important}}
