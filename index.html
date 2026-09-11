@@ -1403,13 +1403,6 @@ section,header,footer,.container,.hero-grid,.quick-grid,.calc-grid,.post-box,.co
 
 <style>
 /* DG_HOME_INTRO_V2 */
-body.home .hero .buttons .dg-intro-open,
-body.home .hero .buttons a[href="#calculator"]{
-  background:#fff!important;
-  color:#20242b!important;
-  border:1px solid #36a9e1!important;
-  box-shadow:none!important;
-}
 body.home .hero .buttons .dg-intro-open{cursor:pointer;font-family:inherit;font-size:inherit!important;line-height:inherit!important}
 .dg-intro-backdrop{position:fixed;inset:0;z-index:3000;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(15,31,50,.48)}
 .dg-intro-backdrop.is-open{display:flex}
@@ -1624,7 +1617,7 @@ body.home .hero .buttons a.dg-phone-cta{
   btn.addEventListener('click',()=>setOpen(!panel.classList.contains('open')));
   if(close) close.addEventListener('click',()=>setOpen(false));
   panel.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setOpen(false)));
-  document.addEventListener('keydown',e=>{if(e.key==='Escape') setOpen(false);});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')setOpen(false);});
 })();
 </script>
 <script src="/assets/site-shell.js?v=9" defer></script>
