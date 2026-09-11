@@ -111,3 +111,42 @@
   `;
   document.head.appendChild(style);
 })();
+
+(()=>{
+  if(location.pathname!='/renunciation.html'&&location.pathname!='/renunciation') return;
+  if(document.getElementById('ren-special-cases')) return;
+  const lower=document.querySelector('.ren-lower-section');
+  if(!lower) return;
+
+  const style=document.createElement('style');
+  style.id='ren-special-cases-style';
+  style.textContent=`
+    #ren-special-cases{background:var(--detail-sky,#eef6fb);padding:0 0 46px}
+    #ren-special-cases .ren-special-title{margin:0 0 9px;font-size:30px;line-height:1.25;letter-spacing:-1px;font-weight:900;color:#14263f}
+    #ren-special-cases .ren-special-desc{margin:0 0 18px;color:#52667a;font-size:14px;line-height:1.6;font-weight:700}
+    #ren-special-cases .ren-special-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+    #ren-special-cases .ren-special-card{display:block;min-width:0;min-height:118px;padding:18px 16px 16px;background:#fff;border:1.5px solid #79c6ef;border-radius:16px;text-decoration:none;color:#23384d}
+    #ren-special-cases .ren-special-head{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+    #ren-special-cases .ren-special-badge{display:inline-flex;align-items:center;justify-content:center;height:22px;padding:0 8px;border-radius:999px;background:#38a9ee;color:#fff;font-size:11px;font-weight:900;flex:0 0 auto}
+    #ren-special-cases .ren-special-name{margin:0;font-size:15px;line-height:1.25;letter-spacing:-.3px;font-weight:900;color:#23384d}
+    #ren-special-cases .ren-special-copy{margin:0;color:#42566b;font-size:12px;line-height:1.5;font-weight:700}
+    @media(max-width:1080px){#ren-special-cases .ren-special-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+    @media(max-width:760px){
+      #ren-special-cases{padding-bottom:34px}
+      #ren-special-cases .ren-special-title{font-size:24px;letter-spacing:-.8px}
+      #ren-special-cases .ren-special-desc{font-size:13px;margin-bottom:16px}
+      #ren-special-cases .ren-special-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+      #ren-special-cases .ren-special-card{min-height:auto;padding:16px 14px 14px;border-radius:14px}
+      #ren-special-cases .ren-special-head{gap:6px;margin-bottom:10px;align-items:flex-start}
+      #ren-special-cases .ren-special-badge{height:20px;padding:0 7px;font-size:10px}
+      #ren-special-cases .ren-special-name{font-size:14px;line-height:1.25}
+      #ren-special-cases .ren-special-copy{font-size:11px;line-height:1.45}
+    }
+  `;
+  document.head.appendChild(style);
+
+  const section=document.createElement('section');
+  section.id='ren-special-cases';
+  section.innerHTML=`<div class="container"><h2 class="ren-special-title">상속포기·한정승인 특수한 상황도 확인하세요</h2><p class="ren-special-desc">상속포기·한정승인 상황에 맞는 세부 안내를 바로 확인할 수 있습니다.</p><div class="ren-special-grid"><a class="ren-special-card" href="/posts/naver-224404912884.html"><div class="ren-special-head"><span class="ren-special-badge">사례</span><h3 class="ren-special-name">후순위 상속인</h3></div><p class="ren-special-copy">선순위 상속포기 후 소송으로 상속인 된 사실을 안 경우</p></a><a class="ren-special-card" href="/renunciation.html#ren-faq"><div class="ren-special-head"><span class="ren-special-badge">사례</span><h3 class="ren-special-name">특별한정승인</h3></div><p class="ren-special-copy">단순승인 후 뒤늦게 채무초과 사실을 안 경우 검토</p></a><a class="ren-special-card" href="/posts/naver-224404962663.html"><div class="ren-special-head"><span class="ren-special-badge">사례</span><h3 class="ren-special-name">해외거주 상속인</h3></div><p class="ren-special-copy">미국 등 해외 거주자가 3개월 경과 후 상속포기한 경우</p></a><a class="ren-special-card" href="/renunciation.html#ren-faq"><div class="ren-special-head"><span class="ren-special-badge">사례</span><h3 class="ren-special-name">미성년자 상속인</h3></div><p class="ren-special-copy">미성년자가 포함되어 특별대리인 선임이 필요했던 경우</p></a><a class="ren-special-card" href="/posts/naver-224405895781.html"><div class="ren-special-head"><span class="ren-special-badge">사례</span><h3 class="ren-special-name">상속재산파산</h3></div><p class="ren-special-copy">한정승인 후 부동산이 있어 상속재산파산까지 진행한 경우</p></a></div></div>`;
+  lower.insertAdjacentElement('afterend',section);
+})();
