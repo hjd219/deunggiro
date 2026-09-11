@@ -77,3 +77,30 @@ body .dg-detail-title-line{
     letter-spacing:-.9px!important;
   }
 }
+
+/* HOME_SERVICE_TITLE_V1 - 메인 업무카드 위에는 제목만 간결하게 표시 */
+body.home #services .quick-grid{
+  position:relative!important;
+  padding-top:52px!important;
+}
+body.home #services .quick-grid::before{
+  content:"업무안내";
+  position:absolute;
+  top:0;
+  left:0;
+  display:block;
+  color:#20242b;
+  font-size:28px;
+  font-weight:900;
+  line-height:1.3;
+  letter-spacing:-.8px;
+}
+@media(max-width:800px){
+  body.home #services .quick-grid{
+    padding-top:44px!important;
+  }
+  body.home #services .quick-grid::before{
+    font-size:23px;
+    letter-spacing:-.6px;
+  }
+}
