@@ -1,0 +1,59 @@
+name: Final SEO descriptions once
+
+on:
+  push:
+    paths:
+      - '.github/workflows/seo-descriptions-final-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Update meta descriptions only
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          descriptions = {
+              'inheritance.html': '인천 상속등기의 절차·비용·필요서류를 확인하세요. 협의분할, 상속취득세와 실제 처리사례도 안내합니다.',
+              'renunciation.html': '인천 상속포기·한정승인의 절차·비용·필요서류를 확인하세요. 신청기한과 실제 처리사례도 안내합니다.',
+              'family.html': '인천 가사업무의 절차·비용·필요서류를 확인하세요. 협의이혼, 개명, 성년후견·미성년후견 등 주요 가사절차를 안내합니다.',
+              'inheritance-division.html': '인천 상속재산분할이 필요한 상속등기의 절차·비용·필요서류를 확인하세요. 협의가 어렵거나 상속인 간 분쟁이 있는 경우의 실제 처리사례도 안내합니다.',
+              'inheritance-minor-heir.html': '인천 미성년 상속인이 있는 상속등기의 절차·비용·필요서류를 확인하세요. 법정대리인·특별대리인 검토와 실제 처리사례를 안내합니다.',
+              'inheritance-missing-heir.html': '인천 연락두절 상속인이 있는 상속등기의 절차·비용·필요서류를 확인하세요. 법정지분등기·법원절차와 실제 처리사례를 안내합니다.',
+              'inheritance-overseas-heir.html': '인천 해외거주·외국인 상속인이 있는 상속등기의 절차·비용·필요서류를 확인하세요. 위임·공증·아포스티유와 실제 처리사례를 안내합니다.',
+              'inheritance-substitute-succession.html': '인천 대습상속 상속등기의 절차·비용·필요서류를 확인하세요. 대습상속인 범위·상속지분과 실제 처리사례를 안내합니다.',
+          }
+
+          pat = re.compile(r'<meta name="description" content="[^"]*">')
+          for filename, desc in descriptions.items():
+              path = Path(filename)
+              text = path.read_text(encoding='utf-8')
+              replacement = f'<meta name="description" content="{desc}">'
+              new_text, count = pat.subn(replacement, text, count=1)
+              if count != 1:
+                  raise SystemExit(f'{filename}: expected exactly one meta description, found {count}')
+              path.write_text(new_text, encoding='utf-8')
+          PY
+          git diff --check
+          git diff -- inheritance.html renunciation.html family.html inheritance-division.html inheritance-minor-heir.html inheritance-missing-heir.html inheritance-overseas-heir.html inheritance-substitute-succession.html
+      - name: Commit changes
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add inheritance.html renunciation.html family.html inheritance-division.html inheritance-minor-heir.html inheritance-missing-heir.html inheritance-overseas-heir.html inheritance-substitute-succession.html
+          if git diff --cached --quiet; then
+            echo 'No changes to commit'
+          else
+            git commit -m 'Finalize SEO descriptions for service detail pages'
+            git push origin HEAD:main
+          fi
