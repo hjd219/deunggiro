@@ -1,0 +1,66 @@
+name: Reorder home service cards once
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/reorder-home-service-cards-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  reorder:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reorder service cards to match top menu
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+
+          start_marker = '<div class="container quick" id="services">'
+          start = s.index(start_marker)
+          grid_start = s.index('<div class="quick-grid">', start)
+          grid_end = s.index('</div>', grid_start)
+          block = s[grid_start:grid_end]
+
+          cards = re.findall(r'  <a class="quick-item quick-rich c\d" href="/[^"]+\.html">.*?</a>\n?', block, flags=re.S)
+          if len(cards) != 5:
+              raise SystemExit(f'Expected 5 service cards, found {len(cards)}')
+
+          wanted = [
+              '/inheritance.html',
+              '/renunciation.html',
+              '/corporate.html',
+              '/realestate.html',
+              '/family.html',
+          ]
+          by_href = {}
+          for card in cards:
+              m = re.search(r'href="([^"]+)"', card)
+              by_href[m.group(1)] = card.rstrip('\n')
+
+          if set(by_href) != set(wanted):
+              raise SystemExit(f'Unexpected card hrefs: {sorted(by_href)}')
+
+          prefix = '<div class="quick-grid">\n'
+          new_block = prefix + '\n'.join(by_href[href] for href in wanted) + '\n '
+          s2 = s[:grid_start] + new_block + s[grid_end:]
+
+          if s2 == s:
+              raise SystemExit('No change needed')
+
+          p.write_text(s2, encoding='utf-8')
+          PY
+      - name: Commit change
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "Match home service card order to top menu"
+          git push
