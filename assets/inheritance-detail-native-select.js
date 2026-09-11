@@ -51,6 +51,22 @@
     }
 
     if(PATH==='/inheritance.html'){
+      const hub=document.querySelector('.dg-inheritance-linkhub');
+      if(hub){
+        hub.classList.remove('white');
+        hub.style.setProperty('background','#eaf6ff','important');
+        hub.style.setProperty('background-color','#eaf6ff','important');
+        hub.style.setProperty('background-image','none','important');
+        hub.style.setProperty('border-top','0','important');
+        hub.style.setProperty('border-bottom','0','important');
+        hub.style.setProperty('box-shadow','none','important');
+        const hubContainer=hub.querySelector('.container');
+        if(hubContainer){
+          hubContainer.style.setProperty('background','transparent','important');
+          hubContainer.style.setProperty('background-color','transparent','important');
+        }
+      }
+
       const grid=document.querySelector('.dg-inheritance-linkhub-grid');
       if(grid){
         const keywords=['연락두절','미성년자','해외·외국국적','대습상속','상속재산분할'];
@@ -119,8 +135,20 @@
         const style=document.createElement('style');
         style.id='dg-inheritance-case-card-style';
         style.textContent=`
-          .dg-inheritance-linkhub{background:#eaf6ff!important;border-top:0!important;border-bottom:0!important;box-shadow:none!important}
-          .dg-inheritance-linkhub .container{background:transparent!important}
+          html body section.section.dg-inheritance-linkhub,
+          html body section.dg-inheritance-linkhub,
+          html body .dg-inheritance-linkhub{
+            background:#eaf6ff!important;
+            background-color:#eaf6ff!important;
+            background-image:none!important;
+            border-top:0!important;
+            border-bottom:0!important;
+            box-shadow:none!important
+          }
+          html body .dg-inheritance-linkhub::before,
+          html body .dg-inheritance-linkhub::after{background:transparent!important;background-image:none!important}
+          html body .dg-inheritance-linkhub>.container,
+          html body .dg-inheritance-linkhub .container{background:transparent!important;background-color:transparent!important;background-image:none!important}
           .dg-inheritance-linkhub-grid{grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:12px!important;align-items:stretch!important}
           .dg-inheritance-linkhub-grid a{box-sizing:border-box!important;width:100%!important;min-width:0!important;height:118px!important;min-height:118px!important;padding:18px 16px 16px!important;display:flex!important;flex-direction:column!important;justify-content:flex-start!important;background:#fff!important;border:1.5px solid #69b8ee!important;border-radius:14px!important}
           .dg-inheritance-linkhub-grid a:hover{border-color:#36a9e1!important;transform:translateY(-2px)!important;box-shadow:0 8px 22px rgba(25,41,68,.08)!important}
