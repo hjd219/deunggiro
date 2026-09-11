@@ -1,6 +1,10 @@
 document.addEventListener('DOMContentLoaded',()=>{
   const current=location.pathname;
 
+  if(document.body.classList.contains('home')){
+    document.body.classList.add('dg-home-buttons-ready');
+  }
+
   const loadScript=(src)=>new Promise((resolve,reject)=>{
     if(document.querySelector(`script[src="${src}"]`)){
       resolve();
