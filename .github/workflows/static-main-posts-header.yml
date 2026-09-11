@@ -10,7 +10,7 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - name: Replace legacy headers with static common header
+      - name: Replace legacy headers and guard homepage flash
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -50,6 +50,12 @@ jobs:
                       raise SystemExit(f'{name}: legacy header replacement count={n}')
               if name=='index.html':
                   s=s.replace('<button type="button" class="mobile-menu-close" id="mobile-menu-close">메뉴 닫기 ↑</button></div>','')
+                  guard='''<style id="dg-home-flash-guard">\nbody.home .hero .buttons{visibility:hidden!important}\nbody.home.dg-home-ready .hero .buttons{visibility:visible!important}\n</style>'''
+                  ready='''<script id="dg-home-ready-script">\nrequestAnimationFrame(()=>requestAnimationFrame(()=>document.body.classList.add('dg-home-ready')));\n</script>'''
+                  if 'id="dg-home-flash-guard"' not in s:
+                      s=s.replace('</head>',guard+'\n</head>',1)
+                  if 'id="dg-home-ready-script"' not in s:
+                      s=s.replace('<body class="home">','<body class="home">\n'+ready,1)
               p.write_text(s,encoding='utf-8')
 
           for name in ['index.html','posts.html']:
@@ -57,7 +63,10 @@ jobs:
               assert '<header class="dg-shell-header">' in s
               assert '<header class="header">' not in s
               assert 'id="dg-shell-mobile-panel"' in s
-          assert 'id="mobile-menu-close"' not in Path('index.html').read_text(encoding='utf-8')
+          home=Path('index.html').read_text(encoding='utf-8')
+          assert 'id="mobile-menu-close"' not in home
+          assert 'id="dg-home-flash-guard"' in home
+          assert 'id="dg-home-ready-script"' in home
           PY
       - name: Commit static header conversion
         run: |
@@ -65,6 +74,6 @@ jobs:
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add index.html posts.html
           git diff --cached --quiet && exit 0
-          git commit -m "메인 헤더 잔여 구형 마크업 정리"
+          git commit -m "메인 새로고침 버튼 플래시 방지"
           git pull --rebase origin main
           git push origin main
