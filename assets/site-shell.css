@@ -104,3 +104,68 @@ body.home #services .quick-grid::before{
     letter-spacing:-.6px;
   }
 }
+
+/* HOME_SERVICE_ALIGNMENT_V2 - 업무안내/카드/비용계산기 좌우 기준선 통일 */
+body.home #services{
+  width:100%!important;
+  max-width:1180px!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+  padding-left:22px!important;
+  padding-right:22px!important;
+  box-sizing:border-box!important;
+}
+body.home #services .quick-grid{
+  width:100%!important;
+  max-width:100%!important;
+  margin:0!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:14px!important;
+  padding-top:58px!important;
+  box-sizing:border-box!important;
+}
+body.home #services .quick-grid::before{
+  left:0!important;
+  font-size:36px!important;
+  line-height:1.25!important;
+  letter-spacing:-1.5px!important;
+}
+body.home #services .quick-item.quick-rich{
+  min-width:0!important;
+  width:100%!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+}
+@media(max-width:1000px){
+  body.home #services{
+    padding-left:22px!important;
+    padding-right:22px!important;
+  }
+  body.home #services .quick-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+@media(max-width:800px){
+  body.home #services{
+    padding-left:18px!important;
+    padding-right:18px!important;
+  }
+  body.home #services .quick-grid{
+    grid-template-columns:1fr!important;
+    gap:14px!important;
+    padding-top:50px!important;
+  }
+  body.home #services .quick-grid::before{
+    font-size:30px!important;
+    letter-spacing:-1.2px!important;
+  }
+}
+@media(max-width:480px){
+  body.home #services{
+    padding-left:14px!important;
+    padding-right:14px!important;
+  }
+  body.home #services .quick-grid::before{
+    font-size:27px!important;
+  }
+}
