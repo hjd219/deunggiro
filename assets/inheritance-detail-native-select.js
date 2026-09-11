@@ -93,8 +93,11 @@
         const desc=docs.querySelector('.desc');
         if(container && title && desc){
           container.innerHTML='';
-          container.appendChild(title);
-          container.appendChild(desc);
+
+          const docsWrap=document.createElement('div');
+          docsWrap.className='dg-docs-wrap-v3';
+          docsWrap.appendChild(title);
+          docsWrap.appendChild(desc);
 
           const docsGrid=document.createElement('div');
           docsGrid.className='docs-grid dg-docs-grid-v2';
@@ -127,7 +130,8 @@
               </ul>
               <p class="dg-docs-note">※ 협의분할이 아닌 법정상속등기 등 사건 유형에 따라 일부 서류는 달라질 수 있습니다.</p>
             </div>`;
-          container.appendChild(docsGrid);
+          docsWrap.appendChild(docsGrid);
+          container.appendChild(docsWrap);
         }
       }
 
@@ -159,14 +163,15 @@
 
           .inheritance-pc-lower .docs-section{border:0!important;box-shadow:none!important;background:transparent!important;padding:22px 10px 24px!important}
           .inheritance-pc-lower .docs-section>.container{width:100%!important;max-width:none!important;padding:0!important}
-          #documents .title,#documents .desc{width:100%!important;max-width:none!important;margin-left:0!important;margin-right:0!important}
-          #documents .desc{margin-top:0!important;margin-bottom:18px!important}
-          #documents .dg-docs-grid-v2{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;column-gap:18px!important;row-gap:14px!important;width:100%!important;margin:0!important;align-items:stretch!important}
-          #documents .dg-docs-card-v2{height:100%!important;background:#fff!important;border:1.5px solid #8bc8ed!important;border-radius:14px!important;padding:12px 10px!important;box-shadow:none!important}
-          #documents .dg-docs-card-v2 h3{margin:0 0 10px!important;font-size:13px!important}
+          #documents .dg-docs-wrap-v3{width:100%!important;max-width:720px!important;margin:0 auto!important;background:#fff!important;border:1.5px solid #8bc8ed!important;border-radius:18px!important;padding:32px 18px 24px!important;box-shadow:none!important}
+          #documents .title{max-width:640px!important;margin:0 auto!important}
+          #documents .desc{max-width:640px!important;margin:14px auto 24px!important}
+          #documents .dg-docs-grid-v2{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;column-gap:18px!important;row-gap:14px!important;width:100%!important;max-width:640px!important;margin:0 auto!important;align-items:stretch!important}
+          #documents .dg-docs-card-v2{height:100%!important;background:#fff!important;border:1.5px solid #8bc8ed!important;border-radius:14px!important;padding:12px 6px!important;box-shadow:none!important}
+          #documents .dg-docs-card-v2 h3{margin:0 0 12px!important;font-size:13px!important}
           #documents .dg-docs-badge{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-height:28px!important;padding:0 11px!important;border-radius:8px!important;background:#e7f5ff!important;border:1px solid #9ed3f2!important;color:#178ccb!important;font-size:13px!important;font-weight:900!important}
           #documents .dg-docs-card-v2 ul{margin:0!important;padding-left:18px!important;color:#24384f!important;font-size:13px!important;line-height:1.45!important}
-          #documents .dg-docs-card-v2 li{padding:7px 0!important;border-bottom:1px solid #b9d6e8!important}
+          #documents .dg-docs-card-v2 li{padding:8px 0!important;border-bottom:1px solid #b9d6e8!important}
           #documents .dg-docs-card-v2 li:last-child{border-bottom:0!important}
           #documents .dg-docs-subhead{display:inline-flex!important;align-items:center!important;min-height:26px!important;margin:14px 0 4px!important;padding:0 9px!important;border-radius:7px!important;background:#f3f9fd!important;border:1px solid #b8dcef!important;color:#2a6f98!important;font-size:12px!important;font-weight:900!important}
           #documents .dg-docs-note{margin:12px 0 0!important;padding-top:10px!important;border-top:1px dashed #abd0e7!important;color:#4f6073!important;font-size:12px!important;font-weight:700!important;line-height:1.55!important}
@@ -178,7 +183,9 @@
             .dg-inheritance-linkhub-grid strong{font-size:13px!important}
             .dg-case-badge{height:19px!important;padding:0 7px!important;font-size:10px!important;line-height:19px!important}
             .dg-inheritance-linkhub-grid a>span:not(.dg-case-badge){margin-top:9px!important;font-size:10.5px!important}
-            #documents .dg-docs-grid-v2{grid-template-columns:1fr!important;gap:12px!important}
+            #documents .dg-docs-wrap-v3{max-width:none!important;padding:24px 14px 18px!important}
+            #documents .dg-docs-grid-v2{grid-template-columns:1fr!important;gap:12px!important;max-width:none!important}
+            #documents .title,#documents .desc{max-width:none!important}
           }
         `;
         document.head.appendChild(style);
