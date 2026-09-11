@@ -169,3 +169,21 @@ body.home #services .quick-item.quick-rich{
     font-size:27px!important;
   }
 }
+
+/* HOME_INTRO_DIRECT_REVIEW_V1 - 등기로 소개 팝업 직접 상담·검토 문구 */
+body.home .dg-intro-copy::after{
+  content:"상속등기 · 상속포기 · 한정승인 · 법인등기 사건은 직접 상담하고 검토합니다.";
+  display:block;
+  margin-top:10px;
+  color:#27313d;
+  font-size:17px;
+  font-weight:800;
+  line-height:1.9;
+  word-break:keep-all;
+}
+@media(max-width:700px){
+  body.home .dg-intro-copy::after{
+    font-size:15px;
+    line-height:1.8;
+  }
+}
