@@ -2,6 +2,15 @@
 (function(){
   const current=location.pathname;
   const activePath=current.startsWith('/posts/')?'/posts.html':current;
+
+  /* ACQUISITION_CALCULATOR_TYPE_TEXT_V1 - 계산기 종류 선택 글씨 확대 */
+  if(current==='/acquisition-calculator.html'){
+    const style=document.createElement('style');
+    style.id='dg-acquisition-type-text-v1';
+    style.textContent='.opts .opt{font-size:16px!important;line-height:1.25!important;font-weight:850!important}@media(max-width:800px){.opts .opt{font-size:16px!important}}';
+    document.head.appendChild(style);
+  }
+
   const header=document.querySelector('header.dg-shell-header');
   if(!header) return;
 
