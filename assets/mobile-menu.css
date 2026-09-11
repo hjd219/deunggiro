@@ -1,0 +1,55 @@
+/* 등기로 모바일 전체화면 메뉴 */
+@media (max-width:900px){
+  body.mobile-menu-open{overflow:hidden!important;touch-action:none}
+  .dg-shell-mobile-panel{
+    display:none;position:fixed!important;inset:0!important;z-index:1300!important;
+    width:100%!important;height:100dvh!important;max-height:none!important;margin:0!important;padding:0!important;
+    overflow-y:auto!important;overscroll-behavior:contain;background:#fff!important;border:0!important;
+    border-radius:0!important;box-shadow:none!important;color:#162537!important;
+    -webkit-overflow-scrolling:touch;
+  }
+  .dg-shell-mobile-panel.open{display:block!important}
+  .dg-mm-top{
+    position:sticky;top:0;z-index:2;height:66px;display:flex;align-items:center;justify-content:space-between;
+    padding:0 18px;background:rgba(255,255,255,.98);border-bottom:1px solid #e8edf2;
+    -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)
+  }
+  .dg-mm-brand{color:#35a8df!important;text-decoration:none!important;font-size:27px;font-weight:900;letter-spacing:-1.5px;line-height:1}
+  .dg-mm-close{width:42px;height:42px;padding:0;border:0;background:transparent;color:#26313b;font:300 30px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer}
+  .dg-mm-body{min-height:calc(100dvh - 66px);padding:24px 18px calc(28px + env(safe-area-inset-bottom))}
+  .dg-mm-title{margin:0 0 6px;color:#162537;font-size:23px;line-height:1.3;font-weight:900;letter-spacing:-1px}
+  .dg-mm-sub{margin:0 0 24px!important;color:#7d8995!important;font-size:13px!important;line-height:1.5!important;font-weight:600!important}
+  .dg-mm-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px 10px}
+  .dg-mm-item{display:flex;min-width:0;flex-direction:column;align-items:center;gap:10px;color:#263543!important;text-decoration:none!important;text-align:center;font-size:13px;font-weight:800;line-height:1.25;-webkit-tap-highlight-color:transparent}
+  .dg-mm-icon{width:64px;height:64px;flex:0 0 64px;display:flex;align-items:center;justify-content:center;border:1px solid var(--mm-color);border-radius:20px;background:var(--mm-bg);color:var(--mm-color)}
+  .dg-mm-icon svg{width:29px;height:29px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .dg-mm-label{display:flex;min-height:33px;align-items:flex-start;justify-content:center;word-break:keep-all}
+  .dg-mm-item.is-current .dg-mm-label{color:var(--mm-color);font-weight:900}
+  .dg-mm-home{--mm-color:#2f9ed0;--mm-bg:#eef9fe}
+  .dg-mm-inherit{--mm-color:#4e8fda;--mm-bg:#f1f6fd}
+  .dg-mm-renounce{--mm-color:#6d8fd8;--mm-bg:#f4f5fd}
+  .dg-mm-corp{--mm-color:#5b8fa8;--mm-bg:#f1f7f9}
+  .dg-mm-real{--mm-color:#5fa77f;--mm-bg:#f2f9f5}
+  .dg-mm-family{--mm-color:#a779b7;--mm-bg:#faf4fc}
+  .dg-mm-info{--mm-color:#8b7fbe;--mm-bg:#f7f5fc}
+  .dg-mm-calc{--mm-color:#d18b4f;--mm-bg:#fdf7f1}
+  .dg-mm-consult{--mm-color:#cf6f78;--mm-bg:#fcf3f4}
+  .dg-mm-divider{height:1px;margin:27px 0 18px;background:#e8edf2}
+  .dg-mm-quick-title{margin:0 0 12px;color:#8d98a3;font-size:13px;font-weight:900}
+  .dg-mm-quick{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .dg-mm-quick a{display:flex;min-height:52px;align-items:center;justify-content:center;border-radius:15px;text-decoration:none!important;font-size:14px;font-weight:900}
+  .dg-mm-calc-btn{border:1px solid #e1e8ee;background:#f4f8fb;color:#344250!important}
+  .dg-mm-call-btn{border:1px solid #35a8df;background:#35a8df;color:#fff!important}
+  .dg-mm-footer{margin-top:25px;text-align:center;color:#4f5d69;font-size:15px;font-weight:750;letter-spacing:-.2px}
+  .dg-mm-footer .dg-mm-footer-brand{color:#35a8df;font-weight:900}
+  .dg-mm-footer .dg-mm-footer-sep{margin:0 4px;color:#a4adb5}
+}
+@media (max-width:360px){
+  .dg-mm-body{padding-left:14px;padding-right:14px}
+  .dg-mm-grid{gap:18px 6px}
+  .dg-mm-icon{width:58px;height:58px;flex-basis:58px;border-radius:18px}
+  .dg-mm-icon svg{width:27px;height:27px}
+  .dg-mm-item{font-size:12px}
+  .dg-mm-footer{font-size:14px}
+}
+@media (min-width:901px){.dg-shell-mobile-panel{display:none!important}}
