@@ -1,0 +1,4 @@
+/* 법인등기 페이지 전용 스타일 */
+/* CORPORATE_FAQ_LAYOUT_V1 - 기존 공통 shell 규칙을 법인 페이지 전용 파일로 이전 */
+@media(min-width:801px){.corp-faq-layout{grid-template-columns:minmax(300px,.65fr) minmax(0,1.35fr)!important;align-items:start!important}.corp-auth-card{grid-column:1!important;grid-row:1!important}.corp-faq{grid-column:2!important;grid-row:1!important;align-content:start!important;align-self:start!important}.corp-faq-item{align-self:start!important;height:auto!important;min-height:0!important}.corp-faq-q{min-height:64px!important;padding:14px 16px!important}}
+@media(max-width:800px){.corp-faq-layout{grid-template-columns:1fr!important;align-items:start!important}.corp-auth-card{order:1!important}.corp-faq{order:2!important;align-content:start!important}.corp-faq-q{min-height:58px!important;padding:13px!important}}
