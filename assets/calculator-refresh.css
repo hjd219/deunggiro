@@ -1,9 +1,0 @@
-/* 등기로 계산기 공통 디자인 */
-body.calculator-page{--calc-primary:#36a9e1;--calc-primary-dark:#168dca;--calc-navy:#172840;--calc-ink:#20242b;--calc-muted:#6b7280;--calc-line:#dfe7ef;--calc-soft:#f5f9fc;background:#f5f8fb!important;color:var(--calc-ink)!important}
-/* 계산기 필요서류 가독성 개선 */
-.documents{padding:17px 18px!important}
-.documents h3{font-size:17px!important;line-height:1.4!important;margin:0 0 10px!important;font-weight:900!important;color:#172840!important}
-.documents .doc-line,.doc-line{font-size:13px!important;line-height:1.65!important;margin:6px 0!important;font-weight:700!important;color:#354b60!important}
-.documents .doc-line b,.doc-line b{font-size:13px!important;font-weight:900!important;color:#172840!important}
-@media(max-width:800px){.documents{padding:16px!important}.documents h3{font-size:17px!important}.documents .doc-line,.doc-line{font-size:13px!important;line-height:1.7!important}.documents .doc-line b,.doc-line b{font-size:13px!important}}
-@media print{.documents{padding:14px 16px!important}.documents h3{font-size:14px!important;margin-bottom:7px!important}.documents .doc-line,.doc-line{font-size:10.5px!important;line-height:1.55!important;margin:4px 0!important}.documents .doc-line b,.doc-line b{font-size:10.5px!important}}
