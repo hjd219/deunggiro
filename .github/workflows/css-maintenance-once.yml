@@ -22,7 +22,7 @@ jobs:
         run: node scripts/migrate-home-css-once.mjs
       - name: Verify scope
         run: |
-          git diff --exit-code --check
+          git diff --check
           changed="$(git diff --name-only)"
           printf '%s\n' "$changed"
           test "$changed" = $'assets/home.css\nassets/site-shell.css'
