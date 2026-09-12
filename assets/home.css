@@ -234,7 +234,7 @@ body.home #services .quick-item.quick-rich{
   #calculator .desc{font-size:14px;color:#2f3e4c;line-height:1.6;margin-bottom:20px}
   #calculator .calc-grid{grid-template-columns:1fr;gap:18px}
   #calculator .calc-card{min-height:175px;padding:18px;grid-template-columns:minmax(0,1fr) 92px;gap:10px;border-radius:18px;align-items:start}
-  #calculator .calc-card h3{font-size:17px;letter-spacing:-.8px;margin-bottom:12px;transform:translateY(-2px)}
+  #calculator .calc-card h3{font-size:17px;letter-spacing:-.8px;margin-bottom:12px;transform:translateY(6px)}
   #calculator .calc-types{font-size:12.5px;color:#263745;line-height:1.55;margin-bottom:8px}
   #calculator .calc-point{font-size:12.5px;color:#263745;line-height:1.5}
   #calculator .calc-action{padding-left:9px;align-self:start}
