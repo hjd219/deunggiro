@@ -9,6 +9,7 @@ on:
       - 'sitemap.xml'
       - 'scripts/seo-auto.mjs'
       - 'scripts/seo-hub-links.mjs'
+      - 'scripts/category-fix.mjs'
       - 'scripts/seo-canonical-fix.mjs'
       - 'scripts/rss-auto.mjs'
       - 'scripts/seo-trigger.txt'
@@ -35,11 +36,13 @@ jobs:
         run: |
           node --check scripts/seo-auto.mjs
           node --check scripts/seo-hub-links.mjs
+          node --check scripts/category-fix.mjs
           node --check scripts/seo-canonical-fix.mjs
           node --check scripts/rss-auto.mjs
 
       - name: Run SEO automation
         run: |
+          node scripts/category-fix.mjs
           node scripts/seo-auto.mjs
           node scripts/seo-hub-links.mjs
           node scripts/seo-canonical-fix.mjs
@@ -59,7 +62,7 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html inheritance.html renunciation.html corporate.html realestate.html family.html posts sitemap.xml rss.xml data/seo-report.json || true
+          git add index.html inheritance.html renunciation.html corporate.html realestate.html family.html posts sitemap.xml rss.xml data/posts.json data/seo-report.json || true
           git commit -m "자동 SEO 강화 및 RSS 갱신"
           git pull --rebase origin main
           git push origin HEAD:main
