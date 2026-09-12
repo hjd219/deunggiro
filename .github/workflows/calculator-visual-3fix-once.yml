@@ -19,16 +19,15 @@ jobs:
       - run: node scripts/calculator-visual-3fix-once.mjs
       - name: Verify scope
         run: |
-          test "$(git diff --name-only | sort)" = $'assets/home.css\nindex.html'
+          test "$(git diff --name-only)" = 'assets/home.css'
           git diff --check
+          grep -q 'transform:translateY(6px)' assets/home.css
           grep -q 'width:60px;height:92px' assets/home.css
-          grep -q 'transform:translateY(-2px)' assets/home.css
-          grep -q 'CALCULATOR_DISPLAY_ROLL_V1' index.html
       - name: Commit
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add assets/home.css index.html
-          git commit -m '계산기 제목·아이콘·숫자 애니메이션 조정'
+          git add assets/home.css
+          git commit -m '모바일 계산기 제목 위치 하향 조정'
           git pull --rebase origin main
           git push origin HEAD:main
