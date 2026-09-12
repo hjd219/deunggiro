@@ -25,9 +25,6 @@ body:not(.article-v2){background:#eef6fb!important}body:not(.article-v2) .subher
 
 
 
-/* LEGAL_INFO_ENGLISH_OFF_V1 - 법률정보 목록 상단 영문 라벨 숨김 */
-body:has(#posts) .section>.container>.label{display:none!important}
-body:has(#posts) .section>.container>.title{margin-top:0!important}
 
 /* RELATED_CALCULATOR_CTA_V2 - 계산기 CTA를 확실한 채움형 버튼으로 통일 */
 .subhero-related-grid .related-posts-actions a.dg-related-calc,.related-posts-actions a.dg-related-calc{display:inline-flex!important;align-items:center!important;justify-content:center!important;background:#36a9e1!important;background-color:#36a9e1!important;border:1px solid #36a9e1!important;color:#fff!important;font-weight:900!important;border-radius:8px!important;text-decoration:none!important;padding:0 16px!important;min-height:36px!important;box-shadow:none!important}
