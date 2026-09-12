@@ -1,0 +1,29 @@
+name: Move home-only CSS once
+on:
+  push:
+    branches: [main]
+    paths: ['maintenance/run-home-css-ownership-move.flag']
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '20'}
+      - run: node scripts/home-css-ownership-move-once.mjs
+      - name: Verify
+        run: |
+          test "$(git diff --name-only | sort | tr '\n' ' ')" = 'assets/home.css assets/site-shell-core.css '
+          git diff --check
+          test "$(grep -o 'HOME_CORE_OWNERSHIP_MOVE_V1' assets/home.css | wc -l)" -eq 1
+          ! grep -q 'body.home .hero-written-ghost' assets/site-shell-core.css
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/home.css assets/site-shell-core.css
+          git commit -m 'CSS 역할 정리: 메인 전용 규칙 home.css로 이전'
+          git pull --rebase origin main
+          git push origin HEAD:main
