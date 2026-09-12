@@ -1,0 +1,35 @@
+name: Fix service img sizing once
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/fix-service-img-sizing-once.yml']
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Patch one selector only
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('assets/home.css')
+          s=p.read_text(encoding='utf-8')
+          old='.quick-icon svg{width:100%;height:100%;display:block}'
+          new='.quick-icon svg,.quick-icon img{width:100%;height:100%;display:block}'
+          if s.count(old)!=1: raise SystemExit(f'Expected 1 target, found {s.count(old)}')
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
+          PY
+          git diff --check
+          test "$(git diff --numstat -- assets/home.css | awk '{print $1+$2}')" = "2"
+      - name: Commit patch and remove workflow
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/fix-service-img-sizing-once.yml
+          git add assets/home.css
+          git commit -m 'Fix service icon image sizing'
+          git push origin HEAD:main
