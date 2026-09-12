@@ -1,0 +1,33 @@
+name: Structure cleanup phase2 once
+on:
+  push:
+    paths:
+      - 'maintenance/run-structure-cleanup-phase2.flag'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Apply safe phase2 cleanup
+        run: node scripts/structure-cleanup-phase2-once.mjs
+      - name: Verify scope
+        run: |
+          files=$(git diff --name-only)
+          echo "$files"
+          test "$files" = "assets/site-shell-core.css"
+          git diff --check
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/site-shell-core.css
+          git commit -m '2차 CSS 구조개선: 죽은 규칙과 중복 제거'
+          git pull --rebase origin main
+          git push origin HEAD:main
