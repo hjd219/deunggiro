@@ -38,15 +38,15 @@ jobs:
           p.write_text(s,encoding='utf-8')
           core.write_text(c.replace(legal,'',1),encoding='utf-8')
           PY
-          git diff --check
-          changed="$(git diff --name-only)"
+          git add posts.html assets/posts-page.css assets/site-shell-core.css
+          git diff --cached --check
+          changed="$(git diff --cached --name-only)"
           test "$changed" = $'assets/posts-page.css\nassets/site-shell-core.css\nposts.html' || { echo "$changed"; exit 1; }
       - name: Commit and remove one-time workflow
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git rm .github/workflows/posts-css-externalize-once.yml
-          git add posts.html assets/posts-page.css assets/site-shell-core.css
           git commit -m 'CSS 구조정리: 법률정보 인라인 CSS 외부화'
           git pull --rebase origin main
           git push origin HEAD:main
