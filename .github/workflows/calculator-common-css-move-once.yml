@@ -1,0 +1,31 @@
+name: Move calculator common CSS once
+on:
+  push:
+    branches: [main]
+    paths: ['maintenance/run-calculator-common-css-move.flag']
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '20'}
+      - run: node scripts/calculator-common-css-move-once.mjs
+      - name: Verify
+        run: |
+          test "$(git diff --name-only | sort | tr '\n' ' ')" = 'acquisition-calculator.html assets/site-shell-core.css corporate-calculator.html '
+          git diff --check
+          ! grep -q 'CALCULATOR_ENGLISH_LABELS_OFF_V1' assets/site-shell-core.css
+          grep -q '/assets/calculator-common.css?v=20260913' acquisition-calculator.html
+          grep -q '/assets/calculator-common.css?v=20260913' corporate-calculator.html
+          grep -q 'CALCULATOR_ENGLISH_LABELS_OFF_V1' assets/calculator-common.css
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/site-shell-core.css acquisition-calculator.html corporate-calculator.html
+          git commit -m 'CSS 역할 정리: 계산기 공통 규칙 분리'
+          git pull --rebase origin main
+          git push origin HEAD:main
