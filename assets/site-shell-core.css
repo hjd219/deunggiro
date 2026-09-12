@@ -189,22 +189,6 @@ html body .inheritance-pc-lower .faq-acc{
 }
 
 
-/* RELATED_BADGE_PRIMARY_BG_V1 */
-html body .related-badge,
-html body .related-posts-list .related-badge,
-html body #auto-related-posts .related-badge{
-  background:#36a9e1!important;
-  border-color:#36a9e1!important;
-  color:#fff!important;
-}
-html body .related-posts-list a:hover .related-badge,
-html body #auto-related-posts a:hover .related-badge{
-  background:#168dca!important;
-  border-color:#168dca!important;
-  color:#fff!important;
-}
-
-
 /* DETAIL_CATEGORY_BADGE_SOFT_V1 */
 /* 개별페이지 관련 법률정보 카테고리 배지: 기한 배지와 같은 연한 하늘색 톤 */
 html body .related-badge,
