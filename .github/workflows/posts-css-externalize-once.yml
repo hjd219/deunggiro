@@ -1,0 +1,52 @@
+name: Posts CSS externalize once
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/posts-css-externalize-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Externalize exact posts CSS
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('posts.html')
+          core=Path('assets/site-shell-core.css')
+          out=Path('assets/posts-page.css')
+          s=p.read_text(encoding='utf-8')
+          c=core.read_text(encoding='utf-8')
+          if out.exists(): raise SystemExit('assets/posts-page.css already exists')
+          a=s.index('<style>'); b=s.index('</style>',a)
+          css=s[a+7:b]
+          if not css.strip(): raise SystemExit('empty style block')
+          legal='/* LEGAL_INFO_ENGLISH_OFF_V1 - 법률정보 목록 상단 영문 라벨 숨김 */\nbody:has(#posts) .section>.container>.label{display:none!important}\nbody:has(#posts) .section>.container>.title{margin-top:0!important}\n'
+          if c.count(legal)!=1: raise SystemExit(f'legal core count={c.count(legal)}')
+          out.write_text(css.rstrip()+'\n\n'+legal,encoding='utf-8')
+          s=s[:a]+'<link rel="stylesheet" href="/assets/posts-page.css?v=20260913">\n'+s[b+8:]
+          p.write_text(s,encoding='utf-8')
+          core.write_text(c.replace(legal,'',1),encoding='utf-8')
+          PY
+          git diff --check
+          changed="$(git diff --name-only)"
+          test "$changed" = $'assets/posts-page.css\nassets/site-shell-core.css\nposts.html' || { echo "$changed"; exit 1; }
+      - name: Commit and remove one-time workflow
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/posts-css-externalize-once.yml
+          git add posts.html assets/posts-page.css assets/site-shell-core.css
+          git commit -m 'CSS 구조정리: 법률정보 인라인 CSS 외부화'
+          git pull --rebase origin main
+          git push origin HEAD:main
