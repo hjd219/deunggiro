@@ -1,0 +1,29 @@
+name: Fix calculator display target once
+on:
+  push:
+    branches: [main]
+    paths: ['maintenance/run-fix-calculator-display.flag']
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '20'}
+      - run: node scripts/fix-calculator-display-target-once.mjs
+      - name: Verify
+        run: |
+          test "$(git diff --name-only)" = 'index.html'
+          git diff --check
+          grep -Fq "#calculator .calculator-icon > text:first-of-type" index.html
+          ! grep -Fq "#calculator .calculator-icon text:first-of-type" index.html
+      - name: Commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git commit -m '계산기 숫자 애니메이션 표시창 오류 수정'
+          git pull --rebase origin main
+          git push origin HEAD:main
