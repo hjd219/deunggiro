@@ -124,7 +124,7 @@
 <script>
 /* CALCULATOR_DISPLAY_ROLL_V1 */
 (()=>{
-  const displays=[...document.querySelectorAll('#calculator .calculator-icon text:first-of-type')];
+  const displays=[...document.querySelectorAll('#calculator .calculator-icon > text:first-of-type')];
   if(!displays.length) return;
   const reduce=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
   const finish=()=>displays.forEach(el=>el.textContent='9,999');
