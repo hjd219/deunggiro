@@ -322,3 +322,9 @@ body.home .dg-intro-copy::after{
 }
 @media(max-width:350px){.hero-written-phrase{font-size:43px;min-height:94px;margin-top:34px}.hero-written-brand{font-size:1.49em}}
 @media(prefers-reduced-motion:reduce){.hero-written-ink{clip-path:inset(0);animation:none}.hero-written-line{transform:rotate(-2deg) scaleX(1);animation:none}.hero-written-line.second{transform:rotate(1deg) scaleX(1);animation:none}.quick-item.quick-rich{transition:none}.quick-item.quick-rich:hover,.quick-item.quick-rich:active{transform:none}}
+
+
+/* HOME_CORE_OWNERSHIP_MOVE_V1 - 공통 shell에서 메인 전용 규칙 이전 */
+body.home .hero-written-ghost{opacity:0!important}body.home .hero .copy{min-width:0!important}body.home .hero .buttons .btn{white-space:nowrap!important}
+@media(max-width:800px){body.home .hero .copy{padding-top:30px!important;padding-bottom:12px!important}body.home .hero h1{margin-bottom:12px!important}body.home .hero .hero-written-phrase{font-size:44px!important;min-height:88px!important;margin-top:24px!important}body.home .hero .copy p{max-width:34em!important;margin-bottom:15px!important}body.home .quick{padding-left:16px!important;padding-right:16px!important}body.home .section .container{padding-left:16px!important;padding-right:16px!important}}
+@media(max-width:480px){body.home .hero .hero-written-phrase{font-size:40px!important;min-height:80px!important;margin-top:20px!important}body.home .hero .buttons{grid-template-columns:1fr 1fr!important}body.home .hero .buttons .btn-dark{grid-column:1/-1!important}body.home .quick{padding-left:16px!important;padding-right:16px!important}}
