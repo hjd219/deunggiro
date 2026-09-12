@@ -23,9 +23,6 @@ body:not(.article-v2){background:#eef6fb!important}body:not(.article-v2) .subher
 
 
 
-/* CALCULATOR_ENGLISH_LABELS_OFF_V1 */
-body:has(.wrap) .hero>b,body:has(.wrap) .step{display:none!important}
-body:has(.wrap) .hero h1{margin-top:0!important}
 
 
 /* LEGAL_INFO_ENGLISH_OFF_V1 - 법률정보 목록 상단 영문 라벨 숨김 */
