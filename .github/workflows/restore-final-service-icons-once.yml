@@ -1,0 +1,47 @@
+name: Restore final service icons once
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/restore-final-service-icons-once.yml']
+permissions:
+  contents: write
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Restore exact approved icons from final preview commit
+        run: |
+          git show 9b6b36447353f85b08606c7a43bd2e6f73f32e13:index.html > /tmp/final-index.html
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('/tmp/final-index.html').read_text(encoding='utf-8')
+          mapping={
+            'c1':'assets/icons/service-inheritance.svg',
+            'c4':'assets/icons/service-renunciation.svg',
+            'c2':'assets/icons/service-corporate.svg',
+            'c3':'assets/icons/service-realestate.svg',
+            'c5':'assets/icons/service-family.svg',
+          }
+          for cls,path in mapping.items():
+            m=re.search(r'<a class="quick-item quick-rich '+cls+r'"[^>]*><span class="quick-icon">(<svg.*?</svg>)</span>',s)
+            if not m: raise SystemExit('missing '+cls)
+            svg=m.group(1).replace('<svg ','<svg xmlns="http://www.w3.org/2000/svg" ',1)
+            Path(path).write_text(svg+'\n',encoding='utf-8')
+          PY
+          git diff --check
+          changed="$(git diff --name-only)"
+          expected=$'assets/icons/service-corporate.svg\nassets/icons/service-family.svg\nassets/icons/service-inheritance.svg\nassets/icons/service-realestate.svg\nassets/icons/service-renunciation.svg'
+          test "$changed" = "$expected" || { echo "$changed"; exit 1; }
+      - name: Commit and clean workflow
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/restore-final-service-icons-once.yml
+          git add assets/icons/service-*.svg
+          git commit -m '업무카드 아이콘 최종 확정 시안으로 복원'
+          git pull --rebase origin main
+          git push origin HEAD:main
