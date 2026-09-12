@@ -64,6 +64,21 @@ body.home .hero .buttons a.dg-phone-cta{
   background:#36a9e1;color:#fff;border:1px solid #36a9e1;box-shadow:none;font-size:16px;font-weight:900;line-height:1;
 }
 
+/* HOME_MOBILE_HERO_BUTTON_TEXT_V1 - 메인 상단 3개 버튼 글자 크기 통일 */
+@media (max-width:800px){
+  body.home .hero .buttons .btn{
+    font-size:16px!important;
+    font-weight:900!important;
+    line-height:1!important;
+  }
+  body.home .hero .buttons .btn span,
+  body.home .hero .buttons .btn small{
+    font-size:16px!important;
+    font-weight:900!important;
+    line-height:1!important;
+  }
+}
+
 /* PHOTO SOCIAL */
 .social-links-under-photo{width:100%;display:flex;gap:10px;align-items:center;justify-content:flex-end;flex-wrap:wrap;margin-top:6px;padding:0}
 .social-links-under-photo a{display:flex;align-items:center;gap:9px;min-width:210px;padding:10px 13px;background:#fff;border:1px solid #d9e0ea;border-radius:10px;box-shadow:0 6px 18px rgba(25,45,78,.06)}
@@ -75,6 +90,99 @@ body.home .hero .buttons a.dg-phone-cta{
 .youtube-icon{background:#ff0033;color:#fff;font-size:12px}
 
 /* SERVICE CARDS */
+/* HOME_SERVICE_TITLE_V1 - 메인 업무카드 위에는 제목만 간결하게 표시 */
+body.home #services .quick-grid{
+  position:relative!important;
+  padding-top:52px!important;
+}
+body.home #services .quick-grid::before{
+  content:"업무안내";
+  position:absolute;
+  top:0;
+  left:0;
+  display:block;
+  color:#20242b;
+  font-size:28px;
+  font-weight:900;
+  line-height:1.3;
+  letter-spacing:-.8px;
+}
+@media(max-width:800px){
+  body.home #services .quick-grid{
+    padding-top:44px!important;
+  }
+  body.home #services .quick-grid::before{
+    font-size:23px;
+    letter-spacing:-.6px;
+  }
+}
+
+/* HOME_SERVICE_ALIGNMENT_V2 - 업무안내/카드/비용계산기 좌우 기준선 통일 */
+body.home #services{
+  width:100%!important;
+  max-width:1180px!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+  padding-left:22px!important;
+  padding-right:22px!important;
+  box-sizing:border-box!important;
+}
+body.home #services .quick-grid{
+  width:100%!important;
+  max-width:100%!important;
+  margin:0!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:14px!important;
+  padding-top:90px!important;
+  box-sizing:border-box!important;
+}
+body.home #services .quick-grid::before{
+  left:0!important;
+  font-size:36px!important;
+  line-height:1.25!important;
+  letter-spacing:-1.5px!important;
+}
+body.home #services .quick-item.quick-rich{
+  min-width:0!important;
+  width:100%!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+}
+@media(max-width:1000px){
+  body.home #services{
+    padding-left:22px!important;
+    padding-right:22px!important;
+  }
+  body.home #services .quick-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+@media(max-width:800px){
+  body.home #services{
+    padding-left:18px!important;
+    padding-right:18px!important;
+  }
+  body.home #services .quick-grid{
+    grid-template-columns:1fr!important;
+    gap:14px!important;
+    padding-top:62px!important;
+  }
+  body.home #services .quick-grid::before{
+    font-size:30px!important;
+    letter-spacing:-1.2px!important;
+  }
+}
+@media(max-width:480px){
+  body.home #services{
+    padding-left:14px!important;
+    padding-right:14px!important;
+  }
+  body.home #services .quick-grid::before{
+    font-size:27px!important;
+  }
+}
+
+
 .quick{position:relative;z-index:10;width:100%;max-width:1180px;margin:0 auto;padding:4px 22px 30px;background:var(--home-sky);overflow:visible}
 .quick::before{content:"";position:absolute;z-index:-1;top:0;bottom:0;left:50%;width:100vw;transform:translateX(-50%);background:var(--home-sky)}
 .quick-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;background:transparent;border:0;box-shadow:none;overflow:visible}
@@ -144,6 +252,25 @@ body.home .hero .buttons a.dg-phone-cta{
 .footer-route-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(360px,.85fr);gap:72px;align-items:start}.footer-channel-row{margin-top:14px;font-size:14px}.footer-route{padding-left:34px;border-left:1px solid rgba(255,255,255,.13)}.footer-route-title{color:#fff;font-size:21px;font-weight:900;letter-spacing:-.7px;margin-bottom:3px}.footer-route-sub{color:#9fb9df;font-size:12px;font-weight:800;margin-bottom:16px}.footer-route-list{display:grid;gap:9px;font-size:13px;line-height:1.55}.footer-route-list>div{display:grid;grid-template-columns:24px 1fr;gap:7px;align-items:start}.footer-route-list b{color:#fff;margin-right:7px}.footer-route-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:17px}.footer-route-actions a{display:inline-flex;align-items:center;min-height:37px;padding:0 12px;border:1px solid rgba(255,255,255,.22);border-radius:7px;color:#fff;font-size:11px;font-weight:900;background:rgba(255,255,255,.045)}.footer-route-actions a:hover{background:#fff;color:#172840}
 
 /* INTRO MODAL */
+/* HOME_INTRO_DIRECT_REVIEW_V1 - 등기로 소개 팝업 직접 상담·검토 문구 */
+body.home .dg-intro-copy::after{
+  content:"상속등기 · 상속포기 · 한정승인 · 법인등기 사건은 직접 상담하고 검토합니다.";
+  display:block;
+  margin-top:10px;
+  color:#27313d;
+  font-size:17px;
+  font-weight:800;
+  line-height:1.9;
+  word-break:keep-all;
+}
+@media(max-width:700px){
+  body.home .dg-intro-copy::after{
+    font-size:15px;
+    line-height:1.8;
+  }
+}
+
+
 .dg-intro-backdrop{position:fixed;inset:0;z-index:3000;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(15,31,50,.48)}
 .dg-intro-backdrop.is-open{display:flex}
 .dg-intro-modal{position:relative;width:min(680px,100%);background:#fff;border-radius:18px;padding:42px 44px 34px;text-align:center;box-shadow:0 24px 70px rgba(15,31,50,.22)}
