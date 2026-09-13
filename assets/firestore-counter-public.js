@@ -1,4 +1,4 @@
-/* DG_CALCULATOR_COUNTER_V8 */
+/* DG_CALCULATOR_COUNTER_V9 */
 (()=>{
   const PROJECT_ID='project-b08e5f3c-fa49-4ae6-933';
   const DATABASE_ID='default';
@@ -57,11 +57,20 @@
     refresh:render
   };
 
+  function bindPdfCounter(){
+    document.addEventListener('click',(event)=>{
+      const button=event.target.closest('.pdf-download');
+      if(!button) return;
+      window.DGCounter.countOnce('pdf');
+    },true);
+  }
+
   function init(){
     const el=document.getElementById('dg-calculator-usage');
     if(el) el.hidden=false;
     render();
     startAutoRefresh();
+    bindPdfCounter();
   }
 
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
