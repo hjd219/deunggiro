@@ -24,7 +24,7 @@
   .dg-mm-close{width:42px;height:42px;padding:0;border:0;background:transparent;color:#26313b;font:300 30px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer}
   .dg-mm-body{min-height:calc(100dvh - 66px);padding:18px 14px calc(28px + env(safe-area-inset-bottom))}
   .dg-mm-title,.dg-mm-sub{display:none!important}
-  .dg-mm-grid{display:flex;flex-direction:column;gap:8px}
+  .dg-mm-grid{display:flex;flex-direction:column;gap:6px}
   .dg-mm-item{display:grid;grid-template-columns:58px minmax(0,1fr) 18px;align-items:center;gap:12px;min-width:0;min-height:76px;padding:8px 13px 8px 8px;border:0;border-radius:15px;background:#f7fafc;color:#263543!important;text-decoration:none!important;text-align:left;-webkit-tap-highlight-color:transparent}
   .dg-mm-icon{width:58px;height:58px;display:flex;align-items:center;justify-content:center;border:1px solid var(--mm-color);border-radius:15px;background:var(--mm-bg);color:var(--mm-color)}
   .dg-mm-icon svg{width:28px;height:28px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
@@ -33,12 +33,12 @@
   .dg-mm-desc{display:block;color:#7d8995;font-size:12.5px;font-weight:650;line-height:1.35;letter-spacing:-.25px;word-break:keep-all}
   .dg-mm-arrow{color:#36a9e1;font-size:27px;font-weight:300;line-height:1;text-align:right}
   .dg-mm-item.is-current .dg-mm-label{color:var(--mm-color)}
-  .dg-mm-home{--mm-color:#2f9ed0;--mm-bg:#eaf7fd}
-  .dg-mm-inherit{--mm-color:#4e8fda;--mm-bg:#edf4fd}
-  .dg-mm-renounce{--mm-color:#6d8fd8;--mm-bg:#f1f3fd}
-  .dg-mm-corp{--mm-color:#5b8fa8;--mm-bg:#edf5f8}
-  .dg-mm-real{--mm-color:#5fa77f;--mm-bg:#edf8f2}
-  .dg-mm-family{--mm-color:#a779b7;--mm-bg:#f8f0fb}
+  .dg-mm-home{--mm-color:#36a9e1;--mm-bg:#f1faff}
+  .dg-mm-inherit{--mm-color:#36a9e1;--mm-bg:#f1faff}
+  .dg-mm-renounce{--mm-color:#c89725;--mm-bg:#fff9e9}
+  .dg-mm-corp{--mm-color:#7766d5;--mm-bg:#f5f2ff}
+  .dg-mm-real{--mm-color:#20a38e;--mm-bg:#effbf8}
+  .dg-mm-family{--mm-color:#cf679d;--mm-bg:#fff3f8}
   .dg-mm-info{--mm-color:#8b7fbe;--mm-bg:#f4f2fb}
   .dg-mm-divider{height:1px;margin:22px 0 16px;background:#e8edf2}
   .dg-mm-quick-title{margin:0 0 12px;color:#8d98a3;font-size:13px;font-weight:900}
