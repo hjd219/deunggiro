@@ -77,8 +77,6 @@ def fetch_page_ids(page: int) -> list[str]:
     except Exception as e:
         print(f'LIST_ASYNC_FAIL page={page} {e}', file=sys.stderr)
 
-    # Naver can occasionally reject/alter the async JSON. The visible post-list page
-    # still carries the same logNo values, so use it as a structural fallback.
     try:
         r = requests.get(
             POST_LIST_URL,
@@ -125,7 +123,6 @@ def fetch_metadata(log_no: str) -> tuple[str, str]:
         print('META_FAIL', log_no, e, file=sys.stderr)
 
     if not title:
-        # Direct PostView is usually available even when the outer blog shell is sparse.
         try:
             view = core.view_url(url)
             soup = BeautifulSoup(core.get(view).text, 'html.parser')
@@ -203,7 +200,7 @@ def main() -> None:
                 print('CANDIDATE', n, 'chars='+str(chars), 'mojibake='+str(mojibake), 'images='+str(imgs))
                 if chars < 500 or mojibake:
                     continue
-                summary = (re.sub(r'^\s*\[[^\]]+\]\s*', '', title) + '의 핵심 절차와 준비사항을 정리합니다.')[:100]
+                summary = core.SUMMARY_TEXT
                 post = {
                     'title': title,
                     'category': core.category(title),
