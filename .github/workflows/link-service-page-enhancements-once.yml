@@ -1,0 +1,43 @@
+name: Link service page enhancements once
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/link-service-page-enhancements-once.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Link service enhancement script
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          pages=['inheritance.html','renunciation.html','corporate.html','realestate.html','family.html']
+          tag='<script src="/assets/service-page-enhancements.js?v=20260913" defer></script>'
+          for name in pages:
+              p=Path(name)
+              s=p.read_text(encoding='utf-8')
+              if '/assets/service-page-enhancements.js' in s:
+                  continue
+              pos=s.lower().rfind('</body>')
+              if pos < 0:
+                  raise SystemExit(f'</body> not found: {name}')
+              s=s[:pos]+tag+'\n'+s[pos:]
+              p.write_text(s,encoding='utf-8')
+          PY
+      - run: git diff --check
+      - name: Commit page links and remove workflow
+        shell: bash
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git rm .github/workflows/link-service-page-enhancements-once.yml
+          git add inheritance.html renunciation.html corporate.html realestate.html family.html
+          git commit -m '구조정리: 서비스페이지 보조기능 직접 연결'
+          git push origin main
