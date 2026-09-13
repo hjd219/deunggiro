@@ -1,0 +1,78 @@
+name: Extract inheritance search JS once
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/extract-inheritance-search-js-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Extract inheritance search JS without behavior changes
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          html = Path('inheritance.html')
+          s = html.read_text(encoding='utf-8')
+          required_title = '<title>상속등기는 등기로 | 인천 단독상속·공동상속·유증</title>'
+          if required_title not in s:
+              raise SystemExit('SEO title guard failed')
+          if '<script src="/assets/inheritance-pc-layout.js?v=20260913" defer></script>' not in s:
+              raise SystemExit('PC layout external script guard failed')
+          if 'INHERITANCE_FINDER_INLINE_STATIC_V1' not in s:
+              raise SystemExit('static finder guard failed')
+
+          pat = re.compile(r'<script>\s*(\(function\(\)\{\s*const input=document\.getElementById\(\'inheritance-query\'\).*?\}\)\(\);)\s*</script>\s*(?=<style>\s*/\* INHERITANCE_MOBILE_REFERENCE_V11 \*/)', re.S)
+          m = pat.search(s)
+          if not m:
+              raise SystemExit('inheritance search inline script not found')
+
+          js = '/* INHERITANCE_SEARCH_V1 */\n' + m.group(1).strip() + '\n'
+          asset = Path('assets/inheritance-search.js')
+          if asset.exists():
+              raise SystemExit('asset already exists')
+          asset.write_text(js, encoding='utf-8')
+
+          replacement = '<script src="/assets/inheritance-search.js?v=20260913" defer></script>\n\n'
+          s2 = s[:m.start()] + replacement + s[m.end():]
+
+          guards = [
+              required_title,
+              '<meta name="description" content="인천 상속등기, 절차·비용·필요서류를 알기 쉽게. 협의분할, 상속취득세와 실제 처리사례도 안내합니다.">',
+              'INHERITANCE_MOBILE_REFERENCE_V11',
+              'INHERITANCE_PC_LAYOUT_V10',
+              'INHERITANCE_FINDER_INLINE_STATIC_V1',
+              'id="inheritance-overview"',
+              'id="documents"',
+              '<script src="/assets/inheritance-pc-layout.js?v=20260913" defer></script>',
+              '<script src="/assets/inheritance-search.js?v=20260913" defer></script>'
+          ]
+          for g in guards:
+              if g not in s2:
+                  raise SystemExit('guard missing: ' + g)
+
+          if "const input=document.getElementById('inheritance-query')" in s2:
+              raise SystemExit('old inline search JS residue')
+          if "document.getElementById('inheritance-query')" not in js or "fetch('/data/posts.json?v='" not in js:
+              raise SystemExit('extracted search JS integrity failed')
+
+          html.write_text(s2, encoding='utf-8')
+          PY
+          git diff --check
+          git diff -- inheritance.html assets/inheritance-search.js
+          rm .github/workflows/extract-inheritance-search-js-once.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add inheritance.html assets/inheritance-search.js .github/workflows/extract-inheritance-search-js-once.yml
+          git commit -m '구조정리: 상속등기 검색 JS 외부화'
+          git push origin main
