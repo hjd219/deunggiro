@@ -223,7 +223,7 @@ body.home #services .quick-item.quick-rich{
 #calculator .calc-point{font-size:14px;color:#334250;margin:0;line-height:1.5;font-weight:700;word-break:keep-all}
 #calculator .calc-point strong{color:#159fd9;font-weight:900}
 #calculator .calc-action{border-left:1px solid #d7ecf6;padding-left:15px;text-align:center}
-#calculator .calculator-icon{width:59px;height:108px;margin:0 auto 5px;display:block}
+#calculator .calculator-icon{width:72px;height:108px;margin:0 auto 5px;display:block}
 #calculator .calculator-icon text{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR","Malgun Gothic",sans-serif}
 #calculator .calc-action-label{color:#168fc4;font-size:13px;font-weight:900;display:block;white-space:nowrap}
 @media(hover:hover) and (pointer:fine){#calculator .calc-card:hover{border-color:#36a9e1}}
@@ -238,13 +238,13 @@ body.home #services .quick-item.quick-rich{
   #calculator .calc-types{font-size:12.5px;color:#263745;line-height:1.55;margin-bottom:8px}
   #calculator .calc-point{font-size:12.5px;color:#263745;line-height:1.5}
   #calculator .calc-action{padding-left:9px;align-self:start}
-  #calculator .calculator-icon{width:40px;height:92px}
+  #calculator .calculator-icon{width:52px;height:92px}
   #calculator .calc-action-label{font-size:12px}
 }
 @media(max-width:370px){
   #calculator .calc-card h3{font-size:15.5px}
   #calculator .calc-card{grid-template-columns:minmax(0,1fr) 82px;padding:15px}
-  #calculator .calculator-icon{width:40px;height:84px}
+  #calculator .calculator-icon{width:50px;height:84px}
 }
 
 /* CONTACT / FOOTER */
