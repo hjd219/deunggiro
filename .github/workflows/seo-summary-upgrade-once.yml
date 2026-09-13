@@ -1,0 +1,125 @@
+name: SEO Summary Upgrade Once
+
+on:
+  push:
+    paths:
+      - '.github/workflows/seo-summary-upgrade-once.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Upgrade SEO summaries
+        run: |
+          python - <<'PY'
+          import json, re
+          from pathlib import Path
+          from bs4 import BeautifulSoup
+
+          root = Path('.')
+          clean_path = root/'scripts/import_naver_blog_clean.py'
+          import_path = root/'scripts/import_naver_blog.py'
+
+          clean = clean_path.read_text(encoding='utf-8')
+          old_const = "SUMMARY_TEXT='진행 전 꼭 확인해야 할 핵심 내용과 주의사항'"
+          helper = '''def seo_summary(title):
+ t=clean_text(title); t=re.sub(r'^\\s*\\[[^\\]]+\\]\\s*','',t).strip('“”\\\" '); t=re.sub(r'\\s*총정리\\s*',' ',t).strip()
+ parts=[x.strip() for x in re.split(r'\\s*[|｜]\\s*',t,1) if x.strip()]; head=parts[0] if parts else t; detail=parts[1] if len(parts)>1 else ''
+ head=re.sub(r'\\s*(?:어떻게 해야 (?:되나요|하나요)|어떻게 되나요|가능할까|얼마나 나올까|해야 할까)\\??\\s*$','',head).strip()
+ base=head + (('｜'+detail) if detail else '')
+ cat=category(title); defaults={'상속등기':['상속등기','절차','필요서류','주의사항'],'상속포기·한정승인':['상속포기·한정승인','절차','대응방법','주의사항'],'법인등기':['법인등기','절차','필요서류','비용'],'부동산등기':['부동산등기','취득세','필요서류','주의사항'],'가사':['가사절차','필요서류','주의사항']}.get(cat,['절차','필요서류','주의사항'])
+ extras=[x for x in defaults if x not in base]; out=base + (('｜'+'·'.join(extras)) if extras else '')
+ return out[:120].rstrip('·|｜ ')
+'''
+          if old_const not in clean:
+              raise SystemExit('Expected SUMMARY_TEXT constant not found')
+          clean = clean.replace(old_const, helper, 1)
+          start = clean.index('def sync_summaries(posts):')
+          end = clean.index('def build(p,body):', start)
+          sync = '''def sync_summaries(posts):
+ changed=0
+ for p in posts:
+  if p.get('source')!='naver-blog': continue
+  target=seo_summary(p.get('title') or '')
+  if p.get('summary')!=target:
+   p['summary']=target; changed+=1
+  slug=(p.get('slug') or '').replace('.html',''); path=POSTS_DIR/f'{slug}.html'
+  if not path.exists(): continue
+  raw=path.read_text(encoding='utf-8',errors='replace'); soup=BeautifulSoup(raw,'html.parser'); touched=False
+  for selector in ('meta[name=\"description\"]','meta[name=\"dg-summary\"]'):
+   node=soup.select_one(selector)
+   if node and node.get('content')!=target: node['content']=target; touched=True
+  desc=soup.select_one('p.desc')
+  if desc and desc.get_text(strip=True)!=target: desc.string=target; touched=True
+  if touched: path.write_text(str(soup),encoding='utf-8')
+ print('SUMMARY_SYNC',changed)
+'''
+          clean = clean[:start] + sync + clean[end:]
+          clean = clean.replace("p['summary']=SUMMARY_TEXT", "p['summary']=seo_summary(p.get('title') or '')")
+          clean = clean.replace('sm=SUMMARY_TEXT;', 'sm=seo_summary(title);')
+          if 'SUMMARY_TEXT' in clean:
+              raise SystemExit('Unexpected SUMMARY_TEXT reference remains')
+          clean_path.write_text(clean, encoding='utf-8')
+
+          imp = import_path.read_text(encoding='utf-8')
+          old = 'summary = core.SUMMARY_TEXT'
+          if old not in imp:
+              raise SystemExit('Expected importer summary assignment not found')
+          imp = imp.replace(old, 'summary = core.seo_summary(title)', 1)
+          import_path.write_text(imp, encoding='utf-8')
+
+          # Load the patched helper without importing network-dependent module code.
+          def category_guess(title):
+              s=title
+              if any(x in s for x in ('상속포기','한정승인','특별한정승인')): return '상속포기·한정승인'
+              if any(x in s for x in ('법인','대표이사','임원','감사','본점이전','증자','감자','전환사채','신주인수권부사채')): return '법인등기'
+              if any(x in s for x in ('이혼','후견','개명','친생','양육','친권')): return '가사'
+              if any(x in s for x in ('상속','대습','유언','유증')): return '상속등기'
+              return '부동산등기'
+          def summary(title, cat):
+              t=re.sub(r'\\s+',' ',title or '').strip(); t=re.sub(r'^\\s*\\[[^\\]]+\\]\\s*','',t).strip('“”\" '); t=re.sub(r'\\s*총정리\\s*',' ',t).strip()
+              parts=[x.strip() for x in re.split(r'\\s*[|｜]\\s*',t,1) if x.strip()]; head=parts[0] if parts else t; detail=parts[1] if len(parts)>1 else ''
+              head=re.sub(r'\\s*(?:어떻게 해야 (?:되나요|하나요)|어떻게 되나요|가능할까|얼마나 나올까|해야 할까)\\??\\s*$','',head).strip()
+              base=head + (('｜'+detail) if detail else '')
+              defaults={'상속등기':['상속등기','절차','필요서류','주의사항'],'상속포기·한정승인':['상속포기·한정승인','절차','대응방법','주의사항'],'법인등기':['법인등기','절차','필요서류','비용'],'부동산등기':['부동산등기','취득세','필요서류','주의사항'],'가사':['가사절차','필요서류','주의사항']}.get(cat,['절차','필요서류','주의사항'])
+              extras=[x for x in defaults if x not in base]; out=base + (('｜'+'·'.join(extras)) if extras else '')
+              return out[:120].rstrip('·|｜ ')
+
+          posts_path=root/'data/posts.json'
+          posts=json.loads(posts_path.read_text(encoding='utf-8'))
+          changed=0; html_changed=0
+          for p in posts:
+              if p.get('source')!='naver-blog': continue
+              target=summary(p.get('title',''), p.get('category') or category_guess(p.get('title','')))
+              if p.get('summary') != target:
+                  p['summary']=target; changed += 1
+              slug=str(p.get('slug','')).replace('.html',''); path=root/'posts'/f'{slug}.html'
+              if not path.exists(): continue
+              soup=BeautifulSoup(path.read_text(encoding='utf-8',errors='replace'),'html.parser'); touched=False
+              for selector in ('meta[name="description"]','meta[name="dg-summary"]'):
+                  node=soup.select_one(selector)
+                  if node and node.get('content') != target: node['content']=target; touched=True
+              desc=soup.select_one('p.desc')
+              if desc and desc.get_text(strip=True) != target: desc.string=target; touched=True
+              if touched:
+                  path.write_text(str(soup),encoding='utf-8'); html_changed += 1
+          posts_path.write_text(json.dumps(posts,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print('SEO_SUMMARY_DATA_CHANGED',changed,'HTML_CHANGED',html_changed)
+          PY
+      - name: Validate and commit
+        run: |
+          python -m py_compile scripts/import_naver_blog.py scripts/import_naver_blog_clean.py
+          git diff --check
+          rm -f .github/workflows/seo-summary-upgrade-once.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/import_naver_blog.py scripts/import_naver_blog_clean.py data/posts.json posts .github/workflows/seo-summary-upgrade-once.yml
+          git commit -m "자동수집 글 SEO 요약문 강화"
+          git push origin HEAD:main
