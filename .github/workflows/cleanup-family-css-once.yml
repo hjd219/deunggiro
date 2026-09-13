@@ -1,0 +1,61 @@
+name: Cleanup family duplicate CSS once
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/cleanup-family-css-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Remove superseded family CSS block
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path('family.html')
+          text = path.read_text(encoding='utf-8')
+
+          pattern = re.compile(r'<style>\s*/\* DETAIL_HOME_SKY_BG_V1 \*/.*?</style>\s*', re.S)
+          matches = pattern.findall(text)
+          if len(matches) != 1:
+              raise SystemExit(f'Expected exactly 1 DETAIL_HOME_SKY_BG_V1 block, found {len(matches)}')
+
+          text = pattern.sub('', text, count=1)
+
+          required = [
+              '/* DETAIL_BG_RHYTHM_V2 */',
+              '/* FAMILY_INHERITANCE_LAYOUT_V1 */',
+              '/assets/section-finder.css',
+              'class="family-service-grid"',
+              'class="family-bottom-grid"'
+          ]
+          for marker in required:
+              if marker not in text:
+                  raise SystemExit(f'Required marker missing after cleanup: {marker}')
+
+          if '/* DETAIL_HOME_SKY_BG_V1 */' in text:
+              raise SystemExit('Superseded DETAIL_HOME_SKY_BG_V1 still present')
+
+          path.write_text(text, encoding='utf-8')
+          PY
+          git diff --check -- family.html
+          git diff -- family.html
+      - name: Commit and remove one-time workflow
+        run: |
+          rm .github/workflows/cleanup-family-css-once.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add family.html .github/workflows/cleanup-family-css-once.yml
+          git commit -m '구조정리: 가사 중복 CSS 제거'
+          git push origin main
