@@ -33,7 +33,7 @@
   .dg-mm-desc{display:block;color:#7d8995;font-size:12.5px;font-weight:650;line-height:1.35;letter-spacing:-.25px;word-break:keep-all}
   .dg-mm-arrow{color:#36a9e1;font-size:27px;font-weight:300;line-height:1;text-align:right}
   .dg-mm-item.is-current .dg-mm-label{color:var(--mm-color)}
-  .dg-mm-home{--mm-color:#36a9e1;--mm-bg:#f1faff}
+  .dg-mm-home{--mm-color:#28527A;--mm-bg:#f1f5f9}
   .dg-mm-inherit{--mm-color:#36a9e1;--mm-bg:#f1faff}
   .dg-mm-renounce{--mm-color:#c89725;--mm-bg:#fff9e9}
   .dg-mm-corp{--mm-color:#7766d5;--mm-bg:#f5f2ff}
