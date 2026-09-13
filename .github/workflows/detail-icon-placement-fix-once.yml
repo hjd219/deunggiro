@@ -1,0 +1,82 @@
+name: Detail icon placement fix once
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/detail-icon-placement-fix-once.yml']
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Replace existing detail title icons with service card icon
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          # 1) Remove the incorrectly-added standalone icons from the five service hub pages.
+          hubs=['inheritance.html','renunciation.html','corporate.html','realestate.html','family.html']
+          css='.dg-detail-service-icon{width:58px;height:58px;margin:0 0 12px;display:grid;place-items:center}.dg-detail-service-icon img{display:block;width:100%;height:100%;object-fit:contain}@media(max-width:800px){.dg-detail-service-icon{width:52px;height:52px;margin-bottom:10px}}\n'
+          for name in hubs:
+              p=Path(name); s=p.read_text(encoding='utf-8')
+              s=re.sub(r'<div class="dg-detail-service-icon" aria-hidden="true"><img src="/assets/icons/service-[^"]+\.svg" alt=""></div>','',s,count=1)
+              s=s.replace(css,'')
+              p.write_text(s,encoding='utf-8')
+
+          # 2) Use the main service-card inheritance icon in the EXISTING .main-icon slot
+          #    on all five inheritance individual detail pages.
+          details=[
+              'inheritance-missing-heir.html',
+              'inheritance-minor-heir.html',
+              'inheritance-overseas-heir.html',
+              'inheritance-substitute-succession.html',
+              'inheritance-division.html',
+          ]
+          replacement='<div class="main-icon" aria-hidden="true"><img src="/assets/icons/service-inheritance.svg" alt=""></div><h1'
+          for name in details:
+              p=Path(name); s=p.read_text(encoding='utf-8')
+              pattern=r'<div class="main-icon"(?: aria-hidden="true")?>.*?</div><h1'
+              if len(re.findall(pattern,s,flags=re.S))!=1:
+                  raise SystemExit(f'{name}: expected exactly one main-icon slot')
+              s=re.sub(pattern,replacement,s,count=1,flags=re.S)
+              s=s.replace('/assets/inheritance-detail.css?v=12','/assets/inheritance-detail.css?v=13-service-icon')
+              p.write_text(s,encoding='utf-8')
+
+          # 3) Modify the existing main-icon source rule itself: no extra patch box.
+          p=Path('assets/inheritance-detail.css'); s=p.read_text(encoding='utf-8')
+          old='.main-icon{width:46px;height:46px;border:1px solid #b9def0;border-radius:14px;background:#fff;display:grid;place-items:center;flex:0 0 auto}.main-icon svg{width:28px;height:28px}'
+          new='.main-icon{width:46px;height:46px;border:0;border-radius:0;background:transparent;display:grid;place-items:center;flex:0 0 auto}.main-icon img{width:100%;height:100%;display:block;object-fit:contain}'
+          if s.count(old)!=1:
+              raise SystemExit(f'inheritance-detail.css main-icon rule count={s.count(old)}')
+          s=s.replace(old,new,1)
+          # old mobile svg rule is no longer relevant; keep only container sizing.
+          s=s.replace('.main-icon svg{width:24px!important;height:24px!important}','')
+          p.write_text(s,encoding='utf-8')
+          PY
+          git diff --check
+          python3 - <<'PY'
+          from pathlib import Path
+          details=['inheritance-missing-heir.html','inheritance-minor-heir.html','inheritance-overseas-heir.html','inheritance-substitute-succession.html','inheritance-division.html']
+          for name in details:
+              s=Path(name).read_text(encoding='utf-8')
+              assert s.count('class="main-icon" aria-hidden="true"><img src="/assets/icons/service-inheritance.svg"')==1, name
+              assert 'inheritance-detail.css?v=13-service-icon' in s, name
+          for name in ['inheritance.html','renunciation.html','corporate.html','realestate.html','family.html']:
+              s=Path(name).read_text(encoding='utf-8')
+              assert 'dg-detail-service-icon' not in s, name
+          PY
+      - name: Commit and clean workflow
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/detail-icon-placement-fix-once.yml
+          git add assets/inheritance-detail.css inheritance.html renunciation.html corporate.html realestate.html family.html inheritance-missing-heir.html inheritance-minor-heir.html inheritance-overseas-heir.html inheritance-substitute-succession.html inheritance-division.html
+          git diff --cached --check
+          git commit -m '개별 상세페이지 제목 왼쪽 기존 아이콘을 업무카드 아이콘으로 교체'
+          git pull --rebase origin main
+          git push origin HEAD:main
