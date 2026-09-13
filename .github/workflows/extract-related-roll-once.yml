@@ -1,0 +1,91 @@
+name: Extract related roll once
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/extract-related-roll-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Extract related roll JS and CSS
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          html = Path('inheritance.html')
+          s = html.read_text(encoding='utf-8')
+          required_title = '<title>상속등기는 등기로 | 인천 단독상속·공동상속·유증</title>'
+          if required_title not in s:
+              raise SystemExit('SEO title guard failed')
+
+          js_pat = re.compile(r'<script>\s*/\* AUTO_SEQUENTIAL_RELATED_V3 \*/\s*(\(function\(\)\{.*?\}\)\(\);)\s*</script>', re.S)
+          jm = js_pat.search(s)
+          if not jm:
+              raise SystemExit('related roll JS block not found')
+          js = '/* AUTO_SEQUENTIAL_RELATED_V3 */\n' + jm.group(1).strip() + '\n'
+
+          css_pat = re.compile(r'<style>\s*/\* AUTO_SEQUENTIAL_RELATED_V3 \*/\s*(#auto-related-posts \.related-title\{.*?@keyframes seqRollIn\{.*?\}\})\s*\n\n(/\* INHERITANCE_ICON_TEXT_SIDE_V1 \*/.*?</style>)', re.S)
+          cm = css_pat.search(s)
+          if not cm:
+              raise SystemExit('related roll CSS block not found')
+          css = '/* AUTO_SEQUENTIAL_RELATED_V3 */\n' + cm.group(1).strip() + '\n'
+          remaining_style = '<style>\n' + cm.group(2)
+
+          js_asset = Path('assets/inheritance-related-roll.js')
+          css_asset = Path('assets/inheritance-related-roll.css')
+          if js_asset.exists() or css_asset.exists():
+              raise SystemExit('asset already exists')
+          js_asset.write_text(js, encoding='utf-8')
+          css_asset.write_text(css, encoding='utf-8')
+
+          s = s[:jm.start()] + '<script src="/assets/inheritance-related-roll.js?v=20260913" defer></script>' + s[jm.end():]
+          cm2 = css_pat.search(s)
+          if not cm2:
+              raise SystemExit('CSS block not found after JS replacement')
+          replacement = '<link rel="stylesheet" href="/assets/inheritance-related-roll.css?v=20260913">\n' + '<style>\n' + cm2.group(2)
+          s = s[:cm2.start()] + replacement + s[cm2.end():]
+
+          guards = [
+              required_title,
+              'INHERITANCE_MOBILE_REFERENCE_V11',
+              'INHERITANCE_ICON_TEXT_SIDE_V1',
+              '<script src="/assets/inheritance-pc-layout.js?v=20260913" defer></script>',
+              '<script src="/assets/inheritance-search.js?v=20260913" defer></script>',
+              '<script src="/assets/inheritance-related-roll.js?v=20260913" defer></script>',
+              '<link rel="stylesheet" href="/assets/inheritance-related-roll.css?v=20260913">',
+              'id="auto-related-posts"'
+          ]
+          for g in guards:
+              if g not in s:
+                  raise SystemExit('guard missing: ' + g)
+          if '<script>\n/* AUTO_SEQUENTIAL_RELATED_V3 */' in s:
+              raise SystemExit('old related JS residue')
+          if '<style>\n/* AUTO_SEQUENTIAL_RELATED_V3 */' in s:
+              raise SystemExit('old related CSS residue')
+          if "fetch('/data/posts.json?v='+Date.now()" not in js:
+              raise SystemExit('JS integrity failed')
+          if '@keyframes seqRollIn' not in css or '#auto-related-posts .seq-roll-out' not in css:
+              raise SystemExit('CSS integrity failed')
+
+          html.write_text(s, encoding='utf-8')
+          PY
+
+          git diff --check
+          git diff -- inheritance.html assets/inheritance-related-roll.js assets/inheritance-related-roll.css
+
+          rm .github/workflows/extract-related-roll-once.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add inheritance.html assets/inheritance-related-roll.js assets/inheritance-related-roll.css .github/workflows/extract-related-roll-once.yml
+          git commit -m '구조정리: 상속등기 관련글 롤링 JS CSS 외부화'
+          git push origin main
