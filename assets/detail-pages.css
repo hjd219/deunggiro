@@ -10,3 +10,7 @@ body{background:var(--detail-sky)!important}
 #posts,#latest-posts,#related-posts,.latest-posts,.related-posts,.posts-section,.related-section{background:#fff!important}
 /* 정보 카드들은 흰색 유지 */
 .card,.article,.info-box,.calculator,.faq-item,.doc-card,.process-card,.legal-card,.related-legal,.related-legal-box{background:#fff!important}
+/* 개별 업무페이지: 모바일에서는 상단 관련 법률정보 패널을 숨겨 핵심 본문을 먼저 노출 */
+@media(max-width:800px){
+  .subhero .related-posts-panel{display:none!important}
+}
