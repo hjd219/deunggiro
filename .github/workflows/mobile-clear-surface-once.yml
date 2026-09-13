@@ -1,0 +1,55 @@
+name: Mobile clear surface once
+on:
+  push:
+    paths: ['.github/workflows/mobile-clear-surface-once.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: main}
+      - name: Improve mobile surface clarity
+        run: |
+          cat >> assets/home.css <<'EOF'
+
+/* HOME_MOBILE_CLEAR_SURFACE_V1 - 모바일 배경/카드 맑기 개선 */
+@media(max-width:800px){
+  body.home{--home-sky:#f5faff}
+  body.home .hero,
+  body.home .hero-grid,
+  body.home .photo,
+  body.home .quick,
+  body.home .quick::before,
+  body.home #calculator{background:var(--home-sky)}
+  body.home .quick-item.quick-rich{
+    background:linear-gradient(112deg,color-mix(in srgb,var(--qbg) 64%,#fff),#fff 72%);
+    border-color:#d4e2ec;
+    box-shadow:0 7px 20px rgba(23,40,64,.065),inset 0 1px 0 rgba(255,255,255,.96)
+  }
+  body.home .quick-icon{background:#fff}
+  body.home #calculator .calc-card,
+  body.home #calculator .calculator-usage{
+    background:#fff;
+    border-color:#d5e5ef;
+    box-shadow:0 7px 20px rgba(23,40,64,.055)
+  }
+}
+EOF
+      - name: Verify and commit
+        run: |
+          grep -q 'HOME_MOBILE_CLEAR_SURFACE_V1' assets/home.css
+          grep -q -- '--home-sky:#f5faff' assets/home.css
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add assets/home.css
+          git commit -m '모바일 배경과 카드 맑기 개선'
+          git push origin main
+      - name: Remove one-time workflow
+        run: |
+          git pull --rebase origin main
+          git rm .github/workflows/mobile-clear-surface-once.yml
+          git commit -m '일회성 모바일 배경 작업 정리'
+          git push origin main
