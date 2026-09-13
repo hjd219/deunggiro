@@ -1,0 +1,52 @@
+name: Service card top-line once
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/service-card-topline-once.yml']
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Rework existing service-card layout rules
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('assets/home.css')
+          s=p.read_text(encoding='utf-8')
+          reps=[
+            ('.quick-item.quick-rich{--qc:#36a9e1;--qbg:#f1faff;position:relative;overflow:hidden;display:grid;grid-template-columns:52px minmax(0,1fr) 44px;gap:10px;align-items:start;align-content:center;text-align:left;min-width:0;min-height:150px;padding:17px 0 17px 15px;background:linear-gradient(110deg,var(--qbg),#fff 76%);border:1px solid #d7e4ec;border-radius:16px;box-shadow:0 8px 22px rgba(31,41,55,.08);transition:transform .28s cubic-bezier(.2,.8,.2,1),box-shadow .28s ease,border-color .2s ease;-webkit-tap-highlight-color:transparent}',
+             '.quick-item.quick-rich{--qc:#36a9e1;--qbg:#f1faff;position:relative;overflow:hidden;display:grid;grid-template-columns:40px minmax(0,1fr) 44px;grid-template-rows:auto auto;column-gap:8px;row-gap:6px;align-items:center;align-content:center;text-align:left;min-width:0;min-height:150px;padding:17px 0 17px 15px;background:linear-gradient(110deg,var(--qbg),#fff 76%);border:1px solid #d7e4ec;border-radius:16px;box-shadow:0 8px 22px rgba(31,41,55,.08);transition:transform .28s cubic-bezier(.2,.8,.2,1),box-shadow .28s ease,border-color .2s ease;-webkit-tap-highlight-color:transparent}'),
+            ('.quick-icon{width:50px;height:50px;padding:0;display:grid;place-items:center}',
+             '.quick-icon{width:40px;height:40px;padding:0;display:grid;place-items:center;grid-column:1;grid-row:1;align-self:center}'),
+            ('.quick-copy{position:static;z-index:1;min-width:0;padding-right:7px}',
+             '.quick-copy{display:contents}'),
+            ('.quick-item.quick-rich h3{margin:0 0 6px;color:#20242b;font-size:18px;line-height:1.25;font-weight:900;letter-spacing:-.75px;word-break:keep-all}',
+             '.quick-item.quick-rich h3{grid-column:2;grid-row:1;align-self:center;z-index:1;margin:0;color:#20242b;font-size:16px;line-height:1.2;font-weight:900;letter-spacing:-.85px;word-break:keep-all;white-space:nowrap}'),
+            ('.quick-item.quick-rich.c4 h3{font-size:16px}',
+             '.quick-item.quick-rich.c4 h3{font-size:13px;letter-spacing:-1px}'),
+            ('.quick-item.quick-rich p{margin:0;color:var(--qc);font-size:12.5px;font-weight:800;line-height:1.4;opacity:1;word-break:keep-all}',
+             '.quick-item.quick-rich p{grid-column:1/3;grid-row:2;z-index:1;margin:0;color:var(--qc);font-size:12.5px;font-weight:800;line-height:1.4;opacity:1;word-break:keep-all;text-align:left}')
+          ]
+          for old,new in reps:
+              if s.count(old)!=1:
+                  raise SystemExit(f'rule mismatch: {old[:60]} count={s.count(old)}')
+              s=s.replace(old,new,1)
+          p.write_text(s,encoding='utf-8')
+          PY
+          git diff --check -- assets/home.css
+          git diff -- assets/home.css
+      - name: Commit and clean workflow
+        run: |
+          rm .github/workflows/service-card-topline-once.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/home.css .github/workflows/service-card-topline-once.yml
+          git commit -m '업무카드 아이콘 축소 및 제목 한줄 좌측정렬'
+          git pull --rebase origin main
+          git push origin HEAD:main
