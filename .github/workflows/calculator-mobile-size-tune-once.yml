@@ -1,0 +1,50 @@
+name: Calculator mobile size tune once
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/calculator-mobile-size-tune-once.yml']
+permissions:
+  contents: write
+jobs:
+  tune:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Tune mobile calculator size
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('assets/home.css')
+          s=p.read_text(encoding='utf-8')
+          pairs=[
+            ('  #calculator .calculator-icon{width:52px;height:92px}','  #calculator .calculator-icon{width:58px;height:92px}'),
+            ('  #calculator .calculator-icon{width:50px;height:84px}','  #calculator .calculator-icon{width:56px;height:84px}')
+          ]
+          for old,new in pairs:
+              if old not in s:
+                  raise SystemExit('missing '+old)
+              s=s.replace(old,new,1)
+          p.write_text(s,encoding='utf-8')
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          old='/assets/home.css?v=20260913-calculator-slim'
+          if old not in s:
+              old='/assets/home.css?v=20260913-mobile-recovery-1'
+          if old not in s:
+              raise SystemExit('missing home css version')
+          s=s.replace(old,'/assets/home.css?v=20260913-calculator-mobile58',1)
+          p.write_text(s,encoding='utf-8')
+          PY
+          git diff --check -- assets/home.css index.html
+      - name: Commit and clean
+        run: |
+          rm .github/workflows/calculator-mobile-size-tune-once.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/home.css index.html .github/workflows/calculator-mobile-size-tune-once.yml
+          git commit -m '모바일 계산기 아이콘 크기 58px로 보정'
+          git pull --rebase origin main
+          git push origin HEAD:main
