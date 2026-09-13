@@ -1,4 +1,4 @@
-name: Cleanup legacy mobile sticky CSS once
+name: Cleanup legacy mobile sticky code once
 
 on:
   push:
@@ -18,7 +18,7 @@ jobs:
           ref: main
           fetch-depth: 0
 
-      - name: Verify legacy selectors are unused and remove CSS
+      - name: Remove obsolete legacy mobile menu CSS and JS
         run: |
           python3 - <<'PY'
           from pathlib import Path
@@ -32,39 +32,44 @@ jobs:
               Path('family.html'),
           ]
 
-          pattern = re.compile(r'<style>\s*/\* MOBILE_STICKY_MENU_V1 \*/.*?</style>\s*', re.S)
-          legacy_tokens = [
-              'class="header"',
-              'class="header-inner"',
-              'class="mobile-menu-btn"',
-              'class="mobile-menu-panel"',
-              'class="mobile-menu-grid"',
-              'class="mobile-menu-close"',
-              'mobile-menu-open',
-          ]
+          css_pattern = re.compile(r'<style>\s*/\* MOBILE_STICKY_MENU_V1 \*/.*?</style>\s*', re.S)
+          js_pattern = re.compile(r'<script>\s*/\* MOBILE_STICKY_MENU_V1 \*/.*?</script>\s*', re.S)
 
           for path in pages:
               text = path.read_text(encoding='utf-8')
-              matches = pattern.findall(text)
-              if len(matches) != 1:
-                  raise SystemExit(f'{path}: expected exactly 1 MOBILE_STICKY_MENU_V1 block, found {len(matches)}')
 
-              # Check actual page markup/behavior outside CSS. Do not infer from selectors inside styles.
-              nonstyle = re.sub(r'<style\b[^>]*>.*?</style>', '', text, flags=re.S|re.I)
-              if 'class="dg-shell-header"' not in nonstyle or 'id="dg-shell-mobile-panel"' not in nonstyle:
+              if len(css_pattern.findall(text)) != 1:
+                  raise SystemExit(f'{path}: expected exactly 1 legacy CSS block')
+              if len(js_pattern.findall(text)) != 1:
+                  raise SystemExit(f'{path}: expected exactly 1 legacy JS block')
+
+              if 'class="dg-shell-header"' not in text or 'id="dg-shell-mobile-panel"' not in text:
                   raise SystemExit(f'{path}: current dg-shell header/mobile panel not found')
-              if '/assets/site-shell.css' not in text:
-                  raise SystemExit(f'{path}: site-shell.css not found')
+              if '/assets/site-shell.css' not in text or '/assets/site-shell.js' not in text:
+                  raise SystemExit(f'{path}: current site-shell assets not found')
 
-              used = [token for token in legacy_tokens if token in nonstyle]
-              if used:
-                  raise SystemExit(f'{path}: legacy mobile menu markup still used: {used}')
+              cleaned = css_pattern.sub('', text, count=1)
+              cleaned = js_pattern.sub('', cleaned, count=1)
 
-              cleaned = pattern.sub('', text, count=1)
-              if '/* MOBILE_STICKY_MENU_V1 */' in cleaned:
-                  raise SystemExit(f'{path}: legacy marker still present after cleanup')
+              for token in [
+                  'id="mobile-menu-btn"',
+                  'id="mobile-menu-panel"',
+                  'id="mobile-menu-close"',
+                  'class="mobile-menu-btn"',
+                  'class="mobile-menu-panel"',
+                  'class="mobile-menu-grid"',
+                  'class="mobile-menu-close"',
+                  'mobile-menu-open',
+                  '/* MOBILE_STICKY_MENU_V1 */',
+              ]:
+                  if token in cleaned:
+                      raise SystemExit(f'{path}: legacy token remains after cleanup: {token}')
+
               if 'class="dg-shell-header"' not in cleaned or 'id="dg-shell-mobile-panel"' not in cleaned:
                   raise SystemExit(f'{path}: dg-shell markup changed unexpectedly')
+              if '/assets/site-shell.css' not in cleaned or '/assets/site-shell.js' not in cleaned:
+                  raise SystemExit(f'{path}: site-shell assets changed unexpectedly')
+
               path.write_text(cleaned, encoding='utf-8')
           PY
 
@@ -77,5 +82,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add inheritance.html renunciation.html corporate.html realestate.html family.html .github/workflows/cleanup-mobile-sticky-legacy-once.yml
-          git commit -m '구조정리: 상세페이지 레거시 모바일메뉴 CSS 제거'
+          git commit -m '구조정리: 상세페이지 레거시 모바일메뉴 CSS JS 제거'
           git push origin main
