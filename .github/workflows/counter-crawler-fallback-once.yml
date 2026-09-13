@@ -1,0 +1,36 @@
+name: Counter crawler fallback once
+on: push
+permissions:
+  contents: write
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Patch crawler fallback
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          old='<div class="calculator-usage" id="dg-calculator-usage" hidden>누적 계산기 이용자 <strong data-count>0회</strong></div>'
+          new='<div class="calculator-usage" id="dg-calculator-usage" hidden>누적 계산기 이용자 <strong data-count>452회</strong></div>'
+          if old not in s:
+              raise SystemExit('target counter markup not found')
+          s=s.replace(old,new,1)
+          p.write_text(s)
+          PY
+      - name: Verify and commit
+        run: |
+          git diff -- index.html
+          test "$(git diff --name-only | tr '\n' ' ')" = "index.html "
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git commit -m '누적 계산기 이용자 수집기 초기값 452회로 보정'
+          git rm .github/workflows/counter-crawler-fallback-once.yml
+          git commit -m '일회성 카운터 보정 작업 제거'
+          git push origin main
