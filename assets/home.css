@@ -189,7 +189,7 @@ body.home #services .quick-item.quick-rich{
 .quick-item.quick-rich{--qc:#36a9e1;--qbg:#f1faff;position:relative;overflow:hidden;display:grid;grid-template-columns:52px minmax(0,1fr) 44px;gap:10px;align-items:center;text-align:left;min-width:0;min-height:150px;padding:17px 0 17px 15px;background:linear-gradient(110deg,var(--qbg),#fff 76%);border:1px solid #d7e4ec;border-radius:16px;box-shadow:0 8px 22px rgba(31,41,55,.08);transition:transform .28s cubic-bezier(.2,.8,.2,1),box-shadow .28s ease,border-color .2s ease;-webkit-tap-highlight-color:transparent}
 .quick-item.quick-rich::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--qc)}
 .quick-rich.c2{--qc:#7766d5;--qbg:#f5f2ff}.quick-rich.c3{--qc:#20a38e;--qbg:#effbf8}.quick-rich.c4{--qc:#c89725;--qbg:#fff9e9}.quick-rich.c5{--qc:#cf679d;--qbg:#fff3f8}
-.quick-icon{width:50px;height:50px;padding:0;display:grid;place-items:center}
+.quick-icon{width:50px;height:50px;padding:0;display:grid;place-items:center;align-self:end}
 .quick-icon svg,.quick-icon img{width:100%;height:100%;display:block}
 .quick-copy{position:static;z-index:1;min-width:0;padding-right:7px}
 .quick-item.quick-rich h3{margin:0 0 6px;color:#20242b;font-size:18px;line-height:1.25;font-weight:900;letter-spacing:-.75px;word-break:keep-all}
