@@ -1,0 +1,50 @@
+name: Mobile readability once
+on:
+  push:
+    paths: ['.github/workflows/mobile-readability-once.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: main}
+      - name: Improve mobile typography
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('assets/home.css'); s=p.read_text(); old=s
+          pairs={
+          '@media(max-width:800px){\n  .container':'@media(max-width:800px){\n  body.home{font-family:"Apple SD Gothic Neo","Noto Sans KR",-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif}\n  .container',
+          '.copy p{width:auto;max-width:680px;font-size:14px;line-height:1.65;':'.copy p{width:auto;max-width:680px;font-size:15px;line-height:1.7;color:#27313d;font-weight:600;',
+          '.quick-item.quick-rich p{font-size:13px;line-height:1.45}':'.quick-item.quick-rich p{font-size:14px;line-height:1.5;letter-spacing:-.25px}',
+          '.quick-item.quick-rich .go{width:54px;padding:15px 6px 48px;font-size:12px}':'.quick-item.quick-rich .go{width:54px;padding:15px 6px 48px;font-size:13px}',
+          '.desc{font-size:13px;line-height:1.65;margin-bottom:20px}':'.desc{font-size:15px;line-height:1.7;margin-bottom:20px;color:#34404d}',
+          '.contact p{font-size:13px;line-height:1.65}':'.contact p{font-size:14px;line-height:1.7}',
+          '.footer-info{font-size:12px;line-height:1.8;':'.footer-info{font-size:13px;line-height:1.8;',
+          '.copy{padding-top:28px}.copy h1{font-size:32px;letter-spacing:-2px}.copy p{font-size:13px}':'.copy{padding-top:28px}.copy h1{font-size:32px;letter-spacing:-2px}.copy p{font-size:15px}'
+          }
+          for a,b in pairs.items():
+              if a not in s: raise SystemExit('missing pattern: '+a)
+              s=s.replace(a,b,1)
+          if s==old: raise SystemExit('no change')
+          p.write_text(s)
+          PY
+      - name: Verify and commit
+        run: |
+          grep -q 'Apple SD Gothic Neo' assets/home.css
+          grep -q 'font-size:15px;line-height:1.7;color:#27313d' assets/home.css
+          grep -q 'quick-item.quick-rich p{font-size:14px' assets/home.css
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add assets/home.css
+          git commit -m '모바일 글자 선명도와 가독성 개선'
+          git push origin main
+      - name: Remove one-time workflow
+        run: |
+          git pull --rebase origin main
+          git rm .github/workflows/mobile-readability-once.yml
+          git commit -m '일회성 모바일 가독성 작업 정리'
+          git push origin main
