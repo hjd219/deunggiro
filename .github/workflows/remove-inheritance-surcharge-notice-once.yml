@@ -1,0 +1,46 @@
+name: Remove inheritance surcharge notice once
+on:
+  push:
+    paths:
+      - '.github/workflows/remove-inheritance-surcharge-notice-once.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Remove visible surcharge notice only
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('acquisition-calculator.html')
+          s=p.read_text(encoding='utf-8')
+          reps=[
+            ('</div><div class="badge hidden" id="rule">상속인 5인 이상: 기본보수 100% 가산 자동 적용</div><button class="calc" id="calc">취득비용 계산하기</button></section>',
+             '</div><button class="calc" id="calc">취득비용 계산하기</button></section>'),
+            ("document.querySelectorAll('.divorceOnly').forEach(x=>x.classList.toggle('hidden',mode!=='divorce'));$('rule').classList.toggle('hidden',mode!=='inherit');$('stampRow').classList.toggle('hidden',mode!=='sale');",
+             "document.querySelectorAll('.divorceOnly').forEach(x=>x.classList.toggle('hidden',mode!=='divorce'));$('stampRow').classList.toggle('hidden',mode!=='sale');"),
+            ("let base=fee(value);if(mode==='inherit'){const surcharge=(Number($('heirs').value)>=5||$('foreign').value==='yes')?1:.5;base*=1+surcharge;$('rule').textContent=surcharge===1?'상속인 5인 이상 또는 외국인 포함: 기본보수 100% 가산 자동 적용':'일반 상속등기: 기본보수 50% 가산 자동 적용'}const agency=90000,",
+             "let base=fee(value);if(mode==='inherit'){const surcharge=(Number($('heirs').value)>=5||$('foreign').value==='yes')?1:.5;base*=1+surcharge}const agency=90000,")
+          ]
+          for old,new in reps:
+              if s.count(old)!=1:
+                  raise SystemExit(f'exact target count {s.count(old)} for: {old[:80]}')
+              s=s.replace(old,new,1)
+          p.write_text(s,encoding='utf-8')
+          PY
+          git diff --check
+          grep -q "base\*=1+surcharge" acquisition-calculator.html
+          ! grep -q "기본보수 100% 가산 자동 적용" acquisition-calculator.html
+          ! grep -q "기본보수 50% 가산 자동 적용" acquisition-calculator.html
+      - name: Commit changes and remove workflow
+        run: |
+          rm .github/workflows/remove-inheritance-surcharge-notice-once.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add acquisition-calculator.html .github/workflows/remove-inheritance-surcharge-notice-once.yml
+          git commit -m '상속 가산 안내문만 삭제하고 계산 적용 유지'
+          git push origin main
