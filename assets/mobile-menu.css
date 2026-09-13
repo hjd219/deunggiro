@@ -14,7 +14,7 @@
     display:block!important;position:fixed!important;top:0!important;right:0!important;bottom:0!important;left:auto!important;z-index:1300!important;
     width:70%!important;height:100dvh!important;max-height:none!important;margin:0!important;padding:0!important;
     overflow-y:auto!important;overscroll-behavior:contain;background:#fff!important;border:0!important;
-    border-radius:0!important;box-shadow:-8px 0 24px rgba(18,31,43,.14)!important;color:#162537!important;
+    border-left:1px solid #d8e2e9!important;border-radius:0!important;box-shadow:-10px 0 24px rgba(18,31,43,.18)!important;color:#162537!important;
     -webkit-overflow-scrolling:touch;
     transform:translate3d(100%,0,0);opacity:1;visibility:hidden;pointer-events:none;
     transition:transform .34s cubic-bezier(.22,.61,.36,1),visibility 0s linear .34s;
