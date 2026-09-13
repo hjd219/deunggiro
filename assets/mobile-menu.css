@@ -31,7 +31,7 @@
   .dg-mm-copy{display:flex;min-width:0;flex-direction:column;justify-content:center;gap:3px}
   .dg-mm-label{display:block;color:#1d2c3b;font-size:16px;font-weight:900;line-height:1.25;letter-spacing:-.5px;word-break:keep-all}
   .dg-mm-desc{display:block;color:#7d8995;font-size:12.5px;font-weight:650;line-height:1.35;letter-spacing:-.25px;word-break:keep-all}
-  .dg-mm-arrow{color:#7f8b96;font-size:27px;font-weight:300;line-height:1;text-align:right}
+  .dg-mm-arrow{color:#36a9e1;font-size:27px;font-weight:300;line-height:1;text-align:right}
   .dg-mm-item.is-current .dg-mm-label{color:var(--mm-color)}
   .dg-mm-home{--mm-color:#2f9ed0;--mm-bg:#eaf7fd}
   .dg-mm-inherit{--mm-color:#4e8fda;--mm-bg:#edf4fd}
