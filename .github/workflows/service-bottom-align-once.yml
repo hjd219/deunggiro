@@ -1,0 +1,49 @@
+name: Service bottom align once
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/service-bottom-align-once.yml']
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Align service icon and copy bottoms in source CSS
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          css=Path('assets/home.css')
+          s=css.read_text(encoding='utf-8')
+          old='.quick-icon{width:50px;height:50px;padding:0;display:grid;place-items:center}'
+          new='.quick-icon{width:50px;height:50px;padding:0;display:grid;place-items:center;align-self:end}'
+          if s.count(old)!=1: raise SystemExit(f'quick-icon count={s.count(old)}')
+          s=s.replace(old,new,1)
+          old='.quick-copy{position:static;z-index:1;min-width:0;padding-right:7px}'
+          new='.quick-copy{position:static;z-index:1;min-width:0;padding-right:7px;align-self:end}'
+          if s.count(old)!=1: raise SystemExit(f'quick-copy count={s.count(old)}')
+          css.write_text(s,encoding='utf-8')
+
+          p=Path('index.html')
+          h=p.read_text(encoding='utf-8')
+          old='<link rel="stylesheet" href="/assets/home.css?v=20260913-approved-icons">'
+          new='<link rel="stylesheet" href="/assets/home.css?v=20260913-service-bottom-align">'
+          if h.count(old)!=1: raise SystemExit(f'home.css link count={h.count(old)}')
+          p.write_text(h.replace(old,new,1),encoding='utf-8')
+          PY
+          git diff --check
+          changed="$(git diff --name-only)"
+          expected=$'assets/home.css\nindex.html'
+          test "$changed" = "$expected" || { echo "$changed"; exit 1; }
+      - name: Commit and clean workflow
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/service-bottom-align-once.yml
+          git add assets/home.css index.html
+          git commit -m '업무카드 5개 아이콘·텍스트 하단 기준 통일'
+          git pull --rebase origin main
+          git push origin HEAD:main
