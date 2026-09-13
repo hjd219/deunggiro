@@ -1,0 +1,73 @@
+name: Update trust contact copy once
+on:
+  push:
+    paths:
+      - '.github/workflows/update-trust-contact-copy-once.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Update contact copy
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          new_h2 = '복잡한 등기절차, 현재두 법무사가 직접 상담!'
+          new_p = '상담부터 등기 완료까지, 직접 확인합니다.'
+          changed=[]
+          for p in Path('.').rglob('*.html'):
+              if any(part in {'.git','node_modules'} for part in p.parts):
+                  continue
+              s=p.read_text(encoding='utf-8')
+              old=s
+              # Only the existing dark contact/footer section; preserve all markup/classes/design.
+              def repl(m):
+                  block=m.group(0)
+                  block=re.sub(r'<h2>.*?</h2>', f'<h2>{new_h2}</h2>', block, count=1, flags=re.S)
+                  block=re.sub(r'<p>.*?</p>', f'<p>{new_p}</p>', block, count=1, flags=re.S)
+                  return block
+              s=re.sub(r'<section\s+class=["\']contact["\'][^>]*>.*?</section>', repl, s, flags=re.S|re.I)
+              if s!=old:
+                  p.write_text(s,encoding='utf-8')
+                  changed.append(str(p))
+          print('CHANGED', len(changed))
+          for x in changed: print(x)
+          if not changed:
+              raise SystemExit('No contact sections changed')
+          PY
+      - name: Verify exact copy and commit
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          bad=[]; found=0
+          for p in Path('.').rglob('*.html'):
+              if '.git' in p.parts: continue
+              s=p.read_text(encoding='utf-8')
+              for m in re.finditer(r'<section\s+class=["\']contact["\'][^>]*>.*?</section>',s,re.S|re.I):
+                  found+=1; b=m.group(0)
+                  if '복잡한 등기절차, 현재두 법무사가 직접 상담!' not in b or '상담부터 등기 완료까지, 직접 확인합니다.' not in b:
+                      bad.append(str(p))
+          print('CONTACT_SECTIONS',found)
+          if bad: raise SystemExit('Verification failed: '+', '.join(sorted(set(bad))))
+          PY
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add '*.html' 'posts/*.html' 2>/dev/null || true
+          if ! git diff --cached --quiet; then
+            git commit -m '상담영역 직접상담 신뢰문구 통일'
+            git push origin main
+          fi
+      - name: Remove one-time workflow
+        run: |
+          git pull --rebase origin main
+          git rm .github/workflows/update-trust-contact-copy-once.yml
+          git commit -m '일회성 상담문구 작업 정리'
+          git push origin main
