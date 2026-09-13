@@ -1,0 +1,52 @@
+name: Detail service icons once
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/detail-service-icons-once.yml']
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Apply matching service icons to detail page titles
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          pages={
+            'inheritance.html':'service-inheritance.svg',
+            'renunciation.html':'service-renunciation.svg',
+            'corporate.html':'service-corporate.svg',
+            'realestate.html':'service-realestate.svg',
+            'family.html':'service-family.svg',
+          }
+          for name,icon in pages.items():
+            p=Path(name); s=p.read_text(encoding='utf-8')
+            marker='<div class="subhero-copy">'
+            if marker not in s: raise SystemExit(f'{name}: subhero-copy not found')
+            # Insert one icon immediately before breadcrumb; same main-card asset is reused.
+            insert=f'<div class="dg-detail-service-icon" aria-hidden="true"><img src="/assets/icons/{icon}" alt=""></div>'
+            if 'dg-detail-service-icon' not in s:
+              s=s.replace(marker,marker+insert,1)
+            # Source-level shared style inside each page's existing style block; no extra stylesheet/override file.
+            css='.dg-detail-service-icon{width:58px;height:58px;margin:0 0 12px;display:grid;place-items:center}.dg-detail-service-icon img{display:block;width:100%;height:100%;object-fit:contain}@media(max-width:800px){.dg-detail-service-icon{width:52px;height:52px;margin-bottom:10px}}\n'
+            if css.strip() not in s:
+              pos=s.find('</style>')
+              if pos<0: raise SystemExit(f'{name}: style close not found')
+              s=s[:pos]+css+s[pos:]
+            p.write_text(s,encoding='utf-8')
+          PY
+          git diff --check
+          test "$(git diff --name-only | sort)" = $'corporate.html\nfamily.html\ninheritance.html\nrealestate.html\nrenunciation.html'
+      - name: Commit and clean workflow
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/detail-service-icons-once.yml
+          git add inheritance.html renunciation.html corporate.html realestate.html family.html
+          git commit -m '개별 상세페이지 업무카드 아이콘 통일 적용'
+          git pull --rebase origin main
+          git push origin HEAD:main
