@@ -1,0 +1,35 @@
+name: Mobile Clear Surface Once
+'on':
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/mobile-clear-surface-once.yml
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Apply mobile clear surface
+        shell: bash
+        run: |
+          cat >> assets/home.css <<'EOF'
+
+/* HOME_MOBILE_CLEAR_SURFACE_V1 */
+@media(max-width:800px){
+  body.home{--home-sky:#f5faff}
+  body.home .hero,body.home .hero-grid,body.home .photo,body.home .quick,body.home .quick::before,body.home #calculator{background:var(--home-sky)}
+  body.home .quick-item.quick-rich{background:linear-gradient(112deg,var(--qbg),#fff 68%);border-color:#d4e2ec;box-shadow:0 7px 20px rgba(23,40,64,.06),inset 0 1px 0 rgba(255,255,255,.96)}
+  body.home .quick-icon{background:#fff}
+  body.home #calculator .calc-card,body.home #calculator .calculator-usage{background:#fff;border-color:#d5e5ef;box-shadow:0 7px 20px rgba(23,40,64,.05)}
+}
+EOF
+          grep -q 'HOME_MOBILE_CLEAR_SURFACE_V1' assets/home.css
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/home.css
+          git commit -m '모바일 배경과 카드 맑기 개선'
+          git push origin main
