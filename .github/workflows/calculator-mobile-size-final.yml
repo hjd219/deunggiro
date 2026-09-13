@@ -1,0 +1,40 @@
+name: Calculator mobile size final
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/calculator-mobile-size-final.yml']
+permissions:
+  contents: write
+jobs:
+  tune:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Tune mobile calculator icon
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('assets/home.css')
+          s=p.read_text(encoding='utf-8')
+          s=s.replace('#calculator .calculator-icon{width:52px;height:92px}','#calculator .calculator-icon{width:60px;height:92px}',1)
+          s=s.replace('#calculator .calculator-icon{width:50px;height:84px}','#calculator .calculator-icon{width:58px;height:84px}',1)
+          p.write_text(s,encoding='utf-8')
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          s=s.replace('/assets/home.css?v=20260913-calculator-slim','/assets/home.css?v=20260913-calculator-mobile-final')
+          s=s.replace('/assets/home.css?v=20260913-mobile-recovery-1','/assets/home.css?v=20260913-calculator-mobile-final')
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Verify and commit
+        run: |
+          git diff --check -- assets/home.css index.html
+          rm .github/workflows/calculator-mobile-size-final.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/home.css index.html .github/workflows/calculator-mobile-size-final.yml
+          git commit -m '모바일 계산기 아이콘 최종 크기 조정'
+          git pull --rebase origin main
+          git push origin HEAD:main
