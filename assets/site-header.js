@@ -25,7 +25,7 @@
   if(!document.querySelector('link[data-dg-mobile-menu]')){
     const link=document.createElement('link');
     link.rel='stylesheet';
-    link.href='/assets/mobile-menu.css?v=20260913-vertical';
+    link.href='/assets/mobile-menu.css?v=20260913-right70';
     link.dataset.dgMobileMenu='1';
     document.head.appendChild(link);
   }
@@ -60,8 +60,8 @@
     {kind:'info',label:'법률정보',desc:'최신정보 · 판례 · 실무가이드',href:'/posts.html',active:activePath==='/posts.html'}
   ];
 
-  panel.setAttribute('role','dialog');panel.setAttribute('aria-modal','true');panel.setAttribute('aria-label','전체 메뉴');
-  panel.innerHTML=`<div class="dg-mm-top"><a class="dg-mm-brand" href="/">등기로</a><button class="dg-mm-close" id="dg-shell-menu-close" type="button" aria-label="메뉴 닫기">×</button></div><div class="dg-mm-body"><h2 class="dg-mm-title">전체 메뉴</h2><p class="dg-mm-sub">원하는 업무를 선택하세요.</p><nav class="dg-mm-grid" aria-label="모바일 전체 메뉴">${items.map(item=>`<a class="dg-mm-item dg-mm-${item.kind}${item.active?' is-current':''}" href="${item.href}"${item.active?' aria-current="page"':''}><span class="dg-mm-icon">${icons[item.kind]}</span><span class="dg-mm-copy"><span class="dg-mm-label">${item.label}</span><span class="dg-mm-desc">${item.desc}</span></span><span class="dg-mm-arrow" aria-hidden="true">›</span></a>`).join('')}</nav><div class="dg-mm-divider"></div><div class="dg-mm-quick-title">빠른 이용</div><div class="dg-mm-quick"><a class="dg-mm-calc-btn" href="/#calculator">비용 계산</a><a class="dg-mm-call-btn" href="tel:0324251500">032-425-1500 상담</a></div><div class="dg-mm-footer"><span class="dg-mm-footer-brand">등기로</span><span class="dg-mm-footer-sep">|</span><span>현재두 법무사 사무소</span></div></div>`;
+  panel.setAttribute('role','dialog');panel.setAttribute('aria-modal','true');panel.setAttribute('aria-label','메뉴');
+  panel.innerHTML=`<div class="dg-mm-top"><span class="dg-mm-brand">메뉴</span><button class="dg-mm-close" id="dg-shell-menu-close" type="button" aria-label="메뉴 닫기">×</button></div><div class="dg-mm-body"><h2 class="dg-mm-title">전체 메뉴</h2><p class="dg-mm-sub">원하는 업무를 선택하세요.</p><nav class="dg-mm-grid" aria-label="모바일 메뉴">${items.map(item=>`<a class="dg-mm-item dg-mm-${item.kind}${item.active?' is-current':''}" href="${item.href}"${item.active?' aria-current="page"':''}><span class="dg-mm-icon">${icons[item.kind]}</span><span class="dg-mm-copy"><span class="dg-mm-label">${item.label}</span><span class="dg-mm-desc">${item.desc}</span></span><span class="dg-mm-arrow" aria-hidden="true">›</span></a>`).join('')}</nav><div class="dg-mm-divider"></div><div class="dg-mm-quick-title">빠른 이용</div><div class="dg-mm-quick"><a class="dg-mm-calc-btn" href="/#calculator">비용 계산</a><a class="dg-mm-call-btn" href="tel:0324251500">032-425-1500 상담</a></div><div class="dg-mm-footer"><span class="dg-mm-footer-brand">등기로</span><span class="dg-mm-footer-sep">|</span><span>현재두 법무사 사무소</span></div></div>`;
 
   const close=panel.querySelector('#dg-shell-menu-close');btn.setAttribute('aria-controls','dg-shell-mobile-panel');
   const setOpen=open=>{panel.classList.toggle('open',open);panel.setAttribute('aria-hidden',open?'false':'true');btn.setAttribute('aria-expanded',open?'true':'false');document.body.classList.toggle('mobile-menu-open',open);if(open)requestAnimationFrame(()=>close?.focus({preventScroll:true}));else if(document.activeElement===close)btn.focus({preventScroll:true})};
