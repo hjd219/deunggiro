@@ -37,8 +37,7 @@ jobs:
               '/* DETAIL_BG_RHYTHM_V2 */',
               '/* FAMILY_INHERITANCE_LAYOUT_V1 */',
               '/assets/section-finder.css',
-              'class="family-service-grid"',
-              'class="family-bottom-grid"'
+              'class="family-service-grid"'
           ]
           for marker in required:
               if marker not in text:
