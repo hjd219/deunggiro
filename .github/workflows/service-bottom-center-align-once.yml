@@ -1,0 +1,43 @@
+name: Service bottom center align once
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/service-bottom-center-align-once.yml']
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Align icon and copy bottoms while keeping group centered
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('assets/home.css')
+          s=p.read_text(encoding='utf-8')
+          old='.quick-item.quick-rich{--qc:#36a9e1;--qbg:#f1faff;position:relative;overflow:hidden;display:grid;grid-template-columns:52px minmax(0,1fr) 44px;gap:10px;align-items:center;text-align:left;min-width:0;min-height:150px;padding:17px 0 17px 15px;background:linear-gradient(110deg,var(--qbg),#fff 76%);border:1px solid #d7e4ec;border-radius:16px;box-shadow:0 8px 22px rgba(31,41,55,.08);transition:transform .28s cubic-bezier(.2,.8,.2,1),box-shadow .28s ease,border-color .2s ease;-webkit-tap-highlight-color:transparent}'
+          new='.quick-item.quick-rich{--qc:#36a9e1;--qbg:#f1faff;position:relative;overflow:hidden;display:grid;grid-template-columns:52px minmax(0,1fr) 44px;gap:10px;align-items:end;align-content:center;text-align:left;min-width:0;min-height:150px;padding:17px 0 17px 15px;background:linear-gradient(110deg,var(--qbg),#fff 76%);border:1px solid #d7e4ec;border-radius:16px;box-shadow:0 8px 22px rgba(31,41,55,.08);transition:transform .28s cubic-bezier(.2,.8,.2,1),box-shadow .28s ease,border-color .2s ease;-webkit-tap-highlight-color:transparent}'
+          if s.count(old)!=1: raise SystemExit(f'card rule count={s.count(old)}')
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
+
+          p=Path('index.html')
+          h=p.read_text(encoding='utf-8')
+          old='/assets/home.css?v=20260913-service-center-align'
+          new='/assets/home.css?v=20260913-service-bottom-center'
+          if h.count(old)!=1: raise SystemExit(f'home css version count={h.count(old)}')
+          p.write_text(h.replace(old,new,1),encoding='utf-8')
+          PY
+          git diff --check
+          test "$(git diff --name-only | sort)" = $'assets/home.css\nindex.html'
+      - name: Commit and clean workflow
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/service-bottom-center-align-once.yml
+          git add assets/home.css index.html
+          git commit -m '업무카드 아이콘·제목설명 하단선 정렬 및 중앙 유지'
+          git pull --rebase origin main
+          git push origin HEAD:main
