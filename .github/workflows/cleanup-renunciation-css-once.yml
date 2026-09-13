@@ -1,0 +1,53 @@
+name: Cleanup renunciation duplicate CSS once
+on:
+  push:
+    paths:
+      - '.github/workflows/cleanup-renunciation-css-once.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Remove superseded renunciation CSS block
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          p=Path('renunciation.html')
+          s=p.read_text(encoding='utf-8')
+          old=s
+
+          pattern=r'\n<style>\n/\* DETAIL_HOME_SKY_BG_V1 \*/[\s\S]*?</style>\n'
+          matches=re.findall(pattern,s)
+          if len(matches)!=1:
+              raise SystemExit(f'expected 1 DETAIL_HOME_SKY_BG_V1 block, found {len(matches)}')
+          s=re.sub(pattern,'\n',s,count=1)
+
+          # Keep the final background rhythm and all renunciation-specific layout rules.
+          assert '/* DETAIL_BG_RHYTHM_V2 */' in s
+          assert '/* RENUNCIATION_INHERITANCE_STYLE_V1 */' in s
+          assert '.renunciation-flow' in s
+          assert '.ren-doc-grid' in s
+          assert '.ren-faq' in s
+          assert 'DETAIL_HOME_SKY_BG_V1' not in s
+
+          if s==old:
+              raise SystemExit('no change')
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commit and remove one-time workflow
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git rm .github/workflows/cleanup-renunciation-css-once.yml
+          git add renunciation.html
+          git diff --cached --check
+          git diff --cached -- renunciation.html
+          git commit -m '구조정리: 상속포기 한정승인 중복 CSS 제거'
+          git push
