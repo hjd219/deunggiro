@@ -1,0 +1,64 @@
+name: Service card copy color once
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/service-card-copy-color-once.yml']
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Update service card copy and layout
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          # index.html: exact copy updates only
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          pairs={
+            '<p>상속등기 · 재산분할</p>':'<p>단독상속 · 공동상속 · 유증</p>',
+            '<p>상속 빚 대응</p>':'<p>기한 · 절차 · 필요서류</p>',
+            '<p>설립 · 변경 · 증자</p>':'<p>설립 · 변경 · 증자 · 회사계속</p>',
+            '<p>매매 · 증여 · 담보</p>':'<p>매매 · 증여 · 이혼재산분할 · 담보</p>',
+            '<p>이혼 · 개명 · 후견</p>':'<p>이혼 · 개명 · 성본변경 · 후견</p>',
+            '/assets/home.css?v=20260913-service-bottom-center':'/assets/home.css?v=20260913-service-card-copy-color'
+          }
+          for old,new in pairs.items():
+              if s.count(old)!=1:
+                  raise SystemExit(f'index exact match failed: {old} count={s.count(old)}')
+              s=s.replace(old,new,1)
+          p.write_text(s,encoding='utf-8')
+
+          # home.css: modify existing source rules, no appended override block
+          p=Path('assets/home.css')
+          s=p.read_text(encoding='utf-8')
+          rules={
+            'grid-template-columns:52px minmax(0,1fr) 44px;gap:10px;align-items:start;align-content:center':'grid-template-columns:40px minmax(0,1fr) 44px;gap:8px;align-items:start;align-content:center',
+            '.quick-icon{width:50px;height:50px;padding:0;display:grid;place-items:center}':'.quick-icon{width:40px;height:40px;padding:0;display:grid;place-items:center}',
+            '.quick-item.quick-rich h3{margin:0 0 6px;color:#20242b;font-size:18px;line-height:1.25;font-weight:900;letter-spacing:-.75px;word-break:keep-all}':'.quick-item.quick-rich h3{margin:0;color:#20242b;font-size:17px;line-height:1.2;font-weight:900;letter-spacing:-.8px;word-break:keep-all;white-space:nowrap;text-align:left}',
+            '.quick-item.quick-rich.c4 h3{font-size:16px}':'.quick-item.quick-rich.c4 h3{font-size:13.5px;letter-spacing:-1px}',
+            '.quick-item.quick-rich p{margin:0;color:var(--qc);font-size:12.5px;font-weight:800;line-height:1.4;opacity:1;word-break:keep-all}':'.quick-item.quick-rich p{position:absolute;left:15px;right:48px;bottom:22px;margin:0;color:var(--qc);font-size:10.8px;font-weight:900;line-height:1.25;letter-spacing:-.45px;opacity:1;word-break:keep-all;white-space:nowrap;text-align:left}'
+          }
+          for old,new in rules.items():
+              if s.count(old)!=1:
+                  raise SystemExit(f'home.css source rule mismatch: {old[:70]} count={s.count(old)}')
+              s=s.replace(old,new,1)
+          p.write_text(s,encoding='utf-8')
+          PY
+          git diff --check -- index.html assets/home.css
+          git diff -- index.html assets/home.css
+      - name: Commit and clean workflow
+        run: |
+          rm .github/workflows/service-card-copy-color-once.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html assets/home.css .github/workflows/service-card-copy-color-once.yml
+          git commit -m '업무카드 문구·색상·한줄 정렬 적용'
+          git pull --rebase origin main
+          git push origin HEAD:main
