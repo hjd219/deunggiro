@@ -195,28 +195,6 @@ linear-gradient(135deg,#f8faff,#fff)}
   }
 }
 </script>
-<style>
-/* MOBILE_STICKY_MENU_V1 */
-@media(max-width:800px){
-  .header{position:sticky!important;top:0!important;z-index:999!important;background:#fff!important;}
-  .header-inner{min-height:64px!important;height:64px!important;padding-top:0!important;padding-bottom:0!important;gap:8px!important;}
-  .header .logo{margin-right:auto!important;min-width:0!important;}
-  .header .logo span{font-size:24px!important;line-height:1!important;}
-  .header .logo small{display:none!important;}
-  .header .nav{display:none!important;}
-  .header .mobile-only{display:inline-flex!important;height:40px!important;min-height:40px!important;padding:0 13px!important;border-radius:9px!important;font-size:14px!important;}
-  .mobile-menu-btn{display:inline-flex!important;align-items:center;justify-content:center;height:40px;padding:0 12px;border:0;border-radius:9px;background:#eef3f8;color:#1f2937;font-size:14px;font-weight:900;cursor:pointer;}
-  .mobile-menu-panel{display:none;position:fixed;top:64px;left:0;right:0;z-index:998;background:#fff;border-bottom:1px solid #dfe4ea;box-shadow:0 12px 24px rgba(20,35,55,.14);padding:12px 16px 16px;}
-  .mobile-menu-panel.open{display:block;}
-  .mobile-menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-  .mobile-menu-grid a{display:flex;align-items:center;min-height:44px;padding:0 12px;border:1px solid #e1e7ee;border-radius:10px;background:#f6f8fb;color:#17202d;font-size:13px;font-weight:850;text-decoration:none;}
-  .mobile-menu-grid a:first-child{grid-column:1/-1;background:#eef4ff;color:#2459a7;}
-  .mobile-menu-close{width:100%;height:38px;margin-top:10px;border:0;background:transparent;color:#667384;font-size:13px;font-weight:800;cursor:pointer;}
-  body.mobile-menu-open{overflow:hidden;}
-}
-@media(min-width:801px){.mobile-menu-btn,.mobile-menu-panel{display:none!important;}}
-</style>
-
 <link rel="stylesheet" href="/assets/detail-common-hover.css?v=20260913">
 <link rel="stylesheet" href="/assets/site-shell.css?v=20260910-2135">
 <link rel="stylesheet" href="/assets/latest-posts.css">
@@ -467,25 +445,6 @@ body{background:var(--detail-sky)!important}
 @keyframes seqRollOut{to{opacity:0;transform:translateY(-9px)}}
 @keyframes seqRollIn{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
 </style>
-<script>
-/* MOBILE_STICKY_MENU_V1 */
-(function(){
-  const btn=document.getElementById('mobile-menu-btn');
-  const panel=document.getElementById('mobile-menu-panel');
-  const close=document.getElementById('mobile-menu-close');
-  if(!btn||!panel) return;
-  function setOpen(open){
-    panel.classList.toggle('open',open);
-    panel.setAttribute('aria-hidden',open?'false':'true');
-    btn.setAttribute('aria-expanded',open?'true':'false');
-    document.body.classList.toggle('mobile-menu-open',open);
-  }
-  btn.addEventListener('click',()=>setOpen(!panel.classList.contains('open')));
-  if(close) close.addEventListener('click',()=>setOpen(false));
-  panel.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setOpen(false)));
-  document.addEventListener('keydown',e=>{if(e.key==='Escape') setOpen(false);});
-})();
-</script>
 <script src="/assets/site-shell.js?v=8" defer></script>
 <script src="/assets/latest-posts.js" defer></script>
 <script src="/assets/section-finder.js" defer></script>
