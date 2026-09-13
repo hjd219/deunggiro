@@ -1,0 +1,39 @@
+name: Mobile service icon size once
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/mobile-service-icon-size-once.yml']
+permissions:
+  contents: write
+jobs:
+  tune:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Tune mobile service icon size
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('assets/home.css')
+          s=p.read_text(encoding='utf-8')
+          old='.quick-icon{width:64px;height:64px;padding:0}.quick-item.quick-rich h3{font-size:21px;line-height:1.3}'
+          new='.quick-icon{width:56px;height:56px;padding:0}.quick-item.quick-rich h3{font-size:21px;line-height:1.3}'
+          if old not in s:
+              raise SystemExit('target mobile quick-icon rule not found')
+          s=s.replace(old,new,1)
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Verify and commit
+        run: |
+          git diff --check -- assets/home.css
+          git diff -- assets/home.css
+          rm .github/workflows/mobile-service-icon-size-once.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/home.css .github/workflows/mobile-service-icon-size-once.yml
+          git commit -m '모바일 업무카드 아이콘 크기 축소'
+          git pull --rebase origin main
+          git push origin HEAD:main
