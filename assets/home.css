@@ -191,7 +191,7 @@ body.home #services .quick-item.quick-rich{
 .quick-rich.c2{--qc:#7766d5;--qbg:#f5f2ff}.quick-rich.c3{--qc:#20a38e;--qbg:#effbf8}.quick-rich.c4{--qc:#c89725;--qbg:#fff9e9}.quick-rich.c5{--qc:#cf679d;--qbg:#fff3f8}
 .quick-icon{width:50px;height:50px;padding:0;display:grid;place-items:center;align-self:end}
 .quick-icon svg,.quick-icon img{width:100%;height:100%;display:block}
-.quick-copy{position:static;z-index:1;min-width:0;padding-right:7px}
+.quick-copy{position:static;z-index:1;min-width:0;padding-right:7px;align-self:end}
 .quick-item.quick-rich h3{margin:0 0 6px;color:#20242b;font-size:18px;line-height:1.25;font-weight:900;letter-spacing:-.75px;word-break:keep-all}
 .quick-item.quick-rich.c4 h3{font-size:16px}
 .quick-item.quick-rich p{margin:0;color:var(--qc);font-size:12.5px;font-weight:800;line-height:1.4;opacity:1;word-break:keep-all}
