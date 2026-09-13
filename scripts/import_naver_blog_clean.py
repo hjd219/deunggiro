@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup,NavigableString,Tag
 from category_rules import classify_title
 ROOT=Path(__file__).resolve().parents[1]; POSTS_JSON=ROOT/'data'/'posts.json'; POSTS_DIR=ROOT/'posts'; MEDIA_ROOT=ROOT/'assets'/'naver-images'
 BLOG_ID='hjd21'; RSS_URL=f'https://rss.blog.naver.com/{BLOG_ID}.xml'; BASE='https://www.deunggiro.kr'; MAX_IMPORT=3; MAX_REPAIR=100
+SUMMARY_TEXT='진행 전 꼭 확인해야 할 핵심 내용과 주의사항'
 UA={'User-Agent':'Mozilla/5.0 (compatible; DeunggiroBlogImporter/4.1; +https://www.deunggiro.kr/)'}
 MOJIBAKE=('êµ','ë“','ë¡','ì§','ì—','ì›','ë¹','ê³','ë°','ì„','ìƒ','ìž','í•','ì‹','ìš','ìœ','ì•','ë¶','ì¶','ì ','ì²')
 def get(url):
@@ -71,6 +72,22 @@ def inspect_file(path):
  soup=BeautifulSoup(path.read_text(encoding='utf-8',errors='replace'),'html.parser'); body=soup.select_one('.article-body')
  if body is None: return 0,0,'no-body'
  chars,bad=quality_text(' '.join(body.stripped_strings)); return chars,bad,('ok' if chars>=500 and bad==0 else ('mojibake' if bad else 'short'))
+def sync_summaries(posts):
+ changed=0
+ for p in posts:
+  if p.get('source')!='naver-blog': continue
+  if p.get('summary')!=SUMMARY_TEXT:
+   p['summary']=SUMMARY_TEXT; changed+=1
+  slug=(p.get('slug') or '').replace('.html',''); path=POSTS_DIR/f'{slug}.html'
+  if not path.exists(): continue
+  raw=path.read_text(encoding='utf-8',errors='replace'); soup=BeautifulSoup(raw,'html.parser'); touched=False
+  for selector in ('meta[name="description"]','meta[name="dg-summary"]'):
+   node=soup.select_one(selector)
+   if node and node.get('content')!=SUMMARY_TEXT: node['content']=SUMMARY_TEXT; touched=True
+  desc=soup.select_one('p.desc')
+  if desc and desc.get_text(strip=True)!=SUMMARY_TEXT: desc.string=SUMMARY_TEXT; touched=True
+  if touched: path.write_text(str(soup),encoding='utf-8')
+ print('SUMMARY_SYNC',changed)
 def build(p,body):
  t=html.escape(p['title']); sm=html.escape(p.get('summary') or ''); c=html.escape(p.get('category') or '기타'); d=p.get('date') or datetime.now().strftime('%Y-%m-%d'); sl=p['slug']
  return f'''<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{t} | 현재두 법무사 사무소</title><meta name="description" content="{sm}"><link rel="canonical" href="{BASE}/posts/{sl}.html"><meta name="dg-title" content="{t}"><meta name="dg-category" content="{c}"><meta name="dg-date" content="{d}"><meta name="dg-summary" content="{sm}"><link rel="stylesheet" href="/assets/article-v2.css?v=9"><link rel="stylesheet" href="/assets/site-shell.css"></head><body class="article-v2"><header class="header"></header><main class="section"><div class="container article-wrap"><article class="article"><div class="post-meta"><span class="badge">{c}</span>{d}</div><h1>{t}</h1><p class="desc">{sm}</p><div class="article-body">{body}</div><!-- SEO_RELATED_POSTS_START --><!-- SEO_RELATED_POSTS_END --></article></div></main><section class="contact"></section><footer class="footer"></footer><script src="/assets/site-shell.js" defer></script><script src="/assets/article-v2.js" defer></script></body></html>'''
@@ -103,7 +120,7 @@ def repair(posts):
   try:
    body,text,imgs=extract(url,slug); chars,moji=quality_text(text); print('REPAIR_CANDIDATE',slug,'reason='+reason,'old='+str(oldchars),'new='+str(chars),'mojibake='+str(moji),'images='+str(imgs))
    if chars<500 or moji: continue
-   p['category']=category(p.get('title') or ''); p['summary']=p.get('summary') or ((p.get('title') or '')+'의 핵심 절차와 준비사항을 정리합니다.')[:100]
+   p['category']=category(p.get('title') or ''); p['summary']=SUMMARY_TEXT
    saved=save_post(p,body); repaired+=1; print('REPAIRED',slug,'saved='+str(saved))
   except Exception as e: print('REPAIR_SKIP',slug,e)
  print('REPAIRED_TOTAL',repaired)
@@ -116,7 +133,7 @@ def validate_all(posts):
  print('FINAL_QUALITY',checked,'BAD',len(bad))
  if bad: print('FINAL_BAD_LIST',','.join(bad)); raise RuntimeError('네이버 자동작성 불량글이 남아 있어 배포를 중단합니다.')
 def main():
- posts=json.loads(POSTS_JSON.read_text(encoding='utf-8')); repair(posts); sources={str(p.get('source_url','')) for p in posts}; titles={norm(p.get('title','')) for p in posts}; imported=0; checked=0
+ posts=json.loads(POSTS_JSON.read_text(encoding='utf-8')); sync_summaries(posts); repair(posts); sources={str(p.get('source_url','')) for p in posts}; titles={norm(p.get('title','')) for p in posts}; imported=0; checked=0
  for title,url,date in feed():
   if imported>=MAX_IMPORT: break
   if url in sources or norm(title) in titles: continue
@@ -126,7 +143,7 @@ def main():
   try:
    body,text,imgs=extract(url,slug); chars,moji=quality_text(text); print('CANDIDATE',n,'chars='+str(chars),'mojibake='+str(moji),'images='+str(imgs))
    if chars<500 or moji: continue
-   sm=(re.sub(r'^\s*\[[^\]]+\]\s*','',title)+'의 핵심 절차와 준비사항을 정리합니다.')[:100]; p={'title':title,'category':category(title),'date':date,'slug':slug,'keywords':title,'summary':sm,'source_url':url,'source':'naver-blog'}
+   sm=SUMMARY_TEXT; p={'title':title,'category':category(title),'date':date,'slug':slug,'keywords':title,'summary':sm,'source_url':url,'source':'naver-blog'}
    saved=save_post(p,body); posts.insert(0,p); sources.add(url); titles.add(norm(title)); imported+=1; print('IMPORTED_NEW',slug,'saved='+str(saved))
   except Exception as e: print('SKIP',n,e)
  POSTS_JSON.write_text(json.dumps(posts,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'); validate_all(posts); print('IMPORT_SCAN',checked,'IMPORTED',imported)
