@@ -1,0 +1,86 @@
+name: Extract inheritance page CSS once
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/extract-inheritance-page-css-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Extract inheritance-only CSS without visual changes
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          html = Path('inheritance.html')
+          s = html.read_text(encoding='utf-8')
+          title = '<title>상속등기는 등기로 | 인천 단독상속·공동상속·유증</title>'
+          if title not in s:
+              raise SystemExit('SEO title guard failed')
+
+          p1 = re.compile(r'<style>\s*/\* INHERITANCE_ICON_TEXT_SIDE_V1 \*/.*?</style>', re.S)
+          p2 = re.compile(r'<style>\s*/\* INHERITANCE_MOBILE_REFERENCE_V11 \*/.*?</style>', re.S)
+          m1, m2 = p1.search(s), p2.search(s)
+          if not m1 or not m2:
+              raise SystemExit('target CSS block missing')
+          if m1.start() >= m2.start():
+              raise SystemExit('unexpected CSS order')
+
+          def inner(m):
+              block=m.group(0)
+              return re.sub(r'^<style>\s*|\s*</style>$','',block,flags=re.S).strip()
+
+          css = inner(m1) + '\n\n' + inner(m2) + '\n'
+          asset = Path('assets/inheritance-page.css')
+          if asset.exists():
+              raise SystemExit('assets/inheritance-page.css already exists')
+          asset.write_text(css, encoding='utf-8')
+
+          link = '<link rel="stylesheet" href="/assets/inheritance-page.css?v=20260913">'
+          s2 = s[:m1.start()] + link + s[m1.end():]
+          # Re-find V11 after first replacement and remove it from HTML.
+          m2b = p2.search(s2)
+          if not m2b:
+              raise SystemExit('V11 block missing after first replacement')
+          s2 = s2[:m2b.start()] + s2[m2b.end():]
+
+          guards = [
+              title,
+              '<link rel="stylesheet" href="/assets/inheritance-page.css?v=20260913">',
+              '<script src="/assets/inheritance-pc-layout.js?v=20260913" defer></script>',
+              '<script src="/assets/inheritance-search.js?v=20260913" defer></script>',
+              '<script src="/assets/inheritance-related-roll.js?v=20260913" defer></script>',
+              'id="inheritance-overview"',
+              'id="documents"'
+          ]
+          for g in guards:
+              if g not in s2:
+                  raise SystemExit('guard missing: '+g)
+          for marker in ['INHERITANCE_ICON_TEXT_SIDE_V1','INHERITANCE_MOBILE_REFERENCE_V11']:
+              if marker in s2:
+                  raise SystemExit('inline marker residue: '+marker)
+              if marker not in css:
+                  raise SystemExit('asset marker missing: '+marker)
+
+          html.write_text(s2, encoding='utf-8')
+          PY
+
+          git diff --check
+          git diff -- inheritance.html assets/inheritance-page.css
+
+          rm .github/workflows/extract-inheritance-page-css-once.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add inheritance.html assets/inheritance-page.css .github/workflows/extract-inheritance-page-css-once.yml
+          git commit -m '구조정리: 상속등기 전용 CSS 외부화'
+          git push origin main
