@@ -1,0 +1,74 @@
+name: Split detail popover once
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/split-detail-popover-once.yml']
+permissions:
+  contents: write
+jobs:
+  split:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Split detail popover CSS and JS
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          js_path = Path('assets/latest-posts.js')
+          src = js_path.read_text(encoding='utf-8')
+          marker = '/* DETAIL_POPOVERS_V8 */'
+          assert marker in src, 'detail popover marker not found'
+          prefix, tail = src.split(marker, 1)
+          pop = marker + tail
+
+          pattern = re.compile(r"if\(!document\.getElementById\('dg-detail-popover-style'\)\)\{const style=document\.createElement\('style'\);style\.id='dg-detail-popover-style';style\.textContent=`(.*?)`;document\.head\.appendChild\(style\)\}", re.S)
+          m = pattern.search(pop)
+          assert m, 'inline detail popover style block not found'
+
+          css = m.group(1).replace('\\n', '\n').strip() + '\n'
+          pop_js = pattern.sub('', pop, count=1).strip() + '\n'
+          latest_js = prefix.rstrip() + '\n'
+
+          Path('assets/detail-popover.css').write_text(css, encoding='utf-8')
+          Path('assets/detail-popover.js').write_text(pop_js, encoding='utf-8')
+          js_path.write_text(latest_js, encoding='utf-8')
+
+          css_tag = '<link rel="stylesheet" href="/assets/detail-popover.css?v=20260913">'
+          js_tag = '<script src="/assets/detail-popover.js?v=20260913" defer></script>'
+          for name in ('inheritance.html','renunciation.html'):
+              p = Path(name)
+              s = p.read_text(encoding='utf-8')
+              if css_tag not in s:
+                  s = s.replace('</head>', css_tag + '\n</head>', 1)
+              if js_tag not in s:
+                  matches = list(re.finditer(r'<script[^>]+src="/assets/latest-posts\.js[^>]*></script>', s))
+                  if matches:
+                      end = matches[-1].end()
+                      s = s[:end] + '\n' + js_tag + s[end:]
+                  else:
+                      s = s.replace('</body>', js_tag + '\n</body>', 1)
+              p.write_text(s, encoding='utf-8')
+
+          assert marker not in Path('assets/latest-posts.js').read_text(encoding='utf-8')
+          assert 'dg-detail-popover-style' not in Path('assets/latest-posts.js').read_text(encoding='utf-8')
+          assert 'DETAIL_POPOVERS_V8' in Path('assets/detail-popover.js').read_text(encoding='utf-8')
+          assert '.dg-detail-popover' in Path('assets/detail-popover.css').read_text(encoding='utf-8')
+          for name in ('inheritance.html','renunciation.html'):
+              s = Path(name).read_text(encoding='utf-8')
+              assert s.count(css_tag) == 1
+              assert s.count(js_tag) == 1
+          PY
+          git diff --check
+          git diff -- assets/latest-posts.js assets/detail-popover.js assets/detail-popover.css inheritance.html renunciation.html
+      - name: Commit split and remove workflow
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git rm .github/workflows/split-detail-popover-once.yml
+          git add assets/latest-posts.js assets/detail-popover.js assets/detail-popover.css inheritance.html renunciation.html
+          git commit -m "구조정리: 세부안내 팝오버 CSS JS 분리"
+          git push origin main
