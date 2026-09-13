@@ -44,7 +44,7 @@
   .dg-mm-quick-title{margin:0 0 12px;color:#8d98a3;font-size:13px;font-weight:900}
   .dg-mm-quick{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .dg-mm-quick a{display:flex;min-height:52px;align-items:center;justify-content:center;border-radius:15px;text-decoration:none!important;font-size:14px;font-weight:900}
-  .dg-mm-calc-btn{border:1px solid #e1e8ee;background:#f4f8fb;color:#344250!important}
+  .dg-mm-calc-btn{border:1px solid #36a9e1;background:#f4f8fb;color:#344250!important}
   .dg-mm-call-btn{border:1px solid #35a8df;background:#35a8df;color:#fff!important}
   .dg-mm-footer{margin-top:25px;text-align:center;color:#4f5d69;font-size:15px;font-weight:750;letter-spacing:-.2px}
   .dg-mm-footer .dg-mm-footer-brand{color:#35a8df;font-weight:900}
