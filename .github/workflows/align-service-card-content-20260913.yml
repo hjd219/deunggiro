@@ -1,0 +1,33 @@
+name: Align service card content
+on:
+  push:
+    paths:
+      - '.github/workflows/align-service-card-content-20260913.yml'
+permissions:
+  contents: write
+jobs:
+  align:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Align service card icon and copy bottoms
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('assets/home.css')
+          s=p.read_text()
+          old='.quick-item.quick-rich{--qc:#36a9e1;--qbg:#f1faff;position:relative;overflow:hidden;display:grid;grid-template-columns:52px minmax(0,1fr) 44px;gap:10px;align-items:center;text-align:left;'
+          new='.quick-item.quick-rich{--qc:#36a9e1;--qbg:#f1faff;position:relative;overflow:hidden;display:grid;grid-template-columns:52px minmax(0,1fr) 44px;gap:10px;align-items:end;text-align:left;'
+          if s.count(old) != 1:
+              raise SystemExit(f'expected exactly one target, found {s.count(old)}')
+          p.write_text(s.replace(old,new,1))
+          PY
+      - name: Verify scope and commit
+        run: |
+          git diff --check
+          git diff -- assets/home.css
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/home.css
+          git commit -m '업무카드 아이콘과 텍스트 하단선 정렬'
+          git push
