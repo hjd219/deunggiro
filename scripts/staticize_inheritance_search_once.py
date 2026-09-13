@@ -1,0 +1,73 @@
+from pathlib import Path
+
+p = Path('inheritance.html')
+s = p.read_text(encoding='utf-8')
+
+required_title = '<title>상속등기는 등기로 | 인천 단독상속·공동상속·유증</title>'
+if required_title not in s:
+    raise SystemExit('SEO title guard failed')
+
+old_section = '''<section class="inheritance-finder"><div class="container"><h2>어떤 상속등기 업무가 궁금하세요?</h2><div class="inheritance-search-row"><div class="inheritance-combo"><input id="inheritance-query" class="inheritance-query" type="search" placeholder="검색하거나 화살표를 눌러 선택하세요" autocomplete="off" aria-controls="inheritance-results" aria-expanded="false"><button id="inheritance-toggle" class="inheritance-toggle" type="button" aria-label="선택항 펼치기">▼</button><ul id="inheritance-results" class="inheritance-results"></ul></div><button id="inheritance-search-button" class="inheritance-search-button" type="button">찾아보기</button></div><div class="inheritance-quick"><a href="#inheritance-overview">절차</a><a href="#documents">필요서류</a><a href="/acquisition-calculator.html?mode=inherit&v=20260910-accountfix">비용계산</a><button type="button" data-query="협의분할">협의분할</button><button type="button" data-query="연락두절">연락두절</button><button type="button" data-query="미성년자">미성년자</button><button type="button" data-query="해외거주 상속인">해외상속인</button><button type="button" data-query="상속재산분할심판">재산분할심판</button></div></div></section>'''
+
+static_inline = '''<div class="inheritance-finder-inline"><h2>어떤 상속등기 업무가 궁금하세요?</h2><div class="inheritance-finder-layout"><div class="inheritance-finder-right"><div class="inheritance-search-row"><div class="inheritance-combo"><input id="inheritance-query" class="inheritance-query" type="search" placeholder="검색하거나 화살표를 눌러 선택하세요" autocomplete="off" aria-controls="inheritance-results" aria-expanded="false"><button id="inheritance-toggle" class="inheritance-toggle" type="button" aria-label="선택항 펼치기">▼</button><ul id="inheritance-results" class="inheritance-results"></ul></div><button id="inheritance-search-button" class="inheritance-search-button" type="button">찾아보기</button></div><div class="inheritance-search-status" aria-live="polite">입력하면 검색 결과가 자동으로 펼쳐집니다.</div></div></div></div>'''
+
+buttons = '''<div class="buttons"><a class="btn dg-home-button" href="/" aria-label="홈페이지 메인으로" title="홈페이지 메인으로"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5M5.5 10v10h13V10M9.5 20v-6h5v6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a><a class="btn btn-primary" href="tel:0324251500">032-425-1500 상담</a><a class="btn btn-border" href="/posts.html">관련 법률정보</a></div>'''
+
+static_css = '''<style>/* INHERITANCE_FINDER_INLINE_STATIC_V1 */
+.inheritance-finder-inline{margin-top:30px;padding-top:24px;border-top:1px solid rgba(54,169,225,.25);max-width:640px}.inheritance-finder-inline>h2{margin:0 0 13px;font-size:21px;letter-spacing:-.8px}.inheritance-finder-inline .inheritance-finder-layout{display:flex;flex-direction:column;gap:9px;width:100%}.inheritance-finder-inline .inheritance-finder-right{width:100%}.inheritance-finder-inline .inheritance-search-row{grid-template-columns:minmax(0,1fr) 88px;gap:7px}.inheritance-finder-inline .inheritance-query,.inheritance-finder-inline .inheritance-toggle,.inheritance-finder-inline .inheritance-search-button{height:48px}.inheritance-finder-inline .inheritance-combo:before{top:6px}.inheritance-finder-inline .inheritance-results{top:53px}@media(max-width:800px){.inheritance-finder-inline{margin-top:24px;padding-top:20px;max-width:none}.inheritance-finder-inline .inheritance-search-row{grid-template-columns:minmax(0,1fr) 76px}}
+</style>'''
+
+runtime_start = " const status=document.createElement('div');status.className='inheritance-search-status';status.setAttribute('aria-live','polite');status.textContent='입력하면 검색 결과가 자동으로 펼쳐집니다.';document.querySelector('.inheritance-search-row')?.insertAdjacentElement('afterend',status);\n"
+runtime_start += " const finder=document.querySelector('.inheritance-finder .container'),row=document.querySelector('.inheritance-search-row'),quick=document.querySelector('.inheritance-quick');\n"
+runtime_start += " if(finder&&row&&quick){\n"
+runtime_end = " }\n const fixed=[{title:'상속등기 절차',href:'#inheritance-overview',type:'페이지'}"
+
+if old_section not in s:
+    raise SystemExit('finder source section not found')
+if buttons not in s:
+    raise SystemExit('hero buttons anchor not found')
+if runtime_start not in s:
+    raise SystemExit('runtime relocation start not found')
+if runtime_end not in s:
+    raise SystemExit('runtime relocation end not found')
+if 'INHERITANCE_FINDER_INLINE_STATIC_V1' in s:
+    raise SystemExit('static marker already present')
+
+# Replace current runtime-rendered structure with identical source HTML.
+s = s.replace(buttons, buttons + static_inline, 1)
+s = s.replace(old_section, '', 1)
+start = s.index(runtime_start)
+end = s.index(runtime_end, start)
+s = s[:start] + " const status=document.querySelector('.inheritance-search-status');\n if(!status)return;\n" + s[end + len(" }\n"):]
+
+marker = '<link rel="stylesheet" href="/assets/detail-popover.css?v=20260913">'
+if marker not in s:
+    raise SystemExit('style insertion marker not found')
+s = s.replace(marker, static_css + marker, 1)
+
+checks = [
+    required_title,
+    '<meta name="description" content="인천 상속등기, 절차·비용·필요서류를 알기 쉽게. 협의분할, 상속취득세와 실제 처리사례도 안내합니다.">',
+    'id="inheritance-overview"',
+    'id="documents"',
+    'INHERITANCE_MOBILE_REFERENCE_V11',
+    'INHERITANCE_PC_LAYOUT_V10',
+    'INHERITANCE_FINDER_INLINE_STATIC_V1',
+    'class="inheritance-search-status" aria-live="polite"',
+    "const status=document.querySelector('.inheritance-search-status');"
+]
+for c in checks:
+    if c not in s:
+        raise SystemExit('guard missing: ' + c)
+
+forbidden = [
+    "document.createElement('style');css.textContent='.inheritance-finder-inline",
+    "document.querySelector('.inheritance-finder .container')",
+    "quick.remove();",
+    '<section class="inheritance-finder"><div class="container">'
+]
+for c in forbidden:
+    if c in s:
+        raise SystemExit('runtime relocation residue: ' + c)
+
+p.write_text(s, encoding='utf-8')
