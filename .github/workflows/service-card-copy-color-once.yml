@@ -18,7 +18,6 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
 
-          # index.html: exact copy updates only
           p=Path('index.html')
           s=p.read_text(encoding='utf-8')
           pairs={
@@ -35,20 +34,13 @@ jobs:
               s=s.replace(old,new,1)
           p.write_text(s,encoding='utf-8')
 
-          # home.css: modify existing source rules, no appended override block
           p=Path('assets/home.css')
           s=p.read_text(encoding='utf-8')
-          rules={
-            'grid-template-columns:52px minmax(0,1fr) 44px;gap:10px;align-items:start;align-content:center':'grid-template-columns:40px minmax(0,1fr) 44px;gap:8px;align-items:start;align-content:center',
-            '.quick-icon{width:50px;height:50px;padding:0;display:grid;place-items:center}':'.quick-icon{width:40px;height:40px;padding:0;display:grid;place-items:center}',
-            '.quick-item.quick-rich h3{margin:0 0 6px;color:#20242b;font-size:18px;line-height:1.25;font-weight:900;letter-spacing:-.75px;word-break:keep-all}':'.quick-item.quick-rich h3{margin:0;color:#20242b;font-size:17px;line-height:1.2;font-weight:900;letter-spacing:-.8px;word-break:keep-all;white-space:nowrap;text-align:left}',
-            '.quick-item.quick-rich.c4 h3{font-size:16px}':'.quick-item.quick-rich.c4 h3{font-size:13.5px;letter-spacing:-1px}',
-            '.quick-item.quick-rich p{margin:0;color:var(--qc);font-size:12.5px;font-weight:800;line-height:1.4;opacity:1;word-break:keep-all}':'.quick-item.quick-rich p{position:absolute;left:15px;right:48px;bottom:22px;margin:0;color:var(--qc);font-size:10.8px;font-weight:900;line-height:1.25;letter-spacing:-.45px;opacity:1;word-break:keep-all;white-space:nowrap;text-align:left}'
-          }
-          for old,new in rules.items():
-              if s.count(old)!=1:
-                  raise SystemExit(f'home.css source rule mismatch: {old[:70]} count={s.count(old)}')
-              s=s.replace(old,new,1)
+          old='.quick-item.quick-rich p{grid-column:1/3;grid-row:2;z-index:1;margin:0;color:var(--qc);font-size:12.5px;font-weight:800;line-height:1.4;opacity:1;word-break:keep-all;text-align:left}'
+          new='.quick-item.quick-rich p{grid-column:1/3;grid-row:2;z-index:1;margin:0;color:var(--qc);font-size:10.8px;font-weight:900;line-height:1.25;letter-spacing:-.45px;opacity:1;word-break:keep-all;white-space:nowrap;text-align:left}'
+          if s.count(old)!=1:
+              raise SystemExit(f'home.css description rule mismatch count={s.count(old)}')
+          s=s.replace(old,new,1)
           p.write_text(s,encoding='utf-8')
           PY
           git diff --check -- index.html assets/home.css
