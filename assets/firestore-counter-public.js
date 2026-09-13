@@ -1,4 +1,4 @@
-/* DG_CALCULATOR_COUNTER_V4 */
+/* DG_CALCULATOR_COUNTER_V5 */
 (()=>{
   const PROJECT_ID='project-b08e5f3c-fa49-4ae6-933';
   const DATABASE_ID='default';
@@ -24,12 +24,15 @@
   async function render(){
     const el=document.getElementById('dg-calculator-usage');
     if(!el) return;
+    const num=el.querySelector('[data-count]');
+    if(num) num.textContent='';
     try{
       const n=await readCount('calculator');
-      const num=el.querySelector('[data-count]');
       if(num) num.textContent=n.toLocaleString('ko-KR')+'회';
       el.hidden=false;
-    }catch(e){}
+    }catch(e){
+      el.hidden=true;
+    }
   }
 
   window.DGCounter={
