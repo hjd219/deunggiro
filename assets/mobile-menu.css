@@ -25,7 +25,7 @@
   .dg-mm-body{min-height:calc(100dvh - 66px);padding:18px 14px calc(28px + env(safe-area-inset-bottom))}
   .dg-mm-title,.dg-mm-sub{display:none!important}
   .dg-mm-grid{display:flex;flex-direction:column;gap:8px}
-  .dg-mm-item{display:grid;grid-template-columns:58px minmax(0,1fr) 18px;align-items:center;gap:12px;min-width:0;min-height:76px;padding:8px 13px 8px 8px;border:1px solid #cfd8df;border-radius:15px;background:#f7fafc;color:#263543!important;text-decoration:none!important;text-align:left;-webkit-tap-highlight-color:transparent}
+  .dg-mm-item{display:grid;grid-template-columns:58px minmax(0,1fr) 18px;align-items:center;gap:12px;min-width:0;min-height:76px;padding:8px 13px 8px 8px;border:1px solid #36a9e1;border-radius:15px;background:#f7fafc;color:#263543!important;text-decoration:none!important;text-align:left;-webkit-tap-highlight-color:transparent}
   .dg-mm-icon{width:58px;height:58px;display:flex;align-items:center;justify-content:center;border:0;border-radius:15px;background:var(--mm-bg);color:var(--mm-color)}
   .dg-mm-icon svg{width:28px;height:28px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
   .dg-mm-copy{display:flex;min-width:0;flex-direction:column;justify-content:center;gap:3px}
