@@ -1,11 +1,13 @@
-/* DG_CALCULATOR_COUNTER_V11 */
+/* DG_CALCULATOR_COUNTER_V12 */
 (()=>{
   const PROJECT_ID='project-b08e5f3c-fa49-4ae6-933';
   const DATABASE_ID='default';
   const base='https://firestore.googleapis.com/v1/projects/'+PROJECT_ID+'/databases/'+DATABASE_ID+'/documents/';
   const commitUrl='https://firestore.googleapis.com/v1/projects/'+PROJECT_ID+'/databases/'+DATABASE_ID+'/documents:commit';
   const REFRESH_MS=15000;
+  const ACTION_DEDUPE_MS=500;
   let refreshTimer=null;
+  const lastAction={calculator:0,pdf:0};
 
   function docPath(kind){return 'counters/'+(String(kind||'calculator')==='pdf'?'pdf':'calculator')}
   async function readCount(kind){
@@ -49,8 +51,12 @@
 
   window.DGCounter={
     countOnce:async function(kind){
+      const key=String(kind||'calculator')==='pdf'?'pdf':'calculator';
+      const now=Date.now();
+      if(now-lastAction[key]<ACTION_DEDUPE_MS) return;
+      lastAction[key]=now;
       try{
-        await incrementCount(kind);
+        await incrementCount(key);
         await render();
       }catch(e){}
     },
