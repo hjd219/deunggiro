@@ -1,0 +1,47 @@
+name: Service center align once
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/service-center-align-once.yml']
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Center service icons and copy
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('assets/home.css')
+          s=p.read_text(encoding='utf-8')
+          a='.quick-icon{width:50px;height:50px;padding:0;display:grid;place-items:center;align-self:end}'
+          b='.quick-icon{width:50px;height:50px;padding:0;display:grid;place-items:center}'
+          c='.quick-copy{position:static;z-index:1;min-width:0;padding-right:7px;align-self:end}'
+          d='.quick-copy{position:static;z-index:1;min-width:0;padding-right:7px}'
+          if s.count(a)!=1: raise SystemExit(f'icon rule count={s.count(a)}')
+          if s.count(c)!=1: raise SystemExit(f'copy rule count={s.count(c)}')
+          s=s.replace(a,b,1).replace(c,d,1)
+          p.write_text(s,encoding='utf-8')
+
+          p=Path('index.html')
+          h=p.read_text(encoding='utf-8')
+          old='/assets/home.css?v=20260913-service-bottom-align2'
+          new='/assets/home.css?v=20260913-service-center-align'
+          if h.count(old)!=1: raise SystemExit(f'home css version count={h.count(old)}')
+          p.write_text(h.replace(old,new,1),encoding='utf-8')
+          PY
+          git diff --check
+          test "$(git diff --name-only | sort)" = $'assets/home.css\nindex.html'
+      - name: Commit and clean workflow
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/service-center-align-once.yml
+          git add assets/home.css index.html
+          git commit -m '업무카드 5개 아이콘·제목설명 중앙 정렬'
+          git pull --rebase origin main
+          git push origin HEAD:main
