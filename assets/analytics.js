@@ -20,14 +20,5 @@
     shell.src = '/assets/site-shell.js?v=20260912-calculator-header';
     shell.defer = true;
     document.head.appendChild(shell);
-
-    /* 계산기 카운터는 firestore-counter-public.js 한 파일에서만 처리 */
-    if (!document.querySelector('script[data-dg-counter]')) {
-      const counter = document.createElement('script');
-      counter.src = '/assets/firestore-counter-public.js?v=20260914-single';
-      counter.defer = true;
-      counter.dataset.dgCounter = '1';
-      document.head.appendChild(counter);
-    }
   }
 })();
