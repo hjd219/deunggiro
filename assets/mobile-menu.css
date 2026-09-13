@@ -1,19 +1,28 @@
 /* 등기로 모바일 우측 70% 슬라이드 메뉴 */
 @media (max-width:900px){
   body.mobile-menu-open{overflow:hidden!important;touch-action:none}
+  body::before{
+    content:"";position:fixed;inset:0;z-index:1299;background:rgba(18,31,43,.50);
+    opacity:0;visibility:hidden;pointer-events:none;
+    transition:opacity .22s ease,visibility 0s linear .22s;
+  }
+  body.mobile-menu-open::before{
+    opacity:1;visibility:visible;pointer-events:auto;
+    transition:opacity .22s ease,visibility 0s linear 0s;
+  }
   .dg-shell-mobile-panel{
     display:block!important;position:fixed!important;top:0!important;right:0!important;bottom:0!important;left:auto!important;z-index:1300!important;
     width:70%!important;height:100dvh!important;max-height:none!important;margin:0!important;padding:0!important;
     overflow-y:auto!important;overscroll-behavior:contain;background:#fff!important;border:0!important;
-    border-radius:0!important;box-shadow:-100vw 0 0 rgba(18,31,43,.58)!important;color:#162537!important;
+    border-radius:0!important;box-shadow:-8px 0 24px rgba(18,31,43,.14)!important;color:#162537!important;
     -webkit-overflow-scrolling:touch;
-    transform:translate3d(100%,0,0);opacity:0;visibility:hidden;pointer-events:none;
-    transition:transform .34s cubic-bezier(.22,.61,.36,1),opacity .2s ease,visibility 0s linear .34s;
+    transform:translate3d(100%,0,0);opacity:1;visibility:hidden;pointer-events:none;
+    transition:transform .34s cubic-bezier(.22,.61,.36,1),visibility 0s linear .34s;
     will-change:transform;
   }
   .dg-shell-mobile-panel.open{
-    transform:translate3d(0,0,0);opacity:1;visibility:visible;pointer-events:auto;
-    transition:transform .34s cubic-bezier(.22,.61,.36,1),opacity .2s ease,visibility 0s linear 0s;
+    transform:translate3d(0,0,0);visibility:visible;pointer-events:auto;
+    transition:transform .34s cubic-bezier(.22,.61,.36,1),visibility 0s linear 0s;
   }
   .dg-mm-top{
     position:sticky;top:0;z-index:2;height:66px;display:flex;align-items:center;justify-content:space-between;
@@ -72,6 +81,6 @@
   .dg-mm-desc{font-size:11px}
 }
 @media (prefers-reduced-motion:reduce){
-  .dg-shell-mobile-panel{transition:none!important}
+  body::before,.dg-shell-mobile-panel{transition:none!important}
 }
 @media (min-width:901px){.dg-shell-mobile-panel{display:none!important}}
