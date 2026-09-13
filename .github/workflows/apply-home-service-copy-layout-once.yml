@@ -1,0 +1,80 @@
+name: Apply home service copy layout once
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/apply-home-service-copy-layout-once.yml']
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Apply approved service card copy and layout
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          # index.html: exact copy replacements + cache bust only
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          replacements={
+            '<p>상속등기 · 재산분할</p>':'<p>단독상속 · 공동상속 · 유증</p>',
+            '<p>상속 빚 대응</p>':'<p>기한 · 절차 · 필요서류</p>',
+            '<p>설립 · 변경 · 증자</p>':'<p>설립 · 변경 · 증자 · 회사계속</p>',
+            '<p>매매 · 증여 · 담보</p>':'<p>매매 · 증여 · 이혼재산분할 · 담보</p>',
+            '<p>이혼 · 개명 · 후견</p>':'<p>이혼 · 개명 · 성본변경 · 후견</p>',
+            '/assets/home.css?v=20260913-service-bottom-center':'/assets/home.css?v=20260913-service-copy-layout'
+          }
+          for old,new in replacements.items():
+            if s.count(old)!=1:
+              raise SystemExit(f'index exact target mismatch: {old} count={s.count(old)}')
+            s=s.replace(old,new,1)
+          p.write_text(s,encoding='utf-8')
+
+          # home.css: modify existing source rules only, no appended override block
+          p=Path('assets/home.css')
+          s=p.read_text(encoding='utf-8')
+          pairs=[
+            ('.quick-item.quick-rich{--qc:#36a9e1;--qbg:#f1faff;position:relative;overflow:hidden;display:grid;grid-template-columns:52px minmax(0,1fr) 44px;gap:10px;align-items:start;align-content:center;text-align:left;min-width:0;min-height:150px;padding:17px 0 17px 15px;background:linear-gradient(110deg,var(--qbg),#fff 76%);border:1px solid #d7e4ec;border-radius:16px;box-shadow:0 8px 22px rgba(31,41,55,.08);transition:transform .28s cubic-bezier(.2,.8,.2,1),box-shadow .28s ease,border-color .2s ease;-webkit-tap-highlight-color:transparent}',
+             '.quick-item.quick-rich{--qc:#36a9e1;--qbg:#f1faff;position:relative;overflow:hidden;display:grid;grid-template-columns:42px minmax(0,1fr) 44px;grid-template-rows:auto auto;column-gap:10px;row-gap:8px;align-items:start;align-content:center;text-align:left;min-width:0;min-height:150px;padding:17px 0 17px 15px;background:linear-gradient(110deg,var(--qbg),#fff 76%);border:1px solid #d7e4ec;border-radius:16px;box-shadow:0 8px 22px rgba(31,41,55,.08);transition:transform .28s cubic-bezier(.2,.8,.2,1),box-shadow .28s ease,border-color .2s ease;-webkit-tap-highlight-color:transparent}'),
+            ('.quick-icon{width:50px;height:50px;padding:0;display:grid;place-items:center}',
+             '.quick-icon{grid-column:1;grid-row:1;width:40px;height:40px;padding:0;display:grid;place-items:center;align-self:start}'),
+            ('.quick-copy{position:static;z-index:1;min-width:0;padding-right:7px}',
+             '.quick-copy{display:contents}'),
+            ('.quick-item.quick-rich h3{margin:0 0 6px;color:#20242b;font-size:18px;line-height:1.25;font-weight:900;letter-spacing:-.75px;word-break:keep-all}',
+             '.quick-item.quick-rich h3{grid-column:2;grid-row:1;align-self:center;margin:0;color:#20242b;font-size:17px;line-height:1.2;font-weight:900;letter-spacing:-.7px;word-break:keep-all;white-space:nowrap;text-align:left}'),
+            ('.quick-item.quick-rich.c4 h3{font-size:16px}',
+             '.quick-item.quick-rich.c4 h3{font-size:14.5px;letter-spacing:-.85px}'),
+            ('.quick-item.quick-rich p{margin:0;color:var(--qc);font-size:12.5px;font-weight:800;line-height:1.4;opacity:1;word-break:keep-all}',
+             '.quick-item.quick-rich p{grid-column:1 / 3;grid-row:2;margin:0;color:var(--qc);font-size:11.8px;font-weight:800;line-height:1.35;opacity:1;word-break:keep-all;white-space:nowrap;text-align:left}'),
+          ]
+          for old,new in pairs:
+            if s.count(old)!=1:
+              raise SystemExit(f'home.css exact target mismatch count={s.count(old)} for {old[:70]}')
+            s=s.replace(old,new,1)
+          p.write_text(s,encoding='utf-8')
+          PY
+          git diff --check -- index.html assets/home.css
+          python3 - <<'PY'
+          from pathlib import Path
+          s=Path('index.html').read_text(encoding='utf-8')
+          for text in ['단독상속 · 공동상속 · 유증','기한 · 절차 · 필요서류','설립 · 변경 · 증자 · 회사계속','매매 · 증여 · 이혼재산분할 · 담보','이혼 · 개명 · 성본변경 · 후견']:
+            assert s.count(text)==1, text
+          c=Path('assets/home.css').read_text(encoding='utf-8')
+          assert 'grid-template-columns:42px minmax(0,1fr) 44px' in c
+          assert '.quick-copy{display:contents}' in c
+          assert 'white-space:nowrap;text-align:left' in c
+          PY
+      - name: Commit and clean workflow
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/apply-home-service-copy-layout-once.yml
+          git add index.html assets/home.css
+          git commit -m '업무카드 문구·좌측정렬·아이콘 축소 반영'
+          git pull --rebase origin main
+          git push origin HEAD:main
