@@ -1,4 +1,4 @@
-/* DG_CALCULATOR_COUNTER_V6 */
+/* DG_CALCULATOR_COUNTER_V7 */
 (()=>{
   const PROJECT_ID='project-b08e5f3c-fa49-4ae6-933';
   const DATABASE_ID='default';
@@ -28,8 +28,9 @@
     if(!el) return;
     const num=el.querySelector('[data-count]');
     try{
-      const n=await readCount('calculator');
-      if(num) num.textContent=n.toLocaleString('ko-KR')+'회';
+      const [calculator,pdf]=await Promise.all([readCount('calculator'),readCount('pdf')]);
+      const total=calculator+pdf;
+      if(num) num.textContent=total.toLocaleString('ko-KR')+'회';
       el.hidden=false;
     }catch(e){
       if(!num || !num.textContent.trim()) el.hidden=true;
