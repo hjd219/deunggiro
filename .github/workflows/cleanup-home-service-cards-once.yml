@@ -1,0 +1,53 @@
+name: Cleanup home service cards once
+on:
+  push:
+    paths:
+      - '.github/workflows/cleanup-home-service-cards-once.yml'
+permissions:
+  contents: write
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Apply exact cleanup
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          old='''   <div class="tags">\n    <a href="/inheritance.html">인천 상속</a>\n    <a href="/corporate.html">법인등기</a>\n    <a href="/realestate.html">부동산등기</a>\n    <a href="/renunciation.html">한정승인·상속포기</a>\n    <a href="/family.html">가사</a>\n   </div>\n'''
+          if old not in s: raise SystemExit('hero tags block not found')
+          s=s.replace(old,'',1)
+          oldcard='<h3>한정승인·상속포기</h3><p>채무상속 대응</p>'
+          newcard='<h3>상속포기·한정승인</h3><p>상속 빚 대응</p>'
+          if oldcard not in s: raise SystemExit('card text not found')
+          s=s.replace(oldcard,newcard,1)
+          p.write_text(s)
+
+          p=Path('assets/latest-posts.js')
+          s=p.read_text()
+          loader="if(location.pathname==='/'||location.pathname==='/index.html'){const s=document.createElement('script');s.src='/assets/home-service-cards.js?v=1';s.defer=true;document.head.appendChild(s);}\n"
+          if loader not in s: raise SystemExit('home-service loader not found')
+          p.write_text(s.replace(loader,'',1))
+
+          Path('assets/home-service-cards.js').unlink()
+          Path('.github/workflows/cleanup-home-service-cards-once.yml').unlink()
+          PY
+      - name: Verify only intended changes
+        run: |
+          test ! -e assets/home-service-cards.js
+          ! grep -q "home-service-cards.js" assets/latest-posts.js
+          ! grep -q '<div class="tags">' index.html
+          grep -q '<h3>상속포기·한정승인</h3><p>상속 빚 대응</p>' index.html
+          git diff --check
+          git status --short
+      - name: Commit
+        run: |
+          git config user.name "hjd219"
+          git config user.email "hapuha21@gmail.com"
+          git add index.html assets/latest-posts.js assets/home-service-cards.js .github/workflows/cleanup-home-service-cards-once.yml
+          git commit -m "구조정리: 홈 서비스카드 런타임 덮어쓰기 제거"
+          git push origin main
