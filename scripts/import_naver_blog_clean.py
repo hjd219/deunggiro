@@ -9,7 +9,15 @@ from bs4 import BeautifulSoup,NavigableString,Tag
 from category_rules import classify_title
 ROOT=Path(__file__).resolve().parents[1]; POSTS_JSON=ROOT/'data'/'posts.json'; POSTS_DIR=ROOT/'posts'; MEDIA_ROOT=ROOT/'assets'/'naver-images'
 BLOG_ID='hjd21'; RSS_URL=f'https://rss.blog.naver.com/{BLOG_ID}.xml'; BASE='https://www.deunggiro.kr'; MAX_IMPORT=3; MAX_REPAIR=100
-SUMMARY_TEXT='진행 전 꼭 확인해야 할 핵심 내용과 주의사항'
+def seo_summary(title):
+ t=clean_text(title); t=re.sub(r'^\s*\[[^\]]+\]\s*','',t).strip('“”\" '); t=re.sub(r'\s*총정리\s*',' ',t).strip()
+ parts=[x.strip() for x in re.split(r'\s*[|｜]\s*',t,1) if x.strip()]; head=parts[0] if parts else t; detail=parts[1] if len(parts)>1 else ''
+ head=re.sub(r'\s*(?:어떻게 해야 (?:되나요|하나요)|어떻게 되나요|가능할까|얼마나 나올까|해야 할까)\??\s*$','',head).strip()
+ base=head + (('｜'+detail) if detail else '')
+ cat=category(title); defaults={'상속등기':['상속등기','절차','필요서류','주의사항'],'상속포기·한정승인':['상속포기·한정승인','절차','대응방법','주의사항'],'법인등기':['법인등기','절차','필요서류','비용'],'부동산등기':['부동산등기','취득세','필요서류','주의사항'],'가사':['가사절차','필요서류','주의사항']}.get(cat,['절차','필요서류','주의사항'])
+ extras=[x for x in defaults if x not in base]; out=base + (('｜'+'·'.join(extras)) if extras else '')
+ return out[:120].rstrip('·|｜ ')
+
 UA={'User-Agent':'Mozilla/5.0 (compatible; DeunggiroBlogImporter/4.1; +https://www.deunggiro.kr/)'}
 MOJIBAKE=('êµ','ë“','ë¡','ì§','ì—','ì›','ë¹','ê³','ë°','ì„','ìƒ','ìž','í•','ì‹','ìš','ìœ','ì•','ë¶','ì¶','ì ','ì²')
 def get(url):
@@ -76,16 +84,16 @@ def sync_summaries(posts):
  changed=0
  for p in posts:
   if p.get('source')!='naver-blog': continue
-  if p.get('summary')!=SUMMARY_TEXT:
-   p['summary']=SUMMARY_TEXT; changed+=1
+  target=seo_summary(p.get('title') or '')
+  if p.get('summary')!=target: p['summary']=target; changed+=1
   slug=(p.get('slug') or '').replace('.html',''); path=POSTS_DIR/f'{slug}.html'
   if not path.exists(): continue
-  raw=path.read_text(encoding='utf-8',errors='replace'); soup=BeautifulSoup(raw,'html.parser'); touched=False
-  for selector in ('meta[name="description"]','meta[name="dg-summary"]'):
+  soup=BeautifulSoup(path.read_text(encoding='utf-8',errors='replace'),'html.parser'); touched=False
+  for selector in ('meta[name=\"description\"]','meta[name=\"dg-summary\"]'):
    node=soup.select_one(selector)
-   if node and node.get('content')!=SUMMARY_TEXT: node['content']=SUMMARY_TEXT; touched=True
+   if node and node.get('content')!=target: node['content']=target; touched=True
   desc=soup.select_one('p.desc')
-  if desc and desc.get_text(strip=True)!=SUMMARY_TEXT: desc.string=SUMMARY_TEXT; touched=True
+  if desc and desc.get_text(strip=True)!=target: desc.string=target; touched=True
   if touched: path.write_text(str(soup),encoding='utf-8')
  print('SUMMARY_SYNC',changed)
 def build(p,body):
@@ -120,7 +128,7 @@ def repair(posts):
   try:
    body,text,imgs=extract(url,slug); chars,moji=quality_text(text); print('REPAIR_CANDIDATE',slug,'reason='+reason,'old='+str(oldchars),'new='+str(chars),'mojibake='+str(moji),'images='+str(imgs))
    if chars<500 or moji: continue
-   p['category']=category(p.get('title') or ''); p['summary']=SUMMARY_TEXT
+   p['category']=category(p.get('title') or ''); p['summary']=seo_summary(p.get('title') or '')
    saved=save_post(p,body); repaired+=1; print('REPAIRED',slug,'saved='+str(saved))
   except Exception as e: print('REPAIR_SKIP',slug,e)
  print('REPAIRED_TOTAL',repaired)
@@ -143,7 +151,7 @@ def main():
   try:
    body,text,imgs=extract(url,slug); chars,moji=quality_text(text); print('CANDIDATE',n,'chars='+str(chars),'mojibake='+str(moji),'images='+str(imgs))
    if chars<500 or moji: continue
-   sm=SUMMARY_TEXT; p={'title':title,'category':category(title),'date':date,'slug':slug,'keywords':title,'summary':sm,'source_url':url,'source':'naver-blog'}
+   sm=seo_summary(title); p={'title':title,'category':category(title),'date':date,'slug':slug,'keywords':title,'summary':sm,'source_url':url,'source':'naver-blog'}
    saved=save_post(p,body); posts.insert(0,p); sources.add(url); titles.add(norm(title)); imported+=1; print('IMPORTED_NEW',slug,'saved='+str(saved))
   except Exception as e: print('SKIP',n,e)
  POSTS_JSON.write_text(json.dumps(posts,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'); validate_all(posts); print('IMPORT_SCAN',checked,'IMPORTED',imported)

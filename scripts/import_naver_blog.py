@@ -200,7 +200,7 @@ def main() -> None:
                 print('CANDIDATE', n, 'chars='+str(chars), 'mojibake='+str(mojibake), 'images='+str(imgs))
                 if chars < 500 or mojibake:
                     continue
-                summary = core.SUMMARY_TEXT
+                summary = core.seo_summary(title)
                 post = {
                     'title': title,
                     'category': core.category(title),
