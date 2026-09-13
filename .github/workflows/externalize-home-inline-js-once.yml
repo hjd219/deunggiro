@@ -1,0 +1,73 @@
+name: Externalize home inline JS once
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/externalize-home-inline-js-once.yml']
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Replace only the two home inline scripts
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          intro="""<script>(()=>{const m=document.getElementById('dg-intro-backdrop');if(!m)return;const o=()=>{m.classList.add('is-open');m.setAttribute('aria-hidden','false')};const c=()=>{m.classList.remove('is-open');m.setAttribute('aria-hidden','true')};document.querySelectorAll('.dg-intro-open').forEach(b=>b.addEventListener('click',o));m.querySelector('.dg-intro-close')?.addEventListener('click',c);m.addEventListener('click',e=>{if(e.target===m)c()});document.addEventListener('keydown',e=>{if(e.key==='Escape')c()})})();</script>"""
+          roll="""<script>
+/* CALCULATOR_DISPLAY_ROLL_V1 */
+(()=>{
+  const displays=[...document.querySelectorAll('#calculator .calculator-icon > text:first-of-type')];
+  if(!displays.length) return;
+  const reduce=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  const finish=()=>displays.forEach(el=>el.textContent='9,999');
+  if(reduce){finish();return;}
+  let started=false;
+  const run=()=>{
+    if(started) return; started=true;
+    const start=performance.now(), duration=1400, target=9999;
+    const tick=now=>{
+      const p=Math.min(1,(now-start)/duration);
+      const eased=1-Math.pow(1-p,3);
+      const value=Math.round(target*eased).toLocaleString('ko-KR');
+      displays.forEach(el=>el.textContent=value);
+      if(p<1) requestAnimationFrame(tick); else finish();
+    };
+    requestAnimationFrame(tick);
+  };
+  const section=document.getElementById('calculator');
+  if(!section){finish();return;}
+  if('IntersectionObserver' in window){
+    const io=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){io.disconnect();run();}},{threshold:.25});
+    io.observe(section);
+  }else run();
+})();
+</script>"""
+          assert s.count(intro)==1, f'intro block count={s.count(intro)}'
+          assert s.count(roll)==1, f'roll block count={s.count(roll)}'
+          s=s.replace(intro,'<script src="/assets/home-intro.js?v=20260913" defer></script>',1)
+          s=s.replace('\n\n'+roll,'',1)
+          p.write_text(s,encoding='utf-8')
+          PY
+          git diff --check
+          git diff -- index.html
+          python3 - <<'PY'
+          from pathlib import Path
+          s=Path('index.html').read_text(encoding='utf-8')
+          assert '/assets/home-intro.js?v=20260913' in s
+          assert 'CALCULATOR_DISPLAY_ROLL_V1' not in s
+          assert "calculator-icon > text:first-of-type" not in s
+          PY
+      - name: Commit exact cleanup and remove workflow
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git rm .github/workflows/externalize-home-inline-js-once.yml
+          git add index.html
+          git commit -m "구조정리: 홈 인라인 JS 외부화 및 미사용 롤링 제거"
+          git push origin main
