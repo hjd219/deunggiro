@@ -20,5 +20,14 @@
     shell.src = '/assets/site-shell.js?v=20260912-calculator-header';
     shell.defer = true;
     document.head.appendChild(shell);
+
+    /* 오래된 계산기 HTML 캐시와 무관하게 현재 카운터 구현을 우선 사용 */
+    if (!document.querySelector('script[data-dg-counter-current]')) {
+      const counter = document.createElement('script');
+      counter.src = '/assets/firestore-counter-public.js?v=20260914-v12';
+      counter.defer = true;
+      counter.dataset.dgCounterCurrent = '1';
+      document.head.appendChild(counter);
+    }
   }
 })();
