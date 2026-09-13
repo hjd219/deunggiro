@@ -1,0 +1,64 @@
+name: Cleanup realestate duplicate CSS once
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/cleanup-realestate-css-once.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Remove superseded realestate CSS block
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path('realestate.html')
+          text = path.read_text(encoding='utf-8')
+
+          marker = 'DETAIL_HOME_SKY_BG_V1'
+          pattern = re.compile(r'\n?<style>\s*/\*\s*' + re.escape(marker) + r'\s*\*/.*?</style>\s*', re.S)
+          matches = list(pattern.finditer(text))
+          if len(matches) != 1:
+              raise SystemExit(f'{marker}: expected exactly 1 block, found {len(matches)}')
+
+          new_text = pattern.sub('\n', text, count=1)
+
+          required = [
+              'DETAIL_BG_RHYTHM_V2',
+              'REALESTATE_DOC_LABEL_BADGES_V1',
+              'REALESTATE_TAB_TITLE_CLEAN_V1',
+              'REALESTATE_FINAL_V1',
+              'REALESTATE_MORTGAGE_3COL_V1',
+              'REALESTATE_INHERITANCE_ICON_STYLE_V1',
+          ]
+          for keep in required:
+              if keep not in new_text:
+                  raise SystemExit(f'required block missing after cleanup: {keep}')
+
+          path.write_text(new_text, encoding='utf-8')
+          PY
+
+          git diff --check -- realestate.html
+          git diff -- realestate.html
+
+      - name: Commit and remove one-time workflow
+        run: |
+          rm -f .github/workflows/cleanup-realestate-css-once.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add realestate.html .github/workflows/cleanup-realestate-css-once.yml
+          git commit -m '구조정리: 부동산등기 중복 CSS 제거'
+          git push origin main
