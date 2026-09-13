@@ -238,13 +238,13 @@ body.home #services .quick-item.quick-rich{
   #calculator .calc-types{font-size:12.5px;color:#263745;line-height:1.55;margin-bottom:8px}
   #calculator .calc-point{font-size:12.5px;color:#263745;line-height:1.5}
   #calculator .calc-action{padding-left:9px;align-self:start}
-  #calculator .calculator-icon{width:52px;height:92px}
+  #calculator .calculator-icon{width:60px;height:92px}
   #calculator .calc-action-label{font-size:12px}
 }
 @media(max-width:370px){
   #calculator .calc-card h3{font-size:15.5px}
   #calculator .calc-card{grid-template-columns:minmax(0,1fr) 82px;padding:15px}
-  #calculator .calculator-icon{width:50px;height:84px}
+  #calculator .calculator-icon{width:58px;height:84px}
 }
 
 /* CONTACT / FOOTER */
