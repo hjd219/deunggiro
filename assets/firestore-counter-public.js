@@ -1,15 +1,14 @@
-/* DG_CALCULATOR_COUNTER_V12 */
+/* DG_CALCULATOR_COUNTER_V13_CLEAN */
 (()=>{
   const PROJECT_ID='project-b08e5f3c-fa49-4ae6-933';
   const DATABASE_ID='default';
   const base='https://firestore.googleapis.com/v1/projects/'+PROJECT_ID+'/databases/'+DATABASE_ID+'/documents/';
   const commitUrl='https://firestore.googleapis.com/v1/projects/'+PROJECT_ID+'/databases/'+DATABASE_ID+'/documents:commit';
   const REFRESH_MS=15000;
-  const ACTION_DEDUPE_MS=500;
   let refreshTimer=null;
-  const lastAction={calculator:0,pdf:0};
 
   function docPath(kind){return 'counters/'+(String(kind||'calculator')==='pdf'?'pdf':'calculator')}
+
   async function readCount(kind){
     const r=await fetch(base+docPath(kind),{cache:'no-store'});
     if(!r.ok) throw new Error('counter read '+r.status);
@@ -32,31 +31,19 @@
     try{
       const calculator=await readCount('calculator');
       let pdf=0;
-      try{ pdf=await readCount('pdf'); }catch(e){}
-      const total=calculator+pdf;
-      if(num) num.textContent=total.toLocaleString('ko-KR')+'회';
+      try{pdf=await readCount('pdf')}catch(e){}
+      if(num) num.textContent=(calculator+pdf).toLocaleString('ko-KR')+'회';
       el.hidden=false;
     }catch(e){
-      if(num && num.textContent.trim()) el.hidden=false;
+      if(num&&num.textContent.trim()) el.hidden=false;
       else el.hidden=true;
     }
   }
 
-  function startAutoRefresh(){
-    if(refreshTimer || !document.getElementById('dg-calculator-usage')) return;
-    refreshTimer=setInterval(()=>{
-      if(document.visibilityState==='visible') render();
-    },REFRESH_MS);
-  }
-
   window.DGCounter={
     countOnce:async function(kind){
-      const key=String(kind||'calculator')==='pdf'?'pdf':'calculator';
-      const now=Date.now();
-      if(now-lastAction[key]<ACTION_DEDUPE_MS) return;
-      lastAction[key]=now;
       try{
-        await incrementCount(key);
+        await incrementCount(kind);
         await render();
       }catch(e){}
     },
@@ -67,7 +54,11 @@
     const el=document.getElementById('dg-calculator-usage');
     if(el) el.hidden=false;
     render();
-    startAutoRefresh();
+    if(!refreshTimer&&el){
+      refreshTimer=setInterval(()=>{
+        if(document.visibilityState==='visible') render();
+      },REFRESH_MS);
+    }
   }
 
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
