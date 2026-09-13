@@ -292,83 +292,9 @@ main,.main,.page,.page-wrap,.content-wrap{background:var(--inheritance-sky)!impo
 
 <footer class="footer"><div class="container footer-route-grid"><div><div class="footer-brand">등기로</div><div class="footer-office">현재두 법무사 사무소</div><div class="footer-info"><div><strong>주소</strong> 인천 미추홀구 경원대로 873, 201호(주안동, 인성빌딩) · 인천가정법원 옆</div><div><strong>전화</strong> <a href="tel:0324251500" style="color:#fff;font-weight:800">032-425-1500</a></div></div><div class="footer-channel-row"><a class="footer-social" href="https://blog.naver.com/hjd21" target="_blank" rel="noopener noreferrer"><span class="footer-social-icon naver-icon">N</span>네이버 블로그</a><span class="footer-social-dot">·</span><a class="footer-social" href="https://youtube.com/channel/UCHs3WtBFAiV8bOsQUB-n-Ew?si=tTUgTZWRKg98bvYa" target="_blank" rel="noopener noreferrer"><span class="footer-social-icon youtube-icon">▶</span>유튜브</a></div></div><div class="footer-route"><div class="footer-route-title">찾아오시는 길</div><div class="footer-route-sub">인천가정법원 옆 · 인성빌딩 2층</div><div class="footer-route-list"><div><span>🚇</span><span><b>1호선</b> 주안역·간석역 1번 출구 도보 이용</span></div><div><span>🚇</span><span><b>인천지하철 2호선</b> 석바위시장역 하차 후 석바위 지하상가 5번 출구 도보 이용</span></div><div><span>⏱</span><span><b>도보시간</b> 간석역 약 15분 · 주안역 약 19분 · 석바위시장역 약 12분</span></div></div><div class="footer-route-actions"><a href="https://map.naver.com/p/search/%EC%9D%B8%EC%B2%9C%20%EB%AF%B8%EC%B6%94%ED%99%80%EA%B5%AC%20%EA%B2%BD%EC%9B%90%EB%8C%80%EB%A1%9C%20873" target="_blank" rel="noopener noreferrer">네이버 지도에서 보기 →</a><a href="tel:0324251500">방문문의 032-425-1500</a></div></div></div></footer>
 
-<script>
-/* AUTO_SEQUENTIAL_RELATED_V3 */
-(function(){
-  const box=document.getElementById('auto-related-posts');
-  if(!box) return;
-  const category=box.dataset.category;
-  const badge=box.dataset.badge || category;
-  const esc=s=>String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
-  let posts=[], rowIndex=0, nextIndex=0, timer=null, paused=false;
-
-  function itemHtml(p){
-    return '<span class="related-badge">'+esc(badge)+'</span><span class="related-title seq-roll-title">'+esc(p.title)+'</span><span class="related-arrow">→</span>';
-  }
-  function hrefFor(p){ return '/posts/'+encodeURIComponent(p.slug)+'.html'; }
-
-  function initialRender(){
-    const count=Math.min(4,posts.length);
-    box.innerHTML='';
-    for(let i=0;i<count;i++){
-      const a=document.createElement('a');
-      a.href=hrefFor(posts[i]);
-      a.innerHTML=itemHtml(posts[i]);
-      box.appendChild(a);
-    }
-    nextIndex=count;
-    rowIndex=0;
-  }
-
-  function rollOne(){
-    if(paused || posts.length<=4) return;
-    const rows=box.querySelectorAll('a');
-    if(!rows.length) return;
-    const row=rows[rowIndex % rows.length];
-    const title=row.querySelector('.seq-roll-title');
-    const p=posts[nextIndex % posts.length];
-    if(!title) return;
-    title.classList.remove('seq-roll-in');
-    title.classList.add('seq-roll-out');
-    setTimeout(()=>{
-      row.href=hrefFor(p);
-      title.textContent=p.title;
-      title.classList.remove('seq-roll-out');
-      void title.offsetWidth;
-      title.classList.add('seq-roll-in');
-      nextIndex=(nextIndex+1)%posts.length;
-      rowIndex=(rowIndex+1)%rows.length;
-    },280);
-  }
-
-  function play(){
-    if(posts.length<=4) return;
-    clearInterval(timer);
-    timer=setInterval(rollOne,3000);
-  }
-  function stop(){ if(timer){ clearInterval(timer); timer=null; } }
-
-  fetch('/data/posts.json?v='+Date.now(),{cache:'no-store'})
-    .then(r=>{if(!r.ok) throw new Error('posts'); return r.json();})
-    .then(data=>{
-      posts=data.filter(p=>p.category===category).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
-      if(!posts.length) return;
-      initialRender();
-      play();
-      box.addEventListener('mouseenter',()=>{paused=true; stop();});
-      box.addEventListener('mouseleave',()=>{paused=false; play();});
-    })
-    .catch(()=>{});
-})();
-</script>
+<script src="/assets/inheritance-related-roll.js?v=20260913" defer></script>
+<link rel="stylesheet" href="/assets/inheritance-related-roll.css?v=20260913">
 <style>
-/* AUTO_SEQUENTIAL_RELATED_V3 */
-#auto-related-posts .related-title{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#auto-related-posts .seq-roll-out{animation:seqRollOut .28s ease forwards}
-#auto-related-posts .seq-roll-in{animation:seqRollIn .34s ease}
-@keyframes seqRollOut{to{opacity:0;transform:translateY(-9px)}}
-@keyframes seqRollIn{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
-
 /* INHERITANCE_ICON_TEXT_SIDE_V1 */
 .inheritance-flow .flow-step,.inheritance-process .flow-step,.flow-wrap .flow-step{display:flex!important;align-items:center!important;text-align:left!important;gap:14px!important}
 .inheritance-flow .flow-icon,.inheritance-process .flow-icon,.flow-wrap .flow-icon{flex:0 0 62px!important;width:62px!important;height:62px!important;margin:0!important}
