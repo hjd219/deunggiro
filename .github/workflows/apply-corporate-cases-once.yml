@@ -8,10 +8,6 @@ on:
 permissions:
   contents: write
 
-concurrency:
-  group: apply-corporate-cases-once
-  cancel-in-progress: false
-
 jobs:
   apply:
     runs-on: ubuntu-latest
@@ -27,78 +23,16 @@ jobs:
           git fetch origin main
           git reset --hard origin/main
 
-      - name: Insert corporate case links
-        shell: bash
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          p = Path('corporate.html')
-          s = p.read_text(encoding='utf-8')
-          marker = '<section class="contact" id="contact">'
-          if 'CORPORATE_CASE_LINK_HUB_V1' in s:
-              print('Corporate case hub already present')
-          else:
-              if s.count(marker) != 1:
-                  raise SystemExit(f'contact marker count={s.count(marker)}')
-              block = '''<!-- CORPORATE_CASE_LINK_HUB_V1 -->
-<section class="section white dg-corporate-casehub" aria-labelledby="corporate-casehub-title">
-  <div class="container">
-    <div class="label">법인등기 처리사례</div>
-    <h2 class="title" id="corporate-casehub-title">법인 처리사례도 확인하세요</h2>
-    <p class="desc">실제 처리한 법인등기 사례를 바로 확인할 수 있습니다.</p>
-    <nav class="dg-corporate-casehub-grid" aria-label="법인등기 처리사례 바로가기">
-      <a href="/posts/naver-224411175706.html"><strong>1인 법인 주식회사 설립</strong><span>주식 없는 임원을 조사보고인으로 선임한 경우</span></a>
-      <a href="/posts/naver-224411086807.html"><strong>대표이사 사망 후 변경등기</strong><span>1인 이사인 대표이사 사망 후 배우자를 대표이사로 변경한 경우</span></a>
-      <a href="/posts/naver-224411143025.html"><strong>감사 중임·의결권 3% 제한</strong><span>감사 중임 시 주식 의결권 제한을 확인한 사례</span></a>
-      <a href="/posts/naver-224411109357.html"><strong>법인 본점 관외이전</strong><span>이전 관할 내 동일상호를 확인하고 관외이전등기를 진행한 경우</span></a>
-      <a href="/posts/naver-224411074752.html"><strong>회사계속·부활등기</strong><span>해산간주 회사의 회사계속 및 청산종결간주 후 부활등기</span></a>
-    </nav>
-  </div>
-</section>
-<style>
-.dg-corporate-casehub{padding-top:48px!important;padding-bottom:48px!important}
-.dg-corporate-casehub .desc{margin-bottom:18px!important}
-.dg-corporate-casehub-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
-.dg-corporate-casehub-grid a{display:flex;min-height:92px;flex-direction:column;justify-content:center;padding:15px 14px;border:1px solid #dbe5ef;border-radius:10px;background:#fff;transition:.18s}
-.dg-corporate-casehub-grid a:hover{border-color:var(--primary);transform:translateY(-2px);box-shadow:0 8px 22px rgba(25,41,68,.06)}
-.dg-corporate-casehub-grid strong{display:block;color:#24384f;font-size:14px;line-height:1.4;letter-spacing:-.3px}
-.dg-corporate-casehub-grid span{display:block;margin-top:5px;color:#7a8491;font-size:11px;line-height:1.45}
-@media(max-width:1000px){.dg-corporate-casehub-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:700px){.dg-corporate-casehub{padding-top:36px!important;padding-bottom:36px!important}.dg-corporate-casehub-grid{grid-template-columns:1fr 1fr;gap:8px}.dg-corporate-casehub-grid a{min-height:82px;padding:12px}.dg-corporate-casehub-grid strong{font-size:13px}.dg-corporate-casehub-grid span{font-size:10.5px}}
-</style>
-'''
-              s = s.replace(marker, block + marker, 1)
-              p.write_text(s, encoding='utf-8')
+      - name: Apply corporate case hub
+        run: python scripts/apply_corporate_cases_once.py
 
-          # quality checks
-          out = p.read_text(encoding='utf-8')
-          required = [
-              'naver-224411175706.html',
-              'naver-224411086807.html',
-              'naver-224411143025.html',
-              'naver-224411109357.html',
-              'naver-224411074752.html',
-          ]
-          if out.count('CORPORATE_CASE_LINK_HUB_V1') != 1:
-              raise SystemExit('case hub marker invalid')
-          for href in required:
-              if out.count(href) < 1:
-                  raise SystemExit('missing link: ' + href)
-          if out.count('dg-corporate-casehub-grid') < 1:
-              raise SystemExit('case hub grid missing')
-          PY
-
-      - name: Verify limited diff
+      - name: Verify and commit
         run: |
+          set -e
           git diff --check
-          git diff -- corporate.html
-
-      - name: Commit and clean temporary workflow
-        shell: bash
-        run: |
-          set -euo pipefail
+          rm -f scripts/apply_corporate_cases_once.py
           rm -f .github/workflows/apply-corporate-cases-once.yml
-          git add corporate.html .github/workflows/apply-corporate-cases-once.yml
+          git add corporate.html scripts/apply_corporate_cases_once.py .github/workflows/apply-corporate-cases-once.yml
           git commit -m "법인등기 처리사례 5개 연결"
           git fetch origin main
           git rebase origin/main
