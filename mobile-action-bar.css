@@ -1,0 +1,9 @@
+/* 모바일 확인용 하단 액션바 */
+@media (max-width:768px){
+ body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+ .deunggiro-mobile-actions{position:fixed;left:0;right:0;bottom:0;z-index:2147483000;display:flex;gap:8px;padding:8px 10px max(8px,env(safe-area-inset-bottom));background:#fff;border-top:1px solid #d5e5eb;box-shadow:0 -3px 14px rgba(30,70,90,.07);transform:translateZ(0);-webkit-transform:translateZ(0)}
+ .deunggiro-mobile-actions a{flex:1;height:52px;border-radius:11px;display:flex;align-items:center;justify-content:center;gap:9px;text-decoration:none;font-size:15px;font-weight:700}
+ .deunggiro-mobile-actions .cost{background:#e3f4fa;color:#167fa8}.deunggiro-mobile-actions .call{background:#299bc7;color:#fff}
+ .deunggiro-mobile-actions svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
+}
+@media (min-width:769px){.deunggiro-mobile-actions{display:none!important}}
