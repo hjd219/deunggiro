@@ -1,0 +1,32 @@
+name: Fix Corporate Case Background Root Once
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-corporate-case-bg-root-once.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Sync main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+          git reset --hard origin/main
+      - name: Apply root fix
+        run: python scripts/fix_corporate_case_bg_root_once.py
+      - name: Verify and commit
+        run: |
+          set -e
+          git diff --check
+          git diff -- corporate.html
+          rm -f scripts/fix_corporate_case_bg_root_once.py
+          rm -f .github/workflows/fix-corporate-case-bg-root-once.yml
+          git add corporate.html scripts/fix_corporate_case_bg_root_once.py .github/workflows/fix-corporate-case-bg-root-once.yml
+          git commit -m "법인 처리사례 배경 구조 수정"
+          git push origin HEAD:main
