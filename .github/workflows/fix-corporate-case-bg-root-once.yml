@@ -30,3 +30,4 @@ jobs:
           git add corporate.html scripts/fix_corporate_case_bg_root_once.py .github/workflows/fix-corporate-case-bg-root-once.yml
           git commit -m "법인 처리사례 배경 구조 수정"
           git push origin HEAD:main
+# rerun 20260914-1637
