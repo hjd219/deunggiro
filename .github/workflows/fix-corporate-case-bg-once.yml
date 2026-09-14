@@ -1,0 +1,28 @@
+name: Fix Corporate Case Background Once
+on:
+  push:
+    paths:
+      - '.github/workflows/fix-corporate-case-bg-once.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Apply exact background fix
+        run: python scripts/fix_corporate_case_bg_once.py
+      - name: Verify and push
+        run: |
+          set -e
+          git diff --check
+          git diff -- corporate.html
+          test "$(git diff --name-only | tr -d '\r')" = "corporate.html"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add corporate.html
+          git commit -m "법인 처리사례 배경색 통일"
+          git push origin HEAD:main
