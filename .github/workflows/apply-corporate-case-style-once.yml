@@ -1,0 +1,36 @@
+name: Apply Corporate Case Style Once
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-corporate-case-style-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Sync main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+          git reset --hard origin/main
+      - name: Apply style
+        run: python scripts/apply_corporate_case_style_once.py
+      - name: Verify and commit
+        run: |
+          set -e
+          git diff --check
+          rm -f scripts/apply_corporate_case_style_once.py
+          rm -f .github/workflows/apply-corporate-case-style-once.yml
+          git add corporate.html scripts/apply_corporate_case_style_once.py .github/workflows/apply-corporate-case-style-once.yml
+          git commit -m "법인 처리사례 카드 스타일 통일"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
