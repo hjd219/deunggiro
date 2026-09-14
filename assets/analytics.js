@@ -38,7 +38,7 @@
           padding:0 12px env(safe-area-inset-bottom);
           box-sizing:border-box;
           background:rgba(255,255,255,.97);
-          border-top:2px solid #258ed0;
+          border-top:2px solid #36a9e1;
           box-shadow:0 -5px 18px rgba(23,40,64,.10);
           -webkit-backdrop-filter:blur(10px);
           backdrop-filter:blur(10px);
