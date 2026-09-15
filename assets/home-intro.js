@@ -9,7 +9,7 @@
     document.addEventListener('keydown',e=>{if(e.key==='Escape')c()});
   }
   const ai=document.createElement('script');
-  ai.src='/assets/ai-deunggiro-widget.js?v=20260915-2';
+  ai.src='/assets/ai-deunggiro-widget.js?v=20260915-3';
   ai.defer=true;
   document.body.appendChild(ai);
 })();
