@@ -23,7 +23,7 @@
   const install = () => {
     if (document.getElementById('dg-ai-panel') || document.querySelector('script[data-dg-ai-widget]')) return;
     const script = document.createElement('script');
-    script.src = '/assets/ai-deunggiro-widget.js?v=20260915-4';
+    script.src = '/assets/ai-deunggiro-widget.js?v=20260915-5';
     script.defer = true;
     script.dataset.dgAiWidget = '1';
     document.body.appendChild(script);
