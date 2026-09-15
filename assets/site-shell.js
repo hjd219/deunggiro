@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   const installAi=()=>{
     if(document.getElementById('dg-ai-panel') || document.querySelector('script[data-dg-ai-widget]')) return;
     const ai=document.createElement('script');
-    ai.src='/assets/ai-deunggiro-widget.js?v=20260915-4';
+    ai.src='/assets/ai-deunggiro-widget.js?v=20260915-5';
     ai.defer=true;
     ai.dataset.dgAiWidget='1';
     document.body.appendChild(ai);
