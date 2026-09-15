@@ -46,7 +46,10 @@ body .case-card{border-color:var(--dg-detail-line)!important;border-radius:18px!
 body .side-card{padding:0!important;border:1px solid var(--dg-detail-line-strong)!important;border-radius:14px!important;background:#fff!important;box-shadow:none!important;overflow:hidden!important}
 body .side-title{height:38px!important;display:flex!important;align-items:center!important;margin:0!important;padding:0 11px!important;background:#eef8fd!important;color:#0789ca!important;font-size:13px!important;font-weight:900!important;border-bottom:1px solid var(--dg-detail-line-strong)!important}
 body .side-link{min-height:52px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;padding:0 11px!important;border-bottom:1px solid var(--dg-detail-line)!important;background:#fff!important;color:#40566a!important;font-size:13px!important;font-weight:800!important}
-body .side-link>span{display:none!important} body .side-link::after{content:'›';color:#008fd2;font-size:22px;font-weight:700;line-height:1;transition:transform .16s ease}\nbody .side-link{transition:background .16s ease,color .16s ease,padding .16s ease!important}\nbody .side-link:hover,body .side-link:focus-visible{padding-left:15px!important;background:#eef8fd!important;color:#0789ca!important}\nbody .side-link:hover::after,body .side-link:focus-visible::after{transform:translateX(3px)}
+body .side-link>span{display:none!important} body .side-link::after{content:'›';color:#008fd2;font-size:22px;font-weight:700;line-height:1;transition:transform .16s ease}
+body .side-link{transition:background .16s ease,color .16s ease,padding .16s ease!important}
+body .side-link:hover,body .side-link:focus-visible{padding-left:15px!important;background:#eef8fd!important;color:#0789ca!important}
+body .side-link:hover::after,body .side-link:focus-visible::after{transform:translateX(3px)}
 body .side-phone{margin:0!important;padding:12px!important;border:0!important;background:#fff!important}
 body .side-call-btn{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;width:100%!important;height:54px!important;padding:0 10px!important;border-radius:10px!important;background:#279ed7!important;color:#fff!important;font-size:13px!important;font-weight:900!important;line-height:1.15!important;white-space:nowrap!important}
 body .side-call-btn small{display:block!important;margin-top:4px!important;font-size:10px!important;font-weight:700!important;color:#fff!important}
@@ -58,12 +61,15 @@ body .faq{display:block!important;margin-top:12px!important} body .faq-table{wid
 @media(max-width:360px){body .main-icon{width:34px!important;height:34px!important}body .hero h1{font-size:19px!important}}
 
 .dg-detail-pop-trigger{min-height:48px!important;padding:0 22px!important;border:1px solid #84c9ed!important;border-radius:8px!important;background:#fff!important;color:#20242b!important;font-size:16px!important;font-weight:900!important;box-shadow:0 8px 18px rgba(54,169,225,.20)!important;gap:9px!important}
-.dg-detail-pop-trigger:hover,.dg-detail-pop-trigger:focus-visible,.dg-detail-pop-trigger[aria-expanded="true"]{color:#168dca!important;border-color:#36a9e1!important;background:#fff!important}\n.dg-detail-pop-trigger .dg-detail-trigger-arrow{width:8px!important;height:8px!important;border:0!important;border-right:2px solid #36a9e1!important;border-bottom:2px solid #36a9e1!important;transform:rotate(45deg) translateY(-2px)!important;transition:.18s!important;margin-left:1px!important}
+.dg-detail-pop-trigger:hover,.dg-detail-pop-trigger:focus-visible,.dg-detail-pop-trigger[aria-expanded="true"]{color:#168dca!important;border-color:#36a9e1!important;background:#fff!important}
+.dg-detail-pop-trigger .dg-detail-trigger-arrow{width:8px!important;height:8px!important;border:0!important;border-right:2px solid #36a9e1!important;border-bottom:2px solid #36a9e1!important;transform:rotate(45deg) translateY(-2px)!important;transition:.18s!important;margin-left:1px!important}
 .dg-detail-pop-trigger[aria-expanded="true"] .dg-detail-trigger-arrow{transform:rotate(225deg) translate(-1px,-1px)!important}
 .dg-detail-popover{width:min(360px,calc(100vw - 24px))!important;border:1px solid #84c9ed!important;border-radius:12px!important;box-shadow:0 14px 28px rgba(26,91,127,.10)!important}
 .dg-detail-popover .dg-detail-pop-title{height:45px!important;padding:0 16px!important;background:#eff9fe!important;color:#168dca!important;font-size:13px!important;font-weight:900!important;border-bottom:1px solid #8bcdef!important}
 .dg-detail-popover a{height:52px!important;transition:background .16s ease,color .16s ease,padding .16s ease!important;min-height:52px!important;padding:0 16px!important;border-bottom:1px solid #9ed4ef!important;background:#fff!important;color:#20242b!important;font-size:14px!important;font-weight:900!important}
-.dg-detail-popover a:hover,.dg-detail-popover a:focus-visible{padding-left:20px!important;background:#f5fbfe!important;color:#137fb4!important}\n.dg-detail-popover a>span{transition:transform .16s ease!important}\n.dg-detail-popover a:hover>span,.dg-detail-popover a:focus-visible>span{transform:translateX(3px)!important}
+.dg-detail-popover a:hover,.dg-detail-popover a:focus-visible{padding-left:20px!important;background:#f5fbfe!important;color:#137fb4!important}
+.dg-detail-popover a>span{transition:transform .16s ease!important}
+.dg-detail-popover a:hover>span,.dg-detail-popover a:focus-visible>span{transform:translateX(3px)!important}
 .dg-detail-popover a>span{font-size:24px!important;color:#1395d3!important}
 @media(max-width:700px){.dg-detail-pop-trigger{font-size:15px!important}.dg-detail-popover{width:calc(100vw - 28px)!important}}
 
@@ -82,5 +88,13 @@ const faqData={'/inheritance-missing-heir.html':[['연락이 안 되는 상속�
 const faq=document.querySelector('.faq');if(faq&&faqData[PATH])faq.innerHTML='<table class="faq-table"><tbody>'+faqData[PATH].map(([q,a])=>`<tr><th><span class="faq-kicker">Q</span>${q}</th><td>${a}</td></tr>`).join('')+'</tbody></table>';
 const actions=document.querySelector('.actions');const callButton=actions?.querySelector('a[href^="tel:"]');if(actions&&callButton&&!actions.querySelector('.dg-detail-home')){const home=document.createElement('a');home.className='btn dg-detail-home';home.href='/inheritance.html';home.setAttribute('aria-label','상속등기 메인으로');home.title='상속등기 메인으로';home.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5M5.5 10v10h13V10M9.5 20v-6h5v6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';actions.insertBefore(home,callButton)}
 const trigger=[...document.querySelectorAll('a.btn-border')].find(a=>a.textContent.includes('상속등기 세부안내'));if(trigger){trigger.classList.add('dg-detail-pop-trigger');trigger.removeAttribute('href');trigger.setAttribute('role','button');const tri=trigger.querySelector('.tri');if(tri)tri.remove();trigger.insertAdjacentHTML('beforeend','<span class="dg-detail-trigger-arrow"></span>');const pop=document.createElement('div');pop.className='dg-detail-popover';pop.innerHTML=`<div class="dg-detail-pop-title">상속등기 세부안내</div>${detailPaths.map(p=>`<a href="${p}">${labels[p]}<span>›</span></a>`).join('')}`;document.body.appendChild(pop);const pos=()=>{const r=trigger.getBoundingClientRect(),w=Math.min(360,innerWidth-24);pop.style.left=(scrollX+Math.max(12,Math.min(innerWidth-w-12,r.left)))+'px';pop.style.top=(scrollY+r.bottom+9)+'px'};trigger.setAttribute('aria-expanded','false');trigger.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();const open=!pop.classList.contains('open');pop.classList.toggle('open',open);trigger.setAttribute('aria-expanded',open?'true':'false');if(open)pos()});document.addEventListener('click',e=>{if(!pop.contains(e.target)&&e.target!==trigger){pop.classList.remove('open');trigger.setAttribute('aria-expanded','false')}})}
+
+if(!document.getElementById('dg-ai-panel')&&!document.querySelector('script[data-dg-ai-widget]')){
+  const ai=document.createElement('script');
+  ai.src='/assets/ai-deunggiro-widget.js?v=20260915-4';
+  ai.defer=true;
+  ai.dataset.dgAiWidget='1';
+  document.head.appendChild(ai);
+}
 
 })();
