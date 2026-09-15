@@ -13,8 +13,8 @@ const css=`
 .dg-ai-logo{font-size:17px;font-weight:900;color:#299bc7;flex:1}.dg-ai-logo b{display:inline-block;margin-right:7px;padding:3px 7px;border-radius:7px;background:#e5f6fb;color:#299bc7;font-size:12px}
 .dg-ai-close{border:0;background:none;font-size:25px;line-height:1;color:#61777f;padding:8px;cursor:pointer}
 .dg-ai-body{height:calc(100% - 58px);overflow:auto;padding:24px 18px 92px}
-.dg-ai-bubble{max-width:90%;padding:14px 15px;border-radius:5px 17px 17px 17px;background:#eaf7fb;border:1px solid #bcdde9;color:#293b42;font-size:14px;line-height:1.7;white-space:pre-wrap;animation:dgAiMessage .22s ease-out}
-.dg-ai-user{margin:12px 0 0 auto;background:#fff;border-color:#d7e5ea;border-radius:17px 5px 17px 17px}
+.dg-ai-bubble{max-width:90%;padding:14px 15px;border-radius:5px 17px 17px 17px;background:#eaf7fb;border:1px solid #bcdde9;color:#299bc7;font-size:14px;line-height:1.7;white-space:pre-wrap;animation:dgAiMessage .22s ease-out}
+.dg-ai-user{margin:12px 0 0 auto;background:#fff;border-color:#d7e5ea;border-radius:17px 5px 17px 17px;color:#293b42}
 .dg-ai-note{margin:15px 0;color:#299bc7;font-size:12px;font-weight:750;line-height:1.6;letter-spacing:-.15px;white-space:nowrap}
 .dg-ai-compose{position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #d9e8ed;padding:10px 11px max(10px,env(safe-area-inset-bottom))}
 .dg-ai-composein{display:flex;gap:8px;width:100%;min-width:0}.dg-ai-input{flex:1 1 0;min-width:0;width:0;height:46px;border:1px solid #cddfe6;border-radius:14px;padding:0 13px;font-size:14px;outline:none}.dg-ai-input:focus{border-color:#5cb4d2}
