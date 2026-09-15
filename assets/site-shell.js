@@ -46,6 +46,17 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   installAi();
 
+  const inheritanceDetailPaths=new Set([
+    '/inheritance-missing-heir.html',
+    '/inheritance-overseas-heir.html',
+    '/inheritance-minor-heir.html',
+    '/inheritance-substitute-succession.html',
+    '/inheritance-division.html'
+  ]);
+  if(inheritanceDetailPaths.has(current)){
+    loadScript('/assets/analytics.js').catch(()=>{});
+  }
+
   if(current==='/corporate.html'){
     loadScript('/assets/corporate-extra.js?v=20260911-1').catch(()=>{});
   }
