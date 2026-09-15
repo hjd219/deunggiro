@@ -26,6 +26,15 @@ document.addEventListener('DOMContentLoaded',()=>{
     });
   };
 
+  const installAi=()=>{
+    if(document.getElementById('dg-ai-panel') || document.querySelector('script[data-dg-ai-widget]')) return;
+    const ai=document.createElement('script');
+    ai.src='/assets/ai-deunggiro-widget.js?v=20260915-4';
+    ai.defer=true;
+    ai.dataset.dgAiWidget='1';
+    document.body.appendChild(ai);
+  };
+
   const coreModules=[
     '/assets/site-header.js?v=20260912-1',
     '/assets/site-footer.js?v=20260911-1'
@@ -34,6 +43,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   Promise.all(coreModules.map(loadScript))
     .then(normalizePhoneCtas)
     .catch(()=>normalizePhoneCtas());
+
+  installAi();
 
   if(current==='/corporate.html'){
     loadScript('/assets/corporate-extra.js?v=20260911-1').catch(()=>{});
