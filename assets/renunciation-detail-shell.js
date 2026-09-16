@@ -5,7 +5,10 @@ if(!detailPaths.includes(PATH))return;
 const labels={'/renunciation-after.html':'상속포기 후 절차','/limited-acceptance-liquidation.html':'한정승인 후 청산절차'};
 
 const mainIcon=document.querySelector('.main-icon');
-if(mainIcon) mainIcon.innerHTML=`<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 5.5c5.3 3.3 10.2 4.5 15 5.2v10.5c0 10.2-5.9 17.1-15 21.3-9.1-4.2-15-11.1-15-21.3V10.7c4.8-.7 9.7-1.9 15-5.2Z" fill="none" stroke="#d9a21c" stroke-width="2.4" stroke-linejoin="round"/><path d="M24 14v15M17 18h14M18 18l-4 7h8l-4-7ZM30 18l-4 7h8l-4-7ZM19 31h10" fill="none" stroke="#d9a21c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+if(mainIcon) mainIcon.innerHTML=`<img src="/assets/icons/service-renunciation.svg" alt="">`;
+
+const actions=document.querySelector('.hero .actions');
+if(actions&&!actions.querySelector('.dg-detail-home')) actions.insertAdjacentHTML('afterbegin',`<a class="btn dg-detail-home" href="/" aria-label="메인으로 이동" title="메인으로 이동"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 11.2 12 4l9 7.2M5.5 9.6V20h13V9.6M9.2 20v-6.5h5.6V20" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></a>`);
 
 /* 상속 상세페이지(detail-shell.js)와 같은 기본 폼 스타일 */
 const style=document.createElement('style');
@@ -16,7 +19,10 @@ body .hero{padding:78px 0 64px!important}
 body .hero .breadcrumb{margin:0 0 18px!important;padding:0!important;font-size:13px!important;line-height:1.5!important;color:#5b7185!important}
 body .title-row{gap:14px!important}
 body .main-icon{width:46px!important;height:46px!important;border:1px solid #b9def0!important;border-radius:14px!important;background:#fff!important;display:flex!important;align-items:center!important;justify-content:center!important}
-body .main-icon svg{width:27px!important;height:31px!important;display:block!important}
+body .main-icon img{width:29px!important;height:29px!important;display:block!important;object-fit:contain!important}
+body .dg-detail-home{width:48px!important;padding:0!important;background:#fff!important;color:#1599d7!important;border:1px solid #84c9ed!important}
+body .dg-detail-home svg{width:20px!important;height:20px!important;display:block!important}
+body .dg-detail-home:hover,body .dg-detail-home:focus-visible{background:#f5fbfe!important;color:#168dca!important}
 body .hero h1{font-size:clamp(34px,4.4vw,49px)!important;line-height:1.16!important;letter-spacing:-2.8px!important;font-weight:900!important}
 body .hero-line{width:min(430px,100%)!important;height:3px!important;margin:12px 0 20px!important;background:#6bc5eb!important}
 body .hero-desc,body .summary p,body .section p{color:#4f6275!important}
@@ -43,7 +49,7 @@ body .faq{display:block!important;margin-top:12px!important}body .faq-table{widt
 body .dg-shell-contact{display:none!important}
 @media(min-width:769px){.layout{align-items:stretch!important;overflow:visible!important}.layout>.sidebar{display:block!important;position:relative!important;align-self:stretch!important;height:auto!important;min-height:100%!important;overflow:visible!important}.layout>.sidebar>.side-card{position:sticky!important;top:96px!important;width:100%!important;height:max-content!important}}
 @media(max-width:900px){body .hero{padding:70px 0 66px!important}body .proc small{min-height:auto!important}}
-@media(max-width:800px){body .hero h1{font-size:clamp(18px,4.8vw,22px)!important;letter-spacing:-1.45px!important;white-space:nowrap!important;word-break:keep-all!important;overflow-wrap:normal!important;line-height:1.15!important}body .title-row{gap:10px!important}body .main-icon{width:36px!important;height:36px!important}body .main-icon svg{width:21px!important;height:24px!important}}
+@media(max-width:800px){body .hero h1{font-size:clamp(18px,4.8vw,22px)!important;letter-spacing:-1.45px!important;white-space:nowrap!important;word-break:keep-all!important;overflow-wrap:normal!important;line-height:1.15!important}body .title-row{gap:10px!important}body .main-icon{width:36px!important;height:36px!important}body .main-icon img{width:23px!important;height:23px!important}}
 @media(max-width:700px){.dg-renunciation-side-spacer{display:none}body .faq-table{display:block!important;width:100%!important;border:0!important;border-radius:0!important;background:transparent!important;font-size:13px!important;overflow:visible!important}body .faq-table tbody{display:block!important;width:100%!important}body .faq-table tr{display:block!important;width:100%!important;margin:0 0 12px!important;border:1px solid var(--dg-detail-line)!important;border-radius:14px!important;background:#fff!important;overflow:hidden!important}body .faq-table th,body .faq-table td{display:block!important;width:100%!important;border:0!important;text-align:left!important}body .faq-table th{padding:13px 14px!important;background:#eef8fd!important;color:#17304a!important;font-size:13px!important;line-height:1.45!important;white-space:normal!important;word-break:keep-all!important;border-bottom:1px solid var(--dg-detail-line)!important}body .faq-table td{padding:13px 14px 15px!important;background:#fff!important;color:#29445d!important;font-size:13px!important;line-height:1.65!important;word-break:keep-all!important}}
 `;
 document.head.appendChild(style);
