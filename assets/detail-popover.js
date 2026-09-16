@@ -1,7 +1,7 @@
 /* DETAIL_POPOVERS_V9 */
 (()=>{const configs={
 '/inheritance.html':{id:'dg-inheritance-popover',label:'상속등기 세부안내',items:[['연락두절 상속인이 있는 경우','/inheritance-missing-heir.html'],['해외거주·외국인 상속인이 있는 경우','/inheritance-overseas-heir.html'],['미성년 상속인이 있는 경우','/inheritance-minor-heir.html'],['대습상속','/inheritance-substitute-succession.html'],['상속재산분할이 필요한 경우','/inheritance-division.html']]},
-'/renunciation.html':{id:'dg-renunciation-popover',label:'상속포기·한정승인 세부안내',items:[['상속포기 후 절차',null],['한정승인 후 청산절차',null]]}
+'/renunciation.html':{id:'dg-renunciation-popover',label:'상속포기·한정승인 세부안내',items:[['상속포기 후 절차','/renunciation-after.html'],['한정승인 후 청산절차','/limited-acceptance-liquidation.html']]}
 };const cfg=configs[location.pathname];if(!cfg)return;const apply=()=>{const actions=document.querySelector('.subhero-copy .buttons');if(!actions)return;const trigger=[...actions.querySelectorAll('a,button')].find(el=>el.textContent.includes('관련 법률정보'));if(!trigger)return;
 if(location.pathname==='/renunciation.html'){
   trigger.remove();
