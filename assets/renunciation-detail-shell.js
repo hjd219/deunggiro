@@ -5,7 +5,7 @@ if(!detailPaths.includes(PATH))return;
 const labels={'/renunciation-after.html':'상속포기 후 절차','/limited-acceptance-liquidation.html':'한정승인 후 청산절차'};
 
 const mainIcon=document.querySelector('.main-icon');
-if(mainIcon) mainIcon.innerHTML=`<svg viewBox="24 21 22 25" aria-hidden="true"><defs><linearGradient id="dgRenGold" x1="27" y1="23" x2="43" y2="43" gradientUnits="userSpaceOnUse"><stop stop-color="#ffdc61"/><stop offset="1" stop-color="#ee9f19"/></linearGradient></defs><path d="M35 23l9 3.4v6.2c0 5.6-3.6 9.3-9 12.2-5.4-2.9-9-6.6-9-12.2v-6.2z" fill="url(#dgRenGold)" stroke="#d98f17" stroke-width=".6"/><path d="m30.7 32.4 2.8 2.8 5.3-5.7" stroke="#fff" stroke-width="2.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+if(mainIcon) mainIcon.innerHTML=`<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 5.5c5.3 3.3 10.2 4.5 15 5.2v10.5c0 10.2-5.9 17.1-15 21.3-9.1-4.2-15-11.1-15-21.3V10.7c4.8-.7 9.7-1.9 15-5.2Z" fill="none" stroke="#d9a21c" stroke-width="2.4" stroke-linejoin="round"/><path d="M24 14v15M17 18h14M18 18l-4 7h8l-4-7ZM30 18l-4 7h8l-4-7ZM19 31h10" fill="none" stroke="#d9a21c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
 /* 상속 상세페이지(detail-shell.js)와 같은 기본 폼 스타일 */
 const style=document.createElement('style');
