@@ -8,7 +8,7 @@ const mainIcon=document.querySelector('.main-icon');
 if(mainIcon) mainIcon.innerHTML=`<img src="/assets/icons/service-renunciation.svg" alt="">`;
 
 const actions=document.querySelector('.hero .actions');
-if(actions&&!actions.querySelector('.dg-detail-home')) actions.insertAdjacentHTML('afterbegin',`<a class="btn dg-detail-home" href="/" aria-label="메인으로 이동" title="메인으로 이동"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 11.2 12 4l9 7.2M5.5 9.6V20h13V9.6M9.2 20v-6.5h5.6V20" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></a>`);
+if(actions&&!actions.querySelector('.dg-detail-home')) actions.insertAdjacentHTML('afterbegin',`<a class="btn dg-detail-home" href="/renunciation.html" aria-label="상속포기·한정승인 메인으로 이동" title="상속포기·한정승인 메인으로 이동"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 11.2 12 4l9 7.2M5.5 9.6V20h13V9.6M9.2 20v-6.5h5.6V20" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></a>`);
 
 /* 상속 상세페이지(detail-shell.js)와 같은 기본 폼 스타일 */
 const style=document.createElement('style');
