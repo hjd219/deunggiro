@@ -5,7 +5,7 @@ if(!detailPaths.includes(PATH))return;
 const labels={'/renunciation-after.html':'상속포기 후 절차','/limited-acceptance-liquidation.html':'한정승인 후 청산절차'};
 
 const mainIcon=document.querySelector('.main-icon');
-if(mainIcon) mainIcon.innerHTML='<img src="/assets/icons/service-renunciation.svg" alt="">';
+if(mainIcon) mainIcon.innerHTML=`<svg viewBox="24 21 22 25" aria-hidden="true"><defs><linearGradient id="dgRenGold" x1="27" y1="23" x2="43" y2="43" gradientUnits="userSpaceOnUse"><stop stop-color="#ffdc61"/><stop offset="1" stop-color="#ee9f19"/></linearGradient></defs><path d="M35 23l9 3.4v6.2c0 5.6-3.6 9.3-9 12.2-5.4-2.9-9-6.6-9-12.2v-6.2z" fill="url(#dgRenGold)" stroke="#d98f17" stroke-width=".6"/><path d="m30.7 32.4 2.8 2.8 5.3-5.7" stroke="#fff" stroke-width="2.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
 /* 상속 상세페이지(detail-shell.js)와 같은 기본 폼 스타일 */
 const style=document.createElement('style');
@@ -16,7 +16,7 @@ body .hero{padding:78px 0 64px!important}
 body .hero .breadcrumb{margin:0 0 18px!important;padding:0!important;font-size:13px!important;line-height:1.5!important;color:#5b7185!important}
 body .title-row{gap:14px!important}
 body .main-icon{width:46px!important;height:46px!important;border:1px solid #b9def0!important;border-radius:14px!important;background:#fff!important;display:flex!important;align-items:center!important;justify-content:center!important}
-body .main-icon img{width:32px!important;height:32px!important;object-fit:contain!important}
+body .main-icon svg{width:27px!important;height:31px!important;display:block!important}
 body .hero h1{font-size:clamp(34px,4.4vw,49px)!important;line-height:1.16!important;letter-spacing:-2.8px!important;font-weight:900!important}
 body .hero-line{width:min(430px,100%)!important;height:3px!important;margin:12px 0 20px!important;background:#6bc5eb!important}
 body .hero-desc,body .summary p,body .section p{color:#4f6275!important}
@@ -43,7 +43,7 @@ body .faq{display:block!important;margin-top:12px!important}body .faq-table{widt
 body .dg-shell-contact{display:none!important}
 @media(min-width:769px){.layout{align-items:stretch!important;overflow:visible!important}.layout>.sidebar{display:block!important;position:relative!important;align-self:stretch!important;height:auto!important;min-height:100%!important;overflow:visible!important}.layout>.sidebar>.side-card{position:sticky!important;top:96px!important;width:100%!important;height:max-content!important}}
 @media(max-width:900px){body .hero{padding:70px 0 66px!important}body .proc small{min-height:auto!important}}
-@media(max-width:800px){body .hero h1{font-size:clamp(18px,4.8vw,22px)!important;letter-spacing:-1.45px!important;white-space:nowrap!important;word-break:keep-all!important;overflow-wrap:normal!important;line-height:1.15!important}body .title-row{gap:10px!important}body .main-icon{width:36px!important;height:36px!important}body .main-icon img{width:25px!important;height:25px!important}}
+@media(max-width:800px){body .hero h1{font-size:clamp(18px,4.8vw,22px)!important;letter-spacing:-1.45px!important;white-space:nowrap!important;word-break:keep-all!important;overflow-wrap:normal!important;line-height:1.15!important}body .title-row{gap:10px!important}body .main-icon{width:36px!important;height:36px!important}body .main-icon svg{width:21px!important;height:24px!important}}
 @media(max-width:700px){.dg-renunciation-side-spacer{display:none}body .faq-table{display:block!important;width:100%!important;border:0!important;border-radius:0!important;background:transparent!important;font-size:13px!important;overflow:visible!important}body .faq-table tbody{display:block!important;width:100%!important}body .faq-table tr{display:block!important;width:100%!important;margin:0 0 12px!important;border:1px solid var(--dg-detail-line)!important;border-radius:14px!important;background:#fff!important;overflow:hidden!important}body .faq-table th,body .faq-table td{display:block!important;width:100%!important;border:0!important;text-align:left!important}body .faq-table th{padding:13px 14px!important;background:#eef8fd!important;color:#17304a!important;font-size:13px!important;line-height:1.45!important;white-space:normal!important;word-break:keep-all!important;border-bottom:1px solid var(--dg-detail-line)!important}body .faq-table td{padding:13px 14px 15px!important;background:#fff!important;color:#29445d!important;font-size:13px!important;line-height:1.65!important;word-break:keep-all!important}}
 `;
 document.head.appendChild(style);
