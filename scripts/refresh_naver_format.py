@@ -1,5 +1,5 @@
 from __future__ import annotations
-import html,json,re,time
+import html,json,re,time,subprocess
 from io import BytesIO
 from pathlib import Path
 from urllib.parse import urljoin,parse_qs,urlparse
@@ -156,11 +156,28 @@ def extract(u,slug):
  if chars<500: raise RuntimeError(f'short formatted body {chars}')
  print('FORMAT_EXTRACT',slug,'components='+str(len(comps)),'source_images='+str(len(root.select('img,[data-linktype="img"],[data-linkdata]'))),'saved_images='+str(imgno))
  return body,chars,imgno
+def changed_post_slugs():
+ try:
+  out=subprocess.check_output(['git','status','--porcelain','--untracked-files=all','--','posts'],cwd=ROOT,text=True,encoding='utf-8',errors='replace')
+ except Exception as e:
+  print('FORMAT_CHANGED_POSTS_ERROR',e); return set()
+ slugs=set()
+ for line in out.splitlines():
+  path=line[3:].strip()
+  if ' -> ' in path: path=path.split(' -> ',1)[1]
+  if path.startswith('posts/') and path.endswith('.html'):
+   slugs.add(Path(path).stem)
+ print('FORMAT_CHANGED_POSTS',len(slugs),','.join(sorted(slugs)))
+ return slugs
 def main():
- posts=json.loads(DATA.read_text(encoding='utf-8')); changed=0
+ posts=json.loads(DATA.read_text(encoding='utf-8')); changed=0; targets=changed_post_slugs()
+ if not targets:
+  print('FORMAT_REFRESHED_TOTAL',0); return
  for p in posts:
   if p.get('source')!='naver-blog': continue
-  slug=str(p.get('slug','')).replace('.html',''); path=ROOT/'posts'/f'{slug}.html'
+  slug=str(p.get('slug','')).replace('.html','')
+  if slug not in targets: continue
+  path=ROOT/'posts'/f'{slug}.html'
   if not path.exists(): continue
   old=path.read_text(encoding='utf-8',errors='replace')
   if f'name="dg-naver-format" content="{FORMAT_VERSION}"' in old: continue
