@@ -1,0 +1,9 @@
+/* DETAIL_POPOVER_LEGACY_GUARD_V1
+   Legacy inheritance popover markup must never render as an unstyled footer block.
+   Current inheritance.html no longer creates this popover; this guard also protects
+   visitors with a cached pre-fix detail-popover.js while the old asset expires. */
+.dg-detail-popover{display:none!important}
+.dg-detail-popover.open{display:block!important}
+
+/* The inheritance main page no longer uses the legacy popover at all. */
+body:has(.inheritance-overview) #dg-inheritance-popover{display:none!important}
