@@ -1,6 +1,8 @@
 (()=>{const clean=s=>String(s||'').toLowerCase().replace(/\s+/g,'');const fixedByCategory={
 '상속포기·한정승인':[
  {title:'상속포기·한정승인 절차',href:'#ren-process',type:'페이지'},
+ {title:'상속포기 후 절차',href:'/renunciation-after.html',type:'세부페이지'},
+ {title:'한정승인 후 청산절차',href:'/limited-acceptance-liquidation.html',type:'세부페이지'},
  {title:'상속포기·한정승인 필요서류',href:'#ren-documents',type:'페이지'},
  {title:'상속포기·한정승인 자주 묻는 질문',href:'#ren-faq',type:'페이지'}
 ],
