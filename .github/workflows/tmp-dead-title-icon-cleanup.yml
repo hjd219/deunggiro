@@ -1,0 +1,60 @@
+name: One-time dead title icon cleanup
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/tmp-dead-title-icon-cleanup.yml']
+permissions:
+  contents: write
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Remove dead title icon source only
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          # detail-shell.js: remove dead title icon injector and CSS only
+          p=Path('assets/detail-shell.js'); s=p.read_text(); old=s
+          s=re.sub(r"\nconst mainIcon=document\.querySelector\('\.main-icon'\);\nif\(mainIcon\)mainIcon\.innerHTML=`.*?`;\n",'\n',s,count=1,flags=re.S)
+          s=s.replace('body .title-row{gap:14px!important}\n','')
+          s=re.sub(r'body \.main-icon\{[^\n]*\}\n','',s)
+          s=re.sub(r'body \.main-icon svg\{[^\n]*\}\n','',s)
+          s=s.replace('body .title-row{gap:10px!important}','')
+          s=re.sub(r'body \.main-icon\{width:36px!important;height:36px!important\}','',s)
+          s=re.sub(r'body \.main-icon svg\{width:22px!important;height:22px!important\}','',s)
+          s=re.sub(r'body \.main-icon\{width:34px!important;height:34px!important\}','',s)
+          if s==old: raise SystemExit('detail-shell.js: expected dead icon code not found')
+          p.write_text(s)
+
+          # renunciation-detail-shell.js: same dead title icon source
+          p=Path('assets/renunciation-detail-shell.js'); s=p.read_text(); old=s
+          s=re.sub(r"\nconst mainIcon=document\.querySelector\('\.main-icon'\);\nif\(mainIcon\) mainIcon\.innerHTML=`.*?`;\n",'\n',s,count=1,flags=re.S)
+          s=s.replace('body .title-row{gap:14px!important}\n','')
+          s=re.sub(r'body \.main-icon\{[^\n]*\}\n','',s)
+          s=re.sub(r'body \.main-icon img\{[^\n]*\}\n','',s)
+          s=s.replace('body .title-row{gap:10px!important}','')
+          s=re.sub(r'body \.main-icon\{width:36px!important;height:36px!important\}','',s)
+          s=re.sub(r'body \.main-icon img\{width:23px!important;height:23px!important\}','',s)
+          if s==old: raise SystemExit('renunciation-detail-shell.js: expected dead icon code not found')
+          p.write_text(s)
+
+          # inheritance-detail.css: .main-icon is no longer in any HTML
+          p=Path('assets/inheritance-detail.css'); s=p.read_text(); old=s
+          s=s.replace('.main-icon{display:none!important}','')
+          if s==old: raise SystemExit('inheritance-detail.css: expected dead icon rule not found')
+          p.write_text(s)
+          PY
+      - name: Verify scope and commit
+        run: |
+          if grep -R -n 'mainIcon\|\.main-icon' assets/detail-shell.js assets/renunciation-detail-shell.js assets/inheritance-detail.css; then
+            echo 'Residual title icon code found' >&2; exit 1
+          fi
+          git diff --check
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/detail-shell.js assets/renunciation-detail-shell.js assets/inheritance-detail.css
+          git commit -m 'Remove dead detail title icon source'
+          git push
