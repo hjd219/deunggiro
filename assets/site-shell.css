@@ -2,7 +2,7 @@
 @import url('/assets/global-title-alignment.css?v=20260911-1138');
 
 /* REMOVED_UI_FIRST_PAINT_GUARD_V1 - JS 삭제 전 한 프레임 노출되는 잔상 차단 */
-.related-posts-panel,section.contact,section.cta,section.dg-shell-contact,.dg-shell-contact,.dg-ai-float,.dg-ai-panel,#dg-ai-open,#dg-ai-panel,[class*="ai-deunggiro"],script[data-dg-ai-widget],script[src*="ai-deunggiro-widget"]{display:none!important}
+section.contact,section.cta,section.dg-shell-contact,.dg-shell-contact,.dg-ai-float,.dg-ai-panel,#dg-ai-open,#dg-ai-panel,[class*="ai-deunggiro"],script[data-dg-ai-widget],script[src*="ai-deunggiro-widget"]{display:none!important}
 
 /* MOBILE_IOS_ROOT_SCROLL_V1 - 모바일 전체 페이지 하단 스크롤 구조 통일 */
 @media (max-width:900px){

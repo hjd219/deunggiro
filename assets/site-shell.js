@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   ]);
 
   const removeUnwanted=()=>{
-    document.querySelectorAll('.related-posts-panel').forEach(el=>el.remove());
     document.querySelectorAll('section.contact,section.cta,section.dg-shell-contact,.dg-shell-contact').forEach(el=>el.remove());
     if(detailPaths.has(current)){
       document.querySelectorAll('.subhero-copy .buttons a,.subhero-copy .buttons button,.hero .buttons a,.hero .buttons button,.hero .actions a,.hero .actions button').forEach(el=>{if((el.textContent||'').includes('법률정보'))el.remove();});
