@@ -1,0 +1,69 @@
+name: One-time latest posts source cleanup
+on:
+  push:
+    branches: [tmp-latest-posts-cleanup-run-20260917]
+    paths: ['.github/workflows/tmp-latest-posts-source-cleanup.yml']
+permissions:
+  contents: write
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: tmp-latest-posts-cleanup-run-20260917
+      - name: Remove obsolete latest-post source
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          changed=[]
+          for p in Path('.').glob('*.html'):
+              if p.name == 'index.html':
+                  continue
+              s=p.read_text(encoding='utf-8')
+              old=s
+              s=s.replace('<link rel="stylesheet" href="/assets/latest-posts.css">\n','')
+              s=s.replace('<link rel="stylesheet" href="/assets/latest-posts.css">','')
+              s=re.sub(r'<aside class="related-posts-panel">.*?</aside>', '', s, flags=re.S)
+              if s != old:
+                  p.write_text(s,encoding='utf-8')
+                  changed.append(str(p))
+
+          shell=Path('assets/site-shell.js')
+          s=shell.read_text(encoding='utf-8')
+          old=s
+          s=s.replace("    document.querySelectorAll('.related-posts-panel').forEach(el=>el.remove());\n",'')
+          if s != old:
+              shell.write_text(s,encoding='utf-8'); changed.append(str(shell))
+
+          css=Path('assets/site-shell.css')
+          s=css.read_text(encoding='utf-8')
+          old=s
+          s=s.replace('.related-posts-panel,','')
+          if s != old:
+              css.write_text(s,encoding='utf-8'); changed.append(str(css))
+
+          lp=Path('assets/latest-posts.css')
+          if lp.exists():
+              lp.unlink(); changed.append(str(lp))
+
+          wf=Path('.github/workflows/tmp-latest-posts-source-cleanup.yml')
+          if wf.exists():
+              wf.unlink(); changed.append(str(wf))
+
+          print('changed:')
+          print('\n'.join(changed))
+          PY
+      - name: Verify and commit
+        run: |
+          if grep -R -n --include='*.html' 'latest-posts.css\|related-posts-panel' . --exclude='index.html'; then
+            echo 'Residual latest-post source found' >&2
+            exit 1
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Remove obsolete latest-post sections from subpages'
+          git push origin HEAD:tmp-latest-posts-cleanup-run-20260917
