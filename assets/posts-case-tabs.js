@@ -1,47 +1,12 @@
 (()=>{
   const CASE_RE=/^\s*\[?처리사례\]?/;
-  const CASE_CATS=['상속등기','상속포기·한정승인','법인등기','부동산등기','가사'];
-  const TAB_DEFS=[
-    ['전체','all'],['상속등기 사례','case:상속등기'],['상속포기·한정승인 사례','case:상속포기·한정승인'],['법인등기 사례','case:법인등기'],['부동산등기 사례','case:부동산등기'],['가사 사례','case:가사'],['법률정보','info']
-  ];
+  const TAB_DEFS=[['전체','all'],['상속등기 사례','case:상속등기'],['상속포기·한정승인 사례','case:상속포기·한정승인'],['법인등기 사례','case:법인등기'],['부동산등기 사례','case:부동산등기'],['가사 사례','case:가사'],['법률정보','info']];
   const esc=s=>String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
   let data=[],mode='all',query='';
-  function isCase(p){return CASE_RE.test(String(p.title||''));}
-  function matches(p){
-    if(mode==='info'&&isCase(p))return false;
-    if(mode.startsWith('case:')){
-      const cat=mode.slice(5);
-      if(!isCase(p)||p.category!==cat)return false;
-    }
-    if(query){const hay=(p.title+' '+(p.summary||'')+' '+(p.keywords||'')).toLowerCase();if(!hay.includes(query))return false;}
-    return true;
-  }
-  function card(p){return `<a class="post-card dg-legal-card" href="/posts/${esc(p.slug)}.html"><div class="post-content"><div class="post-meta"><span class="badge">${esc(p.category)}</span>${isCase(p)?'<span class="case-badge">처리사례</span>':''}${esc(p.date)}</div><h3>${esc(p.title)}</h3><p>${esc(p.summary||'')}</p><span class="dg-card-more">자세히 보기 →</span></div></a>`;}
-  function render(){
-    const list=data.filter(matches),posts=document.getElementById('posts'),pagination=document.getElementById('pagination');
-    if(!posts)return;
-    posts.className='post-grid dg-legal-scroll';
-    posts.innerHTML=list.length?list.map(card).join(''):'<div class="dg-no-result">검색 결과가 없습니다.</div>';
-    if(pagination)pagination.innerHTML='';
-    let head=document.getElementById('dg-legal-result-head');
-    if(!head){head=document.createElement('div');head.id='dg-legal-result-head';head.className='dg-legal-result-head';posts.before(head);}
-    const label=TAB_DEFS.find(x=>x[1]===mode)?.[0]||'전체';
-    head.innerHTML=`<strong>${esc(query?'검색 결과':label)}</strong><span>${list.length}개 글</span><div class="dg-scroll-arrows"><button type="button" data-dir="-1" aria-label="이전">‹</button><button type="button" data-dir="1" aria-label="다음">›</button></div>`;
-    head.querySelectorAll('button').forEach(b=>b.onclick=()=>posts.scrollBy({left:Number(b.dataset.dir)*Math.max(260,posts.clientWidth*.82),behavior:'smooth'}));
-  }
-  async function boot(){
-    const toolbar=document.querySelector('.post-toolbar'),cats=document.getElementById('cats'),oldSearch=document.querySelector('.search-wrap');
-    if(!toolbar||!cats||!oldSearch)return;
-    try{const r=await fetch('/data/posts.json?'+Date.now());data=await r.json();}catch(e){console.warn('posts case tabs load failed',e);return;}
-    toolbar.classList.add('dg-browser-toolbar');
-    cats.className='category-tabs dg-browser-tabs';
-    cats.innerHTML=TAB_DEFS.map(([label,key],i=>`<button class="chip dg-browser-tab ${i===0?'active':''}" type="button" data-mode="${esc(key)}">${esc(label)}</button>`).join('');
-    oldSearch.classList.add('dg-tab-search');
-    const input=oldSearch.querySelector('input');input.placeholder='법률정보 검색';
-    const btn=oldSearch.querySelector('button');btn.textContent='검색';btn.removeAttribute('onclick');
-    cats.querySelectorAll('.dg-browser-tab').forEach(t=>t.onclick=()=>{mode=t.dataset.mode;cats.querySelectorAll('.dg-browser-tab').forEach(x=>x.classList.toggle('active',x===t));render();});
-    const doSearch=()=>{query=input.value.trim().toLowerCase();render();};btn.onclick=doSearch;input.addEventListener('keydown',e=>{if(e.key==='Enter')doSearch();});input.addEventListener('input',()=>{if(!input.value){query='';render();}});
-    render();
-  }
+  const isCase=p=>CASE_RE.test(String(p.title||''));
+  function matches(p){if(mode==='info'&&isCase(p))return false;if(mode.startsWith('case:')){const cat=mode.slice(5);if(!isCase(p)||p.category!==cat)return false}if(query){const hay=(p.title+' '+(p.summary||'')+' '+(p.keywords||'')).toLowerCase();if(!hay.includes(query))return false}return true}
+  function card(p){return `<a class="post-card dg-legal-card" href="/posts/${esc(p.slug)}.html"><div class="post-content"><div class="post-meta"><span class="badge">${esc(p.category)}</span>${isCase(p)?'<span class="case-badge">처리사례</span>':''}${esc(p.date)}</div><h3>${esc(p.title)}</h3><p>${esc(p.summary||'')}</p><span class="dg-card-more">자세히 보기 →</span></div></a>`}
+  function render(){const list=data.filter(matches),posts=document.getElementById('posts'),pagination=document.getElementById('pagination');if(!posts)return;posts.className='post-grid dg-legal-scroll';posts.innerHTML=list.length?list.map(card).join(''):'<div class="dg-no-result">검색 결과가 없습니다.</div>';if(pagination)pagination.innerHTML='';let head=document.getElementById('dg-legal-result-head');if(!head){head=document.createElement('div');head.id='dg-legal-result-head';head.className='dg-legal-result-head';posts.before(head)}const label=TAB_DEFS.find(x=>x[1]===mode)?.[0]||'전체';head.innerHTML=`<strong>${esc(query?'검색 결과':label)}</strong><span>${list.length}개 글</span><div class="dg-scroll-arrows"><button type="button" data-dir="-1" aria-label="이전">‹</button><button type="button" data-dir="1" aria-label="다음">›</button></div>`;head.querySelectorAll('button').forEach(b=>b.onclick=()=>posts.scrollBy({left:Number(b.dataset.dir)*Math.max(260,posts.clientWidth*.82),behavior:'smooth'}))}
+  async function boot(){const toolbar=document.querySelector('.post-toolbar'),cats=document.getElementById('cats'),oldSearch=document.querySelector('.search-wrap');if(!toolbar||!cats||!oldSearch)return;try{const r=await fetch('/data/posts.json?'+Date.now());data=await r.json()}catch(e){console.warn('posts case tabs load failed',e);return}toolbar.classList.add('dg-browser-toolbar');cats.className='category-tabs dg-browser-tabs';cats.innerHTML=TAB_DEFS.map(([label,key],i)=>`<button class="chip dg-browser-tab ${i===0?'active':''}" type="button" data-mode="${esc(key)}">${esc(label)}</button>`).join('');oldSearch.classList.add('dg-tab-search');const input=oldSearch.querySelector('input');input.placeholder='법률정보 검색';const btn=oldSearch.querySelector('button');btn.textContent='검색';btn.removeAttribute('onclick');cats.querySelectorAll('.dg-browser-tab').forEach(t=>t.onclick=()=>{mode=t.dataset.mode;cats.querySelectorAll('.dg-browser-tab').forEach(x=>x.classList.toggle('active',x===t));render()});const doSearch=()=>{query=input.value.trim().toLowerCase();render()};btn.onclick=doSearch;input.addEventListener('keydown',e=>{if(e.key==='Enter')doSearch()});input.addEventListener('input',()=>{if(!input.value){query='';render()}});render()}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
