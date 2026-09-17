@@ -7,12 +7,12 @@
     const href='/posts.html?tab=case%3A%EB%B6%80%EB%8F%99%EC%82%B0%EB%93%B1%EA%B8%B0';
     const section=document.createElement('section');
     section.className='dg-realestate-casehub';
-    section.innerHTML=`<div class="container"><div class="dg-realestate-casehead"><div class="dg-realestate-kicker">실제 처리사례</div><h2>부동산등기 처리사례</h2><p>실제 진행한 부동산등기 사례를 유형별로 확인하세요.</p></div><div class="dg-realestate-casegrid">
-      <a href="${href}"><div class="dg-realestate-cardhead"><span>사례</span><strong>매매등기</strong></div><p>소유권이전과 권리관계 확인 사례</p></a>
-      <a href="${href}"><div class="dg-realestate-cardhead"><span>사례</span><strong>증여등기</strong></div><p>가족 간 증여와 이전등기 사례</p></a>
-      <a href="${href}"><div class="dg-realestate-cardhead"><span>사례</span><strong>근저당 설정·말소</strong></div><p>담보 설정과 말소 진행 사례</p></a>
-      <a href="${href}"><div class="dg-realestate-cardhead"><span>사례</span><strong>가압류·말소</strong></div><p>오래된 권리와 말소 처리 사례</p></a>
-      <a href="${href}"><div class="dg-realestate-cardhead"><span>사례</span><strong>특수 부동산등기</strong></div><p>주소불일치·미등기 등 특수 사례</p></a>
+    section.innerHTML=`<div class="container"><div class="dg-realestate-casehead"><div class="dg-realestate-kicker">실제 처리사례</div><h2>부동산등기 처리사례</h2><p>일반적인 설명보다 실제 진행 과정에서 문제가 된 상황을 중심으로 확인하세요.</p></div><div class="dg-realestate-casegrid">
+      <a href="${href}"><div class="dg-realestate-cardhead"><span>사례</span><strong>등기권리증 분실</strong></div><p>권리증이 없는 경우의 이전등기</p></a>
+      <a href="${href}"><div class="dg-realestate-cardhead"><span>사례</span><strong>주소 불일치</strong></div><p>오래된 등기의 주소가 다른 경우</p></a>
+      <a href="${href}"><div class="dg-realestate-cardhead"><span>사례</span><strong>미등기 건물</strong></div><p>건축물대장이 있는 건물의 보존등기</p></a>
+      <a href="${href}"><div class="dg-realestate-cardhead"><span>사례</span><strong>오래된 가압류</strong></div><p>채권이 남아 있지 않은 가압류 말소</p></a>
+      <a href="${href}"><div class="dg-realestate-cardhead"><span>사례</span><strong>임차권등기 말소</strong></div><p>오래된 임차권등기를 정리하는 경우</p></a>
     </div></div>`;
     main.insertAdjacentElement('afterend',section);
     const style=document.createElement('style');
