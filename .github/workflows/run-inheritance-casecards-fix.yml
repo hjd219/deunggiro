@@ -1,0 +1,25 @@
+name: Run inheritance casecards fix
+'on':
+  push:
+    branches:
+      - main
+    paths:
+      - scripts/restore_inheritance_casecards_once.py
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - run: python scripts/restore_inheritance_casecards_once.py
+      - run: rm -f scripts/restore_inheritance_casecards_once.py .github/workflows/run-inheritance-casecards-fix.yml .github/workflows/restore-inheritance-case-cards.yml
+      - run: |
+          git config user.name github-actions-bot
+          git config user.email github-actions-bot@users.noreply.github.com
+          git add -A
+          git commit -m '상속등기 중복안내 제거 및 처리사례 카드 선별 복구'
+          git push origin HEAD:main
