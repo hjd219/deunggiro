@@ -14,3 +14,4 @@ if 'INHERITANCE_CASE_CARDS_RESTORED_V1' not in s:
 p.write_text(s,encoding='utf-8')
 assert 'INHERITANCE_INTERNAL_LINK_HUB_V1' not in s
 assert s.count('INHERITANCE_CASE_CARDS_RESTORED_V1')==1
+# trigger
