@@ -1,4 +1,5 @@
 (()=>{
+  if(!document.querySelector('link[href*="posts-case-tabs.css"]')){const l=document.createElement('link');l.rel='stylesheet';l.href='/assets/posts-case-tabs.css?v=20260917-1';document.head.appendChild(l)}
   const CASE_RE=/^\s*\[?처리사례\]?/;
   const TAB_DEFS=[['전체','all'],['상속등기 사례','case:상속등기'],['상속포기·한정승인 사례','case:상속포기·한정승인'],['법인등기 사례','case:법인등기'],['부동산등기 사례','case:부동산등기'],['가사 사례','case:가사'],['법률정보','info']];
   const esc=s=>String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
