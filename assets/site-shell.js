@@ -21,20 +21,26 @@ document.addEventListener('DOMContentLoaded',()=>{
     '/inheritance-missing-heir.html','/inheritance-overseas-heir.html','/inheritance-minor-heir.html','/inheritance-substitute-succession.html','/inheritance-division.html',
     '/renunciation-after.html','/limited-acceptance-liquidation.html'
   ]);
-  const removeDetailLegalInfo=()=>{
-    if(!detailPaths.has(current))return;
-    document.querySelectorAll('.subhero-copy .buttons a,.subhero-copy .buttons button,.hero .buttons a,.hero .buttons button').forEach(el=>{
-      if((el.textContent||'').includes('법률정보'))el.remove();
-    });
-    const header=document.querySelector('header.dg-shell-header');
-    if(header)header.querySelectorAll('nav a[href="/posts.html"]').forEach(a=>a.remove());
+
+  const removeUnwanted=()=>{
+    /* 상단/우측 주요 법률정보 카드 전체 삭제 */
+    document.querySelectorAll('.related-posts-panel').forEach(el=>el.remove());
+    /* 중간 상담 CTA 전체 삭제 */
+    document.querySelectorAll('section.contact,section.cta,section.dg-shell-contact,.dg-shell-contact').forEach(el=>el.remove());
+    /* 상세페이지의 법률정보 버튼 및 상단 법률정보 메뉴 삭제 */
+    if(detailPaths.has(current)){
+      document.querySelectorAll('.subhero-copy .buttons a,.subhero-copy .buttons button,.hero .buttons a,.hero .buttons button,.hero .actions a,.hero .actions button').forEach(el=>{
+        if((el.textContent||'').includes('법률정보'))el.remove();
+      });
+      document.querySelectorAll('header.dg-shell-header nav a[href="/posts.html"],.dg-shell-mobile-panel a[href="/posts.html"]').forEach(a=>a.remove());
+    }
+    /* AI 등기로 아이콘/패널/동적 스크립트 전부 제거 */
+    document.querySelectorAll('.dg-ai-float,.dg-ai-panel,#dg-ai-open,#dg-ai-panel,[class*="ai-deunggiro"],script[data-dg-ai-widget],script[src*="ai-deunggiro-widget"]').forEach(el=>el.remove());
   };
 
-  const coreModules=['/assets/site-header.js?v=20260917-clean','/assets/site-footer.js?v=20260917-compact'];
-  Promise.all(coreModules.map(loadScript)).then(()=>{normalizePhoneCtas();removeDetailLegalInfo();}).catch(()=>{normalizePhoneCtas();removeDetailLegalInfo();});
-
-  /* AI 등기로 플로팅 아이콘/패널은 전 페이지에서 설치하지 않음 */
-  document.querySelectorAll('.dg-ai-float,.dg-ai-panel,#dg-ai-open,#dg-ai-panel,script[data-dg-ai-widget]').forEach(el=>el.remove());
+  const coreModules=['/assets/site-header.js?v=20260917-clean2','/assets/site-footer.js?v=20260917-horizontal3'];
+  Promise.all(coreModules.map(loadScript)).then(()=>{normalizePhoneCtas();removeUnwanted();}).catch(()=>{normalizePhoneCtas();removeUnwanted();});
+  removeUnwanted();
 
   const inheritanceDetailPaths=new Set(['/inheritance-missing-heir.html','/inheritance-overseas-heir.html','/inheritance-minor-heir.html','/inheritance-substitute-succession.html','/inheritance-division.html']);
   if(inheritanceDetailPaths.has(current))loadScript('/assets/analytics.js').catch(()=>{});
