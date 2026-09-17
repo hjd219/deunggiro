@@ -6,12 +6,12 @@
     if(!main) return;
     const section=document.createElement('section');
     section.className='dg-realestate-casehub';
-    section.innerHTML=`<div class="container"><div class="dg-realestate-casehead"><h2>부동산등기 이런 경우도 확인하세요</h2><p>실제로 등록된 부동산등기 사례와 안내글을 바로 확인하세요.</p></div><div class="dg-realestate-casegrid">
-      <a href="/posts/sale-real-estate-guide-bvcdri.html"><div class="dg-realestate-cardhead"><span>사례</span><strong>등기권리증 분실</strong></div><p>등기필증이 없어도 매매가 가능한 경우</p></a>
-      <a href="/posts/naver-224250931942.html"><div class="dg-realestate-cardhead"><span>사례</span><strong>미등기 건물 매매</strong></div><p>보존등기와 소유권이전이 필요한 경우</p></a>
-      <a href="/posts/naver-224269248721.html"><div class="dg-realestate-cardhead"><span>사례</span><strong>이혼 후 부동산 이전</strong></div><p>공증 후 단독명의 이전이 가능한지 확인</p></a>
-      <a href="/posts/naver-224258675059.html"><div class="dg-realestate-cardhead"><span>사례</span><strong>법인 소유 부동산 매매</strong></div><p>법인 부동산 매매 절차와 필요서류</p></a>
-      <a href="/posts/naver-224282188114.html"><div class="dg-realestate-cardhead"><span>사례</span><strong>경매 낙찰 촉탁등기</strong></div><p>취득세 납부와 촉탁등기 진행 절차</p></a>
+    section.innerHTML=`<div class="container"><div class="dg-realestate-casehead"><h2>부동산등기 이런 경우도 확인하세요</h2><p>실제로 진행한 부동산등기 처리사례를 바로 확인하세요.</p></div><div class="dg-realestate-casegrid">
+      <a href="/posts/naver-224413365255.html"><div class="dg-realestate-cardhead"><span>사례</span><strong>이혼 재산분할 아파트 이전</strong></div><p>이혼 재산분할을 원인으로 소유권이전등기를 진행한 사례</p></a>
+      <a href="/posts/naver-224413471424.html"><div class="dg-realestate-cardhead"><span>사례</span><strong>전세권자 직접 경매·낙찰</strong></div><p>보증금을 받지 못해 직접 경매신청 후 낙찰받은 사례</p></a>
+      <a href="/posts/naver-224413495528.html"><div class="dg-realestate-cardhead"><span>사례</span><strong>가압류·임차권등기 말소</strong></div><p>오래된 가압류와 임차권등기명령을 말소한 사례</p></a>
+      <a href="/posts/naver-224411287172.html"><div class="dg-realestate-cardhead"><span>사례</span><strong>유언대용신탁 귀속등기</strong></div><p>신탁 설정 후 특정 자녀에게 부동산을 귀속등기한 사례</p></a>
+      <a href="/posts/naver-224411310050.html"><div class="dg-realestate-cardhead"><span>사례</span><strong>부모·자식 간 주택 매매</strong></div><p>취득세와 취득자금까지 소명하며 이전등기한 사례</p></a>
     </div></div>`;
     main.insertAdjacentElement('afterend',section);
     const style=document.createElement('style');
