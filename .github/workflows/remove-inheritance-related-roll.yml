@@ -1,4 +1,4 @@
-name: Remove inheritance related roll remnants
+name: Remove inheritance related info button
 on:
   push:
     branches: [main]
@@ -6,31 +6,26 @@ permissions:
   contents: write
 jobs:
   clean:
-    if: contains(github.event.head_commit.message, 'RUN_REMOVE_INHERITANCE_RELATED_ROLL')
+    if: contains(github.event.head_commit.message, 'RUN_REMOVE_RELATED_INFO_BUTTON')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Remove only two obsolete calls
+      - name: Remove exact button only
         run: |
           python - <<'PY'
           from pathlib import Path
           p=Path('inheritance.html')
           s=p.read_text(encoding='utf-8')
-          targets=[
-            '<script src="/assets/inheritance-related-roll.js?v=20260913" defer></script>',
-            '<link rel="stylesheet" href="/assets/inheritance-related-roll.css?v=20260913">'
-          ]
-          for t in targets:
-            if s.count(t)!=1: raise SystemExit(f'unexpected count for {t}: {s.count(t)}')
-            s=s.replace(t,'')
-          p.write_text(s,encoding='utf-8')
+          t='<a class="btn btn-border" href="/posts.html">관련 법률정보</a>'
+          if s.count(t)!=1: raise SystemExit(f'unexpected count={s.count(t)}')
+          p.write_text(s.replace(t,''),encoding='utf-8')
           PY
       - name: Verify scope and commit
         run: |
-          ! grep -q 'inheritance-related-roll' inheritance.html
+          ! grep -q '<a class="btn btn-border" href="/posts.html">관련 법률정보</a>' inheritance.html
           test "$(git diff --name-only | tr -d '\r')" = "inheritance.html"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add inheritance.html
-          git commit -m "상속등기 관련정보 잔존 호출 2줄 제거 [skip ci]"
+          git commit -m "상속등기 관련 법률정보 버튼만 제거 [skip ci]"
           git push origin HEAD:main
