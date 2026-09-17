@@ -6,12 +6,12 @@
     if(!main) return;
     const section=document.createElement('section');
     section.className='dg-realestate-casehub';
-    section.innerHTML=`<div class="container"><div class="dg-realestate-casehead"><h2>부동산등기 이런 경우도 확인하세요</h2><p>부동산등기 진행 중 자주 발생하는 특수한 상황과 실제 처리사례를 확인할 수 있습니다.</p></div><div class="dg-realestate-casegrid">
-      <a href="/posts/sale-real-estate-guide-bvcdri.html"><div class="dg-realestate-cardhead"><span>사례</span><strong>등기권리증 분실</strong></div><p>등기필증이 없어도 매매등기를 진행하는 방법</p></a>
-      <a href="/posts.html?tab=case%3A%EB%B6%80%EB%8F%99%EC%82%B0%EB%93%B1%EA%B8%B0"><div class="dg-realestate-cardhead"><span>사례</span><strong>주소 불일치</strong></div><p>오래된 등기의 주소가 다른 경우</p></a>
-      <a href="/posts.html?tab=case%3A%EB%B6%80%EB%8F%99%EC%82%B0%EB%93%B1%EA%B8%B0"><div class="dg-realestate-cardhead"><span>사례</span><strong>미등기 건물</strong></div><p>건축물대장이 있는 건물의 보존등기</p></a>
-      <a href="/posts/naver-224371192381.html"><div class="dg-realestate-cardhead"><span>사례</span><strong>오래된 가압류</strong></div><p>장기간 남아 있는 가압류의 취소·말소</p></a>
-      <a href="/posts.html?tab=case%3A%EB%B6%80%EB%8F%99%EC%82%B0%EB%93%B1%EA%B8%B0"><div class="dg-realestate-cardhead"><span>사례</span><strong>임차권등기 말소</strong></div><p>오래된 임차권등기를 정리하는 경우</p></a>
+    section.innerHTML=`<div class="container"><div class="dg-realestate-casehead"><h2>부동산등기 이런 경우도 확인하세요</h2><p>실제로 등록된 부동산등기 사례와 안내글을 바로 확인하세요.</p></div><div class="dg-realestate-casegrid">
+      <a href="/posts/sale-real-estate-guide-bvcdri.html"><div class="dg-realestate-cardhead"><span>사례</span><strong>등기권리증 분실</strong></div><p>등기필증이 없어도 매매가 가능한 경우</p></a>
+      <a href="/posts/naver-224250931942.html"><div class="dg-realestate-cardhead"><span>사례</span><strong>미등기 건물 매매</strong></div><p>보존등기와 소유권이전이 필요한 경우</p></a>
+      <a href="/posts/naver-224269248721.html"><div class="dg-realestate-cardhead"><span>사례</span><strong>이혼 후 부동산 이전</strong></div><p>공증 후 단독명의 이전이 가능한지 확인</p></a>
+      <a href="/posts/naver-224258675059.html"><div class="dg-realestate-cardhead"><span>사례</span><strong>법인 소유 부동산 매매</strong></div><p>법인 부동산 매매 절차와 필요서류</p></a>
+      <a href="/posts/naver-224282188114.html"><div class="dg-realestate-cardhead"><span>사례</span><strong>경매 낙찰 촉탁등기</strong></div><p>취득세 납부와 촉탁등기 진행 절차</p></a>
     </div></div>`;
     main.insertAdjacentElement('afterend',section);
     const style=document.createElement('style');
