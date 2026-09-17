@@ -28,7 +28,6 @@ document.addEventListener('DOMContentLoaded',()=>{
       document.querySelectorAll('.subhero-copy .buttons a,.subhero-copy .buttons button,.hero .buttons a,.hero .buttons button,.hero .actions a,.hero .actions button').forEach(el=>{if((el.textContent||'').includes('법률정보'))el.remove();});
       document.querySelectorAll('header.dg-shell-header nav a[href="/posts.html"],.dg-shell-mobile-panel a[href="/posts.html"]').forEach(a=>a.remove());
     }
-    document.querySelectorAll('.dg-ai-float,.dg-ai-panel,#dg-ai-open,#dg-ai-panel,[class*="ai-deunggiro"],script[data-dg-ai-widget],script[src*="ai-deunggiro-widget"]').forEach(el=>el.remove());
   };
 
   const coreModules=['/assets/site-header.js?v=20260917-clean2','/assets/site-footer.js?v=20260917-horizontal3'];

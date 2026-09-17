@@ -82,12 +82,5 @@ const faq=document.querySelector('.faq');if(faq&&faqData[PATH])faq.innerHTML='<t
 const actions=document.querySelector('.actions');const callButton=actions?.querySelector('a[href^="tel:"]');if(actions&&callButton&&!actions.querySelector('.dg-detail-home')){const home=document.createElement('a');home.className='btn dg-detail-home';home.href='/inheritance.html';home.setAttribute('aria-label','상속등기 메인으로');home.title='상속등기 메인으로';home.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5M5.5 10v10h13V10M9.5 20v-6h5v6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';actions.insertBefore(home,callButton)}
 const trigger=[...document.querySelectorAll('a.btn-border')].find(a=>a.textContent.includes('상속등기 세부안내'));if(trigger){trigger.classList.add('dg-detail-pop-trigger');trigger.removeAttribute('href');trigger.setAttribute('role','button');const tri=trigger.querySelector('.tri');if(tri)tri.remove();trigger.insertAdjacentHTML('beforeend','<span class="dg-detail-trigger-arrow"></span>');const pop=document.createElement('div');pop.className='dg-detail-popover';pop.innerHTML=`<div class="dg-detail-pop-title">상속등기 세부안내</div>${detailPaths.map(p=>`<a href="${p}">${labels[p]}<span>›</span></a>`).join('')}`;document.body.appendChild(pop);const pos=()=>{const r=trigger.getBoundingClientRect(),w=Math.min(360,innerWidth-24);pop.style.left=(scrollX+Math.max(12,Math.min(innerWidth-w-12,r.left)))+'px';pop.style.top=(scrollY+r.bottom+9)+'px'};trigger.setAttribute('aria-expanded','false');trigger.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();const open=!pop.classList.contains('open');pop.classList.toggle('open',open);trigger.setAttribute('aria-expanded',open?'true':'false');if(open)pos()});document.addEventListener('click',e=>{if(!pop.contains(e.target)&&e.target!==trigger){pop.classList.remove('open');trigger.setAttribute('aria-expanded','false')}})}
 
-if(!document.getElementById('dg-ai-panel')&&!document.querySelector('script[data-dg-ai-widget]')){
-  const ai=document.createElement('script');
-  ai.src='/assets/ai-deunggiro-widget.js?v=20260915-4';
-  ai.defer=true;
-  ai.dataset.dgAiWidget='1';
-  document.head.appendChild(ai);
-}
 
 })();
