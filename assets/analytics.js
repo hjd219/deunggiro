@@ -47,10 +47,10 @@
       @media (max-width:900px){
         body{padding-bottom:calc(68px + env(safe-area-inset-bottom))!important}
         .dg-mobile-actionbar{
-          position:fixed;
-          left:0;
-          right:0;
-          bottom:0;
+          position:fixed!important;
+          left:0!important;
+          right:0!important;
+          bottom:0!important;
           z-index:2147483000;
           display:grid;
           grid-template-columns:1fr 1fr;
