@@ -39,5 +39,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   const inheritanceDetailPaths=new Set(['/inheritance-missing-heir.html','/inheritance-overseas-heir.html','/inheritance-minor-heir.html','/inheritance-substitute-succession.html','/inheritance-division.html']);
   if(inheritanceDetailPaths.has(current))loadScript('/assets/analytics.js').catch(()=>{});
   if(current==='/corporate.html')loadScript('/assets/corporate-extra.js?v=20260911-1').catch(()=>{});
+  if(current==='/realestate.html')loadScript('/assets/realestate-case-cards.js?v=20260917-1').catch(()=>{});
   if(current==='/posts.html')loadScript('/assets/posts-case-tabs.js?v=20260917-1').catch(()=>{});
 });
