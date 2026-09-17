@@ -102,7 +102,7 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.2 3.8 4.9 5.1c-.7.4-1 1.2-.7 2 2.2 6.1 6.6 10.5 12.7 12.7.8.3 1.6 0 2-.7l1.3-2.3c.3-.6.2-1.3-.3-1.7l-3-2.2c-.5-.4-1.2-.3-1.7.1l-1.6 1.6a14.2 14.2 0 0 1-4.2-4.2L11 8.8c.4-.5.5-1.2.1-1.7l-2.2-3c-.4-.5-1.1-.6-1.7-.3Z"/></svg>
         <span>전화상담</span>
       </a>
-      <a href="/calculator.html" aria-label="부동산 등기비용 계산기">
+      <a href="/acquisition-calculator.html" aria-label="부동산 등기비용 계산기">
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2.8" width="14" height="18.4" rx="2"/><path d="M8 6h8v3H8zM8 13h1m3 0h1m3 0h0M8 17h1m3 0h1m3 0h0"/></svg>
         <span>비용계산</span>
       </a>
