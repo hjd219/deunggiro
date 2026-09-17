@@ -23,18 +23,12 @@ document.addEventListener('DOMContentLoaded',()=>{
   ]);
 
   const removeUnwanted=()=>{
-    /* 상단/우측 주요 법률정보 카드 전체 삭제 */
     document.querySelectorAll('.related-posts-panel').forEach(el=>el.remove());
-    /* 중간 상담 CTA 전체 삭제 */
     document.querySelectorAll('section.contact,section.cta,section.dg-shell-contact,.dg-shell-contact').forEach(el=>el.remove());
-    /* 상세페이지의 법률정보 버튼 및 상단 법률정보 메뉴 삭제 */
     if(detailPaths.has(current)){
-      document.querySelectorAll('.subhero-copy .buttons a,.subhero-copy .buttons button,.hero .buttons a,.hero .buttons button,.hero .actions a,.hero .actions button').forEach(el=>{
-        if((el.textContent||'').includes('법률정보'))el.remove();
-      });
+      document.querySelectorAll('.subhero-copy .buttons a,.subhero-copy .buttons button,.hero .buttons a,.hero .buttons button,.hero .actions a,.hero .actions button').forEach(el=>{if((el.textContent||'').includes('법률정보'))el.remove();});
       document.querySelectorAll('header.dg-shell-header nav a[href="/posts.html"],.dg-shell-mobile-panel a[href="/posts.html"]').forEach(a=>a.remove());
     }
-    /* AI 등기로 아이콘/패널/동적 스크립트 전부 제거 */
     document.querySelectorAll('.dg-ai-float,.dg-ai-panel,#dg-ai-open,#dg-ai-panel,[class*="ai-deunggiro"],script[data-dg-ai-widget],script[src*="ai-deunggiro-widget"]').forEach(el=>el.remove());
   };
 
@@ -45,4 +39,5 @@ document.addEventListener('DOMContentLoaded',()=>{
   const inheritanceDetailPaths=new Set(['/inheritance-missing-heir.html','/inheritance-overseas-heir.html','/inheritance-minor-heir.html','/inheritance-substitute-succession.html','/inheritance-division.html']);
   if(inheritanceDetailPaths.has(current))loadScript('/assets/analytics.js').catch(()=>{});
   if(current==='/corporate.html')loadScript('/assets/corporate-extra.js?v=20260911-1').catch(()=>{});
+  if(current==='/posts.html')loadScript('/assets/posts-case-tabs.js?v=20260917-1').catch(()=>{});
 });
