@@ -1,0 +1,44 @@
+name: One-time remove latest post blocks final
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/tmp-remove-latest-blocks-final.yml']
+permissions:
+  contents: write
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Remove latest-post source blocks from service pages
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          files=['inheritance.html','renunciation.html','corporate.html','realestate.html','family.html']
+          changed=[]
+          for fn in files:
+              p=Path(fn); s=p.read_text(); old=s
+              # Remove exact generated latest-post section and its wrapper markers only.
+              s,n=re.subn(r'<!-- SEO_CATEGORY_LINKS_START -->\s*<section id="dg-latest-posts" class="dg-latest-wrap">.*?</section>\s*<!-- SEO_CATEGORY_LINKS_END -->', '', s, flags=re.S)
+              # Also remove a bare latest section if markers are absent.
+              if n==0:
+                  s,n2=re.subn(r'<section id="dg-latest-posts" class="dg-latest-wrap">.*?</section>', '', s, flags=re.S)
+                  n+=n2
+              if s!=old:
+                  p.write_text(s); changed.append(fn)
+          if not changed:
+              raise SystemExit('No latest-post blocks found')
+          print('changed:', ', '.join(changed))
+          PY
+      - name: Verify and commit
+        run: |
+          if grep -n 'dg-latest-posts\|dg-latest-wrap\|관련 최신 글' inheritance.html renunciation.html corporate.html realestate.html family.html; then
+            echo 'Residual latest-post source found' >&2; exit 1
+          fi
+          git diff --check
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add inheritance.html renunciation.html corporate.html realestate.html family.html
+          git commit -m 'Remove remaining latest post blocks from service pages'
+          git push
