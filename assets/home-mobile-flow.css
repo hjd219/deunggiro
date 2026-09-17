@@ -1,6 +1,6 @@
-/* HOME_MOBILE_V56_FLOW_V2
-   모바일도 PC와 같은 고정 Hero/트랙 방식을 사용한다.
-   긴 세로 업무카드는 JS가 마지막 카드까지 통과시킨 뒤 footer를 release한다. */
+/* HOME_MOBILE_V56_FLOW_V3
+   모바일 고정 Hero/트랙 방식 유지.
+   iOS 키보드가 열릴 때는 visual viewport 변화가 스크롤 연출에 개입하지 않도록 한다. */
 @media(max-width:800px){
   html,body{overflow-x:hidden!important}
   :root{--v55-header-h:66px}
@@ -14,4 +14,6 @@
   .intro{padding:42px 22px 30px!important;border-radius:20px 20px 0 0!important;box-shadow:0 -12px 34px rgba(18,54,74,.12)!important}
   .person{margin-top:0!important}
   .dg-shell-footer{position:relative!important;z-index:5!important;width:100%!important;transform:none!important}
+  body.dg-ai-keyboard-open{overflow:hidden!important}
+  body.dg-ai-keyboard-open .hero,body.dg-ai-keyboard-open header{transform:none!important}
 }
