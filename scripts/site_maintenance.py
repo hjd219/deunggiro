@@ -19,12 +19,10 @@ CATEGORY_RULES = [
 COMMON_CSS = [
     '<link rel="stylesheet" href="/assets/article-v2.css?v=9">',
     '<link rel="stylesheet" href="/assets/site-shell.css">',
-    '<link rel="stylesheet" href="/assets/latest-posts.css">',
 ]
 COMMON_JS = [
     '<script src="/assets/site-shell.js" defer></script>',
     '<script src="/assets/article-v2.js?v=4" defer></script>',
-    '<script src="/assets/latest-posts.js" defer></script>',
     '<script src="/assets/article-cta.js" defer></script>',
 ]
 
@@ -90,6 +88,10 @@ def clear_legacy_related_actions(text: str):
 
 def ensure_common_assets(text: str):
     original = text
+    obsolete = ('/assets/latest-posts.css', '/assets/latest-posts.js')
+    for path in obsolete:
+        text = re.sub(rf'<link[^>]+href=["\']{re.escape(path)}(?:\?[^"\']*)?["\'][^>]*>', '', text, flags=re.I)
+        text = re.sub(rf'<script[^>]+src=["\']{re.escape(path)}(?:\?[^"\']*)?["\'][^>]*>\s*</script>', '', text, flags=re.I)
     for href in COMMON_CSS:
         path = re.search(r'href="([^"]+)"', href).group(1).split('?')[0]
         text = re.sub(rf'<link[^>]+href=["\']{re.escape(path)}(?:\?[^"\']*)?["\'][^>]*>', '', text, flags=re.I)
