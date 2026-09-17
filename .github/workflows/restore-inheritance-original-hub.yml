@@ -1,0 +1,41 @@
+name: Restore inheritance original hub
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  restore:
+    if: contains(github.event.head_commit.message, 'RUN_RESTORE_INHERITANCE_ORIGINAL_HUB')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Restore exact original block only
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re, subprocess
+          p=Path('inheritance.html')
+          s=p.read_text(encoding='utf-8')
+          old=subprocess.check_output(['git','show','7b276e5ae142dbdac191a6ede25dc543bd395e71:inheritance.html'], text=True)
+          m=re.search(r'\n?<!-- INHERITANCE_INTERNAL_LINK_HUB_V1 -->\s*<section class="section white dg-inheritance-linkhub".*?</section>\s*<style>\s*\.dg-inheritance-linkhub\{.*?</style>\s*', old, re.S)
+          if not m: raise SystemExit('original hub not found')
+          pattern=r'\n?<!-- INHERITANCE_CASE_CARDS_RESTORED_V1 -->\s*<section class="section white dg-inheritance-casecards".*?</section>\s*<style>\s*\.dg-inheritance-casecards\{.*?</style>\s*'
+          new,n=re.subn(pattern, '\n'+m.group(0).strip()+'\n', s, count=1, flags=re.S)
+          if n != 1: raise SystemExit(f'current invented block count={n}')
+          p.write_text(new,encoding='utf-8')
+          PY
+      - name: Verify exact scope
+        run: |
+          grep -q 'INHERITANCE_INTERNAL_LINK_HUB_V1' inheritance.html
+          ! grep -q 'INHERITANCE_CASE_CARDS_RESTORED_V1' inheritance.html
+          test "$(git diff --name-only | tr -d '\r')" = "inheritance.html"
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add inheritance.html
+          git commit -m "상속등기 삭제 전 원본 세부안내 정확 복원 [skip ci]"
+          git push origin HEAD:main
