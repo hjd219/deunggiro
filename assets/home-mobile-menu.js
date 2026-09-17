@@ -55,12 +55,4 @@
   close.addEventListener('click',()=>setOpen(false));
   panel.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setOpen(false)));
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel.classList.contains('open'))setOpen(false)});
-
-  if(!document.querySelector('.dg-home-mobile-bottom')){
-    const bottom=document.createElement('nav');
-    bottom.className='dg-home-mobile-bottom';
-    bottom.setAttribute('aria-label','빠른 상담 및 비용계산');
-    bottom.innerHTML='<a href="tel:0324251500"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.2 3.5 10 8.2 8.3 10c1.2 2.5 3.2 4.5 5.7 5.7l1.8-1.7 4.7 2.8c.4.2.6.7.5 1.1-.3 1.5-1.6 2.6-3.1 2.6C10 20.5 3.5 14 3.5 6.1c0-1.5 1.1-2.8 2.6-3.1.4-.1.9.1 1.1.5Z"/></svg><span>전화상담</span></a><a href="/acquisition-calculator.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2.8" width="14" height="18.4" rx="2"/><path d="M8 6h8v3H8zM8 12h1M12 12h1M16 12h1M8 16h1M12 16h1M16 16h1"/></svg><span>비용계산</span></a>';
-    document.body.appendChild(bottom);
-  }
 })();
