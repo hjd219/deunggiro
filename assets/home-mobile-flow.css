@@ -1,0 +1,13 @@
+/* HOME_MOBILE_NATURAL_FLOW_V1 */
+@media(max-width:800px){
+  html,body{overflow-x:hidden!important}
+  .hero{position:relative!important;inset:auto!important;width:100%!important;height:100svh!important;min-height:100svh!important;transform:none!important}
+  header{position:absolute!important;transform:none!important}
+  .v53-stage{position:relative!important;height:auto!important;z-index:10!important;pointer-events:auto!important}
+  .v53-window{position:relative!important;left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;height:auto!important;overflow:visible!important;transform:none!important;pointer-events:auto!important}
+  .v53-window:before{display:none!important}
+  .v53-track{position:relative!important;left:auto!important;right:auto!important;top:auto!important;transform:none!important;pointer-events:auto!important}
+  body.v55-release .hero,body.v55-release header,body.v55-release .v53-window{transform:none!important}
+  .intro,.person,.dg-services{width:calc(100% - 28px)!important}
+  .dg-shell-footer{position:relative!important;z-index:20!important;transform:none!important}
+}
