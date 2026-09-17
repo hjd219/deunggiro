@@ -1,13 +1,17 @@
-/* HOME_MOBILE_NATURAL_FLOW_V1 */
+/* HOME_MOBILE_V56_FLOW_V2
+   모바일도 PC와 같은 고정 Hero/트랙 방식을 사용한다.
+   긴 세로 업무카드는 JS가 마지막 카드까지 통과시킨 뒤 footer를 release한다. */
 @media(max-width:800px){
   html,body{overflow-x:hidden!important}
-  .hero{position:relative!important;inset:auto!important;width:100%!important;height:100svh!important;min-height:100svh!important;transform:none!important}
-  header{position:absolute!important;transform:none!important}
-  .v53-stage{position:relative!important;height:auto!important;z-index:10!important;pointer-events:auto!important}
-  .v53-window{position:relative!important;left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;height:auto!important;overflow:visible!important;transform:none!important;pointer-events:auto!important}
-  .v53-window:before{display:none!important}
-  .v53-track{position:relative!important;left:auto!important;right:auto!important;top:auto!important;transform:none!important;pointer-events:auto!important}
-  body.v55-release .hero,body.v55-release header,body.v55-release .v53-window{transform:none!important}
+  :root{--v55-header-h:66px}
+  .hero{position:fixed!important;inset:0!important;width:100%!important;height:100svh!important;min-height:100svh!important;transform:translate3d(0,var(--v55-release-y,0px),0)!important}
+  header{position:fixed!important;top:0!important;left:0!important;right:0!important;transform:translate3d(0,var(--v55-release-y,0px),0)!important}
+  .v53-stage{position:relative!important;z-index:10!important;height:300vh;pointer-events:none!important}
+  .v53-window{position:fixed!important;z-index:30!important;left:0!important;right:0!important;top:var(--v55-header-h)!important;bottom:0!important;height:auto!important;overflow:hidden!important;pointer-events:none!important;transform:translate3d(0,var(--v55-release-y,0px),0)!important}
+  .v53-track{position:absolute!important;left:0!important;right:0!important;top:0!important;pointer-events:auto!important;will-change:transform}
+  body.v55-services .v53-window,body.v55-services .v53-track{pointer-events:auto!important}
   .intro,.person,.dg-services{width:calc(100% - 28px)!important}
-  .dg-shell-footer{position:relative!important;z-index:20!important;transform:none!important}
+  .intro{padding:42px 22px 30px!important;border-radius:20px 20px 0 0!important;box-shadow:0 -12px 34px rgba(18,54,74,.12)!important}
+  .person{margin-top:0!important}
+  .dg-shell-footer{position:relative!important;z-index:5!important;width:100%!important;transform:none!important}
 }
