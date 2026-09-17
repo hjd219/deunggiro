@@ -67,7 +67,6 @@ jobs:
           timeout 90s python -u scripts/inject_internal_links.py
           timeout 150s python -u scripts/generate_thumbnails.py
           timeout 90s python -u scripts/fix_thumbnail_logo.py
-          timeout 90s python -u scripts/apply_latest_cards.py
           timeout 90s python -u scripts/generate_sitemap.py
           timeout 120s node scripts/seo-auto.mjs
           timeout 60s node scripts/seo-canonical-fix.mjs
