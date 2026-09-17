@@ -1,1 +1,0 @@
-(()=>{function removeLatest(){document.querySelectorAll('#dg-latest-posts,.dg-latest-wrap').forEach(el=>el.remove());document.querySelectorAll('section').forEach(s=>{if(s.querySelector('#seo-latest-title,[id="seo-latest-title"]'))s.remove()})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',removeLatest);else removeLatest()})();
