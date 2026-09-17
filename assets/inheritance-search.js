@@ -23,6 +23,5 @@
  input.addEventListener('input',()=>render(input.value));
  input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();render(input.value)}if(e.key==='Escape')close()});
  search.addEventListener('click',()=>render(input.value));
- document.querySelectorAll('.inheritance-quick [data-query]').forEach(b=>b.addEventListener('click',()=>{input.value=b.dataset.query;render(input.value)}));
  document.addEventListener('click',e=>{if(!e.target.closest('.inheritance-combo'))close()});
 })();
