@@ -55,17 +55,4 @@
   close.addEventListener('click',()=>setOpen(false));
   panel.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setOpen(false)));
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel.classList.contains('open'))setOpen(false)});
-
-  /* HOME_MOBILE_FIXED_BAR_V1 - 업무페이지와 동일한 2분할 하단 고정바 */
-  if(!document.querySelector('.dg-mobile-fixed-bar')){
-    const fixedStyle=document.createElement('style');
-    fixedStyle.id='dg-mobile-fixed-bar-style';
-    fixedStyle.textContent='@media(min-width:801px){.dg-mobile-fixed-bar{display:none!important}}@media(max-width:800px){.dg-mobile-fixed-bar{position:fixed;left:0;right:0;bottom:0;z-index:1500;display:grid;grid-template-columns:1fr 1fr;height:68px;background:#fff;border-top:2px solid #36a9e1;box-shadow:0 -3px 12px rgba(20,56,74,.08)}.dg-mobile-fixed-bar a{display:flex;align-items:center;justify-content:center;gap:11px;color:#172840;text-decoration:none;font-size:16px;font-weight:900;letter-spacing:-.4px;background:#fff}.dg-mobile-fixed-bar a+a{border-left:1px solid #dce8ef}.dg-mobile-fixed-bar svg{width:27px;height:27px;display:block;color:#159ee0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}}';
-    document.head.appendChild(fixedStyle);
-    const fixedBar=document.createElement('nav');
-    fixedBar.className='dg-mobile-fixed-bar';
-    fixedBar.setAttribute('aria-label','빠른 상담 및 비용계산');
-    fixedBar.innerHTML='<a href="tel:0324251500" aria-label="전화상담"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.2 3.5 10 8.2 8.3 10c1.2 2.5 3.2 4.5 5.7 5.7l1.8-1.7 4.7 2.8c.4.2.6.7.5 1.1-.3 1.5-1.6 2.6-3.1 2.6C10 20.5 3.5 14 3.5 6.1c0-1.5 1.1-2.8 2.6-3.1.4-.1.9.1 1.1.5Z"/></svg><span>전화상담</span></a><a href="/acquisition-calculator.html" aria-label="비용계산"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2.8" width="14" height="18.4" rx="2"/><path d="M8 6h8v3H8zM8 12h1M12 12h1M16 12h1M8 16h1M12 16h1M16 16h1"/></svg><span>비용계산</span></a>';
-    document.body.appendChild(fixedBar);
-  }
 })();
