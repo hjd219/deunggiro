@@ -63,5 +63,5 @@ const faqData={
 const faq=document.querySelector('.faq');
 if(faq) faq.innerHTML='<table class="faq-table"><tbody>'+faqData[PATH].map(([q,a])=>`<tr><th><span class="faq-kicker">Q</span>${q}</th><td>${a}</td></tr>`).join('')+'</tbody></table>';
 
-if(!document.getElementById('dg-ai-panel')&&!document.querySelector('script[data-dg-ai-widget]')){const ai=document.createElement('script');ai.src='/assets/ai-deunggiro-widget.js?v=20260915-4';ai.defer=true;ai.dataset.dgAiWidget='1';document.head.appendChild(ai)}
+
 })();
