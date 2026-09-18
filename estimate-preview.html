@@ -115,11 +115,15 @@ async function savePdfFile(){
   remain-=pageH;
   while(remain>0){y=remain-imgH;pdf.addPage();pdf.addImage(img,'JPEG',0,y,imgW,imgH,'FAST');remain-=pageH;}
   const blob=pdf.output('blob');
-  const file=new File([blob],'등기로-예상견적서.pdf',{type:'application/pdf'});
-  if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
-    await navigator.share({files:[file],title:'등기로 예상 견적서'});
+  const url=URL.createObjectURL(blob);
+  const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  if(isIOS){
+    // iOS Safari/WebView can stall when navigator.share() is called after async canvas rendering.
+    // Open the generated PDF directly so the user can use the native Share > Save to Files flow.
+    const opened=window.open(url,'_blank');
+    if(!opened) location.href=url;
+    setTimeout(()=>URL.revokeObjectURL(url),120000);
   }else{
-    const url=URL.createObjectURL(blob);
     const a=document.createElement('a');a.href=url;a.download='등기로-예상견적서.pdf';document.body.appendChild(a);a.click();a.remove();
     setTimeout(()=>URL.revokeObjectURL(url),60000);
   }
