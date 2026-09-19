@@ -237,6 +237,35 @@ background:#fff!important;color:#69b8d7!important;font-size:13px!important;line-
 .story-index.flow-circled>div span{font-size:15px!important}
 .story-index.flow-circled>div small{font-size:11px!important}
 }
+</style><style id="vertical-progress-flow">
+/* vertical progressive process */
+.story-index.flow-circled{display:block!important;max-width:720px!important;margin:0!important;padding:4px 0!important;border:0!important;position:relative!important}
+.story-index.flow-circled:before{content:""!important;position:absolute!important;left:25px!important;top:30px!important;bottom:30px!important;width:2px!important;height:auto!important;background:#d5e5eb!important;z-index:0!important}
+.story-index.flow-circled>i{display:none!important}
+.story-index.flow-circled>div{display:grid!important;grid-template-columns:52px minmax(0,1fr) auto!important;gap:18px!important;align-items:center!important;position:relative!important;padding:9px 0 25px!important;text-align:left!important;background:transparent!important;border:0!important;z-index:1!important}
+.story-index.flow-circled>div b{display:flex!important;align-items:center!important;justify-content:center!important;width:50px!important;height:50px!important;margin:0!important;border:2px solid #4cb5df!important;border-radius:50%!important;background:#fff!important;color:#209fd5!important;font-size:19px!important;line-height:1!important;box-shadow:0 0 0 6px #fff!important}
+.story-index.flow-circled>div:nth-of-type(1) b{background:#28a9df!important;color:#fff!important;border-color:#28a9df!important;box-shadow:0 0 0 6px #fff,0 5px 16px rgba(40,169,223,.20)!important}
+.story-index.flow-circled>div:not(:last-of-type):after{content:"↓"!important;position:absolute!important;left:19px!important;bottom:1px!important;width:14px!important;height:20px!important;background:#fff!important;color:#6bb9d8!important;text-align:center!important;font-size:13px!important;line-height:20px!important}
+.story-index.flow-circled>div span{display:block!important;margin:0!important;color:#173b4a!important;font-size:16px!important;font-weight:850!important;line-height:1.35!important}
+.story-index.flow-circled>div small{display:block!important;margin:0!important;color:#6c828c!important;font-size:12px!important;font-weight:700!important;white-space:nowrap!important}
+.story-index.flow-circled>div:hover b{background:#28a9df!important;color:#fff!important;border-color:#28a9df!important}
+
+/* cases chapter */
+.story-cases{display:grid;grid-template-columns:.72fr 1.28fr;gap:72px;padding:78px 58px 86px;background:#f5f9fa;color:#173b4a}
+.cases-head>span{display:block;margin-bottom:15px;color:#37aee4;font-size:11px;font-weight:900;letter-spacing:.08em}
+.cases-head h2{margin:0;font-size:40px;line-height:1.12;letter-spacing:-.055em}
+.cases-list{border-top:1px solid #d7e4e9}
+.cases-list a{display:grid;grid-template-columns:34px 1fr 24px;gap:12px;align-items:center;padding:20px 0;border-bottom:1px solid #d7e4e9;color:inherit;text-decoration:none}
+.cases-list a>b{color:#8ca5af;font-size:10px}.cases-list h3{margin:0 0 5px;font-size:15px;letter-spacing:-.035em}.cases-list p{margin:0;color:#71838b;font-size:12px}.cases-list i{font-style:normal;color:#42add9;font-size:16px}
+@media(max-width:800px){
+.story-index.flow-circled{max-width:none!important}
+.story-index.flow-circled>div{grid-template-columns:48px minmax(0,1fr) auto!important;gap:12px!important;padding-bottom:22px!important}
+.story-index.flow-circled:before{left:23px!important}
+.story-index.flow-circled>div b{width:46px!important;height:46px!important;font-size:18px!important}
+.story-index.flow-circled>div:not(:last-of-type):after{left:17px!important}
+.story-index.flow-circled>div span{font-size:15px!important}.story-index.flow-circled>div small{font-size:11px!important}
+.story-cases{display:block!important;padding:44px 20px 52px!important}.cases-head{margin-bottom:28px}.cases-head h2{font-size:29px}.cases-list a{padding:18px 0}.cases-list h3{font-size:14px}.cases-list p{font-size:11.5px}
+}
 </style></head><body><header><div class="wrap nav"><a class="logo" href="/" style="color:inherit;text-decoration:none">등기로<small>현재두 법무사 사무소 · 인천</small></a><nav class="menu"><a href="/inheritance.html">상속등기</a><a href="/renunciation.html">상속포기·한정승인</a><a href="/corporate.html">법인등기</a><a href="/realestate.html">부동산등기</a><a href="/family.html">가사</a><a href="/posts.html">법률정보</a></nav></div></header><section class="hero"><img src="https://www.ito.or.kr/images/bbs/galleryko/2020/incheondaegyo_004.jpg" alt="인천대교" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center"><div class="shade"></div><div class="wrap heroin"><div class="hero-copy-v22"><h1>상속은 <span>등기로</span></h1><p>상속등기 절차 · 비용 · 필요서류부터 협의분할, 연락두절 · 해외거주 · 미성년자 등 복잡한 상속까지 실제 처리사례를 바탕으로 안내합니다.</p></div><div class="inheritance-finder-inline"><h2>어떤 상속등기 업무가 궁금하세요?</h2><div class="inheritance-finder-layout"><div class="inheritance-finder-right"><div class="inheritance-search-row"><div class="inheritance-combo"><input id="inheritance-query" class="inheritance-query" type="search" placeholder="검색하거나 화살표를 눌러 선택하세요" autocomplete="off" aria-controls="inheritance-results" aria-expanded="false"><button id="inheritance-toggle" class="inheritance-toggle" type="button" aria-label="선택항 펼치기">▼</button><ul id="inheritance-results" class="inheritance-results"></ul></div><button id="inheritance-search-button" class="inheritance-search-button" type="button">찾아보기</button></div><div class="inheritance-search-status" aria-live="polite">입력하면 검색 결과가 자동으로 펼쳐집니다.</div></div></div></div></div><a class="hero-scroll" href="#dg-intro" aria-label="아래 내용 보기"><span class="hero-scroll-mouse"></span><span>SCROLL</span></a></section><div class="v53-stage" id="dg-intro"><div class="v53-window"><main class="v53-track"><section class="person" style="padding:0!important"><div class="story">
 <section class="story-cover">
  <span class="story-no">상속등기 진행순서</span>
@@ -266,6 +295,16 @@ background:#fff!important;color:#69b8d7!important;font-size:13px!important;line-
   <article><b>①</b><h3>피상속인(망자) 필요서류</h3><ul><li>기본증명서(상세)</li><li>가족관계증명서(상세)</li><li>혼인관계증명서(상세)</li><li>입양관계증명서(상세)</li><li>친양자입양관계증명서(상세)</li><li>주민등록말소자초본</li><li>제적등본(출생부터 사망까지)</li></ul></article>
   <div class="simple-doc-arrow" aria-hidden="true">→</div>
   <article><b>②</b><h3>상속인 필요서류</h3><ul><li>가족관계증명서(상세)</li><li>기본증명서(상세)</li><li>주민등록초본</li><li>도장</li></ul></article>
+ </div>
+</section>
+<section class="story-cases">
+ <div class="cases-head"><span>실제 처리사례</span><h2>복잡한 상속도<br>사례로 확인하세요.</h2></div>
+ <div class="cases-list">
+  <a href="/inheritance-missing-heir.html"><b>01</b><div><h3>연락두절·행방불명 상속인</h3><p>상속인과 연락이 되지 않는 경우의 상속등기</p></div><i>↗</i></a>
+  <a href="/inheritance-minor-heir.html"><b>02</b><div><h3>미성년자 상속인</h3><p>미성년자가 상속인에 포함된 경우의 처리</p></div><i>↗</i></a>
+  <a href="/inheritance-overseas-heir.html"><b>03</b><div><h3>해외거주·외국국적 상속인</h3><p>해외에 있는 상속인이 참여하는 상속등기</p></div><i>↗</i></a>
+  <a href="/inheritance-substitute-succession.html"><b>04</b><div><h3>대습상속</h3><p>상속인이 먼저 사망한 경우의 상속관계</p></div><i>↗</i></a>
+  <a href="/inheritance-division.html"><b>05</b><div><h3>상속재산분할</h3><p>상속인 사이 협의가 어려운 경우의 분할절차</p></div><i>↗</i></a>
  </div>
 </section>
 </div></section><section class="dg-services" aria-hidden="true" style="height:1px!important;min-height:1px!important;padding:0!important;margin:0!important;overflow:hidden!important"></section></main></div></div><script src="/assets/home-mobile-menu.js?v=20260917-1"></script><script src="/assets/home-v56-exact.js?v=20260918-1"></script><script src="/assets/site-footer.js?v=20260917-v6" defer></script><script src="/assets/inheritance-search.js?v=20260913"></script></body></html>
