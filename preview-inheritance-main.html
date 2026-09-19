@@ -6,70 +6,71 @@
 .v53-track>.person{border-radius:26px 26px 0 0!important;overflow:hidden!important}
 @media(max-width:800px){.v53-track>.person{border-radius:22px 22px 0 0!important}}
 </style><link rel="stylesheet" href="/assets/inheritance-core.css?v=20260918"><link rel="stylesheet" href="/assets/inheritance-page.css?v=20260913"><style id="inheritance-premium-preview">
-/* NEW CLEAN PREMIUM SYSTEM — content unchanged */
-.v53-track>.person{background:#fff!important;border-radius:32px 32px 0 0!important;overflow:hidden!important;box-shadow:0 -28px 80px rgba(17,55,73,.18)!important}
-.v53-track>.person>.section{background:#fff!important}
-.v53-track>.person .container{max-width:1080px!important}
+/* NEW GLASS / MAGAZINE PREMIUM — preview only, content untouched */
+.v53-track>.person{background:linear-gradient(180deg,#f5fafc 0%,#eef6f9 100%)!important;border-radius:38px 38px 0 0!important;overflow:hidden!important;box-shadow:0 -30px 90px rgba(10,43,59,.22)!important}
+.v53-track>.person>.section{background:transparent!important}
+.v53-track>.person .container{max-width:1100px!important}
+.inheritance-overview{padding:78px 0 58px!important}
+.inheritance-overview>.container>.title,.docs-section .title{margin:0!important;font-size:clamp(38px,4vw,52px)!important;line-height:1.08!important;letter-spacing:-.065em!important;color:#12394a!important;font-weight:900!important}
+.inheritance-overview>.container>.desc,.docs-section .desc{margin:14px 0 38px!important;color:#71848e!important;font-size:14px!important;line-height:1.75!important}
 
-/* section typography */
-.inheritance-overview{padding:72px 0 54px!important}
-.inheritance-overview>.container>.title,.docs-section .title{margin:0!important;color:#15394a!important;font-size:clamp(34px,3.7vw,48px)!important;line-height:1.12!important;letter-spacing:-.06em!important;font-weight:850!important}
-.inheritance-overview>.container>.desc,.docs-section .desc{margin:12px 0 32px!important;color:#77868e!important;font-size:14px!important;line-height:1.7!important}
-
-/* process: completely remove dark panel, arrows and boxed icon style */
-.inheritance-flow{position:relative!important;display:grid!important;grid-template-columns:repeat(5,1fr)!important;gap:0!important;margin:0!important;padding:30px 8px 25px!important;background:#f6fafc!important;border:1px solid #e5eef2!important;border-radius:24px!important;box-shadow:none!important}
-.inheritance-flow:before{content:"";position:absolute;left:10%;right:10%;top:58px;height:2px;background:#d7e9f1!important}
-.flow-step{position:relative!important;z-index:1!important;min-width:0!important;padding:0 10px!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;text-align:center!important}
-.flow-icon{display:grid!important;place-items:center!important;width:58px!important;height:58px!important;margin:0 auto 18px!important;padding:12px!important;background:#fff!important;border:1px solid #dcebf1!important;border-radius:50%!important;box-shadow:0 7px 18px rgba(28,77,98,.07)!important;box-sizing:border-box!important}
+/* floating 5-step journey */
+.inheritance-flow{display:grid!important;grid-template-columns:repeat(5,1fr)!important;gap:12px!important;margin:0!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important}
+.flow-step{position:relative!important;min-width:0!important;min-height:210px!important;padding:25px 19px 21px!important;background:rgba(255,255,255,.9)!important;border:1px solid rgba(210,229,237,.9)!important;border-radius:22px!important;box-shadow:0 14px 36px rgba(24,70,91,.07)!important;text-align:left!important;overflow:hidden!important}
+.flow-step:after{content:"";position:absolute;right:-20px;bottom:-28px;width:85px;height:85px;border-radius:50%;background:#eaf7fc;opacity:.75}
+.flow-icon{position:relative!important;z-index:1!important;width:50px!important;height:50px!important;margin:0 0 27px!important;padding:0!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important}
 .flow-icon svg{width:100%!important;height:100%!important}
-.flow-step h3{margin:0 0 7px!important;color:#183c4c!important;font-size:15px!important;font-weight:850!important;letter-spacing:-.04em!important}
-.flow-step p{margin:0 0 11px!important;color:#849198!important;font-size:11px!important}
-.deadline{display:inline-flex!important;padding:6px 10px!important;background:#eaf7fc!important;border:0!important;border-radius:999px!important;color:#1795cc!important;font-size:10px!important;font-weight:850!important}
+.flow-step h3{position:relative!important;z-index:1!important;margin:0 0 8px!important;color:#173b4b!important;font-size:16px!important;font-weight:900!important;letter-spacing:-.04em!important}
+.flow-step p{position:relative!important;z-index:1!important;margin:0 0 16px!important;color:#809098!important;font-size:11px!important}
+.deadline{position:relative!important;z-index:1!important;display:inline-flex!important;padding:7px 10px!important;border:0!important;border-radius:9px!important;background:#153c4e!important;color:#fff!important;font-size:10px!important;font-weight:850!important}
 .flow-arrow{display:none!important}
-.inheritance-note{margin:16px 0 0!important;padding:14px 18px!important;background:#f6fafc!important;border:0!important;border-radius:12px!important;color:#687b84!important;font-size:11.5px!important;line-height:1.65!important}
+.inheritance-note{margin:20px 0 0!important;padding:15px 18px!important;background:rgba(255,255,255,.72)!important;border:1px solid #dceaf0!important;border-radius:14px!important;color:#627983!important;font-size:11.5px!important;line-height:1.7!important}
 
-/* FAQ: airy modern list */
-.faq-block{margin-top:64px!important;padding:0!important;background:#fff!important;border:0!important;border-radius:0!important;box-shadow:none!important}
-.faq-block .faq-title{margin:0 0 20px!important;color:#173b4b!important;font-size:27px!important;letter-spacing:-.045em!important}
-.faq-acc{margin:0 0 10px!important;padding:0 18px!important;background:#f7fafb!important;border:1px solid #e5edf1!important;border-radius:14px!important;box-shadow:none!important}
-.faq-acc summary{padding:18px 0!important;color:#294955!important;font-size:14px!important;font-weight:800!important}
-.faq-acc summary span{margin-right:8px!important;color:#2aa9df!important;font-weight:900!important}
-.faq-acc p{padding:0 0 18px 25px!important;margin:0!important;color:#62747d!important;font-size:13px!important;line-height:1.75!important}
+/* FAQ as large glass panel */
+.faq-block{margin-top:70px!important;padding:38px 40px!important;background:rgba(255,255,255,.78)!important;border:1px solid rgba(210,228,236,.95)!important;border-radius:26px!important;box-shadow:0 18px 50px rgba(25,68,88,.07)!important;backdrop-filter:blur(12px)}
+.faq-block .faq-title{margin:0 0 24px!important;color:#143b4c!important;font-size:29px!important;letter-spacing:-.05em!important}
+.faq-acc{margin:0!important;border:0!important;border-top:1px solid #dfe9ee!important;border-radius:0!important;background:transparent!important}
+.faq-acc:last-child{border-bottom:1px solid #dfe9ee!important}
+.faq-acc summary{padding:21px 2px!important;color:#294a58!important;font-size:14px!important;font-weight:850!important}
+.faq-acc summary span{display:inline-grid!important;place-items:center!important;width:28px!important;height:28px!important;margin-right:10px!important;background:#e4f5fb!important;border-radius:9px!important;color:#1699d1!important;font-size:11px!important}
+.faq-acc p{margin:0!important;padding:0 10px 22px 41px!important;color:#60747e!important;font-size:13px!important;line-height:1.75!important}
 
-/* documents: modern asymmetric cards */
-.docs-section{padding:54px 0 82px!important;background:#f5f9fb!important}
-.docs-grid{display:grid!important;grid-template-columns:1.25fr .875fr .875fr!important;gap:14px!important;margin-top:28px!important}
-.docs-card{position:relative!important;min-width:0!important;padding:27px 24px!important;background:#fff!important;border:1px solid #e2ebef!important;border-radius:18px!important;box-shadow:0 10px 28px rgba(27,70,90,.055)!important}
-.docs-card:first-child{border-top:3px solid #37aee4!important}
-.docs-card h3{margin:0 0 18px!important;padding:0!important;border:0!important;color:#173b4b!important;font-size:17px!important;font-weight:850!important}
-.docs-card ul{margin:0!important;padding-left:18px!important}
-.docs-card li{padding:5px 0!important;color:#586d77!important;font-size:12.5px!important;line-height:1.55!important}
-.docs-card li::marker{color:#53bce7!important}
-.docs-card a{display:inline-flex!important;margin-top:14px!important;padding:10px 14px!important;background:#15394a!important;color:#fff!important;border-radius:9px!important;text-decoration:none!important;font-size:11px!important;font-weight:850!important}
-.docs-note{margin:17px 0 0!important;color:#7d8c93!important;font-size:11px!important}
+/* documents = premium dossier, not old cards */
+.docs-section{padding:20px 0 88px!important}
+.docs-section>.container{padding:45px!important;background:#12394a!important;border-radius:28px!important;box-shadow:0 22px 60px rgba(13,51,68,.17)!important}
+.docs-section .title{color:#fff!important}
+.docs-section .desc{color:#a9bec8!important;margin-bottom:32px!important}
+.docs-grid{display:grid!important;grid-template-columns:1.3fr .85fr .85fr!important;gap:1px!important;margin:0!important;padding:1px!important;background:rgba(255,255,255,.13)!important;border:0!important;border-radius:18px!important;overflow:hidden!important}
+.docs-card{min-width:0!important;padding:27px 24px!important;background:#fff!important;border:0!important;border-radius:0!important;box-shadow:none!important}
+.docs-card h3{margin:0 0 19px!important;padding:0 0 14px!important;border-bottom:1px solid #e6eef2!important;color:#173b4b!important;font-size:17px!important;font-weight:900!important}
+.docs-card ul{margin:0!important}
+.docs-card li{padding:6px 0!important;color:#586d77!important;font-size:12.5px!important;line-height:1.55!important}
+.docs-card li::marker{color:#37aee4!important}
+.docs-card a{display:inline-flex!important;margin-top:14px!important;padding:10px 14px!important;background:#e8f7fc!important;color:#158fc7!important;border-radius:9px!important;text-decoration:none!important;font-size:11px!important;font-weight:900!important}
+.docs-note{margin:17px 0 0!important;color:#a9bec8!important;font-size:11px!important}
 
 @media(max-width:800px){
-.v53-track>.person{border-radius:26px 26px 0 0!important}
-.inheritance-overview{padding:44px 0 36px!important}
-.inheritance-overview>.container,.docs-section>.container{padding-left:19px!important;padding-right:19px!important}
-.inheritance-overview>.container>.title,.docs-section .title{font-size:31px!important}
-.inheritance-overview>.container>.desc,.docs-section .desc{margin-bottom:24px!important}
-.inheritance-flow{display:block!important;padding:8px 18px!important;border-radius:18px!important}
-.inheritance-flow:before{left:40px!important;right:auto!important;top:32px!important;bottom:32px!important;width:2px!important;height:auto!important}
-.flow-step{display:grid!important;grid-template-columns:48px 1fr auto!important;grid-template-rows:auto auto!important;column-gap:13px!important;align-items:center!important;padding:14px 0!important;text-align:left!important}
-.flow-icon{grid-column:1!important;grid-row:1/3!important;width:46px!important;height:46px!important;margin:0!important;padding:9px!important}
-.flow-step h3{grid-column:2!important;grid-row:1!important;margin:0!important;font-size:14px!important}
-.flow-step p{grid-column:2!important;grid-row:2!important;margin:3px 0 0!important;font-size:10.5px!important}
-.deadline{grid-column:3!important;grid-row:1/3!important;white-space:nowrap!important}
-.faq-block{margin-top:42px!important}
+.v53-track>.person{border-radius:28px 28px 0 0!important}
+.inheritance-overview{padding:48px 0 38px!important}
+.inheritance-overview>.container,.docs-section>.container{margin-left:15px!important;margin-right:15px!important}
+.inheritance-overview>.container>.title,.docs-section .title{font-size:32px!important}
+.inheritance-overview>.container>.desc,.docs-section .desc{margin-bottom:25px!important}
+.inheritance-flow{display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important}
+.flow-step{min-height:172px!important;padding:20px 16px 17px!important;border-radius:18px!important}
+.flow-step:last-of-type{grid-column:1/-1!important;min-height:150px!important}
+.flow-icon{width:43px!important;height:43px!important;margin-bottom:21px!important}
+.flow-step h3{font-size:14px!important}
+.flow-step p{font-size:10.5px!important;margin-bottom:12px!important}
+.deadline{font-size:9.5px!important;padding:6px 8px!important}
+.faq-block{margin-top:44px!important;padding:24px 18px!important;border-radius:20px!important}
 .faq-block .faq-title{font-size:24px!important}
-.faq-acc{padding:0 14px!important;border-radius:12px!important}
-.faq-acc summary{padding:16px 0!important;font-size:13.5px!important}
-.faq-acc p{padding:0 0 16px 23px!important;font-size:12px!important}
-.docs-section{padding:38px 0 55px!important}
-.docs-grid{display:block!important;margin-top:22px!important}
-.docs-card{margin-bottom:12px!important;padding:22px 20px!important;border-radius:15px!important}
-.docs-card:first-child{border-top-width:2px!important}
+.faq-acc summary{padding:18px 0!important;font-size:13.5px!important}
+.faq-acc p{padding:0 2px 19px 37px!important;font-size:12px!important}
+.docs-section{padding:12px 0 56px!important}
+.docs-section>.container{padding:28px 20px!important;border-radius:22px!important}
+.docs-grid{display:block!important;background:transparent!important;padding:0!important}
+.docs-card{margin-bottom:10px!important;padding:21px 18px!important;border-radius:14px!important}
+.docs-card:last-child{margin-bottom:0!important}
 }
 </style></head><body><header><div class="wrap nav"><a class="logo" href="/" style="color:inherit;text-decoration:none">등기로<small>현재두 법무사 사무소 · 인천</small></a><nav class="menu"><a href="/inheritance.html">상속등기</a><a href="/renunciation.html">상속포기·한정승인</a><a href="/corporate.html">법인등기</a><a href="/realestate.html">부동산등기</a><a href="/family.html">가사</a><a href="/posts.html">법률정보</a></nav></div></header><section class="hero"><img src="https://www.ito.or.kr/images/bbs/galleryko/2020/incheondaegyo_004.jpg" alt="인천대교" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center"><div class="shade"></div><div class="wrap heroin"><div class="hero-copy-v22"><h1>상속은 <span>등기로</span></h1><p>상속등기 절차 · 비용 · 필요서류부터 협의분할, 연락두절 · 해외거주 · 미성년자 등 복잡한 상속까지 실제 처리사례를 바탕으로 안내합니다.</p></div><div class="inheritance-finder-inline"><h2>어떤 상속등기 업무가 궁금하세요?</h2><div class="inheritance-finder-layout"><div class="inheritance-finder-right"><div class="inheritance-search-row"><div class="inheritance-combo"><input id="inheritance-query" class="inheritance-query" type="search" placeholder="검색하거나 화살표를 눌러 선택하세요" autocomplete="off" aria-controls="inheritance-results" aria-expanded="false"><button id="inheritance-toggle" class="inheritance-toggle" type="button" aria-label="선택항 펼치기">▼</button><ul id="inheritance-results" class="inheritance-results"></ul></div><button id="inheritance-search-button" class="inheritance-search-button" type="button">찾아보기</button></div><div class="inheritance-search-status" aria-live="polite">입력하면 검색 결과가 자동으로 펼쳐집니다.</div></div></div></div></div><a class="hero-scroll" href="#dg-intro" aria-label="아래 내용 보기"><span class="hero-scroll-mouse"></span><span>SCROLL</span></a></section><div class="v53-stage" id="dg-intro"><div class="v53-window"><main class="v53-track"><section class="person" style="padding:0!important"><section class="section inheritance-overview" id="inheritance-overview"><div class="container"><h2 class="title">상속절차 한눈에 보기</h2><p class="desc">사망 후 확인해야 할 주요 절차와 기한을 순서대로 확인하세요.</p><div class="inheritance-flow">
 <div class="flow-step flow-blue"><div class="flow-icon"><svg viewBox="0 0 64 64" aria-hidden="true"><rect x="14" y="8" width="36" height="48" rx="6" class="white"/><rect x="14" y="8" width="36" height="48" rx="6" fill="none" stroke="#438fe5" stroke-width="3"/><rect x="21" y="20" width="22" height="4" rx="2" class="bluefill"/><rect x="21" y="29" width="18" height="4" rx="2" class="bluefill"/><circle cx="44" cy="46" r="10" class="bluefill"/><path d="M39 46l3 3 6-7" fill="none" stroke="white" stroke-width="3"/></svg></div><h3>사망신고</h3><p>사망 사실 신고</p><span class="deadline">1개월 이내</span></div><div class="flow-arrow">→</div>
