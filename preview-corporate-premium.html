@@ -64,12 +64,12 @@
   cursor:pointer;
 }
 
+.corp-doc-lead,.corp-case-lead,.corp-auth-premium>p{margin:8px 0 24px;color:#66808c;font-size:14px;line-height:1.6}
 .corp-inline-link{display:block;margin-top:14px;padding-top:11px;border-top:1px solid rgba(64,161,205,.22);color:#168dca;text-decoration:none;font-size:12px;font-weight:800}
 .corp-auth-premium{margin:0;padding:52px 58px;border-top:1px solid rgba(64,161,205,.22)}
-.corp-auth-premium h2{margin:0 0 26px;font-size:clamp(26px,2.8vw,38px);letter-spacing:-.05em;color:#12374a}
+.corp-auth-premium h2{margin:0;font-size:clamp(26px,2.8vw,38px);letter-spacing:-.05em;color:#12374a}
 .corp-auth-premium-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:34px}
-.corp-auth-premium-grid>div{padding-left:18px;border-left:2px solid #24aee9}
-.corp-auth-premium b,.corp-auth-premium span,.corp-auth-premium small{display:block}.corp-auth-premium b{color:#168dca;font-size:13px}.corp-auth-premium span{margin-top:7px;color:#173b4c;font-weight:900}.corp-auth-premium small{margin-top:5px;color:#66808c}
+.corp-auth-premium-grid>div{padding-left:18px;border-left:2px solid #24aee9}.corp-auth-premium b,.corp-auth-premium span,.corp-auth-premium small{display:block}.corp-auth-premium b{color:#168dca;font-size:13px}.corp-auth-premium span{margin-top:7px;color:#173b4c;font-weight:900}.corp-auth-premium small{margin-top:5px;color:#66808c}.corp-auth-out{display:inline-block;margin-top:22px;color:#168dca;text-decoration:none;font-size:12px;font-weight:800}
 @media(min-width:801px){.simple-docs-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}.hero-copy-v22 h1{white-space:nowrap;font-size:clamp(34px,4.2vw,68px);letter-spacing:-.055em}}
 @media(max-width:800px){.corp-auth-premium{padding:38px 0}.corp-auth-premium-grid{grid-template-columns:1fr;gap:24px}}
 </style>
@@ -79,22 +79,23 @@
 <section class="hero"><img src="https://www.ito.or.kr/images/bbs/galleryko/2020/incheondaegyo_004.jpg" alt="인천대교" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center"><div class="shade"></div><div class="wrap heroin"><div class="hero-copy-v22"><h1>법인등기는 <span>등기로</span></h1><p>상속등기 절차 · 비용 · 필요서류부터 협의분할, 연락두절 · 해외거주 · 미성년자 등 복잡한 상속까지<br>실제 처리사례를 바탕으로 안내합니다.</p></div><div class="hero-ai inheritance-finder-inline"><div class="hero-ai-label">어떤 상속등기 업무가 궁금하세요?</div><div class="hero-ai-box"><span class="hero-ai-icon">⌕</span><div class="inheritance-combo"><input id="inheritance-query" class="inheritance-query" type="search" placeholder="검색하거나 화살표를 눌러 선택하세요" autocomplete="off" aria-controls="inheritance-results" aria-expanded="false"><span id="inheritance-toggle" class="inheritance-toggle" role="button" tabindex="0" aria-label="선택항 펼치기">▼</span><ul id="inheritance-results" class="inheritance-results"></ul></div><button id="inheritance-search-button" type="button">찾아보기</button></div><div class="inheritance-search-status" aria-live="polite"></div></div></div><a class="hero-scroll" href="#dg-intro" aria-label="아래 내용 보기"><span class="hero-scroll-mouse"></span><span>SCROLL</span></a></section>
 <div class="v53-stage" id="dg-intro"><div class="v53-window"><main class="v53-track"><section class="person" style="padding:0!important"><div class="story">
 <section class="story-cover" id="corporate-overview">
- <div class="story-cover-copy"><p>법인등기는 업무마다<br>필요서류와 결정사항이 다릅니다.</p><h2>법인등기 한눈에 보기</h2></div>
+ <div class="story-cover-copy"><p>법인등기 절차 · 비용 · 필요서류를<br>업무별로 확인합니다.</p><h2>법인등기 한눈에 보기</h2></div>
  <div class="story-index flow-circled">
-  <div><b>1</b><span>법인설립</span><small>설립사항 결정·서류 준비</small></div><i>→</i>
+  <div><b>1</b><span>법인설립</span><small>설립사항·필요서류 확인</small></div><i>→</i>
   <div><b>2</b><span>임원변경</span><small>취임·중임·퇴임</small></div><i>→</i>
-  <div><b>3</b><span>상호·목적변경</span><small>정관·결의 확인</small></div><i>→</i>
-  <div><b>4</b><span>본점이전</span><small>관내·관외 이전</small></div><i>→</i>
-  <div><b>5</b><span>자본금증자</span><small>일반·가수금 증자</small></div>
+  <div><b>3</b><span>본점이전</span><small>관내·관외 이전</small></div><i>→</i>
+  <div><b>4</b><span>상호·목적변경</span><small>변경사항 확인</small></div><i>→</i>
+  <div><b>5</b><span>자본금증자</span><small>일반·가수금 증자</small></div><i>→</i>
+  <div><b>6</b><span>해산·청산</span><small>회사 상태에 따라 진행</small></div>
  </div>
- <p class="story-note">※ 법인등기는 변경사항별 법정기간과 필요한 결의·서류가 다르므로 등기원인과 회사의 현재 등기사항을 함께 확인합니다.</p>
 </section>
 <section class="simple-docs" id="documents">
  <h2>법인등기 필요서류</h2>
+ <p class="corp-doc-lead">법인설립·변경등기·자본금증자에 필요한 핵심서류를 업무별로 확인하세요.</p>
  <div class="simple-docs-grid">
-  <article><b>1</b><h3>법인설립</h3><ul><li>임원 인감도장 · 인감증명서 1통</li><li>임원 주민등록초본 1통</li><li>발기인(주주) 잔고증명서 1통</li><li><strong>상호 · 본점주소 · 목적 · 자본금 · 1주의 금액</strong></li></ul><a class="corp-inline-link" href="/corporate-calculator.html?job=est">법인설립 비용 계산하기 ↗</a></article>
-  <article><b>2</b><h3>변경등기</h3><ul><li>임원 인감도장 · 인감증명서 2통</li><li>임원 주민등록초본 1통(주소 변동 포함)</li><li>임원 아닌 주주 인감도장 · 인감증명서 1통</li><li>법인 인감도장 · 법인 인감증명서 1통</li><li>정관 2통 · 주주명부 1통 · 법인 인감카드</li></ul><a class="corp-inline-link" href="/corporate-calculator.html?v=20260910-clean">변경등기 비용 계산하기 ↗</a></article>
-  <article><b>3</b><h3>자본금증자</h3><ul><li>일반증자: <strong>법인 잔고증명서</strong></li><li>가수금증자: <strong>가수금 계정별원장</strong></li><li>증자 방식·신주배정 구조에 따라 주주총회·이사회 관련 서류 추가</li></ul><a class="corp-inline-link" href="/corporate-calculator.html?job=inc">자본금증자 비용 계산하기 ↗</a></article>
+  <article><b>1</b><h3>법인설립</h3><ul><li><strong>임원</strong> 인감도장 · 인감증명서 1통 · 주민등록초본 1통</li><li><strong>발기인(주주)</strong> 잔고증명서 1통</li><li>기본 결정사항 · 상호 · 본점주소 · 목적 · 자본금 · 1주의 금액</li></ul><a class="corp-inline-link" href="/corporate-calculator.html?job=est">법인설립 비용 계산하기 → ↗</a></article>
+  <article><b>2</b><h3>변경등기</h3><ul><li><strong>임원</strong> 인감도장 · 인감증명서 2통 · 주민등록초본 1통 (주소 변동 포함)</li><li><strong>임원 아닌 주주</strong> 인감도장 · 인감증명서 1통</li><li><strong>법인</strong> 법인 인감도장 · 법인 인감증명서 1통 · 정관 2통 · 주주명부 1통 · 법인 인감카드 (중임 아닌 경우)</li><li>주주전원 서면결의가 가능한 경우 · 사건에 따라 각 서류 1통씩으로 진행 가능한 경우가 있습니다.</li></ul><a class="corp-inline-link" href="/corporate-calculator.html?v=20260910-clean">변경등기 비용 계산하기 → ↗</a></article>
+  <article><b>3</b><h3>자본금증자</h3><ul><li><strong>일반증자</strong> 법인 잔고증명서</li><li><strong>가수금증자</strong> 가수금 계정별원장</li><li>증자 방식과 신주배정 구조에 따라 주주총회·이사회 관련 서류가 추가될 수 있습니다.</li></ul><a class="corp-inline-link" href="/corporate-calculator.html?job=inc">자본금증자 비용 계산하기 → ↗</a></article>
  </div>
 </section>
 <section class="story-qa" id="corp-faq">
@@ -105,23 +106,18 @@
  <details><summary>해산간주된 법인을 다시 운영할 수 있나요?</summary><p>해산간주 상태라면 요건을 확인해 <strong>회사계속등기</strong>를 검토할 수 있습니다. 청산종결간주까지 진행된 경우에는 별도 검토가 필요합니다.</p></details>
 </section>
 <section class="corp-auth-premium">
- <h2>전자서명·인증</h2>
+ <h2>전자서명·인증</h2><p>법인 전자등기 진행 시 필요한 인증수단을 확인하세요.</p>
  <div class="corp-auth-premium-grid"><div><b>개인</b><span>공동인증서 · 금융인증서</span><small>주주·임원 등 개인 전자서명</small></div><div><b>법인</b><span>법인 전자증명서</span><small>법인의 전자서명·인증</small></div></div>
+ <a class="corp-auth-out" href="https://www.iros.go.kr/" target="_blank" rel="noopener">인터넷등기소 전자서명 바로가기 ↗</a>
 </section>
 <section class="story-cases dg-services">
- <h2>법인등기 실제 처리사례</h2>
- <div class="case-grid">
-  <a href="/posts/naver-224411175706.html"><b>1인 법인 설립</b><span>주식 없는 임원을 조사보고인으로 선임한 경우</span></a>
-  <a href="/posts/naver-224411086807.html"><b>대표이사 사망 후 변경</b><span>1인 이사인 대표이사 사망 후 배우자를 대표이사로 변경한 경우</span></a>
-  <a href="/posts/naver-224411143025.html"><b>감사 중임·의결권 3%</b><span>감사 중임 시 주식 의결권 3% 제한을 확인한 사례</span></a>
-  <a href="/posts/naver-224411109357.html"><b>본점 관외이전</b><span>이전 관할 내 동일상호를 확인하고 관외이전등기를 진행한 경우</span></a>
-  <a href="/posts/naver-224411074752.html"><b>회사계속·부활등기</b><span>해산간주 회사의 회사계속 및 청산종결간주 후 부활등기</span></a>
- </div>
+ <h2>법인등기 이런 경우도 확인하세요</h2><p class="corp-case-lead">법인등기 진행 시 자주 발생하는 특수한 상황에 대한 처리사례를 확인할 수 있습니다.</p>
+ <div class="case-grid"><a href="/posts/naver-224411175706.html"><b>1인 법인 설립</b><span>주식 없는 임원을 조사보고인으로 선임한 경우</span></a><a href="/posts/naver-224411086807.html"><b>대표이사 사망 후 변경</b><span>1인 이사인 대표이사 사망 후 배우자를 대표이사로 변경한 경우</span></a><a href="/posts/naver-224411143025.html"><b>감사 중임·의결권 3%</b><span>감사 중임 시 주식 의결권 3% 제한을 확인한 사례</span></a><a href="/posts/naver-224411109357.html"><b>본점 관외이전</b><span>이전 관할 내 동일상호를 확인하고 관외이전등기를 진행한 경우</span></a><a href="/posts/naver-224411074752.html"><b>회사계속·부활등기</b><span>해산간주 회사의 회사계속 및 청산종결간주 후 부활등기</span></a></div>
 </section>
 </div></section><section class="" aria-hidden="true" style="height:1px!important;min-height:1px!important;padding:0!important;margin:0!important;overflow:hidden!important"></section></main></div></div>
 <script src="/assets/home-mobile-menu.js?v=20260917-1"></script>
 <script src="/assets/home-v56-exact.js?v=20260918-1"></script>
-<script src="/assets/preview-corporate-search.js?v=20260920-1"></script>
+<script src="/assets/preview-corporate-search.js?v=20260920-2"></script>
 <script src="/assets/site-footer.js?v=20260917-v6" defer></script>
 </body>
 </html>
