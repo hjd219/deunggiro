@@ -63,6 +63,9 @@
   line-height:1;
   cursor:pointer;
 }
+
+@media(min-width:801px){.simple-docs-grid.corporate-docs-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.simple-docs-grid.corporate-docs-grid article:nth-child(2){border-left:1px solid #d9e5ea;border-right:1px solid #d9e5ea}.simple-docs-grid.corporate-docs-grid article a{color:#168dca;text-decoration:none;font-weight:850}.story-index.flow-circled span a{color:inherit;text-decoration:none}.story-index.flow-circled span a:hover{color:#168dca}}
+@media(max-width:800px){.simple-docs-grid.corporate-docs-grid article{padding-bottom:32px}.simple-docs-grid.corporate-docs-grid article a{color:#168dca;text-decoration:none;font-weight:850}.story-index.flow-circled span a{color:inherit;text-decoration:none}}
 </style>
 </head>
 <body>
@@ -72,21 +75,35 @@
 <section class="story-cover" id="corporate-overview">
  <div class="story-cover-copy"><p>법인등기 업무를<br>한눈에 확인하세요.</p><h2>법인등기 한눈에 보기</h2></div>
  <div class="story-index flow-circled">
-  <div><b>1</b><span>법인설립</span><small>상호·본점·목적·자본금</small></div><i>→</i>
-  <div><b>2</b><span>임원변경</span><small>취임·중임·퇴임</small></div><i>→</i>
-  <div><b>3</b><span>상호·목적변경</span><small>변경사항 확인</small></div><i>→</i>
-  <div><b>4</b><span>본점이전</span><small>관내·관외 이전</small></div><i>→</i>
-  <div><b>5</b><span>자본금증자</span><small>일반·가수금 증자</small></div>
+  <div><b>1</b><span><a href="#service-est">법인설립</a></span><small>임원 · 발기인(주주)</small></div><i>→</i>
+  <div><b>2</b><span><a href="#service-change">변경등기</a></span><small>임원 · 상호 · 목적 · 본점</small></div><i>→</i>
+  <div><b>3</b><span><a href="#service-inc">자본금증자</a></span><small>일반증자 · 가수금증자</small></div><i>→</i>
  </div>
- <p class="story-note">법인설립 · 변경등기 · 자본금증자에 필요한 핵심 내용을 업무별로 확인하세요.</p>
+ <p class="story-note">법인설립·변경등기·자본금증자에 필요한 핵심서류를 업무별로 확인하세요.</p>
 </section>
 <section class="simple-docs" id="documents">
  <h2>법인등기 필요서류</h2>
- <div class="simple-docs-grid">
-  <article><b>1</b><h3>법인설립</h3><ul><li>임원: 인감도장 · 인감증명서 1통 · 주민등록초본 1통</li><li>발기인(주주): 잔고증명서 1통</li><li>기본 결정사항 상호 · 본점주소 · 목적 · 자본금 · 1주의 금액</li></ul></article>
-  <article><b>2</b><h3>변경등기 · 자본금증자</h3><ul><li>임원: 인감도장 · 인감증명서 2통 · 주민등록초본 1통 (주소 변동 포함)</li><li>임원 아닌 주주: 인감도장 · 인감증명서 1통</li><li>법인: 법인 인감도장 · 법인 인감증명서 1통 · 정관 2통 · 주주명부 1통 · 법인 인감카드 (중임 아닌 경우)</li><li>주주전원 서면결의가 가능한 경우 사건에 따라 각 서류 1통씩으로 진행 가능한 경우가 있습니다.</li><li>일반증자: 법인 잔고증명서</li><li>가수금증자: 가수금 계정별원장</li><li>증자 방식과 신주배정 구조에 따라 주주총회·이사회 관련 서류가 추가될 수 있습니다.</li></ul></article>
+ <div class="simple-docs-grid corporate-docs-grid">
+  <article id="service-est"><b>1</b><h3>법인설립</h3><ul>
+   <li><strong>임원</strong> · 인감도장 · 인감증명서 1통 · 주민등록초본 1통</li>
+   <li><strong>발기인(주주)</strong> · 잔고증명서 1통</li>
+   <li><strong>기본 결정사항</strong> · 상호 · 본점주소 · 목적 · 자본금 · 1주의 금액</li>
+   <li><a href="/corporate-calculator.html?job=est">법인설립 비용 계산하기 →</a></li>
+  </ul></article>
+  <article id="service-change"><b>2</b><h3>변경등기</h3><ul>
+   <li><strong>임원</strong> · 인감도장 · 인감증명서 2통 · 주민등록초본 1통 (주소 변동 포함)</li>
+   <li><strong>임원 아닌 주주</strong> · 인감도장 · 인감증명서 1통</li>
+   <li><strong>법인</strong> · 법인 인감도장 · 법인 인감증명서 1통 · 정관 2통 · 주주명부 1통 · 법인 인감카드 (중임 아닌 경우)</li>
+   <li><strong>주주전원 서면결의가 가능한 경우</strong> · 사건에 따라 각 서류 1통씩으로 진행 가능한 경우가 있습니다.</li>
+   <li><a href="/corporate-calculator.html?v=20260910-clean">변경등기 비용 계산하기 →</a></li>
+  </ul></article>
+  <article id="service-inc"><b>3</b><h3>자본금증자</h3><ul>
+   <li><strong>일반증자</strong> · 법인 잔고증명서</li>
+   <li><strong>가수금증자</strong> · 가수금 계정별원장</li>
+   <li>증자 방식과 신주배정 구조에 따라 주주총회·이사회 관련 서류가 추가될 수 있습니다.</li>
+   <li><a href="/corporate-calculator.html?job=inc">자본금증자 비용 계산하기 →</a></li>
+  </ul></article>
  </div>
- <div class="docs-cost-row"><b>3</b><h3><a href="/corporate-calculator.html">법인등기 비용 계산 <i>→</i></a></h3></div>
 </section>
 <section class="story-qa" id="corp-faq">
  <div class="story-qa-title"><h2>법인등기 자주 묻는 질문</h2></div>
