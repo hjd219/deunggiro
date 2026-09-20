@@ -2,7 +2,9 @@
 const q=document.getElementById('inheritance-query'),list=document.getElementById('inheritance-results'),toggle=document.getElementById('inheritance-toggle'),go=document.getElementById('inheritance-search-button');
 if(!q||!list||!toggle||!go)return;
 const fixed=[
- {title:'법인등기 필요서류',href:'#documents',type:'페이지'},
+ {title:'법인설립',href:'#service-est',type:'업무안내'},
+ {title:'변경등기 · 임원변경 · 상호변경 · 목적변경 · 본점이전',href:'#service-change',type:'업무안내'},
+ {title:'자본금증자',href:'#service-inc',type:'업무안내'},
  {title:'법인설립 비용 계산',href:'/corporate-calculator.html?job=est',type:'계산기'},
  {title:'변경등기 비용 계산',href:'/corporate-calculator.html?v=20260910-clean',type:'계산기'},
  {title:'자본금증자 비용 계산',href:'/corporate-calculator.html?job=inc',type:'계산기'},
