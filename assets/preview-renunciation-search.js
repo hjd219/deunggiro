@@ -6,15 +6,15 @@
  if(!status)return;
  const fixed=[
  {title:'상속포기·한정승인 절차',href:'#inheritance-overview',type:'페이지'},
- {title:'상속포기 후 절차',href:'/renunciation-after.html',type:'세부페이지'},
- {title:'한정승인 후 청산절차',href:'/limited-acceptance-liquidation.html',type:'세부페이지'},
  {title:'상속포기·한정승인 필요서류',href:'#documents',type:'페이지'},
  {title:'상속포기·한정승인 자주 묻는 질문',href:'#ren-faq',type:'페이지'},
+ {title:'상속포기 후 절차',href:'/renunciation-after.html',type:'세부페이지'},
+ {title:'한정승인 후 청산절차',href:'/limited-acceptance-liquidation.html',type:'세부페이지'},
  {title:'인천 상속포기 절차·기간·필요서류',href:'/posts/inheritance-renunciation-incheon-procedure-documents-1ifftk.html',type:'핵심 안내'},
  {title:'상속포기 신청기간과 후순위 상속인',href:'/posts/naver-224354174521.html',type:'핵심 안내'},
  {title:'한정승인 기한·절차',href:'/posts/naver-224296496196.html',type:'핵심 안내'},
  {title:'특별한정승인 절차',href:'/posts/naver-224302457067.html',type:'핵심 안내'}
-];
+]
  let posts=[];
  const clean=s=>String(s||'').toLowerCase().replace(/\s+/g,'');
  const open=()=>{list.classList.add('is-open');input.setAttribute('aria-expanded','true');toggle.textContent='▲'};
