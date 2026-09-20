@@ -75,23 +75,30 @@
 @media(min-width:801px){.simple-docs-grid.corporate-docs-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.simple-docs-grid.corporate-docs-grid article{padding:0 22px}.simple-docs-grid.corporate-docs-grid article:first-child{padding-left:0}.simple-docs-grid.corporate-docs-grid article:last-child{padding-right:0}.simple-docs-grid.corporate-docs-grid article+article{border-left:1px solid #d9e5ea}}
 @media(max-width:800px){.simple-docs-grid.corporate-docs-grid article{padding-bottom:32px}}
 
-/* CORPORATE_PREVIEW_LAYOUT_FINAL */
-.corporate-docs-grid article{display:flex;flex-direction:column}
-.corporate-docs-grid article>h3{min-height:58px;margin-bottom:18px}
-.corporate-docs-grid article>ul{display:flex;flex-direction:column;flex:1}
-.corporate-docs-grid article>ul>li:last-child{margin-top:auto;padding-top:18px}
-.corporate-support-row{display:grid;grid-template-columns:1fr 1fr;gap:42px;align-items:start;border-top:1px solid #c8e8f7}
-.corporate-support-row>.simple-docs{border-top:0!important;margin-top:0!important;padding-top:56px!important}
-.corporate-support-row #electronic-auth,.corporate-support-row #penalty-guide{min-width:0}
-.corporate-support-row .corporate-fine-table{max-width:none}
-@media(max-width:800px){.corporate-support-row{grid-template-columns:1fr;gap:0}.corporate-support-row>.simple-docs+ .simple-docs{border-top:1px solid #c8e8f7!important}.corporate-docs-grid article>h3{min-height:0}}
 
-/* CORPORATE_CARD_ALIGNMENT_FIX */
-.corporate-docs-grid article>h3{text-align:left!important}
-.corporate-docs-grid article>b{display:block!important;text-align:left!important;margin-left:0!important}
+/* CORPORATE_PREVIEW_LAYOUT_FINAL_V2 */
+.corporate-docs-grid article{display:flex!important;flex-direction:column!important;min-width:0!important;border:0!important;padding-top:0!important}
+.corporate-docs-grid .corp-card-title{display:flex;align-items:center;gap:10px;margin:0 0 18px 0;padding-left:0;text-align:left}
+.corporate-docs-grid .corp-card-title>b{display:inline-flex!important;align-items:center;justify-content:center;flex:0 0 18px;width:18px;height:18px;margin:0!important;border:1.5px solid #18a7e0;border-radius:50%;color:#18a7e0;font-size:10px;line-height:1;background:#fff}
+.corporate-docs-grid .corp-card-title>h3{margin:0!important;padding:0!important;min-height:0!important;text-align:left!important}
+.corporate-docs-grid article>ul{display:flex!important;flex-direction:column!important;flex:1!important;margin-top:0!important}
+.corporate-docs-grid article>ul>li:last-child{margin-top:auto!important;padding-top:18px!important}
+.corporate-docs-grid article>ul>li:last-child>a{color:#168dca;text-decoration:none;font-weight:850}
+.corporate-support-row{display:grid;grid-template-columns:1fr 1fr;gap:42px;align-items:start;border-top:1px solid #c8e8f7}
+.corporate-support-row>.simple-docs{border-top:0!important;margin-top:0!important;padding-top:56px!important;min-width:0}
+.corporate-support-row .corporate-fine-table{max-width:none}
 @media(min-width:801px){
- .simple-docs-grid.corporate-docs-grid article{border-left:0!important;border-right:0!important}
- .simple-docs-grid.corporate-docs-grid article+article{border-left:0!important}
+ .simple-docs-grid.corporate-docs-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .simple-docs-grid.corporate-docs-grid article{padding:0 22px!important;border:0!important}
+ .simple-docs-grid.corporate-docs-grid article:first-child{padding-left:0!important}
+ .simple-docs-grid.corporate-docs-grid article:last-child{padding-right:0!important}
+ .corporate-docs-grid .corp-card-title{margin-left:18px}
+}
+@media(max-width:800px){
+ .corporate-support-row{grid-template-columns:1fr;gap:0}
+ .corporate-support-row>.simple-docs+.simple-docs{border-top:1px solid #c8e8f7!important}
+ .corporate-docs-grid article{padding-bottom:32px!important}
+ .corporate-docs-grid .corp-card-title{margin-left:18px}
 }
 </style>
 </head>
@@ -102,14 +109,14 @@
 <section class="simple-docs corporate-guide" id="documents">
  <div class="story-qa-title"><h2>법인등기 한눈에 보기</h2><p>법인설립·변경등기·자본금증자·회사계속등기에 필요한 핵심 내용을 업무별로 확인하세요.</p></div>
  <div class="simple-docs-grid corporate-docs-grid">
-<article id="service-1"><b>1</b><h3>법인설립</h3><ul>
+<article id="service-1"><div class="corp-card-title"><b>1</b><h3>법인설립</h3></div><ul>
 
 <li><strong>임원</strong> · 인감도장 · 인감증명서 1통 · 주민등록초본 1통</li>
 <li><strong>발기인(주주)</strong> · 잔고증명서 1통</li>
 <li>기본 결정사항 상호 · 본점주소 · 목적 · 자본금 · 1주의 금액</li>
 <li><a href="/corporate-calculator.html?job=est">법인설립 비용 계산하기 →</a></li>
 </ul></article>
-<article id="service-2"><b>2</b><h3>변경등기</h3><ul>
+<article id="service-2"><div class="corp-card-title"><b>2</b><h3>변경등기</h3></div><ul>
 <li><strong>임원변경 · 상호변경 · 목적변경 · 본점이전</strong></li>
 <li><strong>임원</strong> · 인감도장 · 인감증명서 2통 · 주민등록초본 1통 (주소 변동 포함)</li>
 <li><strong>임원 아닌 주주</strong> · 인감도장 · 인감증명서 1통</li>
@@ -117,14 +124,14 @@
 <li>주주전원 서면결의가 가능한 경우 사건에 따라 각 서류 1통씩으로 진행 가능한 경우가 있습니다.</li>
 <li><a href="/corporate-calculator.html?v=20260910-clean">변경등기 비용 계산하기 →</a></li>
 </ul></article>
-<article id="service-3"><b>3</b><h3>자본금증자</h3><ul>
+<article id="service-3"><div class="corp-card-title"><b>3</b><h3>자본금증자</h3></div><ul>
 
 <li><strong>일반증자</strong> · 법인 잔고증명서</li>
 <li><strong>가수금증자</strong> · 가수금 계정별원장</li>
 <li>증자 방식과 신주배정 구조에 따라 주주총회·이사회 관련 서류가 추가될 수 있습니다.</li>
 <li><a href="/corporate-calculator.html?job=inc">자본금증자 비용 계산하기 →</a></li>
 </ul></article>
-<article id="service-4"><b>4</b><h3>회사계속등기</h3><ul>
+<article id="service-4"><div class="corp-card-title"><b>4</b><h3>회사계속등기</h3></div><ul>
 <li><strong>해산간주 · 회사계속 · 청산종결</strong></li>
 <li><strong>임원</strong> · 인감도장 · 인감증명서 2통 · 주민등록초본 1통</li>
 <li><strong>임원 아닌 주주</strong> · 인감도장 · 인감증명서 1통</li>
