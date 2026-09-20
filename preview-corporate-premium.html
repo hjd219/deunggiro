@@ -74,6 +74,17 @@
 .corporate-fine-table th{color:#173b4a;font-weight:900;background:#f7fbfd}.corporate-fine-table tr:last-child td{border-bottom:0}
 @media(min-width:801px){.simple-docs-grid.corporate-docs-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.simple-docs-grid.corporate-docs-grid article{padding:0 22px}.simple-docs-grid.corporate-docs-grid article:first-child{padding-left:0}.simple-docs-grid.corporate-docs-grid article:last-child{padding-right:0}.simple-docs-grid.corporate-docs-grid article+article{border-left:1px solid #d9e5ea}}
 @media(max-width:800px){.simple-docs-grid.corporate-docs-grid article{padding-bottom:32px}}
+
+/* CORPORATE_PREVIEW_LAYOUT_FINAL */
+.corporate-docs-grid article{display:flex;flex-direction:column}
+.corporate-docs-grid article>h3{min-height:58px;margin-bottom:18px}
+.corporate-docs-grid article>ul{display:flex;flex-direction:column;flex:1}
+.corporate-docs-grid article>ul>li:last-child{margin-top:auto;padding-top:18px}
+.corporate-support-row{display:grid;grid-template-columns:1fr 1fr;gap:42px;align-items:start;border-top:1px solid #c8e8f7}
+.corporate-support-row>.simple-docs{border-top:0!important;margin-top:0!important;padding-top:56px!important}
+.corporate-support-row #electronic-auth,.corporate-support-row #penalty-guide{min-width:0}
+.corporate-support-row .corporate-fine-table{max-width:none}
+@media(max-width:800px){.corporate-support-row{grid-template-columns:1fr;gap:0}.corporate-support-row>.simple-docs+ .simple-docs{border-top:1px solid #c8e8f7!important}.corporate-docs-grid article>h3{min-height:0}}
 </style>
 </head>
 <body>
@@ -115,20 +126,21 @@
 </ul></article>
  </div>
 </section>
-<section class="simple-docs" id="electronic-auth">
+
+
+<div class="corporate-support-row"><section class="simple-docs" id="electronic-auth">
  <h2>전자서명·인증</h2>
  <div class="simple-docs-grid">
   <article><b>1</b><h3>개인</h3><ul><li>공동인증서 · 금융인증서 · 주주·임원 등 개인 전자서명</li></ul></article>
   <article><b>2</b><h3>법인</h3><ul><li>법인 전자증명서 · 법인의 전자서명·인증</li></ul></article>
  </div>
  <div class="docs-cost-row"><b>3</b><h3><a href="https://www.iros.go.kr/" target="_blank" rel="noopener">인터넷등기소 전자서명 바로가기 <i>→</i></a></h3></div>
-</section>
-<section class="simple-docs corporate-support" id="penalty-guide">
+</section><section class="simple-docs corporate-support" id="penalty-guide">
  <h2>과태료 예상기준표</h2>
  <p class="story-note">임원변경 등기 지연 시 참고할 수 있는 실무상 예상기준입니다.</p>
  <div class="corporate-fine-table"><table><tr><th>지연기간</th><th>실무상 예상 범위</th></tr><tr><td>1개월 이내</td><td>약 5~10만원</td></tr><tr><td>1~3개월</td><td>약 10~20만원</td></tr><tr><td>3~6개월</td><td>약 20~30만원</td></tr><tr><td>6개월~1년</td><td>약 30~50만원</td></tr><tr><td>1~2년</td><td>약 50~100만원</td></tr><tr><td>2년 이상</td><td>100만원 이상 가능</td></tr></table></div>
  <p class="story-note">※ 위 금액은 예상 기준이며 실제 과태료는 사건 내용과 법원의 판단에 따라 달라질 수 있습니다.</p>
-</section>
+</section></div>
 <section class="story-qa" id="corp-faq">
  <div class="story-qa-title"><h2>법인등기 자주 묻는 질문</h2></div>
  <div class="story-qa-list">
