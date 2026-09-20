@@ -64,6 +64,16 @@
   cursor:pointer;
 }
 @media(min-width:801px){.hero-copy-v22 h1{white-space:nowrap;font-size:clamp(34px,4.2vw,68px);letter-spacing:-.055em}}
+
+/* align document item 3 with document cards 1–2 */
+.docs-cost-row{grid-template-columns:16px minmax(0,1fr);align-items:start;margin-top:30px}
+.docs-cost-row>b{margin-top:3px}
+.docs-third-content{min-width:0}
+.docs-third-content h3{margin:0;line-height:20px}
+.docs-third-content ul{margin:18px 0 0;padding:0 0 0 18px;list-style:none;border-left:2px solid #37aee4}
+.docs-third-content li{padding:5px 0;color:#596f78;font-size:13px;line-height:1.45}
+@media(min-width:801px){.docs-cost-row{width:calc(50% - 17px);margin-left:0}}
+@media(max-width:800px){.docs-cost-row{width:auto;margin-left:0}}
 </style>
 </head>
 <body>
@@ -88,7 +98,7 @@
   
   <article><b>2</b><h3>한정승인 추가서류</h3><ul><li>상속재산목록</li><li>부동산 등기사항증명서</li><li>예금·보험·주식 등 금융재산 자료</li><li>자동차 등 기타 재산자료</li><li>대출·카드·세금 등 채무자료</li><li>장례비 등 상속재산 관련 지출자료</li></ul></article>
  </div>
- <div class="docs-cost-row"><b>3</b><div><h3>특별한정승인 추가서류</h3><ul style="margin:18px 0 0;padding:0 0 0 18px;list-style:none;border-left:2px solid #37aee4"><li style="padding:5px 0;color:#596f78;font-size:13px;line-height:1.45">한정승인 관련 재산·채무서류</li><li style="padding:5px 0;color:#596f78;font-size:13px;line-height:1.45">채무초과 사실을 뒤늦게 알게 된 자료</li><li style="padding:5px 0;color:#596f78;font-size:13px;line-height:1.45">독촉장·내용증명·소장·지급명령 등</li><li style="padding:5px 0;color:#596f78;font-size:13px;line-height:1.45"><strong>채무를 알게 된 날짜를 확인할 자료</strong></li><li style="padding:5px 0;color:#596f78;font-size:13px;line-height:1.45">3개월 내 알지 못한 경위를 소명하는 자료</li></ul></div></div>
+ <div class="docs-cost-row"><b>3</b><div class="docs-third-content"><h3>특별한정승인 추가서류</h3><ul><li>한정승인 관련 재산·채무서류</li><li>채무초과 사실을 뒤늦게 알게 된 자료</li><li>독촉장·내용증명·소장·지급명령 등</li><li><strong>채무를 알게 된 날짜를 확인할 자료</strong></li><li>3개월 내 알지 못한 경위를 소명하는 자료</li></ul></div></div>
 </section>
 <section class="story-qa" id="ren-faq">
  <div class="story-qa-title"><h2>상속포기·한정승인 자주 묻는 질문</h2></div>
