@@ -640,3 +640,61 @@ html,body{max-width:100%;overflow-x:hidden}
     min-height:46px!important;
   }
 }
+
+
+/* COMMON_TOP_HEADER_VISUAL_V1 - 상속등기 최상단 헤더 기준 시각 통일 */
+body:not(.article-v2) > header:not(.dg-shell-header){
+  color:#fff!important;
+  border-bottom:1px solid rgba(54,169,225,.24)!important;
+}
+body:not(.article-v2) > header:not(.dg-shell-header) .wrap.nav{
+  width:min(1180px,calc(100% - 48px))!important;
+  height:78px!important;
+  margin:0 auto!important;
+  padding:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:22px!important;
+}
+body:not(.article-v2) > header:not(.dg-shell-header) .logo{
+  color:inherit!important;
+  font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR","Malgun Gothic",sans-serif!important;
+  font-size:28px!important;
+  line-height:1.15!important;
+  font-weight:950!important;
+  letter-spacing:normal!important;
+  text-decoration:none!important;
+}
+body:not(.article-v2) > header:not(.dg-shell-header) .logo small{
+  display:block!important;
+  margin:0!important;
+  color:inherit!important;
+  font-size:10px!important;
+  line-height:1.2!important;
+  font-weight:600!important;
+  letter-spacing:normal!important;
+}
+body:not(.article-v2) > header:not(.dg-shell-header) .menu{
+  display:flex!important;
+  align-items:center!important;
+  gap:25px!important;
+  margin:0!important;
+  padding:0!important;
+  font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR","Malgun Gothic",sans-serif!important;
+  font-size:13px!important;
+  font-weight:800!important;
+}
+body:not(.article-v2) > header:not(.dg-shell-header) .menu a{
+  color:inherit!important;
+  text-decoration:none!important;
+  white-space:nowrap!important;
+}
+@media(max-width:800px){
+  body:not(.article-v2) > header:not(.dg-shell-header) .wrap.nav{
+    width:calc(100% - 36px)!important;
+    height:66px!important;
+  }
+  body:not(.article-v2) > header:not(.dg-shell-header) .logo{font-size:24px!important}
+  body:not(.article-v2) > header:not(.dg-shell-header) .menu{display:none!important}
+}
