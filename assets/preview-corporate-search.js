@@ -6,8 +6,8 @@
  if(!status)return;
  const fixed=[
  {title:'법인등기 필요서류',href:'#documents',type:'페이지'},
- {title:'법인등기 자주 묻는 질문',href:'#corp-faq',type:'페이지'},
- {title:'법인등기 비용계산',href:'/corporate-calculator.html',type:'계산기'}
+ {title:'법인등기 비용계산',href:'/corporate-calculator.html',type:'계산기'},
+ {title:'법인등기 자주 묻는 질문',href:'#corp-faq',type:'페이지'}
 ]
  const clean=s=>String(s||'').toLowerCase().replace(/\s+/g,'');
  const open=()=>{list.classList.add('is-open');input.setAttribute('aria-expanded','true');toggle.textContent='▲'};
