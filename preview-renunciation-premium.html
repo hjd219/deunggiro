@@ -74,6 +74,12 @@
 .docs-third-content li{padding:5px 0;color:#596f78;font-size:13px;line-height:1.45}
 @media(min-width:801px){.docs-cost-row{width:calc(50% - 17px);margin-left:0}}
 @media(max-width:800px){.docs-cost-row{width:auto;margin-left:0}}
+
+/* desktop: documents 1·2·3 in one row */
+@media(min-width:801px){
+ .simple-docs .docs-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}
+ .simple-docs .docs-cost-row{width:auto;margin:0;grid-template-columns:16px minmax(0,1fr);align-items:start}
+}
 </style>
 </head>
 <body>
