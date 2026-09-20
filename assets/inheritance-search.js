@@ -4,7 +4,7 @@
  if(!input||!toggle||!list||!search)return;
  const status=document.querySelector('.inheritance-search-status');
  if(!status)return;
- const fixed=[{title:'상속등기 절차',href:'#inheritance-overview',type:'페이지'},{title:'상속등기 필요서류',href:'#documents',type:'페이지'},{title:'상속등기 비용계산',href:'/acquisition-calculator.html?mode=inherit&v=20260910-accountfix',type:'계산기'},{title:'사망 후 전체 상속절차·필요서류',href:'/posts/naver-224399413497.html',type:'핵심 안내'},{title:'인천 상속등기 절차·필요서류·취득세',href:'/posts/inheritance-registration-acquisition-tax-incheon-procedure-doc-v9aban.html',type:'핵심 안내'}];
+ const fixed=[{title:'상속등기 절차',href:'#inheritance-overview',type:'페이지'},{title:'상속등기 필요서류',href:'#documents',type:'페이지'},{title:'연락두절·행방불명 상속인',href:'/inheritance-missing-heir.html',type:'세부안내'},{title:'미성년자 상속인',href:'/inheritance-minor-heir.html',type:'세부안내'},{title:'해외거주·외국국적 상속인',href:'/inheritance-overseas-heir.html',type:'세부안내'},{title:'대습상속',href:'/inheritance-substitute-succession.html',type:'세부안내'},{title:'상속재산분할',href:'/inheritance-division.html',type:'세부안내'},{title:'상속등기 비용계산',href:'/acquisition-calculator.html?mode=inherit&v=20260910-accountfix',type:'계산기'},{title:'사망 후 전체 상속절차·필요서류',href:'/posts/naver-224399413497.html',type:'핵심 안내'},{title:'인천 상속등기 절차·필요서류·취득세',href:'/posts/inheritance-registration-acquisition-tax-incheon-procedure-doc-v9aban.html',type:'핵심 안내'}];
  let posts=[];
  const clean=s=>String(s||'').toLowerCase().replace(/\s+/g,'');
  const open=()=>{list.classList.add('is-open');input.setAttribute('aria-expanded','true');toggle.textContent='▲'};
