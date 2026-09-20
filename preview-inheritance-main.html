@@ -6,7 +6,7 @@
 .inheritance-combo{position:relative;display:flex;align-items:center;flex:1;min-width:0;height:100%}
 .inheritance-query{width:100%;height:100%;padding:0 38px 0 0;border:0;outline:0;background:transparent;color:#fff;font:inherit}
 .inheritance-query::placeholder{color:rgba(255,255,255,.78)}
-.inheritance-toggle{position:absolute;right:5px;top:50%;transform:translateY(-50%);display:flex;align-items:center;justify-content:center;width:28px;height:28px;color:#fff;font-size:12px;pointer-events:none}
+.inheritance-toggle{position:absolute;right:5px;top:50%;transform:translateY(-50%);display:flex;align-items:center;justify-content:center;width:28px;height:28px;padding:0;border:0;background:transparent;color:#fff;font-size:12px;cursor:pointer}
 .inheritance-page{background:#fff}
 .inheritance-inner{width:min(1180px,calc(100% - 56px));margin:0 auto;padding:76px 0 96px}
 .inheritance-section{padding:66px 0;border-bottom:1px solid rgba(22,69,96,.10)}
@@ -45,6 +45,7 @@
  .process-list{grid-template-columns:1fr;gap:24px}
  .documents-grid{grid-template-columns:1fr;gap:38px}
 }
+.inheritance-options{position:absolute;z-index:40;top:calc(100% + 10px);left:-42px;right:0;padding:8px;background:#fff;border:1px solid rgba(22,69,96,.12);border-radius:14px;box-shadow:0 14px 34px rgba(0,0,0,.18);max-height:310px;overflow:auto}.inheritance-options[hidden]{display:none}.inheritance-options a{display:block;padding:10px 12px;border-radius:8px;color:#17364d;text-decoration:none;font-size:14px;font-weight:700}.inheritance-options a:hover{background:#eef8fe;color:#168dcc}
 </style>
 </head>
 <body>
@@ -54,11 +55,21 @@
 <div class="shade"></div>
 <div class="wrap heroin">
 <div class="hero-copy-v22"><h1>상속은 <span>등기로</span></h1><p>상속등기 절차 · 비용 · 필요서류부터 협의분할, 연락두절 · 해외거주 · 미성년자 등 복잡한 상속까지<br>실제 처리사례를 바탕으로 안내합니다.</p></div>
-<div class="hero-ai"><div class="hero-ai-label">어떤 상속등기 업무가 궁금하세요?</div><div class="hero-ai-box"><span class="hero-ai-icon">⌕</span><div class="inheritance-combo"><input id="inheritance-query" class="inheritance-query" type="search" placeholder="검색하거나 화살표를 눌러 선택하세요" autocomplete="off"><span class="inheritance-toggle" aria-hidden="true">▼</span></div><button id="inheritance-search-button" type="button">찾아보기</button></div></div>
+<div class="hero-ai"><div class="hero-ai-label">어떤 상속등기 업무가 궁금하세요?</div><div class="hero-ai-box"><span class="hero-ai-icon">⌕</span><div class="inheritance-combo"><input id="inheritance-query" class="inheritance-query" type="search" placeholder="검색하거나 화살표를 눌러 선택하세요" autocomplete="off"><button id="inheritance-toggle" class="inheritance-toggle" type="button" aria-label="상속등기 업무 선택" aria-expanded="false">▼</button>
+<div id="inheritance-options" class="inheritance-options" hidden>
+<a href="#inheritance-overview">상속등기 진행순서</a>
+<a href="#documents">상속등기 필요서류</a>
+<a href="/acquisition-calculator.html?mode=inherit">상속등기 비용 계산</a>
+<a href="/inheritance-missing-heir.html">연락두절·행방불명 상속인</a>
+<a href="/inheritance-minor-heir.html">미성년자 상속인</a>
+<a href="/inheritance-overseas-heir.html">해외거주·외국국적 상속인</a>
+<a href="/inheritance-substitute-succession.html">대습상속</a>
+<a href="/inheritance-division.html">상속재산분할</a>
+</div></div><button id="inheritance-search-button" type="button">찾아보기</button></div></div>
 </div>
 <a class="hero-scroll" href="#inheritance-overview" aria-label="아래 내용 보기"><span class="hero-scroll-mouse"></span><span>SCROLL</span></a>
 </section>
-<main class="inheritance-page" id="inheritance-overview"><div class="inheritance-inner">
+<div class="v53-stage"><div class="v53-window"><main class="v53-track"><section class="inheritance-page dg-services" id="inheritance-overview"><div class="inheritance-inner">
 <section class="inheritance-section">
 <h2>상속등기 진행순서</h2><p class="section-lead">사망 후 필요한 절차를 순서대로 확인할 수 있습니다.</p>
 <div class="process-list">
@@ -94,7 +105,7 @@
 <a href="/inheritance-substitute-succession.html"><span class="case-number">4</span><div><h3>대습상속</h3><p>상속인이 먼저 사망한 경우의 상속관계</p></div><span class="arrow">↗</span></a>
 <a href="/inheritance-division.html"><span class="case-number">5</span><div><h3>상속재산분할</h3><p>상속인 사이 협의가 어려운 경우의 분할절차</p></div><span class="arrow">↗</span></a>
 </div></section>
-</div></main>
-<script src="/assets/home-mobile-menu.js?v=20260917-1"></script><script src="/assets/site-footer.js?v=20260917-v6" defer></script>
-</body>
+</div></section></main></div></div>
+<script src="/assets/home-mobile-menu.js?v=20260917-1"></script><script src="/assets/home-v56-exact.js?v=20260918-1"></script><script src="/assets/site-footer.js?v=20260917-v6" defer></script>
+<script>document.addEventListener('DOMContentLoaded',function(){const t=document.getElementById('inheritance-toggle'),o=document.getElementById('inheritance-options');if(!t||!o)return;t.addEventListener('click',function(e){e.stopPropagation();o.hidden=!o.hidden;t.setAttribute('aria-expanded',String(!o.hidden))});document.addEventListener('click',function(e){if(!e.target.closest('.inheritance-combo')){o.hidden=true;t.setAttribute('aria-expanded','false')}})});</script></body>
 </html>
