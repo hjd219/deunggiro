@@ -8,7 +8,6 @@ const fixed=[
 {title:'성년후견·한정후견',keywords:'성년후견 한정후견 특정후견 후견인',href:'#service-3',type:'업무안내'},
 {title:'개명·성본변경·가족관계등록',keywords:'개명 성본변경 가족관계등록부 정정 등록부창설',href:'#service-4',type:'업무안내'},
 {title:'가사 필요서류',keywords:'가사 필요서류 이혼 개명 후견',href:'#family-docs',type:'세부안내'},
-{title:'가사 진행 전 확인사항',keywords:'관할 법원 미성년 자녀 추가서류',href:'#family-check',type:'세부안내'},
 {title:'협의이혼 절차 총정리',keywords:'협의이혼 절차 이혼합의서 숙려기간',href:'/posts/naver-224258629169.html',type:'핵심안내'},
 {title:'친권자 변경 기준',keywords:'친권자 변경 공동친권 단독친권',href:'/posts/naver-224269144558.html',type:'핵심안내'},
 {title:'성년후견·한정후견 총정리',keywords:'치매 고령 부모 성년후견 한정후견 임의후견',href:'/posts/naver-224254351514.html',type:'핵심안내'},
