@@ -26,24 +26,18 @@
 .story .line,.story-cover::after,.story-section::before,.story-section::after{display:none}
 
 .hero-ai-box .inheritance-combo{position:relative;display:flex;align-items:center;flex:1;min-width:0;height:100%}.hero-ai-box .inheritance-query{width:100%;height:100%;border:0;background:transparent;color:#fff;font:inherit;outline:0;padding:0 42px 0 0}.hero-ai-box .inheritance-query::placeholder{color:rgba(255,255,255,.72)}.hero-ai-box .inheritance-toggle{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:34px;height:34px;padding:0;border:0;background:transparent;color:#fff;font-size:12px;line-height:1;cursor:pointer}
-.inheritance-results{position:absolute;z-index:40;top:calc(100% + 10px);left:-42px;right:0;padding:8px;background:#fff;border:1px solid rgba(22,69,96,.12);border-radius:14px;box-shadow:0 14px 34px rgba(0,0,0,.18);max-height:310px;overflow:auto}
-.inheritance-results[hidden]{display:none}
-.inheritance-results a{display:block;padding:10px 12px;border-radius:8px;color:#17364d;text-decoration:none;font-size:14px;font-weight:700}
-.inheritance-results a:hover{background:#eef8fe;color:#168dcc}.inheritance-search-status{display:none}
+.inheritance-results{display:none;position:absolute;left:0;right:0;top:calc(100% + 8px);z-index:40;max-height:310px;overflow:auto;margin:0;padding:7px;list-style:none;border:1px solid #d0dbe3;border-radius:9px;background:#fff;box-shadow:0 12px 28px rgba(26,52,70,.17)}
+.inheritance-results.is-open{display:block}
+.inheritance-results a{display:block;padding:11px 12px;border-radius:6px;color:#26313a;font-size:14px;line-height:1.45;text-decoration:none}
+.inheritance-results a:hover{background:#eaf7fd;color:#168dca}
+.result-type{display:inline-block;margin-right:7px;color:#168dca;font-size:11px;font-weight:900}
+.inheritance-empty{padding:14px 12px;color:#707b85;font-size:14px}
+.inheritance-search-status{display:none}
 </style>
 </head>
 <body>
 <header><div class="wrap nav"><a class="logo" href="/">등기로<small>현재두 법무사 사무소 · 인천</small></a><nav class="menu"><a href="/">홈</a><a href="/inheritance.html">상속등기</a><a href="/renunciation.html">상속포기·한정승인</a><a href="/corporate.html">법인등기</a><a href="/realestate.html">부동산등기</a><a href="/family.html">가사</a><a href="/posts.html">법률정보</a></nav></div></header>
-<section class="hero"><img src="https://www.ito.or.kr/images/bbs/galleryko/2020/incheondaegyo_004.jpg" alt="인천대교" class="inheritance-hero-image"><div class="shade"></div><div class="wrap heroin"><div class="hero-copy-v22"><h1>상속은 <span>등기로</span></h1><p>상속등기 절차 · 비용 · 필요서류부터 협의분할, 연락두절 · 해외거주 · 미성년자 등 복잡한 상속까지<br>실제 처리사례를 바탕으로 안내합니다.</p></div><div class="hero-ai inheritance-finder-inline"><div class="hero-ai-label">어떤 상속등기 업무가 궁금하세요?</div><div class="hero-ai-box"><span class="hero-ai-icon">⌕</span><div class="inheritance-combo"><input id="inheritance-query" class="inheritance-query" type="search" placeholder="검색하거나 화살표를 눌러 선택하세요" autocomplete="off" aria-controls="inheritance-results" aria-expanded="false"><button id="inheritance-toggle" class="inheritance-toggle" type="button" aria-label="상속등기 안내 목록 보기" aria-expanded="false">▼</button><div id="inheritance-results" class="inheritance-results" hidden>
-<a href="#inheritance-overview">상속등기 진행순서</a>
-<a href="#documents">상속등기 필요서류</a>
-<a href="/acquisition-calculator.html?mode=inherit">상속등기 비용 계산</a>
-<a href="/inheritance-missing-heir.html">연락두절·행방불명 상속인</a>
-<a href="/inheritance-minor-heir.html">미성년자 상속인</a>
-<a href="/inheritance-overseas-heir.html">해외거주·외국국적 상속인</a>
-<a href="/inheritance-substitute-succession.html">대습상속</a>
-<a href="/inheritance-division.html">상속재산분할</a>
-</div></div><button id="inheritance-search-button" type="button">찾아보기</button></div><div class="inheritance-search-status" aria-live="polite"></div></div></div><a class="hero-scroll" href="#dg-intro" aria-label="아래 내용 보기"><span class="hero-scroll-mouse"></span><span>SCROLL</span></a></section>
+<section class="hero"><img src="https://www.ito.or.kr/images/bbs/galleryko/2020/incheondaegyo_004.jpg" alt="인천대교" class="inheritance-hero-image"><div class="shade"></div><div class="wrap heroin"><div class="hero-copy-v22"><h1>상속은 <span>등기로</span></h1><p>상속등기 절차 · 비용 · 필요서류부터 협의분할, 연락두절 · 해외거주 · 미성년자 등 복잡한 상속까지<br>실제 처리사례를 바탕으로 안내합니다.</p></div><div class="hero-ai inheritance-finder-inline"><div class="hero-ai-label">어떤 상속등기 업무가 궁금하세요?</div><div class="hero-ai-box"><span class="hero-ai-icon">⌕</span><div class="inheritance-combo"><input id="inheritance-query" class="inheritance-query" type="search" placeholder="검색하거나 화살표를 눌러 선택하세요" autocomplete="off" aria-controls="inheritance-results" aria-expanded="false"><button id="inheritance-toggle" class="inheritance-toggle" type="button" aria-label="상속등기 안내 목록 보기" aria-expanded="false">▼</button><ul id="inheritance-results" class="inheritance-results"></ul></div><button id="inheritance-search-button" type="button">찾아보기</button></div><div class="inheritance-search-status" aria-live="polite"></div></div></div><a class="hero-scroll" href="#dg-intro" aria-label="아래 내용 보기"><span class="hero-scroll-mouse"></span><span>SCROLL</span></a></section>
 <div class="v53-stage" id="dg-intro"><div class="v53-window"><main class="v53-track"><section class="person"><div class="story">
 <section class="story-cover" id="inheritance-overview">
  <div class="story-cover-copy"><p>사망 후 해야 할 일을<br>복잡하게 외울 필요는 없습니다.</p><h2>상속등기 진행순서</h2></div>
@@ -87,6 +81,7 @@
 </div></section></main></div></div>
 <script src="/assets/home-mobile-menu.js?v=20260917-1"></script>
 <script src="/assets/home-v56-exact.js?v=20260918-1"></script>
+<script src="/assets/inheritance-search.js?v=20260913"></script>
 <script src="/assets/site-footer.js?v=20260917-v6" defer></script>
-<script>document.addEventListener('DOMContentLoaded',function(){const t=document.getElementById('inheritance-toggle'),r=document.getElementById('inheritance-results');if(!t||!r)return;t.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();r.hidden=!r.hidden;t.setAttribute('aria-expanded',String(!r.hidden))});document.addEventListener('click',function(e){if(!e.target.closest('.inheritance-combo')){r.hidden=true;t.setAttribute('aria-expanded','false')}})});</script></body>
+</body>
 </html>
