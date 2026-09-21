@@ -1,0 +1,34 @@
+name: Optimize Songdo hero
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/optimize-songdo-hero.yml'
+permissions:
+  contents: write
+jobs:
+  optimize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - run: pip install pillow
+      - name: Create web hero image
+        run: |
+          python - <<'PY'
+          from PIL import Image
+          src='images/(260623)송도국제도시(02).jpg'
+          dst='images/songdo-hero.webp'
+          im=Image.open(src)
+          im.thumbnail((2560,2560), Image.Resampling.LANCZOS)
+          im.save(dst,'WEBP',quality=88,method=6)
+          print(im.size)
+          PY
+      - name: Commit optimized image
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add images/songdo-hero.webp
+          git diff --cached --quiet || (git commit -m "Add optimized Songdo hero image" && git push)
