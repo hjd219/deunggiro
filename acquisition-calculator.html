@@ -11,7 +11,6 @@
 <meta property="og:type" content="website"><meta property="og:site_name" content="등기로"><meta property="og:url" content="https://www.deunggiro.kr/acquisition-calculator.html"><meta property="og:title" content="상속등기 비용 계산기 | 증여·매매·이혼 재산분할 취득세·등기비용 - 등기로"><meta property="og:description" content="상속·증여·매매·이혼 재산분할 부동산의 취득세와 등기비용, 법무사 보수를 간편하게 계산합니다."><meta property="og:image" content="https://www.deunggiro.kr/images/acquisition-calculator-thumbnail.png?v=3"><meta property="og:image:secure_url" content="https://www.deunggiro.kr/images/acquisition-calculator-thumbnail.png?v=3"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1254"><meta property="og:image:height" content="1254"><meta property="og:image:alt" content="상속·증여·매매·이혼 재산분할 부동산등기 비용 계산기 | 등기로"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://www.deunggiro.kr/images/acquisition-calculator-thumbnail.png?v=3">
 <link rel="stylesheet" href="/assets/site-shell.css?v=20260910-2135">
 <link rel="stylesheet" href="/assets/calculator-common.css?v=20260913">
-<link rel="stylesheet" href="/assets/mobile-menu.css?v=20260917-home1">
 <style>
 :root{--s:#35a9e1;--sd:#168dca;--n:#172840;--l:#e4ebf1;--bg:#f3f6fa;--m:#718096}
 *{box-sizing:border-box}
@@ -38,7 +37,7 @@ body{margin:0;padding-bottom:35px;background:var(--bg);color:#202936;font-family
 }
 
 /* calculator light-header visibility */
-header{color:#172840!important;background:#fff!important}header .logo,header .logo small,header .menu a{color:#172840!important}header .logo{color:#35a9e1!important}header .dg-shell-mobile-menu-btn{color:#172840!important;background:#f1f7fa!important;border:1px solid #d7e6ee!important}
+header{color:#172840!important;background:#fff!important}header .logo,header .logo small,header .menu a{color:#172840!important}header .logo{color:#35a9e1!important}
 </style>
 <script src="/assets/analytics.js?v=20260910-noaccount" defer></script>
 </head>
@@ -79,8 +78,7 @@ function calc(){updateDocuments();let value=0,bondBuy=0,count=0,acq=0,edu=0,rura
 function printEstimate(){window.DGCounter?.countOnce('pdf');$('printDate').textContent='견적일 '+new Date().toLocaleDateString('ko-KR');const result=document.querySelector('.result');if(!result){alert('견적 내용을 찾을 수 없습니다.');return;}try{sessionStorage.setItem('deunggiroEstimatePreview',JSON.stringify({title:'등기로 부동산등기 예상 견적서',html:result.outerHTML}));location.href='/estimate-preview.html?v=20260909';}catch(e){window.print();}}
 document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{document.querySelectorAll('.opt').forEach(x=>x.classList.remove('on'));b.classList.add('on');mode=b.dataset.mode;syncLabels();calc()});$('add').onclick=()=>{property();calc()};$('calc').onclick=()=>{window.DGCounter?.countOnce('calculator');calc()};['heirs','foreign','oneHouse','inheritDivision','divorceType','homes','area','size'].forEach(id=>$(id).onchange=calc);let requestedMode=new URLSearchParams(location.search).get('mode');if(!requestedMode){const ref=document.referrer||'';if(/\/inheritance\.html(?:[?#]|$)/.test(ref))requestedMode='inherit';else if(/\/family\.html(?:[?#]|$)/.test(ref))requestedMode='divorce'}if(['sale','gift','inherit','divorce'].includes(requestedMode)){mode=requestedMode;document.querySelectorAll('.opt').forEach(x=>x.classList.toggle('on',x.dataset.mode===mode))}property();syncLabels();calc();
 </script>
-<script src="/assets/site-shell.js?v=8"></script>
-<script src="/assets/home-mobile-menu.js?v=20260917-1" defer></script><script src="/assets/firestore-counter-public.js?v=5"></script><!-- DG_COUNTER_DEPLOY_SYNC_V6 -->
+<script src="/assets/site-shell.js?v=8"></script><script src="/assets/firestore-counter-public.js?v=5"></script><!-- DG_COUNTER_DEPLOY_SYNC_V6 -->
 <script id="calculator-account-screen-guard-v1">
 (function(){
   const selectors='.account-box,.bank-account,.account-info,.deposit-account,.dg-calc-account-single,.dg-estimate-account';
