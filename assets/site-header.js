@@ -10,7 +10,7 @@
     style.textContent='.opts .opt,.types .type,.type-tabs button,.calc-tabs button{font-size:16px!important;line-height:1.25!important;font-weight:850!important}@media(max-width:800px){.opts .opt,.types .type,.type-tabs button,.calc-tabs button{font-size:16px!important}}';
     document.head.appendChild(style);
 
-    const oldHeader=document.querySelector('body>header.header');
+    const oldHeader=document.querySelector('body>header');
     if(oldHeader && !document.querySelector('header.dg-shell-header')){
       const shell=document.createElement('header');
       shell.className='dg-shell-header';
