@@ -65,9 +65,12 @@
 }
 </style>
 <style id="missing-heir-case-clean">
-.story-cases.case-chapter .cases-list>a{border-top:0!important;border-bottom:0!important;border-left:0!important;border-right:0!important}
+.story-cases.case-chapter .cases-list{border-top:0!important}
+.story-cases.case-chapter .cases-list>a{display:grid!important;grid-template-columns:minmax(0,1fr) 18px!important;gap:18px!important;border:0!important;padding:4px 0 4px 24px!important;position:relative!important}
+.story-cases.case-chapter .cases-list>a:before{content:""!important;position:absolute!important;left:0!important;top:4px!important;bottom:4px!important;width:2px!important;background:#37aee4!important}
 .story-cases.case-chapter .cases-list>a>b{display:none!important}
-.story-cases.case-chapter .cases-list>a>div{border-left:1px solid rgba(15,23,42,.16)!important;padding-left:24px!important}
+.story-cases.case-chapter .cases-list>a>div{border:0!important;padding:0!important;min-width:0!important}
+.story-cases.case-chapter .cases-list h3{white-space:normal!important;word-break:keep-all!important;overflow-wrap:break-word!important}
 </style>
 </head>
 <body>
