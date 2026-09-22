@@ -37,6 +37,16 @@ jobs:
           im3.thumbnail((2560,2560), Image.Resampling.LANCZOS)
           im3.save(dst3,'WEBP',quality=88,method=6)
           print(im3.size)
+          # Mobile-only derivatives: keep desktop originals untouched
+          for src, dst, q in [
+              ('images/songdo-hero.webp','images/songdo-hero-mobile.webp',82),
+              ('images/songdo-cherry-hero.webp','images/songdo-cherry-hero-mobile.webp',80),
+              ('images/cheongna-realestate-hero.webp','images/cheongna-realestate-hero-mobile.webp',82),
+          ]:
+              m=Image.open(src)
+              m.thumbnail((1280,1280), Image.Resampling.LANCZOS)
+              m.save(dst,'WEBP',quality=q,method=6)
+              print(dst, m.size)
           PY
       - name: Commit optimized image
         run: |
@@ -67,5 +77,5 @@ jobs:
                   t=t.replace('/images/(260406)송도국제도시(0262).jpg','/images/songdo-cherry-hero.webp')
                   q.write_text(t,encoding='utf-8')
           PY
-          git add images/songdo-hero.webp images/songdo-cherry-hero.webp images/cheongna-realestate-hero.webp realestate.html inheritance.html corporate.html family.html inheritance-division.html inheritance-minor-heir.html inheritance-missing-heir.html inheritance-overseas-heir.html inheritance-substitute-succession.html renunciation.html renunciation-after.html limited-acceptance-liquidation.html
+          git add images/songdo-hero.webp images/songdo-cherry-hero.webp images/cheongna-realestate-hero.webp images/songdo-hero-mobile.webp images/songdo-cherry-hero-mobile.webp images/cheongna-realestate-hero-mobile.webp realestate.html inheritance.html corporate.html family.html inheritance-division.html inheritance-minor-heir.html inheritance-missing-heir.html inheritance-overseas-heir.html inheritance-substitute-succession.html renunciation.html renunciation-after.html limited-acceptance-liquidation.html
           git diff --cached --quiet || (git commit -m "Add optimized Songdo hero image" && git push)
