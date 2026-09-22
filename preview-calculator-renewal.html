@@ -38,7 +38,7 @@ function printEstimate(){
  '<section class="block docs"><div class="docs-split"><div class="docs-list"><h2>준비서류</h2>'+docs+'</div><div class="docs-account"><h2>입금계좌</h2><span>신한은행<br><strong>110-482-692656</strong><small>현재두법무사사무소</small></span><span>카카오뱅크<br><strong>3333-07-6560416</strong><small>현재두법무사사무소</small></span></div></div></section>'+
  '<section class="notice"><b>안내</b><span>본 견적은 입력한 조건을 기준으로 산출한 예상금액이며 실제 등기 진행 과정에서 과세표준, 채권 할인율, 부동산 수 및 사건 내용에 따라 달라질 수 있습니다.</span></section>'+
  '<footer class="quote-footer"><div><b>현재두 법무사 사무소</b><span>인천 미추홀구 경원대로 873, 201호(주안동, 인성빌딩)</span></div><div><span>032-425-1500</span><span>hjd21@naver.com</span><span>www.deunggiro.kr</span></div></footer></article>';
- try{sessionStorage.setItem('deunggiroEstimatePreview',JSON.stringify({version:3,type:'acquisition-v3',title:'등기로 '+modeName+' 예상 견적서',html}));sessionStorage.setItem('deunggiroEstimateSource',location.pathname+location.search);location.href='/estimate-preview-v2.html?v=20260922-14'}catch(e){window.print()}
+ try{sessionStorage.setItem('deunggiroEstimatePreview',JSON.stringify({version:3,type:'acquisition-v3',title:'등기로 '+modeName+' 예상 견적서',html}));sessionStorage.setItem('deunggiroEstimateSource',location.pathname+location.search);location.href='/estimate-preview-v2.html?v=20260922-15'}catch(e){window.print()}
 }
 property();syncLabels();calc();
 $('add').addEventListener('click',()=>property());
