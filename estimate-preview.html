@@ -75,6 +75,31 @@ a[x-apple-data-detectors],a[href^="tel:"],a[href^="mailto:"]{color:inherit!impor
 .paper.corporate-preview>.result>h3,.paper.corporate-preview .selected{display:none!important}
 .paper.corporate-preview .print-col h3{height:26px!important;display:flex!important;align-items:flex-start!important;margin:2px 0 8px!important}
 .paper.corporate-preview .legal-col>.total{margin-top:10px!important}
+.paper.v2-paper{padding:13mm!important;color:#173342!important}
+.paper.v2-paper .estimate-v2{display:block!important}
+.paper.v2-paper .estimate-head{display:flex!important;justify-content:space-between!important;align-items:flex-end!important;padding-bottom:13px!important;border-bottom:2px solid #179ed7!important}
+.paper.v2-paper .estimate-head>div{display:flex!important;align-items:baseline!important;gap:13px!important}
+.paper.v2-paper .estimate-head b{font-size:25px!important;color:#20a2da!important;font-weight:900!important}
+.paper.v2-paper .estimate-head span{font-size:16px!important;color:#173342!important;font-weight:900!important}
+.paper.v2-paper .estimate-head small{font-size:10px!important;color:#738995!important;font-weight:700!important}
+.paper.v2-paper .estimate-hero{padding:24px 0 22px!important;border-bottom:1px solid #dce7eb!important}
+.paper.v2-paper .estimate-hero>span{display:block!important;font-size:11px!important;color:#71858f!important;font-weight:800!important}
+.paper.v2-paper .estimate-hero strong{display:block!important;margin:3px 0!important;font-size:34px!important;letter-spacing:-1.5px!important;color:#168fc5!important;font-weight:900!important}
+.paper.v2-paper .estimate-hero small{font-size:10px!important;color:#8798a0!important}
+.paper.v2-paper .estimate-cols{display:grid!important;grid-template-columns:1fr 1fr!important;gap:26px!important;padding:22px 0!important;border-bottom:1px solid #dce7eb!important}
+.paper.v2-paper .estimate-col+ .estimate-col{border-left:1px solid #e0e9ed!important;padding-left:26px!important}
+.paper.v2-paper .estimate-col h3,.paper.v2-paper .estimate-docs h3{margin:0 0 13px!important;font-size:15px!important;color:#173342!important;font-weight:900!important}
+.paper.v2-paper .estimate-rate{display:flex!important;align-items:baseline!important;gap:7px!important;min-height:28px!important;font-size:9.5px!important;color:#6c818c!important}
+.paper.v2-paper .estimate-rate b{color:#173342!important}.paper.v2-paper .estimate-rate small{margin-left:auto!important}
+.paper.v2-paper .row,.paper.v2-paper .subtotal{display:flex!important;justify-content:space-between!important;align-items:center!important;gap:12px!important;min-height:31px!important;padding:5px 0!important;border-bottom:1px solid #e5ecef!important;font-size:10.5px!important}
+.paper.v2-paper .row span{color:#617782!important}.paper.v2-paper .row b{color:#173342!important;font-weight:850!important;white-space:nowrap!important}
+.paper.v2-paper .subtotal{margin-top:5px!important;border-top:1px solid #bfcfd6!important;border-bottom:0!important;font-size:11.5px!important;font-weight:900!important}
+.paper.v2-paper .subtotal strong{color:#168fc5!important}
+.paper.v2-paper .estimate-docs{padding:19px 0!important;border-bottom:1px solid #dce7eb!important}
+.paper.v2-paper .estimate-docs .doc-line{margin:5px 0!important;font-size:10.5px!important;line-height:1.55!important;color:#526b77!important}
+.paper.v2-paper .estimate-docs .doc-line b{color:#173342!important;font-weight:900!important}
+.paper.v2-paper .estimate-office{display:grid!important;gap:3px!important;padding-top:17px!important;font-size:9.5px!important;line-height:1.45!important;color:#71858f!important}
+.paper.v2-paper .estimate-office b{font-size:11px!important;color:#173342!important}
 @media(max-width:700px){.toolbar{padding:8px}.toolbar button{flex:1;max-width:180px}.guide{font-size:12px}.paper{flex:0 0 794px!important;width:794px!important;min-height:1123px!important;margin:8px 0 20px!important;padding:45px!important;transform-origin:top center!important;box-shadow:none!important}}
 @media print{
  @page{size:A4;margin:8mm}
@@ -144,6 +169,7 @@ async function savePdfFile(){
  if(!raw){document.getElementById('paper').innerHTML='<p style="text-align:center;padding:60px 0">견적 정보가 없습니다.<br><button onclick="history.back()">돌아가기</button></p>';return}
  try{
   const data=JSON.parse(raw),paper=document.getElementById('paper'),stage=document.getElementById('stage');
+  if(data.version===2||data.type==='acquisition-v2')paper.classList.add('v2-paper');
   document.title=data.title||'등기로 예상 견적서';
   paper.innerHTML=data.html||'';
   const result=paper.querySelector('.result')||paper;
