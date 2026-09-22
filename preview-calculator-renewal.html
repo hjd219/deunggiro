@@ -35,10 +35,10 @@ function printEstimate(){
  '<section class="block"><h2>계산 기준</h2><table class="property-table"><thead><tr><th>구분</th><th>부동산</th><th>기준금액</th><th>채권용 시가표준액</th></tr></thead><tbody>'+propertyRows+'</tbody></table></section>'+
  '<div class="cost-grid"><section class="block"><h2>세금·공과금</h2><div class="rate-note">채권 할인율 <b>'+text('dailyBondRate')+'</b> <span>'+esc($('dailyBondDate')?.textContent||'')+'</span></div>'+costRows.map(r=>'<div class="cost-row"><span>'+r[0]+'</span><b>'+r[1]+'</b></div>').join('')+'<div class="sum-row"><span>공과금 합계</span><strong>'+text('publicTotal')+'</strong></div></section>'+
  '<section class="block"><h2>법무사 보수</h2>'+legalRows.map(r=>'<div class="cost-row"><span>'+esc(r[0])+'</span><b>'+r[1]+'</b></div>').join('')+'<div class="sum-row"><span>법무사 보수 합계</span><strong>'+text('legalTotal')+'</strong></div></section></div>'+
- '<section class="block docs"><h2>준비서류</h2><div class="docs-split"><div class="docs-account"><b>입금계좌</b><span>신한은행<br><strong>110-482-692656</strong><small>현재두법무사사무소</small></span><span>카카오뱅크<br><strong>3333-07-6560416</strong><small>현재두법무사사무소</small></span></div><div class="docs-list">'+docs+'</div></div></section>'+
+ '<section class="block docs"><h2>준비서류</h2><div class="docs-split"><div class="docs-list">'+docs+'</div><div class="docs-account"><b>입금계좌</b><span>신한은행<br><strong>110-482-692656</strong><small>현재두법무사사무소</small></span><span>카카오뱅크<br><strong>3333-07-6560416</strong><small>현재두법무사사무소</small></span></div></div></section>'+
  '<section class="notice"><b>안내</b><span>본 견적은 입력한 조건을 기준으로 산출한 예상금액이며 실제 등기 진행 과정에서 과세표준, 채권 할인율, 부동산 수 및 사건 내용에 따라 달라질 수 있습니다.</span></section>'+
  '<footer class="quote-footer"><div><b>현재두 법무사 사무소</b><span>인천 미추홀구 경원대로 873, 201호(주안동, 인성빌딩)</span></div><div><span>032-425-1500</span><span>hjd21@naver.com</span><span>www.deunggiro.kr</span></div></footer></article>';
- try{sessionStorage.setItem('deunggiroEstimatePreview',JSON.stringify({version:3,type:'acquisition-v3',title:'등기로 '+modeName+' 예상 견적서',html}));sessionStorage.setItem('deunggiroEstimateSource',location.pathname+location.search);location.href='/estimate-preview-v2.html?v=20260922-4'}catch(e){window.print()}
+ try{sessionStorage.setItem('deunggiroEstimatePreview',JSON.stringify({version:3,type:'acquisition-v3',title:'등기로 '+modeName+' 예상 견적서',html}));sessionStorage.setItem('deunggiroEstimateSource',location.pathname+location.search);location.href='/estimate-preview-v2.html?v=20260922-5'}catch(e){window.print()}
 }
 property();syncLabels();calc();
 $('add').addEventListener('click',()=>property());
