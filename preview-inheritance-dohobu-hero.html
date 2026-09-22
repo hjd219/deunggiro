@@ -64,28 +64,7 @@
   cursor:pointer;
 }
 </style>
-<style id="case-layout-repair">
-.story-cases.case-single{display:block!important}
-.story-cases.case-single .cases-head{width:100%!important;margin:0 0 28px!important}
-.story-cases.case-single .cases-head h2{max-width:none!important;margin:0!important;white-space:nowrap!important;font-size:30px!important;line-height:1.3!important}
-.story-cases.case-single .cases-list{width:100%!important}
-.story-cases.case-single .cases-list a{display:grid!important;grid-template-columns:minmax(0,1fr) 18px!important;gap:14px!important;align-items:start!important;width:100%!important;padding:22px 0!important}
-.story-cases.case-single .cases-list a>div{min-width:0!important}
-.story-cases.case-single .cases-list h3{white-space:normal!important}
-.story-cases.case-single .cases-list p{max-width:920px!important;white-space:normal!important;word-break:keep-all!important;overflow-wrap:break-word!important}
-@media(max-width:800px){.story-cases.case-single .cases-head h2{white-space:normal!important;font-size:25px!important;word-break:keep-all!important}}
-</style><style id="case-copy-readability">
-.story-cases.case-single .cases-list p:first-of-type{max-width:900px!important;font-size:15px!important;line-height:1.9!important;letter-spacing:-.015em!important;word-break:keep-all!important}
-@media(max-width:800px){.story-cases.case-single .cases-list p:first-of-type{font-size:14px!important;line-height:1.8!important}.story-cases.case-single .cases-list p:first-of-type br{display:none}}
-</style><style id="documents-alignment-fix">
-.simple-docs-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;column-gap:56px!important;row-gap:0!important;align-items:start!important}
-.simple-docs-grid article{display:grid!important;grid-template-columns:16px minmax(0,1fr)!important;grid-template-rows:auto auto!important;column-gap:10px!important;align-items:center!important;padding:20px 0!important;margin:0!important}
-.simple-docs-grid article>b{grid-column:1!important;grid-row:1!important;align-self:center!important}
-.simple-docs-grid article>h3{grid-column:2!important;grid-row:1!important;margin:0!important;align-self:center!important}
-.simple-docs-grid article>ul{grid-column:2!important;grid-row:2!important;margin:14px 0 0!important;padding:0 0 0 18px!important;min-height:30px!important}
-.simple-docs-grid article:nth-child(1),.simple-docs-grid article:nth-child(2){border-bottom:1px solid #e2ebef!important}
-@media(max-width:800px){.simple-docs-grid{grid-template-columns:1fr!important;column-gap:0!important}.simple-docs-grid article{padding:18px 0!important}.simple-docs-grid article:nth-child(3){border-bottom:1px solid #e2ebef!important}}
-</style></head>
+</head>
 <body>
 <header><div class="wrap nav"><a class="logo" href="/" style="color:inherit;text-decoration:none">등기로<small>현재두 법무사 사무소 · 인천</small></a><nav class="menu"><a href="/">홈</a><a href="/inheritance.html">상속등기</a><a href="/renunciation.html">상속포기·한정승인</a><a href="/corporate.html">법인등기</a><a href="/realestate.html">부동산등기</a><a href="/family.html">가사</a><a href="/posts.html">법률정보</a></nav></div></header>
 <section class="hero"><div class="dg-photo-credit" style="position:absolute;right:10px;bottom:8px;z-index:5;color:rgba(255,255,255,.78);font-size:9px;line-height:1.25;text-shadow:0 1px 3px rgba(0,0,0,.6);white-space:nowrap">사진 출처: 인천경제자유구역청(IFEZ) · 공공누리 제1유형</div><img src="/images/(260623)송도국제도시(02).jpg" alt="송도국제도시 전경" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center"><div class="shade"></div><div class="wrap heroin"><div class="hero-copy-v22"><h1>연락두절 상속인이 있는 <em>상속등기</em></h1><p>상속인 중 한 명과 연락이 되지 않는 경우, 임의로 제외하고 협의분할 상속등기를 진행할 수는 없습니다.</p></div><div class="hero-ai inheritance-finder-inline"><div class="hero-ai-label">어떤 상속등기 업무가 궁금하세요?</div><div class="hero-ai-box"><span class="hero-ai-icon">⌕</span><div class="inheritance-combo"><input id="inheritance-query" class="inheritance-query" type="search" placeholder="검색하거나 화살표를 눌러 선택하세요" autocomplete="off" aria-controls="inheritance-results" aria-expanded="false"><span id="inheritance-toggle" class="inheritance-toggle" role="button" tabindex="0" aria-label="선택항 펼치기">▼</span><ul id="inheritance-results" class="inheritance-results"></ul></div><button id="inheritance-search-button" type="button">찾아보기</button></div><div class="inheritance-search-status" aria-live="polite"></div></div></div><a class="hero-scroll" href="#dg-intro" aria-label="아래 내용 보기"><span class="hero-scroll-mouse"></span><span>SCROLL</span></a></section>
@@ -99,7 +78,15 @@
 <div><b>4</b><span>대체절차 검토</span><small>법정지분·법원절차 검토</small></div><i>→</i>
 <div><b>5</b><span>상속등기</span><small>취득세 신고·등기신청</small></div>
 </div></section>
-<section class="simple-docs"><span class="story-no">준비서류</span><h2>기본 확인서류</h2><div class="simple-docs-grid"><article><b>1</b><h3>피상속인</h3><ul><li>기본증명서, 가족관계증명서, 제적등본 등</li></ul></article><article><b>2</b><h3>상속인</h3><ul><li>가족관계증명서, 주민등록초본 등</li></ul></article><article><b>3</b><h3>부동산</h3><ul><li>등기사항증명서, 토지·건축물 관련 자료</li></ul></article><article><b>4</b><h3>추가자료</h3><ul><li>연락두절 경위, 확인된 주소, 송달 관련 자료 등</li></ul></article></div></section>
+<section class="simple-docs" id="documents">
+ <span class="story-no">준비서류</span><h2>기본 확인서류</h2>
+ <div class="simple-docs-grid">
+  <article><b>1</b><h3>피상속인</h3><ul><li>기본증명서, 가족관계증명서, 제적등본 등</li></ul></article>
+  <article><b>2</b><h3>상속인</h3><ul><li>가족관계증명서, 주민등록초본 등</li></ul></article>
+  <article><b>3</b><h3>부동산</h3><ul><li>등기사항증명서, 토지·건축물 관련 자료</li></ul></article>
+  <article><b>4</b><h3>추가자료</h3><ul><li>연락두절 경위, 확인된 주소, 송달 관련 자료 등</li></ul></article>
+ </div>
+</section>
 <section class="story-cases case-single">
  <div class="cases-head"><span class="story-no">실제 처리사례</span><h2>50년째 행방불명된 상속인과 협의를 거부하는 상속인이 있던 사건</h2></div>
  <div class="cases-list"><a href="/posts/naver-224404881173.html"><div><h3>연락두절 · 협의거부</h3><p>공동상속인 중 한 명은 약 50년 전부터 생사와 소재가 확인되지 않았고,<br>다른 한 명은 상속재산분할협의를 거부한 사건입니다.<br><br>먼저 법정상속분에 따른 상속등기를 진행하고,<br>행방불명 상속인의 최후 주소를 확인해 등기를 마친 뒤 후속 절차를 검토했습니다.</p><p>처리사례 자세히 보기 →</p></div><i>↗</i></a></div>
