@@ -64,7 +64,17 @@
   cursor:pointer;
 }
 </style>
-</head>
+<style id="case-layout-repair">
+.story-cases.case-single{display:block!important}
+.story-cases.case-single .cases-head{width:100%!important;margin:0 0 28px!important}
+.story-cases.case-single .cases-head h2{max-width:none!important;margin:0!important;white-space:nowrap!important;font-size:30px!important;line-height:1.3!important}
+.story-cases.case-single .cases-list{width:100%!important}
+.story-cases.case-single .cases-list a{display:grid!important;grid-template-columns:minmax(0,1fr) 18px!important;gap:14px!important;align-items:start!important;width:100%!important;padding:22px 0!important}
+.story-cases.case-single .cases-list a>div{min-width:0!important}
+.story-cases.case-single .cases-list h3{white-space:normal!important}
+.story-cases.case-single .cases-list p{max-width:920px!important;white-space:normal!important;word-break:keep-all!important;overflow-wrap:break-word!important}
+@media(max-width:800px){.story-cases.case-single .cases-head h2{white-space:normal!important;font-size:25px!important;word-break:keep-all!important}}
+</style></head>
 <body>
 <header><div class="wrap nav"><a class="logo" href="/" style="color:inherit;text-decoration:none">등기로<small>현재두 법무사 사무소 · 인천</small></a><nav class="menu"><a href="/">홈</a><a href="/inheritance.html">상속등기</a><a href="/renunciation.html">상속포기·한정승인</a><a href="/corporate.html">법인등기</a><a href="/realestate.html">부동산등기</a><a href="/family.html">가사</a><a href="/posts.html">법률정보</a></nav></div></header>
 <section class="hero"><div class="dg-photo-credit" style="position:absolute;right:10px;bottom:8px;z-index:5;color:rgba(255,255,255,.78);font-size:9px;line-height:1.25;text-shadow:0 1px 3px rgba(0,0,0,.6);white-space:nowrap">사진 출처: 인천경제자유구역청(IFEZ) · 공공누리 제1유형</div><img src="/images/(260623)송도국제도시(02).jpg" alt="송도국제도시 전경" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center"><div class="shade"></div><div class="wrap heroin"><div class="hero-copy-v22"><h1>연락두절 상속인이 있는 <em>상속등기</em></h1><p>상속인 중 한 명과 연락이 되지 않는 경우, 임의로 제외하고 협의분할 상속등기를 진행할 수는 없습니다.</p></div><div class="hero-ai inheritance-finder-inline"><div class="hero-ai-label">어떤 상속등기 업무가 궁금하세요?</div><div class="hero-ai-box"><span class="hero-ai-icon">⌕</span><div class="inheritance-combo"><input id="inheritance-query" class="inheritance-query" type="search" placeholder="검색하거나 화살표를 눌러 선택하세요" autocomplete="off" aria-controls="inheritance-results" aria-expanded="false"><span id="inheritance-toggle" class="inheritance-toggle" role="button" tabindex="0" aria-label="선택항 펼치기">▼</span><ul id="inheritance-results" class="inheritance-results"></ul></div><button id="inheritance-search-button" type="button">찾아보기</button></div><div class="inheritance-search-status" aria-live="polite"></div></div></div><a class="hero-scroll" href="#dg-intro" aria-label="아래 내용 보기"><span class="hero-scroll-mouse"></span><span>SCROLL</span></a></section>
