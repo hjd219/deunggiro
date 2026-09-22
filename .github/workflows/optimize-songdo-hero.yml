@@ -31,6 +31,12 @@ jobs:
           im2.thumbnail((2560,2560), Image.Resampling.LANCZOS)
           im2.save(dst2,'WEBP',quality=86,method=6)
           print(im2.size)
+          src3='images/(260406)송도국제도시(0262).jpg'
+          dst3='images/songdo-cherry-hero.webp'
+          im3=Image.open(src3)
+          im3.thumbnail((2560,2560), Image.Resampling.LANCZOS)
+          im3.save(dst3,'WEBP',quality=88,method=6)
+          print(im3.size)
           PY
       - name: Commit optimized image
         run: |
@@ -42,6 +48,24 @@ jobs:
           s=p.read_text(encoding='utf-8')
           s=s.replace('/images/(230727)청라국제도시(0370)-원본.jpg','/images/cheongna-realestate-hero.webp')
           p.write_text(s,encoding='utf-8')
+          pages = [
+              'inheritance.html','corporate.html','family.html',
+              'inheritance-division.html','inheritance-minor-heir.html',
+              'inheritance-missing-heir.html','inheritance-overseas-heir.html',
+              'inheritance-substitute-succession.html'
+          ]
+          for name in pages:
+              q=Path(name)
+              if q.exists():
+                  t=q.read_text(encoding='utf-8')
+                  t=t.replace('/images/(260623)송도국제도시(02).jpg','/images/songdo-hero.webp')
+                  q.write_text(t,encoding='utf-8')
+          for name in ['renunciation.html','renunciation-after.html','limited-acceptance-liquidation.html']:
+              q=Path(name)
+              if q.exists():
+                  t=q.read_text(encoding='utf-8')
+                  t=t.replace('/images/(260406)송도국제도시(0262).jpg','/images/songdo-cherry-hero.webp')
+                  q.write_text(t,encoding='utf-8')
           PY
-          git add images/songdo-hero.webp images/cheongna-realestate-hero.webp realestate.html
+          git add images/songdo-hero.webp images/songdo-cherry-hero.webp images/cheongna-realestate-hero.webp realestate.html inheritance.html corporate.html family.html inheritance-division.html inheritance-minor-heir.html inheritance-missing-heir.html inheritance-overseas-heir.html inheritance-substitute-succession.html renunciation.html renunciation-after.html limited-acceptance-liquidation.html
           git diff --cached --quiet || (git commit -m "Add optimized Songdo hero image" && git push)
