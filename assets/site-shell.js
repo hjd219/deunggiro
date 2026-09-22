@@ -28,7 +28,13 @@ document.addEventListener('DOMContentLoaded',()=>{
     document.querySelectorAll('header.dg-shell-header nav a[href="/posts.html"],.dg-shell-mobile-panel a[href="/posts.html"]').forEach(a=>a.remove());
   };
 
-  const coreModules=['/assets/site-header.js?v=20260917-clean2','/assets/site-footer.js?v=20260917-horizontal3'];
+  const isIndividualPost=current.startsWith('/posts/');
+  if(isIndividualPost){
+    document.querySelectorAll('header.header,header.dg-shell-header').forEach(el=>el.remove());
+  }
+  const coreModules=isIndividualPost
+    ? ['/assets/site-footer.js?v=20260917-horizontal3']
+    : ['/assets/site-header.js?v=20260917-clean2','/assets/site-footer.js?v=20260917-horizontal3'];
   Promise.all(coreModules.map(loadScript)).then(()=>{normalizePhoneCtas();normalizeDetailNavigation();}).catch(()=>{normalizePhoneCtas();normalizeDetailNavigation();});
   normalizeDetailNavigation();
 
