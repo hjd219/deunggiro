@@ -64,7 +64,34 @@
   cursor:pointer;
 }
 </style>
-</head>
+<style id="missing-heir-preview-polish">
+/* detail preview polish: layout only, source copy unchanged */
+.hero-copy-v22 h1{white-space:nowrap!important;font-size:clamp(34px,4.1vw,64px)!important;letter-spacing:-.065em!important}
+.story-cover-copy>p{display:block!important;max-width:820px;margin:18px 0 0!important;color:#536871!important;font-size:15px!important;line-height:1.8!important}
+.story-cover .story-index.flow-circled{margin-top:34px!important}
+.story-cover .story-index.flow-circled>div{grid-template-columns:38px minmax(180px,.72fr) minmax(0,1fr)!important}
+.story-cover .story-index.flow-circled small{white-space:normal!important;line-height:1.55!important}
+.story-qa-title>p{max-width:780px;margin:14px 0 30px;color:#60747d;font-size:14px;line-height:1.75}
+.simple-docs-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:0 38px!important}
+.simple-docs-grid article{padding:20px 0 22px!important;border-bottom:1px solid #e2ebef!important}
+.simple-docs-grid article:nth-child(odd){padding-right:12px!important}.simple-docs-grid article:nth-child(even){padding-left:12px!important}
+.simple-docs ul{margin-top:12px!important}
+.story-cases{grid-template-columns:.62fr 1.38fr!important}
+.story-cases .cases-head h2{white-space:normal!important;font-size:30px!important;line-height:1.25!important}
+.story-cases .cases-list a{grid-template-columns:16px minmax(0,1fr) 18px!important}
+.story-cases .cases-list h3{color:#239fd2!important;font-size:12px!important}
+.story-cases .cases-list p:first-of-type{color:#536871!important;font-size:14px!important;line-height:1.75!important}
+.story-cases .cases-list p:last-of-type{margin-top:12px!important;color:#247ea9!important;font-size:13px!important;font-weight:800!important}
+@media(max-width:800px){
+ .hero-copy-v22 h1{font-size:clamp(25px,7.1vw,34px)!important;letter-spacing:-.075em!important}
+ .story-cover .story-index.flow-circled>div{grid-template-columns:34px minmax(112px,.7fr) minmax(0,1fr)!important;gap:10px!important}
+ .story-cover .story-index.flow-circled small{font-size:11px!important}
+ .simple-docs-grid{grid-template-columns:1fr!important;gap:0!important}
+ .simple-docs-grid article,.simple-docs-grid article:nth-child(odd),.simple-docs-grid article:nth-child(even){padding:18px 0!important}
+ .story-cases{display:block!important}
+ .story-cases .cases-head{margin-bottom:24px!important}
+}
+</style></head>
 <body>
 <header><div class="wrap nav"><a class="logo" href="/" style="color:inherit;text-decoration:none">등기로<small>현재두 법무사 사무소 · 인천</small></a><nav class="menu"><a href="/">홈</a><a href="/inheritance.html">상속등기</a><a href="/renunciation.html">상속포기·한정승인</a><a href="/corporate.html">법인등기</a><a href="/realestate.html">부동산등기</a><a href="/family.html">가사</a><a href="/posts.html">법률정보</a></nav></div></header>
 <section class="hero"><div class="dg-photo-credit" style="position:absolute;right:10px;bottom:8px;z-index:5;color:rgba(255,255,255,.78);font-size:9px;line-height:1.25;text-shadow:0 1px 3px rgba(0,0,0,.6);white-space:nowrap">사진 출처: 인천경제자유구역청(IFEZ) · 공공누리 제1유형</div><img src="/images/(260623)송도국제도시(02).jpg" alt="송도국제도시 전경" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center"><div class="shade"></div><div class="wrap heroin"><div class="hero-copy-v22"><h1>연락두절 상속인이 있는 <em>상속등기</em></h1><p>상속인 중 한 명과 연락이 되지 않는 경우, 임의로 제외하고 협의분할 상속등기를 진행할 수는 없습니다.</p></div><div class="hero-ai inheritance-finder-inline"><div class="hero-ai-label">어떤 상속등기 업무가 궁금하세요?</div><div class="hero-ai-box"><span class="hero-ai-icon">⌕</span><div class="inheritance-combo"><input id="inheritance-query" class="inheritance-query" type="search" placeholder="검색하거나 화살표를 눌러 선택하세요" autocomplete="off" aria-controls="inheritance-results" aria-expanded="false"><span id="inheritance-toggle" class="inheritance-toggle" role="button" tabindex="0" aria-label="선택항 펼치기">▼</span><ul id="inheritance-results" class="inheritance-results"></ul></div><button id="inheritance-search-button" type="button">찾아보기</button></div><div class="inheritance-search-status" aria-live="polite"></div></div></div><a class="hero-scroll" href="#dg-intro" aria-label="아래 내용 보기"><span class="hero-scroll-mouse"></span><span>SCROLL</span></a></section>
