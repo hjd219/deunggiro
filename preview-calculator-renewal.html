@@ -39,7 +39,7 @@ function printEstimate(){
  try{
   sessionStorage.setItem('deunggiroEstimatePreview',JSON.stringify({version:2,type:'acquisition-v2',title:'등기로 '+modeName+' 예상 견적서',html}));
   sessionStorage.setItem('deunggiroEstimateSource',location.pathname+location.search);
-  location.href='/estimate-preview.html?v=20260922-v2';
+  location.href='/estimate-preview-v2.html?v=20260922-1';
  }catch(e){window.print()}
 }
 property();syncLabels();calc();
