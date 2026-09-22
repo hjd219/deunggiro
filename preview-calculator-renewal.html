@@ -17,30 +17,28 @@ function syncLabels(){document.querySelectorAll('.priceLabel').forEach(x=>x.text
 function calc(){updateDocuments();let value=0,bondBuy=0,count=0,acq=0,edu=0,rural=0,allHouse=true;document.querySelectorAll('.property').forEach(d=>{const k=d.querySelector('.kind').value,p=num(d.querySelector('.price').value),s=num(d.querySelector('.bondStd').value),house=k==='condo'||k==='single',[a,e,r]=taxes(p,k);value+=p;acq+=a;edu+=e;rural+=r;allHouse=allHouse&&house;count+=(k==='single'||k==='general')?2:1;bondBuy+=Math.round((s*bondRate(s,house))/10000)*10000});const discount=bondBuy*(DAILY_BOND_RATE/100),registry=count*15000,stampTax=stamp(value,allHouse),travel=80000,cert=count*20000,publicTotal=acq+edu+rural+discount+registry+stampTax+travel+cert;let base=fee(value);if(mode==='inherit'){const surcharge=(Number($('heirs').value)>=5||$('foreign').value==='yes')?1:.5;base*=1+surcharge}const agency=90000,vat=(base+agency)*.1,legal=base+agency+vat;$('acq').textContent=won(acq);$('edu').textContent=won(edu);$('rural').textContent=won(rural);$('bond').textContent=won(bondBuy);$('discountCost').textContent=won(discount);$('registry').textContent=won(registry);$('travelOut').textContent=won(travel);$('certOut').textContent=won(cert);$('stamp').textContent=won(stampTax);$('publicTotal').textContent=won(publicTotal);$('basic').textContent=won(base);$('vat').textContent=won(vat);$('legalTotal').textContent=won(legal);$('grand').textContent=won(publicTotal+legal);$('mobileGrand').textContent=won(publicTotal+legal)}
 function printEstimate(){
  window.DGCounter?.countOnce('pdf');
- const text=id=>$(id)?.textContent||'0원';
- const visible=id=>!$(id)?.classList.contains('hidden');
- const rows=[
-  ['취득세',text('acq')],['지방교육세',text('edu')],['농어촌특별세',text('rural')],
-  ['국민주택채권 매입액',text('bond')],['채권 할인금액',text('discountCost')],
-  ['등기신청수수료',text('registry')],['교통비',text('travelOut')],['제증명 비용',text('certOut')]
- ];
- if(visible('stampRow'))rows.push(['매매계약서 인지세',text('stamp')]);
+ const text=id=>$(id)?.textContent||'0원', esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
  const modeName={inherit:'상속등기',gift:'증여등기',sale:'매매등기',divorce:'이혼 재산분할등기'}[mode]||'부동산등기';
- const rowHtml=rows.map(r=>'<div class="row"><span>'+r[0]+'</span><b>'+r[1]+'</b></div>').join('');
- const docs=$('documentList')?.innerHTML||'';
- const date=new Date().toLocaleDateString('ko-KR');
- const html='<section class="estimate-v2">'+
-  '<header class="estimate-head"><div><b>등기로</b><span>'+modeName+' 예상 견적서</span></div><small>견적일 '+date+'</small></header>'+
-  '<section class="estimate-hero"><span>예상 합계금액</span><strong>'+text('grand')+'</strong><small>입력 조건을 기준으로 계산한 예상금액입니다.</small></section>'+
-  '<div class="estimate-cols"><section class="estimate-col public-col"><h3>세금·공과금</h3><div class="estimate-rate"><span>채권 할인율</span><b>'+text('dailyBondRate')+'</b><small>'+( $('dailyBondDate')?.textContent||'' )+'</small></div>'+rowHtml+'<div class="subtotal"><span>공과금 합계</span><strong>'+text('publicTotal')+'</strong></div></section>'+
-  '<section class="estimate-col legal-col"><h3>법무사 보수</h3><div class="row"><span>'+($('basicLabel')?.textContent||'소유권이전 보수')+'</span><b>'+text('basic')+'</b></div><div class="row"><span>취득세 신고·채권 매입 대행</span><b>'+text('agency')+'</b></div><div class="row"><span>부가가치세 10%</span><b>'+text('vat')+'</b></div><div class="subtotal"><span>법무사 보수 합계</span><strong>'+text('legalTotal')+'</strong></div></section></div>'+
-  '<section class="estimate-docs"><h3>준비서류</h3>'+docs+'</section>'+
-  '<footer class="estimate-office"><b>현재두 법무사 사무소</b><span>인천 미추홀구 경원대로 873, 201호(주안동, 인성빌딩) · 인천가정법원 옆</span><span>032-425-1500 · hjd21@naver.com · www.deunggiro.kr</span></footer></section>';
- try{
-  sessionStorage.setItem('deunggiroEstimatePreview',JSON.stringify({version:2,type:'acquisition-v2',title:'등기로 '+modeName+' 예상 견적서',html}));
-  sessionStorage.setItem('deunggiroEstimateSource',location.pathname+location.search);
-  location.href='/estimate-preview-v2.html?v=20260922-1';
- }catch(e){window.print()}
+ const propertyRows=[...document.querySelectorAll('#properties .property')].map((p,i)=>{
+  const kind=p.querySelector('.kind')?.selectedOptions[0]?.textContent||'부동산';
+  const price=p.querySelector('.price')?.value||'0';
+  const bond=p.querySelector('.bondStd')?.value||'0';
+  return '<tr><td>'+(i+1)+'</td><td>'+esc(kind)+'</td><td>'+esc(price)+'원</td><td>'+esc(bond)+'원</td></tr>'
+ }).join('');
+ const costRows=[['취득세',text('acq')],['지방교육세',text('edu')],['농어촌특별세',text('rural')],['국민주택채권 매입액',text('bond')],['채권 할인금액',text('discountCost')],['등기신청수수료',text('registry')],['교통비',text('travelOut')],['제증명 비용',text('certOut')]];
+ if(!$('stampRow')?.classList.contains('hidden'))costRows.push(['매매계약서 인지세',text('stamp')]);
+ const legalRows=[[ $('basicLabel')?.textContent||'소유권이전 보수',text('basic')],['취득세 신고·채권 매입 대행',text('agency')],['부가가치세 10%',text('vat')]];
+ const docs=[...document.querySelectorAll('#documentList .doc-line')].map(x=>'<div class="doc-item">'+x.innerHTML+'</div>').join('');
+ const html='<article class="quote">'+
+ '<header class="quote-head"><div class="brand">등기로</div><div class="quote-title"><b>'+modeName+' 예상 견적서</b><span>현재두 법무사 사무소</span></div><div class="quote-date">'+new Date().toLocaleDateString('ko-KR')+'</div></header>'+
+ '<section class="grand"><span>예상 합계금액</span><strong>'+text('grand')+'</strong><small>세금·공과금과 법무사 보수를 합산한 예상금액입니다.</small></section>'+
+ '<section class="block"><h2>계산 기준</h2><table class="property-table"><thead><tr><th>구분</th><th>부동산</th><th>기준금액</th><th>채권용 시가표준액</th></tr></thead><tbody>'+propertyRows+'</tbody></table></section>'+
+ '<div class="cost-grid"><section class="block"><h2>세금·공과금</h2><div class="rate-note">채권 할인율 <b>'+text('dailyBondRate')+'</b> <span>'+esc($('dailyBondDate')?.textContent||'')+'</span></div>'+costRows.map(r=>'<div class="cost-row"><span>'+r[0]+'</span><b>'+r[1]+'</b></div>').join('')+'<div class="sum-row"><span>공과금 합계</span><strong>'+text('publicTotal')+'</strong></div></section>'+
+ '<section class="block"><h2>법무사 보수</h2>'+legalRows.map(r=>'<div class="cost-row"><span>'+esc(r[0])+'</span><b>'+r[1]+'</b></div>').join('')+'<div class="sum-row"><span>법무사 보수 합계</span><strong>'+text('legalTotal')+'</strong></div></section></div>'+
+ '<section class="block docs"><h2>준비서류</h2>'+docs+'</section>'+
+ '<section class="notice"><b>안내</b><span>본 견적은 입력한 조건을 기준으로 산출한 예상금액이며 실제 등기 진행 과정에서 과세표준, 채권 할인율, 부동산 수 및 사건 내용에 따라 달라질 수 있습니다.</span></section>'+
+ '<footer class="quote-footer"><div><b>현재두 법무사 사무소</b><span>인천 미추홀구 경원대로 873, 201호(주안동, 인성빌딩)</span></div><div><span>032-425-1500</span><span>hjd21@naver.com</span><span>www.deunggiro.kr</span></div></footer></article>';
+ try{sessionStorage.setItem('deunggiroEstimatePreview',JSON.stringify({version:3,type:'acquisition-v3',title:'등기로 '+modeName+' 예상 견적서',html}));sessionStorage.setItem('deunggiroEstimateSource',location.pathname+location.search);location.href='/estimate-preview-v2.html?v=20260922-3'}catch(e){window.print()}
 }
 property();syncLabels();calc();
 $('add').addEventListener('click',()=>property());
