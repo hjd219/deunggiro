@@ -65,7 +65,10 @@
     const key=u.pathname+u.search;if(warmed.has(key))return;warmed.add(key);
     const l=document.createElement('link');l.rel='prefetch';l.as='document';l.href=key;document.head.appendChild(l);
   };
-  document.addEventListener('pointerover',e=>warm(e.target.closest&&e.target.closest('a[href]')),{passive:true});
-  document.addEventListener('touchstart',e=>warm(e.target.closest&&e.target.closest('a[href]')),{passive:true});
+  /* Desktop only: mobile touch prefetch can compete with navigation/rendering on iOS. */
+  const canHover=window.matchMedia&&window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+  if(canHover){
+    document.addEventListener('pointerover',e=>warm(e.target.closest&&e.target.closest('a[href]')),{passive:true});
+  }
 
 })();
