@@ -23,6 +23,8 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
   async function buildArticleNavigation(){
     const article=document.querySelector('.article');if(!article)return;
+    /* Reserve the lower dynamic area so async navigation does not visibly push the article on mobile. */
+    article.classList.add('dg-dynamic-building');
     removeLegacyActions(article);
     const existing=[...article.querySelectorAll('.article-prev-next')];
     existing.slice(1).forEach(el=>el.remove());
@@ -43,7 +45,8 @@ document.addEventListener('DOMContentLoaded',()=>{
       const related=article.querySelector('.related');
       if(related)related.parentNode.insertBefore(nav,related);else article.appendChild(nav);
       removeLegacyActions(article);
-    }catch(e){delete article.dataset.navBuilding;console.warn('이전·다음 글 네비게이션을 불러오지 못했습니다.',e)}
+      article.classList.remove('dg-dynamic-building');
+    }catch(e){article.classList.remove('dg-dynamic-building');delete article.dataset.navBuilding;console.warn('이전·다음 글 네비게이션을 불러오지 못했습니다.',e)}
   }
   buildArticleNavigation();
 });
