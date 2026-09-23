@@ -55,4 +55,16 @@
   close.addEventListener('click',()=>setOpen(false));
   panel.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setOpen(false)));
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel.classList.contains('open'))setOpen(false)});
+
+  /* Same-origin page warmup: fetch only when the user shows navigation intent. */
+  const warmed=new Set();
+  const warm=a=>{
+    if(!a||!a.href||a.target==='_blank'||a.hasAttribute('download'))return;
+    let u;try{u=new URL(a.href,location.href)}catch(_){return}
+    if(u.origin!==location.origin||u.pathname===location.pathname||!u.pathname.endsWith('.html')&&u.pathname!=='/')return;
+    const key=u.pathname+u.search;if(warmed.has(key))return;warmed.add(key);
+    const l=document.createElement('link');l.rel='prefetch';l.as='document';l.href=key;document.head.appendChild(l);
+  };
+  document.addEventListener('pointerover',e=>warm(e.target.closest&&e.target.closest('a[href]')),{passive:true});
+  document.addEventListener('touchstart',e=>warm(e.target.closest&&e.target.closest('a[href]')),{passive:true});
 })();
