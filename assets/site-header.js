@@ -7,7 +7,7 @@
   if(isCalculator){
     const style=document.createElement('style');
     style.id='dg-calculator-type-text-v2';
-    style.textContent='.opts .opt,.types .type,.type-tabs button,.calc-tabs button{font-size:16px!important;line-height:1.25!important;font-weight:850!important}@media(max-width:800px){.opts .opt,.types .type,.type-tabs button,.calc-tabs button{font-size:16px!important}}';
+    style.textContent='.opts .opt,.types .type,.type-tabs button,.calc-tabs button{font-size:16px!important;line-height:1.25!important;font-weight:850!important}.dg-shell-header .dg-shell-inner{width:min(1180px,calc(100% - 48px))!important;max-width:1180px!important;margin:0 auto!important;padding-left:0!important;padding-right:0!important;box-sizing:border-box!important}@media(max-width:800px){.opts .opt,.types .type,.type-tabs button,.calc-tabs button{font-size:16px!important}}@media(max-width:700px){.dg-shell-header .dg-shell-inner{width:calc(100% - 32px)!important;max-width:none!important;padding-left:0!important;padding-right:0!important}}';
     document.head.appendChild(style);
 
     const oldHeader=document.querySelector('body>header');
