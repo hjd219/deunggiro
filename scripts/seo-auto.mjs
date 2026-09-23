@@ -60,6 +60,17 @@ function sanitizeSeoArtifacts(html){
    seo-auto가 본문/최신글 영역을 생성·수정하지 않는다.
    허브 구조는 수동 관리하며, 이 자동화는 개별 posts SEO만 처리한다. */
 
+function tokens(p){return new Set(`${p.title} ${p.keywords} ${p.summary}`.toLowerCase().replace(/[^0-9a-z가-힣]+/g,' ').split(/\s+/).filter(x=>x.length>=2))}
+function relatedPosts(p){const a=tokens(p);const scored=posts.filter(x=>x.slug!==p.slug).map(x=>{const b=tokens(x);let score=x.category===p.category?20:0;for(const t of a)if(b.has(t))score++;return{post:x,score}}).sort((x,y)=>y.score-x.score||String(y.post.date).localeCompare(String(x.post.date)));const selected=scored.filter(x=>x.score>0).slice(0,4).map(x=>x.post);if(selected.length<4)for(const p2 of sortPosts(posts.filter(x=>x.slug!==p.slug))){if(!selected.some(x=>x.slug===p2.slug))selected.push(p2);if(selected.length===4)break}return selected.slice(0,4)}
+function gitModifiedDate(relPath,fallback){try{const out=execFileSync('git',['log','-1','--format=%cs','--',relPath],{cwd:root,encoding:'utf8'}).trim();return /^\d{4}-\d{2}-\d{2}$/.test(out)?out:fallback}catch{return fallback}}
+function plainTextFromArticle(html){const m=html.match(/<div class="article-body">([\s\S]*?)<\/div>\s*<!-- SEO_RELATED_POSTS_START -->/i)||html.match(/<div class="article-body">([\s\S]*?)<\/div>\s*<div class="related">/i);if(!m)return '';return m[1].replace(/<script[\s\S]*?<\/script>/gi,' ').replace(/<style[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&nbsp;/gi,' ').replace(/&amp;/gi,'&').replace(/\s+/g,' ').trim()}
+function optimizedDescription(p,html){const summary=clean(p.summary);if(summary.length>=50&&summary.length<=165)return summary;const source=plainTextFromArticle(html)||summary||p.title;const out=source.slice(0,160).trim();return out.length<30?`${p.title} 관련 절차와 핵심 내용을 정리한 등기로 법률정보입니다.`.slice(0,160):out}
+function replaceMeta(html,name,value){const safe=esc(value),re=new RegExp(`<meta\\s+name=["']${name}["']\\s+content=["'][^"']*["']\\s*\\/?>(?![^<]*<meta)`,'i');if(re.test(html))return html.replace(re,`<meta name="${name}" content="${safe}">`);return html.replace('</head>',`<meta name="${name}" content="${safe}">\n</head>`)}
+function replaceOg(html,prop,value){const safe=esc(value),re=new RegExp(`<meta\\s+property=["']${prop}["']\\s+content=["'][^"']*["']\\s*\\/?>(?![^<]*<meta)`,'i');if(re.test(html))return html.replace(re,`<meta property="${prop}" content="${safe}">`);return html.replace('</head>',`<meta property="${prop}" content="${safe}">\n</head>`)}
+function enhanceImages(html,p){return html.replace(/<img\b([^>]*?)>/gi,(full,attrs)=>{if(/class=["'][^"']*social/i.test(attrs))return full;let a=attrs;if(!/\balt\s*=/i.test(a))a+=` alt="${esc(p.title)} 관련 이미지"`;else a=a.replace(/\balt\s*=\s*["']\s*["']/i,`alt="${esc(p.title)} 관련 이미지"`);if(!/\bloading\s*=/i.test(a))a+=' loading="lazy"';if(!/\bdecoding\s*=/i.test(a))a+=' decoding="async"';return `<img${a}>`})}
+function updateSitemapLastmod(p,modified){const sitemap=path.join(root,'sitemap.xml');if(!fs.existsSync(sitemap))return;let xml=fs.readFileSync(sitemap,'utf8'),url=`${BASE}/posts/${p.slug}.html`,escaped=url.replace(/[.*+?^${}()|[\]\\]/g,'\\const audit=[];'),re=new RegExp(`(<loc>${escaped}<\\/loc>\\s*<lastmod>)[^<]+(<\\/lastmod>)`);if(re.test(xml)){xml=xml.replace(re,`$1${modified}$2`);fs.writeFileSync(sitemap,xml)}}
+function writeIfChanged(file,next){const current=fs.readFileSync(file,'utf8');if(current!==next)fs.writeFileSync(file,next)}
+
 const audit=[];
 for(const p of posts){
   const relFile=`posts/${p.slug}.html`,file=path.join(root,relFile);
