@@ -9,10 +9,11 @@
    vh=Math.round(window.visualViewport?window.visualViewport.height:innerHeight);
    const wh=win.clientHeight;
    const pageTop=page.offsetTop,pageH=page.offsetHeight;
-   const gap=matchMedia('(max-width:800px)').matches?20:32;
+   const isMobile=matchMedia('(max-width:800px)').matches;
+   const gap=isMobile?20:Math.max(16,Math.min(64,wh-pageH-16));
    finalY=wh-gap-(pageTop+pageH);
    stopAt=Math.max(0,wh-finalY);
-   releaseAt=stopAt+Math.max(matchMedia('(max-width:800px)').matches?120:260,vh*(matchMedia('(max-width:800px)').matches?.12:.35));
+   releaseAt=stopAt+Math.max(isMobile?120:260,vh*(isMobile?.12:.35));
    stage.style.height=(releaseAt+vh)+'px';
    start=stage.offsetTop;
    update();
