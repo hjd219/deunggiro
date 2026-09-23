@@ -6,5 +6,3 @@
 /* Keep mobile poster and video on the exact same first-paint geometry. */
 @media(max-width:800px){html.dg-mobile-firstpaint .hero video{object-fit:cover;object-position:center center}}
 
-/* Strict hero source split: never paint desktop poster/video on mobile. */
-.hero-video-mobile{display:none!important}@media(max-width:800px){.hero-video-pc{display:none!important}.hero-video-mobile{display:block!important}}
