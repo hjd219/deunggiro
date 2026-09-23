@@ -21,7 +21,7 @@
   /* Keep the completed calculator still briefly, then release the whole fixed scene for footer. */
   const hold=mobile?Math.max(120,vh*.12):Math.max(260,vh*.35);
   releaseAt=stopAt+hold;
-  stage.style.height=releaseAt+'px';
+  stage.style.height=(releaseAt+vh)+'px';
   start=stage.offsetTop;
   update();
  }
