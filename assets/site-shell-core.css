@@ -5,7 +5,7 @@
 .dg-shell-header{position:sticky!important;top:0!important;z-index:1200!important;background:rgba(255,255,255,.98)!important;border-bottom:3px solid var(--dg-primary)!important;box-shadow:0 2px 8px rgba(54,169,225,.08)!important;backdrop-filter:blur(10px)!important}
 .dg-shell-header .dg-shell-inner{width:100%;max-width:var(--dg-max);margin:auto;padding:0 22px;min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:22px}
 /* CALCULATOR_HERO_HEADER_V1 - 계산기 Hero가 공통 헤더 뒤까지 이어지는 모드 */
-body.calculator-hero-page .dg-shell-header{position:absolute!important;top:0!important;left:0!important;right:0!important;background:transparent!important;border-bottom:0!important;box-shadow:none!important;backdrop-filter:none!important}
+body.calculator-hero-page .dg-shell-header{position:absolute!important;top:0!important;left:0!important;right:0!important;background:transparent!important;border-bottom:3px solid var(--dg-primary)!important;box-shadow:none!important;backdrop-filter:none!important}
 body.calculator-hero-page .dg-shell-header .dg-shell-logo,
 body.calculator-hero-page .dg-shell-header .dg-shell-logo small,
 body.calculator-hero-page .dg-shell-header .dg-shell-nav a{color:#fff!important}
