@@ -48,9 +48,8 @@
     const match=path.match(/\/posts\/([^/]+)\.html$/i);if(!match)return;
     let category='법률정보';
     try{
-      const r=await fetch('/data/posts.json?v='+Date.now(),{cache:'no-store'});
-      if(r.ok){
-        const posts=await r.json();
+      const posts=await (window.__dgPostsPromise||(window.__dgPostsPromise=fetch('/data/posts.json').then(r=>{if(!r.ok)throw new Error('posts.json '+r.status);return r.json()})));
+      if(Array.isArray(posts)){
         const slug=decodeURIComponent(match[1]);
         const me=posts.find(p=>String(p.slug||'').replace(/\.html$/i,'')===slug);
         if(me)category=normalize(me.category);
