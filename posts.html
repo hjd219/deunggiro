@@ -565,7 +565,7 @@ body.dg-posts-ready>.legal-page-bg{padding-top:150px!important}
 let all=[],active='전체',mode='core',page=1;const pageSize=10;
 function esc(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 function isCase(p){const t=(p.title||'')+' '+(p.summary||'');return /처리사례|실제사례|실제 사례|허가 사례|선임 사례|등기 사례|신청 사례|경정 사례/.test(t)}
-const CORE_HUBS=new Set(['inheritance-registration-acquisition-tax-incheon-procedure-doc-v9aban','inheritance-renunciation-incheon-procedure-documents-1ifftk','corporate-incheon-documents-1-158nty','sale-real-estate-guide-bvcdri','name-change-incheon-procedure-guide-documents-4lfyb2']);
+const CORE_HUBS=new Set(["inheritance-registration-acquisition-tax-incheon-procedure-doc-v9aban","naver-224283775649","naver-224277482133","inheritance-renunciation-incheon-procedure-documents-1ifftk","naver-224239766795","naver-224296496196","naver-224239702465","corporate-incheon-documents-1-158nty","naver-224238290942","naver-224230217554","naver-224235350490","sale-real-estate-guide-bvcdri","naver-224251796514","naver-222799458489","name-change-incheon-procedure-guide-documents-4lfyb2","naver-224254351514","naver-224252957670"]);
 function isCore(p){return CORE_HUBS.has(p.slug)}
 function inMode(p){return mode==='case'?isCase(p):mode==='core'?isCore(p):(!isCase(p)&&!isCore(p))}
 function modeDesc(){return mode==='core'?'업무별로 먼저 확인하면 좋은 핵심 안내를 모았습니다.':mode==='case'?'실제 진행한 처리사례를 업무 종류별로 확인하세요.':'세부 쟁점과 실무 법률정보를 확인하세요.'}
