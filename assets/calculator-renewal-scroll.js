@@ -12,7 +12,7 @@
   const wh=win.clientHeight;
   const pageBottom=page.offsetTop+page.offsetHeight;
   const mobile=matchMedia('(max-width:800px)').matches;
-  const gap=mobile?20:32;
+  const gap=mobile?20:Math.max(16,Math.min(64,wh-page.offsetHeight-16));
 
   /* One rule only: move until the real calculator bottom reaches the fixed gap. */
   finalY=wh-gap-pageBottom;
