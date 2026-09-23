@@ -45,7 +45,6 @@
     style.textContent = `
       .dg-mobile-actionbar{display:none}
       @media (max-width:900px){
-        body{padding-bottom:calc(68px + env(safe-area-inset-bottom))!important}
         .dg-mobile-actionbar{
           position:fixed!important;
           left:0!important;
