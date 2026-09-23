@@ -15,4 +15,19 @@ document.head.appendChild(style);
 const phoneIcon=`<svg class="dg-shell-phone-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7.2 3.5 10 8.2 8.3 10c1.2 2.5 3.2 4.5 5.7 5.7l1.8-1.7 4.7 2.8c.4.2.6.7.5 1.1-.3 1.5-1.6 2.6-3.1 2.6C10 20.5 3.5 14 3.5 6.1c0-1.5 1.1-2.8 2.6-3.1.4-.1.9.1 1.1.5Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 const footer=`<footer class="dg-shell-footer"><div class="dg-shell-footer-main"><div class="dg-shell-office-block"><div class="dg-shell-brandline"><div class="dg-shell-footer-brand">등기로</div><span class="dg-shell-brand-sep"></span><div class="dg-shell-footer-office">현재두 법무사 사무소</div></div><div class="dg-shell-address"><span>인천 미추홀구 경원대로 873, 201호(주안동, 인성빌딩) · 인천가정법원 옆</span></div><div class="dg-shell-contactline"><a class="dg-shell-phone-link" href="tel:0324251500">${phoneIcon}<span>032-425-1500</span></a><span class="dg-shell-sep">|</span><a href="mailto:hjd21@naver.com">✉ hjd21@naver.com</a><span class="dg-shell-sep">|</span><a class="dg-shell-social" href="https://blog.naver.com/hjd21" target="_blank" rel="noopener noreferrer"><span class="dg-shell-social-icon">N</span>네이버 블로그</a><span class="dg-shell-sep">|</span><a class="dg-shell-social" href="https://youtube.com/channel/UCHs3WtBFAiV8bOsQUB-n-Ew?si=tTUgTZWRKg98bvYa" target="_blank" rel="noopener noreferrer"><span class="dg-shell-social-icon">▶</span>유튜브</a></div></div><div class="dg-shell-footer-divider"></div><div class="dg-shell-route"><div class="dg-shell-route-titleline"><div class="dg-shell-route-title">찾아오시는 길</div><div class="dg-shell-route-sub">인천가정법원 옆 · 인성빌딩 2층</div></div><div class="dg-shell-route-list"><div class="dg-shell-route-item"><span>🚇</span><span><b>1호선</b>주안역 1번 출구 도보 약 5분</span></div><div class="dg-shell-route-item"><span>🚇</span><span><b>인천지하철 2호선</b>석바위시장역 5번 출구 도보 약 5분</span></div><div class="dg-shell-route-item"><span>🚙</span><span><b>도보시간</b>주안역 약 19분 · 석바위시장역 약 12분</span></div></div></div><div class="dg-shell-route-actions"><a class="dg-shell-phone-action" href="tel:0324251500">${phoneIcon}<span>방문문의 032-425-1500</span></a><a href="https://map.naver.com/p/search/%EC%9D%B8%EC%B2%9C%20%EB%AF%B8%EC%B6%94%ED%99%80%EA%B5%AC%20%EA%B2%BD%EC%9B%90%EB%8C%80%EB%A1%9C%20873" target="_blank" rel="noopener noreferrer">⌖ 네이버 지도에서 보기 →</a></div></div><div class="dg-shell-legal"><span>Copyright © 2026 현재두 법무사 사무소</span><nav aria-label="법적 안내"><a href="/privacy.html">개인정보처리방침</a><span>|</span><a href="/disclaimer.html">면책고지</a></nav></div></footer>`;
 document.querySelectorAll('section.contact,section.cta,section.dg-shell-contact,.dg-shell-contact').forEach(el=>el.remove());document.querySelectorAll('footer').forEach(el=>el.remove());document.body.insertAdjacentHTML('beforeend',footer);
+
+/* iOS/WebKit: stop only the bottom rubber-band once the real document end is reached.
+   This does not add height/padding, move the footer, or alter normal scrolling. */
+let dgFooterTouchY=0;
+document.addEventListener('touchstart',e=>{
+  if(e.touches&&e.touches.length===1)dgFooterTouchY=e.touches[0].clientY;
+},{passive:true});
+document.addEventListener('touchmove',e=>{
+  if(!e.touches||e.touches.length!==1)return;
+  const y=e.touches[0].clientY;
+  const movingPastBottom=y<dgFooterTouchY;
+  const maxScroll=Math.max(0,document.documentElement.scrollHeight-window.innerHeight);
+  if(movingPastBottom&&window.scrollY>=maxScroll-1)e.preventDefault();
+  dgFooterTouchY=y;
+},{passive:false});
 })();
