@@ -68,14 +68,4 @@
   document.addEventListener('pointerover',e=>warm(e.target.closest&&e.target.closest('a[href]')),{passive:true});
   document.addEventListener('touchstart',e=>warm(e.target.closest&&e.target.closest('a[href]')),{passive:true});
 
-  /* Keep the current painted page visible until the browser commits the next document. */
-  document.addEventListener('click',e=>{
-    if(e.defaultPrevented||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;
-    const a=e.target.closest&&e.target.closest('a[href]');
-    if(!a||a.target==='_blank'||a.hasAttribute('download'))return;
-    let u;try{u=new URL(a.href,location.href)}catch(_){return}
-    if(u.origin!==location.origin||u.pathname===location.pathname||u.protocol!=='https:'&&u.protocol!=='http:')return;
-    document.documentElement.style.background='#071923';
-    document.body.style.background='#071923';
-  },true);
 })();
