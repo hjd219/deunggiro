@@ -32,8 +32,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     const match=location.pathname.match(/\/posts\/([^/]+)\.html$/i);if(!match){delete article.dataset.navBuilding;return;}
     const currentSlug=decodeURIComponent(match[1]);
     try{
-      const r=await fetch('/data/posts.json',{cache:'no-store'});if(!r.ok)throw new Error('posts.json '+r.status);
-      const posts=await r.json();if(!Array.isArray(posts)||!posts.length){delete article.dataset.navBuilding;return;}
+      const posts=await (window.__dgPostsPromise||(window.__dgPostsPromise=fetch('/data/posts.json').then(r=>{if(!r.ok)throw new Error('posts.json '+r.status);return r.json()})));if(!Array.isArray(posts)||!posts.length){delete article.dataset.navBuilding;return;}
       const current=posts.find(p=>String(p.slug||'').replace(/\.html$/i,'')===currentSlug);if(!current){delete article.dataset.navBuilding;return;}
       const category=categoryOf(current.category),same=posts.filter(p=>categoryOf(p.category)===category).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
       const index=same.findIndex(p=>String(p.slug||'').replace(/\.html$/i,'')===currentSlug);if(index<0){delete article.dataset.navBuilding;return;}
