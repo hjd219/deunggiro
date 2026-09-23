@@ -1,6 +1,8 @@
 /* SITE_FOOTER_HORIZONTAL_V6 - 상단 콘텐츠 라인과 좌우 정렬 */
 (function(){
   if(window.__dgFooterReady)return;
+  document.documentElement.style.background='#172d47';
+  document.body.style.background='#172d47';
   window.__dgFooterReady=true;
   const style=document.createElement('style');style.id='dg-footer-horizontal-v6';style.textContent=`
 .dg-shell-footer{background:#172d47!important;color:#eef5fa!important;padding:24px 0 13px!important;box-sizing:border-box!important;width:100%!important;max-width:none!important;overflow:hidden!important}
