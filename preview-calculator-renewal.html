@@ -29,7 +29,7 @@ let countReady=false;function countCalculation(){if(countReady)window.DGCounter?
  const legalRows=[[ $('basicLabel')?.textContent||'소유권이전 보수',text('basic')],['취득세 신고·채권 매입 대행',text('agency')],['부가가치세 10%',text('vat')]];
  const docs=[...document.querySelectorAll('#documentList .doc-line')].map(x=>'<div class="doc-item">'+x.innerHTML+'</div>').join('');
  const html='<article class="quote">'+
- '<header class="quote-head"><div class="brand">등기로</div><div class="quote-title"><b>'+modeName+' 예상 견적서</b><span>현재두 법무사 사무소</span></div><div class="quote-date">'+new Date().toLocaleDateString('ko-KR')+'</div></header>'+
+ '<header class="quote-head"><div class="brand">등기로<small>현재두 법무사 사무소</small></div><div class="quote-title"><b>'+modeName+' 예상 견적서</b></div><div class="quote-date">'+new Date().toLocaleDateString('ko-KR')+'</div></header>'+
  '<section class="grand"><span>예상 합계금액</span><strong>'+text('grand')+'</strong><small>세금·공과금과 법무사 보수를 합산한 예상금액입니다.</small></section>'+
  '<section class="block"><h2>계산 기준</h2><table class="property-table"><thead><tr><th>구분</th><th>부동산</th><th>기준금액</th><th>채권용 시가표준액</th></tr></thead><tbody>'+propertyRows+'</tbody></table></section>'+
  '<div class="cost-grid"><section class="block"><h2>세금·공과금</h2><div class="rate-note">채권 할인율 <b>'+text('dailyBondRate')+'</b> <span>'+esc($('dailyBondDate')?.textContent||'')+'</span></div>'+costRows.map(r=>'<div class="cost-row"><span>'+r[0]+'</span><b>'+r[1]+'</b></div>').join('')+'<div class="sum-row"><span>공과금 합계</span><strong>'+text('publicTotal')+'</strong></div></section>'+
