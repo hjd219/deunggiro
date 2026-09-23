@@ -70,6 +70,8 @@
     box.innerHTML=`<h2>${esc(title)}</h2><p>${esc(desc)}</p><div class="dg-topic-cta-actions"><a class="dg-topic-call" href="tel:0324251500">032-425-1500 전화상담</a><a class="dg-topic-list" href="/posts.html?category=${encodeURIComponent(category)}">같은 분야 글 보기</a></div>`;
 
     const related=article.querySelector('.related');
+    /* Insert once, without entrance animation; avoids a second visible paint/fade. */
+    box.style.transition='none';
     if(related)related.parentNode.insertBefore(box,related);
     else article.appendChild(box);
   }
