@@ -565,7 +565,8 @@ body.dg-posts-ready>.legal-page-bg{padding-top:150px!important}
 let all=[],active='전체',mode='core',page=1;const pageSize=10;
 function esc(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 function isCase(p){const t=(p.title||'')+' '+(p.summary||'');return /처리사례|실제사례|실제 사례|허가 사례|선임 사례|등기 사례|신청 사례|경정 사례/.test(t)}
-function isCore(p){if(isCase(p))return false;const t=(p.title||'')+' '+(p.summary||'');return /총정리|절차|필요서류|신청방법|주의사항|기간|기한|비용|방법/.test(t)}
+const CORE_HUBS=new Set(['inheritance-registration-acquisition-tax-incheon-procedure-doc-v9aban','inheritance-renunciation-incheon-procedure-documents-1ifftk','corporate-incheon-documents-1-158nty','sale-real-estate-guide-bvcdri','name-change-incheon-procedure-guide-documents-4lfyb2']);
+function isCore(p){return CORE_HUBS.has(p.slug)}
 function inMode(p){return mode==='case'?isCase(p):mode==='core'?isCore(p):(!isCase(p)&&!isCore(p))}
 function modeDesc(){return mode==='core'?'업무별로 먼저 확인하면 좋은 핵심 안내를 모았습니다.':mode==='case'?'실제 진행한 처리사례를 업무 종류별로 확인하세요.':'세부 쟁점과 실무 법률정보를 확인하세요.'}
 function shortCat(c){return ({'상속등기':'상속','법인등기':'법인','부동산등기':'부동산'})[c]||c}
