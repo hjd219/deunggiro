@@ -1,13 +1,13 @@
 (()=>{'use strict';
 const body=document.body,stage=document.querySelector('.dg-scroll-stage'),mask=document.querySelector('.dg-scroll-mask'),track=document.querySelector('.dg-scroll-track');
 if(!body.hasAttribute('data-dg-scroll')||!stage||!mask||!track)return;
-let start=0,maskH=0,trackH=0,travel=0,lead=0,raf=0,lastW=innerWidth;
+let start=0,maskH=0,trackH=0,travel=0,raf=0,lastW=innerWidth;
 const mobile=()=>matchMedia('(max-width:800px)').matches;
 const viewport=()=>Math.round(document.documentElement.clientHeight);
 function paint(){
  raf=0;
  const p=Math.max(0,(scrollY||0)-start);
- const moved=Math.min(p,travel+lead);
+ const moved=Math.min(p,travel);
  track.style.transform='translate3d(0,'+Math.round(maskH-moved)+'px,0)';
 }
 function measure(){
@@ -16,9 +16,7 @@ function measure(){
  maskH=mask.clientHeight;
  trackH=track.scrollHeight;
  travel=maskH+trackH;
- /* One transition rule only: footer enters near the end while the last content is still visible. */
- lead=mobile()?Math.round(Math.max(28,Math.min(52,maskH*.055))):Math.round(Math.max(36,Math.min(72,maskH*.06)));
- stage.style.height=(travel+vh-lead)+'px';
+ stage.style.height=(travel+vh)+'px';
  start=stage.offsetTop;
  paint();
 }
