@@ -65,8 +65,17 @@ function relatedPosts(p){const a=tokens(p);const scored=posts.filter(x=>x.slug!=
 function gitModifiedDate(relPath,fallback){try{const out=execFileSync('git',['log','-1','--format=%cs','--',relPath],{cwd:root,encoding:'utf8'}).trim();return /^\d{4}-\d{2}-\d{2}$/.test(out)?out:fallback}catch{return fallback}}
 function plainTextFromArticle(html){const m=html.match(/<div class="article-body">([\s\S]*?)<\/div>\s*<!-- SEO_RELATED_POSTS_START -->/i)||html.match(/<div class="article-body">([\s\S]*?)<\/div>\s*<div class="related">/i);if(!m)return '';return m[1].replace(/<script[\s\S]*?<\/script>/gi,' ').replace(/<style[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&nbsp;/gi,' ').replace(/&amp;/gi,'&').replace(/\s+/g,' ').trim()}
 function optimizedDescription(p,html){const summary=clean(p.summary);if(summary.length>=50&&summary.length<=165)return summary;const source=plainTextFromArticle(html)||summary||p.title;const out=source.slice(0,160).trim();return out.length<30?`${p.title} 관련 절차와 핵심 내용을 정리한 등기로 법률정보입니다.`.slice(0,160):out}
-function replaceMeta(html,name,value){const safe=esc(value),re=new RegExp(`<meta\\s+name=["']${name}["']\\s+content=["'][^"']*["']\\s*\\/?>(?![^<]*<meta)`,'i');if(re.test(html))return html.replace(re,`<meta name="${name}" content="${safe}">`);return html.replace('</head>',`<meta name="${name}" content="${safe}">\n</head>`)}
-function replaceOg(html,prop,value){const safe=esc(value),re=new RegExp(`<meta\\s+property=["']${prop}["']\\s+content=["'][^"']*["']\\s*\\/?>(?![^<]*<meta)`,'i');if(re.test(html))return html.replace(re,`<meta property="${prop}" content="${safe}">`);return html.replace('</head>',`<meta property="${prop}" content="${safe}">\n</head>`)}
+function replaceSingleMeta(html,attr,key,value){
+  const safe=esc(value);
+  const re=new RegExp(`<meta\\\\s+[^>]*\\\\b${attr}=["']${key}["'][^>]*>`,'gi');
+  const tag=`<meta ${attr}="${key}" content="${safe}">`;
+  let replaced=false;
+  html=html.replace(re,()=>{if(replaced)return '';replaced=true;return tag});
+  if(replaced)return html;
+  return html.replace(/<\\/head>/i,`${tag}\\n</head>`);
+}
+function replaceMeta(html,name,value){return replaceSingleMeta(html,'name',name,value)}
+function replaceOg(html,prop,value){return replaceSingleMeta(html,'property',prop,value)}
 function enhanceImages(html,p){return html.replace(/<img\b([^>]*?)>/gi,(full,attrs)=>{if(/class=["'][^"']*social/i.test(attrs))return full;let a=attrs;if(!/\balt\s*=/i.test(a))a+=` alt="${esc(p.title)} 관련 이미지"`;else a=a.replace(/\balt\s*=\s*["']\s*["']/i,`alt="${esc(p.title)} 관련 이미지"`);if(!/\bloading\s*=/i.test(a))a+=' loading="lazy"';if(!/\bdecoding\s*=/i.test(a))a+=' decoding="async"';return `<img${a}>`})}
 function updateSitemapLastmod(p,modified){const sitemap=path.join(root,'sitemap.xml');if(!fs.existsSync(sitemap))return;let xml=fs.readFileSync(sitemap,'utf8'),url=`${BASE}/posts/${p.slug}.html`,escaped=url.replace(/[.*+?^${}()|[\]\\]/g,'\\const audit=[];'),re=new RegExp(`(<loc>${escaped}<\\/loc>\\s*<lastmod>)[^<]+(<\\/lastmod>)`);if(re.test(xml)){xml=xml.replace(re,`$1${modified}$2`);fs.writeFileSync(sitemap,xml)}}
 function writeIfChanged(file,next){const current=fs.readFileSync(file,'utf8');if(current!==next)fs.writeFileSync(file,next)}
