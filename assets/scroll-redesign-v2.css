@@ -22,3 +22,10 @@ body.dg-r2-finished .dg-r2-mask{visibility:hidden}
 }
 
 @media(max-width:800px){.dg-r2-stage{z-index:0!important;margin-top:-2px!important}.dg-r2-mask{z-index:30!important}.hero{z-index:1!important}body:not(.dg-r2-started) .dg-r2-stage{background:transparent!important}}
+
+@media(max-width:800px){
+ .dg-r2-track{background:transparent!important}
+ .dg-r2-track>main,.dg-r2-track .story-page,.dg-r2-track .story-wrap{padding-bottom:0!important;margin-bottom:0!important;min-height:0!important}
+ .dg-r2-track .story-cases:last-of-type{margin-bottom:0!important;padding-bottom:0!important}
+ .dg-r2-track>main>section[aria-hidden="true"]{display:none!important}
+}
