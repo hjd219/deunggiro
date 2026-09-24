@@ -2,15 +2,16 @@
 (()=>{
   const PROJECT_ID='project-b08e5f3c-fa49-4ae6-933';
   const DATABASE_ID='default';
-  const base='https://firestore.googleapis.com/v1/projects/'+PROJECT_ID+'/databases/'+DATABASE_ID+'/documents/';
-  const commitUrl='https://firestore.googleapis.com/v1/projects/'+PROJECT_ID+'/databases/'+DATABASE_ID+'/documents:commit';
+  const API_KEY='AIzaSyAlXYOrj7V-XtDrK13Cbxw6hWzbfhGf_do';
+  const base='https://firestore.googleapis.com/v1/projects/'+encodeURIComponent(PROJECT_ID)+'/databases/'+encodeURIComponent(DATABASE_ID)+'/documents/';
+  const commitUrl='https://firestore.googleapis.com/v1/projects/'+encodeURIComponent(PROJECT_ID)+'/databases/'+encodeURIComponent(DATABASE_ID)+'/documents:commit?key='+encodeURIComponent(API_KEY);
   const REFRESH_MS=15000;
   let refreshTimer=null;
 
   function docPath(kind){return 'counters/'+(String(kind||'calculator')==='pdf'?'pdf':'calculator')}
 
   async function readCount(kind){
-    const r=await fetch(base+docPath(kind),{cache:'no-store'});
+    const r=await fetch(base+docPath(kind)+'?key='+encodeURIComponent(API_KEY),{cache:'no-store'});
     if(!r.ok) throw new Error('counter read '+r.status);
     const j=await r.json();
     const v=j&&j.fields&&j.fields.count;
