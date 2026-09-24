@@ -1,4 +1,4 @@
-/* DG_CALCULATOR_COUNTER_V16_RULES_COMPATIBLE */
+/* DG_CALCULATOR_COUNTER_V14_LIVE_ONLY */
 (()=>{
   const PROJECT_ID='project-b08e5f3c-fa49-4ae6-933';
   const DATABASE_ID='default';
@@ -18,15 +18,10 @@
   }
 
   async function incrementCount(kind){
-    const path=docPath(kind);
-    const current=await readCount(kind);
-    const url=base+path+'?updateMask.fieldPaths=count';
-    const body={fields:{count:{integerValue:String(current+1)}}};
-    const r=await fetch(url,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-    if(!r.ok){
-      const detail=await r.text().catch(()=> '');
-      throw new Error('counter write '+r.status+' '+detail);
-    }
+    const name='projects/'+PROJECT_ID+'/databases/'+DATABASE_ID+'/documents/'+docPath(kind);
+    const body={writes:[{transform:{document:name,fieldTransforms:[{fieldPath:'count',increment:{integerValue:'1'}}]}}]};
+    const r=await fetch(commitUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(!r.ok) throw new Error('counter write '+r.status);
   }
 
   async function render(){
