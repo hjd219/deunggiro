@@ -3,8 +3,8 @@ html,body{margin:0;overflow-x:hidden}
 body{background:#fff}
 .hero{position:fixed;inset:0;width:100%;height:100svh;min-height:100svh;z-index:1;overflow:hidden}
 header{position:fixed;top:0;left:0;right:0;z-index:220;background:transparent}
-.dg-r2-stage{position:relative;z-index:10;height:300vh;pointer-events:none}
-.dg-r2-mask{position:fixed;z-index:30;left:0;right:0;top:var(--dg-head);height:calc(100svh - var(--dg-head));overflow:hidden;pointer-events:none}
+.dg-r2-stage{position:relative;z-index:10;height:300vh;pointer-events:none;background:transparent}
+.dg-r2-mask{position:fixed;z-index:30;left:0;right:0;top:var(--dg-head);height:calc(100svh - var(--dg-head));overflow:hidden;pointer-events:none;background:transparent}
 .dg-r2-track{position:absolute;left:0;right:0;top:0;transform:translate3d(0,100%,0);will-change:transform;pointer-events:auto}
 .dg-r2-stage~*{position:relative;z-index:40}
 .dg-shell-footer{position:relative!important;z-index:40!important;width:100%;max-width:none;margin:0;transform:none!important}
