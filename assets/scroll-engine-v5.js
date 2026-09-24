@@ -7,7 +7,7 @@ const viewport=()=>Math.round(document.documentElement.clientHeight);
 function paint(){
  raf=0;
  const p=Math.max(0,(scrollY||0)-start);
- const moved=Math.min(p,travel);
+ const moved=Math.min(p,travel+lead);
  track.style.transform='translate3d(0,'+Math.round(maskH-moved)+'px,0)';
 }
 function measure(){
