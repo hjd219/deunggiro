@@ -5,7 +5,7 @@ const mask=document.querySelector('.dg-scroll-mask');
 const track=document.querySelector('.dg-scroll-track');
 if(!root.hasAttribute('data-dg-scroll')||!stage||!mask||!track)return;
 
-let start=0,maskH=0,trackH=0,travel=0,raf=0;
+let start=0,maskH=0,trackH=0,travel=0,footerLead=0,raf=0;
 const viewportHeight=()=>Math.round(document.documentElement.clientHeight);
 
 function render(){
@@ -22,8 +22,9 @@ function measure(){
   maskH=mask.clientHeight;
   trackH=track.scrollHeight;
   travel=maskH+trackH;
-  // Footer starts below the hero image and rises only after the content sequence reaches its end.
-  stage.style.height=(travel+vh)+'px';
+  // Let the footer begin rising just before the final content fully exits.
+  footerLead=Math.round(Math.max(36,Math.min(72,maskH*.08)));
+  stage.style.height=(travel+vh-footerLead)+'px';
   start=stage.offsetTop;
   render();
 }
