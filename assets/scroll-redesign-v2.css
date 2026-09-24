@@ -20,3 +20,5 @@ body.dg-r2-finished .dg-r2-mask{visibility:hidden}
  .intro{padding:42px 22px 30px!important;border-radius:20px 20px 0 0!important;box-shadow:0 -12px 34px rgba(18,54,74,.12)!important}
  .person{margin-top:0!important}
 }
+
+@media(max-width:800px){.dg-r2-stage{z-index:0!important;margin-top:-2px!important}.dg-r2-mask{z-index:30!important}.hero{z-index:1!important}body:not(.dg-r2-started) .dg-r2-stage{background:transparent!important}}
