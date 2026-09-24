@@ -67,12 +67,12 @@ function plainTextFromArticle(html){const m=html.match(/<div class="article-body
 function optimizedDescription(p,html){const summary=clean(p.summary);if(summary.length>=50&&summary.length<=165)return summary;const source=plainTextFromArticle(html)||summary||p.title;const out=source.slice(0,160).trim();return out.length<30?`${p.title} 관련 절차와 핵심 내용을 정리한 등기로 법률정보입니다.`.slice(0,160):out}
 function replaceSingleMeta(html,attr,key,value){
   const safe=esc(value);
-  const re=new RegExp(`<meta\\\\s+[^>]*\\\\b${attr}=["']${key}["'][^>]*>`,'gi');
+  const re=new RegExp(`<meta\\s+[^>]*\\b${attr}=["']${key}["'][^>]*>`,'gi');
   const tag=`<meta ${attr}="${key}" content="${safe}">`;
   let replaced=false;
   html=html.replace(re,()=>{if(replaced)return '';replaced=true;return tag});
   if(replaced)return html;
-  return html.replace(/<\\/head>/i,`${tag}\\n</head>`);
+  return html.replace(/<\/head>/i,`${tag}\n</head>`);
 }
 function replaceMeta(html,name,value){return replaceSingleMeta(html,'name',name,value)}
 function replaceOg(html,prop,value){return replaceSingleMeta(html,'property',prop,value)}
