@@ -5,7 +5,7 @@ const mask=document.querySelector('.dg-scroll-mask');
 const track=document.querySelector('.dg-scroll-track');
 if(!root.hasAttribute('data-dg-scroll')||!stage||!mask||!track)return;
 
-let start=0,maskH=0,trackH=0,travel=0,footerOverlap=0,raf=0;
+let start=0,maskH=0,trackH=0,travel=0,raf=0;
 const viewportHeight=()=>Math.round(document.documentElement.clientHeight);
 
 function render(){
@@ -22,10 +22,7 @@ function measure(){
   maskH=mask.clientHeight;
   trackH=track.scrollHeight;
   travel=maskH+trackH;
-  // Footer begins entering before the last content has completely left the mask.
-  // One variable owns this transition so it is easy to tune later.
-  footerOverlap=Math.max(72,Math.min(150,Math.round(vh*.14)));
-  stage.style.height=(travel+vh-footerOverlap)+'px';
+  stage.style.height=(travel+vh)+'px';
   start=stage.offsetTop;
   render();
 }
