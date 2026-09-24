@@ -6,13 +6,15 @@
   const base='https://firestore.googleapis.com/v1/projects/'+encodeURIComponent(PROJECT_ID)+'/databases/'+encodeURIComponent(DATABASE_ID)+'/documents/';
   const commitUrl='https://firestore.googleapis.com/v1/projects/'+encodeURIComponent(PROJECT_ID)+'/databases/'+encodeURIComponent(DATABASE_ID)+'/documents:commit?key='+encodeURIComponent(API_KEY);
   const REFRESH_MS=15000;
+  const DEBUG=new URLSearchParams(location.search).get('counterdebug')==='1';
+  function report(msg){console.error('[DGCounter]',msg);if(!DEBUG)return;let el=document.getElementById('dg-counter-debug');if(!el){el=document.createElement('div');el.id='dg-counter-debug';el.style.cssText='position:fixed;left:10px;right:10px;bottom:10px;z-index:99999;padding:10px 12px;background:#111;color:#fff;border-radius:8px;font:12px/1.45 monospace;word-break:break-all';document.body.appendChild(el)}el.textContent='COUNTER: '+msg}
   let refreshTimer=null;
 
   function docPath(kind){return 'counters/'+(String(kind||'calculator')==='pdf'?'pdf':'calculator')}
 
   async function readCount(kind){
     const r=await fetch(base+docPath(kind)+'?key='+encodeURIComponent(API_KEY),{cache:'no-store'});
-    if(!r.ok) throw new Error('counter read '+r.status);
+    if(!r.ok){const t=await r.text();throw new Error('READ '+r.status+' '+t.slice(0,240))}
     const j=await r.json();
     const v=j&&j.fields&&j.fields.count;
     return Number((v&&(v.integerValue??v.doubleValue))||0);
@@ -22,7 +24,7 @@
     const name='projects/'+PROJECT_ID+'/databases/'+DATABASE_ID+'/documents/'+docPath(kind);
     const body={writes:[{transform:{document:name,fieldTransforms:[{fieldPath:'count',increment:{integerValue:'1'}}]}}]};
     const r=await fetch(commitUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-    if(!r.ok) throw new Error('counter write '+r.status);
+    if(!r.ok){const t=await r.text();throw new Error('WRITE '+r.status+' '+t.slice(0,240))}
   }
 
   async function render(){
@@ -45,7 +47,7 @@
       try{
         await incrementCount(kind);
         await render();
-      }catch(e){}
+      }catch(e){report(e.message||String(e))}
     },
     refresh:render
   };
