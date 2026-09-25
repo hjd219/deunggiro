@@ -75,6 +75,66 @@ def hub_link(current):
     return CATEGORY_HUBS.get(category)
 
 
+
+CALCULATOR_INTENT = (
+    '비용', '취득세', '등록면허세', '법무사 보수', '법무사보수',
+    '국민주택채권', '채권 할인', '채권할인', '설립비용', '변경비용'
+)
+
+
+def calculator_link(current):
+    """계산 의도가 명확한 글에만 계산기 링크를 붙인다."""
+    category = str(current.get('category','')).strip()
+    text = ' '.join((str(current.get('title','')), str(current.get('keywords','')), str(current.get('summary',''))))
+    if not any(word in text for word in CALCULATOR_INTENT):
+        return None
+
+    if category == '법인등기':
+        job = ''
+        if '본점이전' in text or '주소이전' in text or '본점주소' in text:
+            job = '?job=move'
+        elif '증자' in text or '자본금' in text:
+            job = '?job=inc'
+        elif '임원변경' in text or '대표이사' in text or '이사' in text or '감사' in text:
+            job = '?job=off'
+        elif '법인설립' in text or '회사설립' in text or '주식회사 설립' in text:
+            job = '?job=est'
+        return '/corporate-calculator.html' + job, '법인등기 비용 계산하기'
+
+    if category in ('상속등기', '상속재산분할'):
+        return '/acquisition-calculator.html?mode=inherit', '상속등기 비용 계산하기'
+
+    if category == '부동산등기':
+        if '이혼' in text or '재산분할' in text:
+            mode = 'divorce'
+            label = '이혼 재산분할등기 비용 계산하기'
+        elif '증여' in text and '매매' not in text and '상속' not in text:
+            mode = 'gift'
+            label = '증여등기 비용 계산하기'
+        elif '매매' in text and '증여' not in text and '상속' not in text:
+            mode = 'sale'
+            label = '매매등기 비용 계산하기'
+        elif '상속' in text and '증여' not in text and '매매' not in text:
+            mode = 'inherit'
+            label = '상속등기 비용 계산하기'
+        else:
+            return '/acquisition-calculator.html', '부동산등기 비용 계산하기'
+        return '/acquisition-calculator.html?mode=' + mode, label
+
+    return None
+
+
+def calculator_block(current):
+    target = calculator_link(current)
+    if not target:
+        return ''
+    href, label = target
+    return (
+        '<p class="seo-calculator-link">'
+        f'<a href="{html.escape(href, quote=True)}">{html.escape(label)}</a>'
+        '</p>'
+    )
+
 def hub_block(current):
     target = hub_link(current)
     if not target:
@@ -129,7 +189,9 @@ def remove_old_related(text):
                     node.extract()
             changed = True
 
-    # 우리가 생성한 기존 관련글 제거
+    # 우리가 생성한 기존 허브/관련글 제거 후 매 실행마다 한 번만 다시 넣는다.
+    for node in list(soup.select('.seo-hub-link, .seo-calculator-link')):
+        node.decompose(); changed = True
     for sec in list(soup.select('.seo-related-posts')):
         sec.decompose(); changed = True
 
@@ -161,8 +223,9 @@ def main():
         clean = remove_old_related(text)
         block = related_block(post, posts)
         hub = hub_block(post)
+        calculator = calculator_block(post)
         marker = '</article>'
-        new = clean.replace(marker, hub + block + marker, 1) if marker in clean else clean
+        new = clean.replace(marker, hub + calculator + block + marker, 1) if marker in clean else clean
         if new != text:
             path.write_text(new, encoding='utf-8')
             changed += 1
