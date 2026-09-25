@@ -9,6 +9,7 @@
  {title:'상속포기·한정승인 필요서류',href:'#documents',type:'페이지'},
  {title:'상속포기·한정승인 자주 묻는 질문',href:'#ren-faq',type:'페이지'},
  {title:'상속포기 후 절차',href:'/renunciation-after.html',type:'세부페이지'},
+ {title:'사망신고 전 고인 예금 인출',href:'/preview-deceased-deposit.html',type:'세부페이지'},
  {title:'한정승인 후 청산절차',href:'/limited-acceptance-liquidation.html',type:'세부페이지'},
  {title:'인천 상속포기 절차·기간·필요서류',href:'/posts/inheritance-renunciation-incheon-procedure-documents-1ifftk.html',type:'핵심 안내'},
  {title:'상속포기 신청기간과 후순위 상속인',href:'/posts/naver-224354174521.html',type:'핵심 안내'},
