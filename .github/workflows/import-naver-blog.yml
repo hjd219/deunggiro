@@ -68,6 +68,33 @@ jobs:
           timeout 150s python -u scripts/generate_thumbnails.py
           timeout 90s python -u scripts/fix_thumbnail_logo.py
           timeout 90s python -u scripts/generate_sitemap.py
+          # 사이트맵 누락 방지: posts.json에 등록되어 실제 HTML이 존재하는 모든 글이 sitemap.xml에 포함됐는지 검증
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path('.')
+          posts = json.loads((root / 'data/posts.json').read_text(encoding='utf-8'))
+          sitemap = (root / 'sitemap.xml').read_text(encoding='utf-8')
+          missing = []
+          checked = 0
+          seen = set()
+          for post in posts:
+              slug = str(post.get('slug', '')).strip().replace('.html', '')
+              if not slug or slug in seen:
+                  continue
+              seen.add(slug)
+              page = root / 'posts' / f'{slug}.html'
+              if not page.exists():
+                  continue
+              checked += 1
+              loc = f'https://www.deunggiro.kr/posts/{slug}.html'
+              if f'<loc>{loc}</loc>' not in sitemap:
+                  missing.append(slug)
+          print('SITEMAP_QUALITY', checked, 'MISSING', len(missing))
+          if missing:
+              print('SITEMAP_MISSING_LIST', ','.join(missing))
+              raise SystemExit(1)
+          PY
           timeout 120s node scripts/seo-auto.mjs
           timeout 60s node scripts/seo-canonical-fix.mjs
           timeout 60s node scripts/rss-auto.mjs
