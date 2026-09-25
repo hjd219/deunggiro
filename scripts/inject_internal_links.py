@@ -37,6 +37,56 @@ def score(current, candidate):
     return s
 
 
+HUB_RULES = [
+    (('/inheritance-overseas-heir.html', '해외거주·외국국적 상속인 상속등기 안내'), ('해외거주','해외 거주','외국국적','외국 국적','미국','일본','호주','영주권','시민권','아포스티유')),
+    (('/inheritance-minor-heir.html', '미성년자 상속인 상속등기 안내'), ('미성년자','미성년 상속인','특별대리인')),
+    (('/inheritance-missing-heir.html', '연락두절·행방불명 상속인 안내'), ('연락두절','연락 두절','행방불명','실종선고','실종 선고')),
+    (('/inheritance-substitute-succession.html', '대습상속 안내'), ('대습상속','대습 상속')),
+    (('/inheritance-division.html', '상속재산분할 안내'), ('상속재산분할','상속재산 분할','협의분할','협의 분할','기여분','특별수익')),
+    (('/limited-acceptance-liquidation.html', '한정승인 후 청산 안내'), ('상속재산파산','상속재산 파산','한정승인 후','청산')),
+    (('/renunciation-after.html', '상속포기 후 절차 안내'), ('상속포기 후','후순위 상속인','후순위상속인')),
+]
+
+CATEGORY_HUBS = {
+    '상속등기': ('/inheritance.html', '상속등기 핵심안내'),
+    '상속재산분할': ('/inheritance.html', '상속등기 핵심안내'),
+    '상속포기·한정승인': ('/renunciation.html', '상속포기·한정승인 핵심안내'),
+    '법인등기': ('/corporate.html', '법인등기 핵심안내'),
+    '부동산등기': ('/realestate.html', '부동산등기 핵심안내'),
+    '가사': ('/family.html', '가사 핵심안내'),
+}
+
+
+def hub_link(current):
+    text = ' '.join((str(current.get('title','')), str(current.get('keywords','')), str(current.get('summary',''))))
+    category = str(current.get('category','')).strip()
+
+    # 세부 주제 링크는 해당 상속 카테고리에서만 사용해 엉뚱한 허브 연결을 막는다.
+    if category in ('상속등기', '상속재산분할', '상속포기·한정승인'):
+        for (href, label), words in HUB_RULES:
+            if any(word in text for word in words):
+                if href.startswith('/renunciation') or href.startswith('/limited-acceptance'):
+                    if category != '상속포기·한정승인':
+                        continue
+                elif category == '상속포기·한정승인' and href.startswith('/inheritance-'):
+                    continue
+                return href, label
+
+    return CATEGORY_HUBS.get(category)
+
+
+def hub_block(current):
+    target = hub_link(current)
+    if not target:
+        return ''
+    href, label = target
+    return (
+        '<p class="seo-hub-link">'
+        f'<a href="{html.escape(href, quote=True)}">{html.escape(label)}</a>'
+        '</p>'
+    )
+
+
 def related_block(current, posts):
     ranked = []
     for p in posts:
@@ -110,8 +160,9 @@ def main():
         text = path.read_text(encoding='utf-8')
         clean = remove_old_related(text)
         block = related_block(post, posts)
+        hub = hub_block(post)
         marker = '</article>'
-        new = clean.replace(marker, block + marker, 1) if marker in clean else clean
+        new = clean.replace(marker, hub + block + marker, 1) if marker in clean else clean
         if new != text:
             path.write_text(new, encoding='utf-8')
             changed += 1
