@@ -61,3 +61,9 @@
   line-height:1;
   cursor:pointer;
 }
+
+/* DG_SEARCH_LAYER_FIX: keep service search dropdown above fixed scroll content */
+body.dg-search-open .hero{z-index:50!important}
+body.dg-search-open .hero .heroin{z-index:51!important}
+body.dg-search-open .inheritance-results{z-index:300!important;pointer-events:auto!important}
+body.dg-search-open .inheritance-results a{pointer-events:auto!important}
