@@ -5,10 +5,10 @@ const fixed=[
 {title:'상속등기 상세안내',keywords:'상속등기 공동상속 단독상속 협의분할',href:'/inheritance.html',type:'핵심안내'},
 {title:'상속·증여·매매 등기 필요서류',keywords:'상속 증여 매매 부동산등기 필요서류 준비서류',href:'/posts/naver-224242416419.html',type:'핵심안내'},
 {title:'등기권리증 분실 시 해결방법',keywords:'등기권리증 등기필증 분실 확인서면 매매',href:'/posts/sale-real-estate-guide-bvcdri.html',type:'핵심안내'},
-{title:'부모·자식 간 부동산 매매',keywords:'부모 자식 가족간 부동산 매매 증여',href:'/posts/naver-224271484086.html',type:'핵심안내'},
-{title:'미등기 건물 매매',keywords:'미등기 건물 매매 보존등기',href:'/posts/naver-224250931942.html',type:'핵심안내'},
-{title:'신탁등기된 부동산',keywords:'신탁등기 신탁원부 전세 보증금',href:'/posts/naver-224246353949.html',type:'핵심안내'},
-{title:'근저당·공장저당 담보설정',keywords:'근저당 공장저당 선박근저당 담보설정',href:'/posts/naver-224254103385.html',type:'핵심안내'},
+{title:'부모·자식 간 부동산 매매',keywords:'부모 자식 가족간 부동산 매매 증여',href:'/posts/naver-224271484086.html',type:'관련 법률정보'},
+{title:'미등기 건물 매매',keywords:'미등기 건물 매매 보존등기',href:'/posts/naver-224250931942.html',type:'관련 법률정보'},
+{title:'신탁등기된 부동산',keywords:'신탁등기 신탁원부 전세 보증금',href:'/posts/naver-224246353949.html',type:'관련 법률정보'},
+{title:'근저당·공장저당 담보설정',keywords:'근저당 공장저당 선박근저당 담보설정',href:'/posts/naver-224254103385.html',type:'관련 법률정보'},
 {title:'취득세 계산',keywords:'취득세 계산기 매매 증여 재산분할',href:'/acquisition-calculator.html',type:'계산기'},
 {title:'이혼 재산분할 아파트 이전',keywords:'재산분할 이혼 아파트 소유권이전',href:'/posts/naver-224413365255.html',type:'처리사례'},
 {title:'전세권자 직접 경매·낙찰',keywords:'전세권 임차인 보증금 경매 낙찰',href:'/posts/naver-224413471424.html',type:'처리사례'},
@@ -18,7 +18,7 @@ const fixed=[
 ];
 let items=[...fixed];
 const fixedHrefs=new Set(fixed.map(x=>x.href));
-fetch('/assets/posts.json').then(r=>r.ok?r.json():[]).then(data=>{if(!Array.isArray(data))return;for(const p of data){if(!p||p.category!=='부동산등기')continue;const href=p.href||p.url||'',title=p.title||'';if(title&&href&&!items.some(x=>x.href===href))items.push({title,keywords:title,href,type:'처리사례'});}}).catch(()=>{});
+fetch('/assets/posts.json').then(r=>r.ok?r.json():[]).then(data=>{if(!Array.isArray(data))return;for(const p of data){if(!p||p.category!=='부동산등기')continue;const href=p.href||p.url||'',title=p.title||'';if(title&&href&&!items.some(x=>x.href===href))items.push({title,keywords:title,href,type:'관련 법률정보'});}}).catch(()=>{});
 const norm=s=>(s||'').toLowerCase().replace(/\s+/g,'');
 function score(x,key){const t=norm(x.title),k=norm(x.keywords),s=norm(x.summary);let n=0;if(t===key)n+=120;else if(t.startsWith(key))n+=90;else if(t.includes(key))n+=70;if(k.includes(key))n+=35;if(s.includes(key))n+=15;if(x.type==='핵심안내')n+=20;return n;}
 function matches(x,s){const n=norm(s);return norm(x.title+' '+(x.keywords||'')).includes(n);}
