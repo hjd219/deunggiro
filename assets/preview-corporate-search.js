@@ -43,9 +43,9 @@ function render(all=false){
  const s=q.value.trim();
  const a=(all||!s)?items:items.filter(x=>matches(x,s));
  list.innerHTML=a.slice(0,20).map(x=>'<li><a href="'+x.href+'"><span class="result-type">'+x.type+'</span>'+x.title+'</a></li>').join('')||'<li class="inheritance-empty">검색 결과가 없습니다.</li>';
- list.classList.add('is-open');q.setAttribute('aria-expanded','true');
+ list.classList.add('is-open');document.body.classList.add('dg-search-open');q.setAttribute('aria-expanded','true');
 }
-function close(){list.classList.remove('is-open');q.setAttribute('aria-expanded','false');}
+function close(){list.classList.remove('is-open');document.body.classList.remove('dg-search-open');q.setAttribute('aria-expanded','false');}
 toggle.addEventListener('click',()=>list.classList.contains('is-open')?close():render(true));
 q.addEventListener('input',()=>render(false));
 q.addEventListener('focus',()=>{if(q.value.trim())render(false)});
