@@ -67,26 +67,45 @@ function calculate(){let jobs=[];Object.keys(state).forEach(k=>{if(state[k])jobs
 ['estArea','offType','incArea','incAge','estCapital','incCapital','moveCapital'].forEach(id=>$(id).addEventListener('change',calculate));const requestedJob=new URLSearchParams(location.search).get('job');if(Object.prototype.hasOwnProperty.call(state,requestedJob)){state[requestedJob]=true;const requestedBtn=document.querySelector('.opt[data-job="'+requestedJob+'"]');if(requestedBtn)requestedBtn.classList.add('on')}sync();
 </script><script src="/assets/firestore-counter-public.js?v=10"></script><script src="/assets/home-mobile-menu.js?v=20260917-1"></script><script src="/assets/site-footer.js?v=20260917-v6"></script><script id="calculator-tutorial-preview-js">
 (function(){
- var steps=[{"target":".opts","msg":"① 먼저 계산할 법인등기 유형을 선택하세요","event":"click"},{"target":".dynamic","msg":"② 등기에 필요한 정보를 입력하세요","event":"input"},{"target":".sub","msg":"③ 필요한 추가 항목을 확인하세요","event":"click"},{"target":".result","msg":"④ 마지막으로 예상 합계금액을 확인하세요","event":"done"}],i=0,tip=null,target=null,armed=false;
- function clear(){if(target)target.classList.remove('dg-guide-target');if(tip&&tip.parentNode)tip.parentNode.removeChild(tip);tip=null;target=null;armed=false}
- function show(){
-  clear(); if(i>=steps.length)return;
-  var s=steps[i]; target=document.querySelector(s.target); if(!target){i++;show();return}
-  tip=document.createElement('div');tip.className='dg-guide-tip'+(s.event==='done'?' dg-guide-result-tip':'');
-  tip.innerHTML='<span class="dg-guide-hand" aria-hidden="true">👇</span><span>'+s.msg+'</span>';
-  target.classList.add('dg-guide-target');
-  target.parentNode.insertBefore(tip,target);
-  setTimeout(function(){armed=true},250);
-  if(i>0) target.scrollIntoView({behavior:'smooth',block:'center'});
-  if(s.event==='done'){setTimeout(function(){clear()},4200);return}
-  var ev=s.event;
-  function next(e){
-   if(!armed)return;
-   if(ev==='input' && !(e.target.matches('input,select')))return;
-   target.removeEventListener(ev,next,true);i++;setTimeout(show,180);
-  }
-  target.addEventListener(ev,next,true);
+ var tip=null,target=null,armed=false;
+ function clear(){
+  if(target)target.classList.remove('dg-guide-target');
+  if(tip&&tip.parentNode)tip.parentNode.removeChild(tip);
+  tip=null;target=null;armed=false;
  }
- show();
+ function show(sel,msg,event,next){
+  clear(); target=document.querySelector(sel); if(!target){if(next)next();return}
+  tip=document.createElement('div');tip.className='dg-guide-tip';
+  tip.innerHTML='<span class="dg-guide-hand" aria-hidden="true">👇</span><span>'+msg+'</span>';
+  target.classList.add('dg-guide-target');target.parentNode.insertBefore(tip,target);
+  setTimeout(function(){armed=true},250);
+  if(sel!=='.opts')target.scrollIntoView({behavior:'smooth',block:'center'});
+  if(!event){setTimeout(clear,4200);return}
+  function go(e){
+   if(!armed)return;
+   if(event==='input'&&!e.target.matches('input,select'))return;
+   target.removeEventListener(event,go,true);setTimeout(function(){clear();if(next)next()},160);
+  }
+  target.addEventListener(event,go,true);
+ }
+ function result(){show('.result','마지막으로 예상 합계금액을 확인하세요',null)}
+ function optional(){show('.sub','필요하면 의사록 공증을 선택하세요','click',result)}
+ function afterJob(job){
+  if(job==='est') return show('#estBox','자본금·본점 지역·회사 종류를 확인하세요','input',optional);
+  if(job==='off') return show('#offBox','임원변경 사유를 선택하세요','input',optional);
+  if(job==='inc') return show('#incBox','증자금액·본점 지역·설립 후 기간을 확인하세요','input',optional);
+  if(job==='move') return show('#moveBox','본점 이전 유형을 선택하세요','input',function(){
+    setTimeout(function(){
+      var extra=document.querySelector('#moveCapitalWrap:not(.hidden),#duplicateWrap:not(.hidden)');
+      if(extra) show('#moveBox','표시된 추가 조건도 확인하세요','input',optional); else optional();
+    },100);
+  });
+  // 상호변경·목적변경은 계산 입력조건이 없음
+  return optional();
+ }
+ show('.opts','먼저 계산할 법인등기 유형을 선택하세요','click',function(){
+   var on=document.querySelector('.opt.on');
+   afterJob(on?on.dataset.job:null);
+ });
 })();
 </script></body></html>
