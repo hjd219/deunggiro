@@ -86,6 +86,13 @@ def clear_legacy_related_actions(text: str):
     return pat.sub(repl, text), changed
 
 
+def remove_legacy_full_guide(text: str):
+    # Old one-off links such as "인천 상속포기 전체 안내" lived outside <article>.
+    # The unified SEO core box now owns this navigation, so remove only standalone paragraphs whose anchor text ends with 전체 안내.
+    pat = re.compile(r'<p\\b[^>]*>\\s*<a\\b[^>]*>[\\s\\S]*?전체\\s*안내[\\s\\S]*?<\\/a>\\s*<\\/p>', re.I)
+    return pat.subn('', text)
+
+
 def ensure_common_assets(text: str):
     original = text
     for href in COMMON_CSS:
@@ -122,16 +129,16 @@ def rebuild_posts_page(posts):
 
 
 def main():
-    posts=json.loads(POSTS_JSON.read_text(encoding='utf-8')); category_changes=[]; duplicate_id_fixes=0; duplicate_meta_fixes=0; legacy_related_clears=0; common_asset_fixes=0
+    posts=json.loads(POSTS_JSON.read_text(encoding='utf-8')); category_changes=[]; duplicate_id_fixes=0; duplicate_meta_fixes=0; legacy_related_clears=0; legacy_full_guide_clears=0; common_asset_fixes=0
     for post in posts:
         slug=str(post.get('slug','')).strip().replace('.html',''); old=str(post.get('category','') or '').strip(); new=infer_category(str(post.get('title','')),old)
         if new!=old: post['category']=new; category_changes.append((slug,old or '(없음)',new))
         if not slug: continue
         p=ROOT/'posts'/f'{slug}.html'
         if not p.exists(): continue
-        text=p.read_text(encoding='utf-8'); text2,fixed=dedupe_se_ids(text); duplicate_id_fixes+=fixed; text2,cleared=clear_legacy_related_actions(text2); legacy_related_clears+=cleared; text2=sync_category_meta(text2,post.get('category') or new); text2,meta_removed=dedupe_head_meta(text2); duplicate_meta_fixes+=meta_removed; text2,asset_changed=ensure_common_assets(text2); common_asset_fixes+=1 if asset_changed else 0
+        text=p.read_text(encoding='utf-8'); text2,fixed=dedupe_se_ids(text); duplicate_id_fixes+=fixed; text2,cleared=clear_legacy_related_actions(text2); legacy_related_clears+=cleared; text2,full_cleared=remove_legacy_full_guide(text2); legacy_full_guide_clears+=full_cleared; text2=sync_category_meta(text2,post.get('category') or new); text2,meta_removed=dedupe_head_meta(text2); duplicate_meta_fixes+=meta_removed; text2,asset_changed=ensure_common_assets(text2); common_asset_fixes+=1 if asset_changed else 0
         if text2!=text: p.write_text(text2,encoding='utf-8')
     POSTS_JSON.write_text(json.dumps(posts,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'); rebuilt=rebuild_posts_page(posts)
-    print('category changes:',len(category_changes)); print('duplicate SE id fixes:',duplicate_id_fixes); print('duplicate meta tags removed:',duplicate_meta_fixes); print('legacy related button blocks cleared:',legacy_related_clears); print('common article shell assets fixed:',common_asset_fixes); print('posts.html static cards rebuilt:',rebuilt)
+    print('category changes:',len(category_changes)); print('duplicate SE id fixes:',duplicate_id_fixes); print('duplicate meta tags removed:',duplicate_meta_fixes); print('legacy related button blocks cleared:',legacy_related_clears); print('legacy full-guide links cleared:',legacy_full_guide_clears); print('common article shell assets fixed:',common_asset_fixes); print('posts.html static cards rebuilt:',rebuilt)
 
 if __name__=='__main__': main()
