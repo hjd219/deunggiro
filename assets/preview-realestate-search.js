@@ -4,7 +4,6 @@
  if(!input||!toggle||!list||!search)return;
  const status=document.querySelector('.inheritance-search-status');
  const fixed=[
- {title:"상속등기 상세안내",keywords:"상속등기 공동상속 단독상속 협의분할",href:"/inheritance.html",type:"핵심안내"},
  {title:"상속·증여·매매 등기 필요서류",keywords:"상속 증여 매매 부동산등기 필요서류 준비서류",href:"/posts/naver-224242416419.html",type:"핵심안내"},
  {title:"등기권리증 분실 시 해결방법",keywords:"등기권리증 등기필증 분실 확인서면 매매",href:"/posts/sale-real-estate-guide-bvcdri.html",type:"핵심안내"},
  {title:"취득세 계산",keywords:"취득세 계산기 매매 증여 재산분할",href:"/acquisition-calculator.html",type:"계산기"}
