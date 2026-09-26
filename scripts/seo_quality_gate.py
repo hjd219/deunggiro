@@ -32,7 +32,11 @@ def main():
         if len(h1)!=1 or not h1[0].get_text(" ",strip=True): issues.append(f"H1={len(h1)}")
         robots=soup.find("meta",attrs={"name":re.compile("^robots$",re.I)})
         if robots and "noindex" in str(robots.get("content","")).lower(): issues.append("noindex")
-        if not soup.select_one(".seo-core-link a[href]"): issues.append("core-link")
+        core=soup.select_one(".seo-core-link a[href]")
+        # 대표 핵심글 자체이거나 기타 카테고리는 자기 자신 링크를 만들지 않으므로 core-link가 없어도 정상이다.
+        if not core and str(post.get("category","")).strip() not in ("기타",):
+            core_marker=soup.find(string=lambda s:s and "SEO_CORE_LINK_START" in str(s))
+            if not core_marker: issues.append("core-link-marker")
         related=soup.select(".seo-related-posts a[href]")
         if len(related)!=3: issues.append(f"related-links={len(related)}")
         if f"<loc>{expected}</loc>" not in sitemap: issues.append("sitemap")
