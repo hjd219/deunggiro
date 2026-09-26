@@ -67,3 +67,10 @@ body.dg-search-open .hero{z-index:50!important}
 body.dg-search-open .hero .heroin{z-index:51!important}
 body.dg-search-open .inheritance-results{z-index:300!important;pointer-events:auto!important}
 body.dg-search-open .inheritance-results a{pointer-events:auto!important}
+
+/* Search dropdown interaction layer: shared by service hubs and detail pages */
+body.dg-search-open .hero{z-index:250!important}
+body.dg-search-open .hero .heroin{z-index:251!important}
+body.dg-search-open .hero-ai,body.dg-search-open .inheritance-finder-inline{position:relative;z-index:252!important}
+body.dg-search-open .inheritance-results{z-index:300!important;pointer-events:auto!important}
+body.dg-search-open .inheritance-results a{pointer-events:auto!important}
