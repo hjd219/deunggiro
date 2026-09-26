@@ -273,7 +273,8 @@ def main():
         text = path.read_text(encoding='utf-8')
         clean = remove_old_related(text)
         block = related_block(post, posts, core_slugs)
-        hub = hub_block(post)
+        # 허브 텍스트 링크는 상단 핵심안내 박스와 중복되어 더 이상 삽입하지 않는다.
+        hub = ''
         calculator = calculator_block(post)
         marker = '</article>'
         new = clean.replace(marker, hub + calculator + block + marker, 1) if marker in clean else clean
