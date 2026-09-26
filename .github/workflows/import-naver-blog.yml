@@ -68,6 +68,7 @@ jobs:
           timeout 90s python -u scripts/cleanup_duplicate_posts.py
           timeout 90s python -u scripts/site_maintenance.py
           timeout 90s python -u scripts/inject_internal_links.py
+          timeout 60s node scripts/seo-hub-links.mjs
           timeout 150s python -u scripts/generate_thumbnails.py
           timeout 90s python -u scripts/fix_thumbnail_logo.py
           timeout 90s python -u scripts/generate_sitemap.py
