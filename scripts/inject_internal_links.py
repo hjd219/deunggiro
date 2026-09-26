@@ -203,7 +203,7 @@ def related_block(current, posts, core_slugs):
             candidate_score += 35
         ranked.append((candidate_score, str(p.get('date','')), p))
     ranked.sort(key=lambda x: (x[0], x[1]), reverse=True)
-    chosen = [x[2] for x in ranked[:4] if x[0] >= 0]
+    chosen = [x[2] for x in ranked[:3] if x[0] >= 0]
     if not chosen:
         return START + '\n' + END
     items = []
