@@ -5,9 +5,9 @@
  const status=document.querySelector('.inheritance-search-status');
  if(!status)return;
  const fixed=[
- {title:'상속포기·한정승인 절차',href:'#inheritance-overview',type:'페이지'},
- {title:'상속포기·한정승인 필요서류',href:'#documents',type:'페이지'},
- {title:'상속포기·한정승인 자주 묻는 질문',href:'#ren-faq',type:'페이지'},
+ 
+ 
+ 
  {title:'상속포기 후 절차',href:'/renunciation-after-procedure.html',type:'세부페이지'},
  {title:'사망신고 전 고인 예금 인출',href:'/renunciation-deceased-deposit.html',type:'세부페이지'},
  {title:'상속포기 전 사망보험금·해지환급금',href:'/renunciation-death-insurance.html',type:'세부페이지'},
@@ -17,6 +17,8 @@
  {title:'한정승인 기한·절차',href:'/posts/naver-224296496196.html',type:'핵심 안내'},
  {title:'특별한정승인 절차',href:'/posts/naver-224302457067.html',type:'핵심 안내'}
 ]
+ const hubItem={title:'상속포기·한정승인 전체 안내',href:'/renunciation.html',type:'업무페이지'};
+ const onHub=location.pathname==='/renunciation.html'||location.pathname==='/renunciation'||location.pathname==='/renunciation/';
  let posts=[];
  const coreHrefs=new Set(fixed.filter(x=>x.type==='핵심 안내').map(x=>x.href));
  const clean=s=>String(s||'').toLowerCase().replace(/\s+/g,'');
@@ -26,8 +28,8 @@
  function render(query=''){
    const key=clean(query);
    let items;
-   if(!key)items=[...fixed,...posts].slice(0,18);
-   else{const fm=fixed.filter(x=>clean(x.title+' '+(x.summary||'')+' '+(x.keywords||'')).includes(key));const pm=posts.filter(x=>clean(x.title+' '+(x.summary||'')+' '+(x.keywords||'')).includes(key)).map((x,i)=>({...x,_score:score(x,key),_order:i})).sort((a,b)=>b._score-a._score||a._order-b._order);items=[...fm,...pm].slice(0,18);}
+   if(!key)items=[...(onHub?[]:[hubItem]),...fixed,...posts].slice(0,18);
+   else{const fm=[...(onHub?[]:[hubItem]),...fixed].filter(x=>clean(x.title+' '+(x.summary||'')+' '+(x.keywords||'')).includes(key));const pm=posts.filter(x=>clean(x.title+' '+(x.summary||'')+' '+(x.keywords||'')).includes(key)).map((x,i)=>({...x,_score:score(x,key),_order:i})).sort((a,b)=>b._score-a._score||a._order-b._order);items=[...fm,...pm].slice(0,18);}
    list.innerHTML='';
    status.textContent=key?'검색 결과 '+items.length+'개':'상속포기·한정승인 관련 항목 '+items.length+'개';status.classList.add('is-active');
    if(!items.length){const li=document.createElement('li');li.className='inheritance-empty';li.textContent='상속포기·한정승인 관련 검색 결과가 없습니다.';list.appendChild(li);open();return}
