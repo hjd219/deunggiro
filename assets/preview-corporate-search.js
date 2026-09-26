@@ -6,8 +6,8 @@ const fixed=[
  {title:'1인 법인 설립 절차·비용·필요서류',keywords:'1인법인 법인설립 설립절차 설립비용 필요서류 임원구성 조사보고인',href:'/posts/naver-224258524096.html',type:'핵심안내'},
  {title:'임원변경·본점이전·목적추가 절차와 비용',keywords:'임원변경 대표이사변경 본점주소이전 본점이전 목적추가 변경등기 비용',href:'/posts/naver-224356297494.html',type:'핵심안내'},
  {title:'법인 본점주소 이전 절차·서류·비용',keywords:'본점이전 관내이전 관외이전 주소이전 동일상호 필요서류 비용',href:'/posts/naver-224334189167.html',type:'핵심안내'},
- {title:'감사 임기만료·중임·취임·퇴임등기',keywords:'감사 임기만료 중임 취임 퇴임 임원변경 의결권',href:'/posts/naver-224259683352.html',type:'핵심안내'},
- {title:'해산간주·회사계속·부활등기',keywords:'해산간주 청산종결간주 회사계속 회사계속등기 부활등기',href:'/posts/naver-224363628938.html',type:'핵심안내'},
+ {title:'감사 임기만료·중임·취임·퇴임등기',keywords:'감사 임기만료 중임 취임 퇴임 임원변경 의결권',href:'/posts/naver-224259683352.html',type:'관련 법률정보'},
+ {title:'해산간주·회사계속·부활등기',keywords:'해산간주 청산종결간주 회사계속 회사계속등기 부활등기',href:'/posts/naver-224363628938.html',type:'관련 법률정보'},
  {title:'법인설립 비용 계산',keywords:'법인설립 비용 수수료 계산기',href:'/corporate-calculator.html?job=est',type:'계산기'},
  {title:'변경등기 비용 계산',keywords:'변경등기 임원변경 본점이전 상호변경 목적변경 비용 계산기',href:'/corporate-calculator.html?v=20260910-clean',type:'계산기'},
  {title:'자본금증자 비용 계산',keywords:'증자 비용 계산기',href:'/corporate-calculator.html?job=inc',type:'계산기'},
@@ -24,7 +24,7 @@ fetch('/assets/posts.json').then(r=>r.ok?r.json():[]).then(data=>{
  for(const p of data){
   if(!p||p.category!=='법인등기')continue;
   const href=p.href||p.url||'',title=p.title||'';
-  if(title&&href&&!items.some(x=>x.href===href))items.push({title,keywords:title,href,type:'처리사례'});
+  if(title&&href&&!items.some(x=>x.href===href))items.push({title,keywords:title,href,type:'관련 법률정보'});
  }
 }).catch(()=>{});
 
@@ -33,7 +33,7 @@ function score(x,key){const t=norm(x.title),k=norm(x.keywords),s=norm(x.summary)
 function matches(x,s){const n=norm(s);return norm(x.title+' '+(x.keywords||'')).includes(n);}
 function render(all=false){
  const s=q.value.trim();
- const a=(all||!s)?items:items.filter(x=>matches(x,s));
+ const key=norm(s);const a=(all||!s)?items:items.filter(x=>matches(x,s)).map((x,i)=>({...x,_score:score(x,key),_order:i})).sort((a,b)=>b._score-a._score||a._order-b._order);
  list.innerHTML=a.slice(0,20).map(x=>'<li><a href="'+x.href+'"><span class="result-type">'+x.type+'</span>'+x.title+'</a></li>').join('')||'<li class="inheritance-empty">검색 결과가 없습니다.</li>';
  list.classList.add('is-open');document.body.classList.add('dg-search-open');q.setAttribute('aria-expanded','true');
 }
