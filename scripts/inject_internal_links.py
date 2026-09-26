@@ -212,7 +212,7 @@ def related_block(current, posts, core_slugs):
         title = html.escape(str(p.get('title','')).strip())
         category = html.escape(str(p.get('category','') or '법률정보').strip())
         items.append(f'<li><a href="/posts/{slug}.html"><span>{category}</span><strong>{title}</strong></a></li>')
-    return START + '\n<section class="seo-related-posts" aria-label="관련 법률정보"><h2>함께 보면 좋은 글</h2><ul>' + ''.join(items) + '</ul></section>\n' + END
+    return START + '\n<section class="seo-related-posts" aria-label="관련 법률정보"><div class="seo-link-kicker">관련 법률정보</div><h2>함께 보면 좋은 글</h2><ul>' + ''.join(items) + '</ul></section>\n' + END
 
 
 def remove_old_related(text):
