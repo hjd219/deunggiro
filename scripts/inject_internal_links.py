@@ -54,6 +54,7 @@ CATEGORY_HUBS = {
     '법인등기': ('/corporate.html', '법인등기 핵심안내'),
     '부동산등기': ('/realestate.html', '부동산등기 핵심안내'),
     '가사': ('/family.html', '가사 핵심안내'),
+    '기타': ('/posts.html', '법률정보 전체보기'),
 }
 
 
