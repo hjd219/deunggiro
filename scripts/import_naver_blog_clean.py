@@ -25,6 +25,18 @@ def get(url):
 def norm(v): return re.sub(r'[^0-9A-Za-z가-힣]+','',html.unescape(v or '')).lower()
 def category(title):
  return classify_title(title)
+
+def new_post_slug(title, log_no):
+ cat=category(title)
+ prefix={
+  '상속등기':'inheritance',
+  '상속포기·한정승인':'renunciation',
+  '상속재산분할':'inheritance',
+  '법인등기':'corporate',
+  '부동산등기':'realestate',
+  '가사':'family',
+ }.get(cat,'legal')
+ return f'{prefix}-naver-{log_no}'
 def logno(url):
  m=re.search(r'/(\d{6,})(?:\?|$)',url); return m.group(1) if m else (parse_qs(urlparse(url).query).get('logNo') or [''])[0]
 def view_url(url):
@@ -147,7 +159,7 @@ def main():
   if url in sources or norm(title) in titles: continue
   n=logno(url)
   if not n: continue
-  checked+=1; slug='naver-'+n
+  checked+=1; slug=new_post_slug(title,n)
   try:
    body,text,imgs=extract(url,slug); chars,moji=quality_text(text); print('CANDIDATE',n,'chars='+str(chars),'mojibake='+str(moji),'images='+str(imgs))
    if chars<500 or moji: continue
