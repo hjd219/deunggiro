@@ -33,7 +33,7 @@
    list.innerHTML='';
    status.textContent=key?'검색 결과 '+items.length+'개':'상속포기·한정승인 관련 항목 '+items.length+'개';status.classList.add('is-active');
    if(!items.length){const li=document.createElement('li');li.className='inheritance-empty';li.textContent='상속포기·한정승인 관련 검색 결과가 없습니다.';list.appendChild(li);open();return}
-   items.forEach(x=>{const li=document.createElement('li'),a=document.createElement('a'),tag=document.createElement('span');a.href=x.href;tag.className='result-type';tag.textContent=x.type||'관련 글';a.appendChild(tag);a.appendChild(document.createTextNode(x.title));else target.scrollIntoView({behavior:'smooth',block:'start'});});}li.appendChild(a);list.appendChild(li)});open();
+   items.forEach(x=>{const li=document.createElement('li'),a=document.createElement('a'),tag=document.createElement('span');a.href=x.href;tag.className='result-type';tag.textContent=x.type||'관련 글';a.appendChild(tag);a.appendChild(document.createTextNode(x.title));li.appendChild(a);list.appendChild(li)});open();
  }
  fetch('/data/posts.json?v='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():[]).then(data=>{posts=(Array.isArray(data)?data:[]).filter(p=>p&&p.slug&&p.category==='상속포기·한정승인').map(p=>({title:p.title,summary:p.summary,keywords:p.keywords,href:'/posts/'+encodeURIComponent(p.slug)+'.html',type:'관련 법률정보',isCore:coreHrefs.has('/posts/'+String(p.slug).replace('.html','')+'.html')}));if(document.activeElement===input||input.value)render(input.value)}).catch(()=>{});
  toggle.addEventListener('click',e=>{e.stopPropagation();list.classList.contains('is-open')?close():render(input.value)});
