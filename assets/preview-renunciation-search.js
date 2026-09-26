@@ -15,7 +15,7 @@
  {title:'인천 상속포기 절차·기간·필요서류',href:'/posts/inheritance-renunciation-incheon-procedure-documents-1ifftk.html',type:'핵심안내'},
  {title:'상속포기 신청기간과 후순위 상속인',href:'/posts/naver-224354174521.html',type:'핵심안내'},
  {title:'한정승인 기한·절차',href:'/posts/naver-224296496196.html',type:'핵심안내'},
- {title:'특별한정승인 절차',href:'/posts/naver-224302457067.html',type:'핵심안내'}
+ {title:'특별한정승인 절차',href:'/posts/naver-224302457067.html',type:'관련 법률정보'}
 ]
  const hubItem={title:'상속포기·한정승인 전체 안내',href:'/renunciation.html',type:'업무페이지'};
  const onHub=location.pathname==='/renunciation.html'||location.pathname==='/renunciation'||location.pathname==='/renunciation/';
