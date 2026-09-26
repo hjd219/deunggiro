@@ -66,48 +66,19 @@ function calculate(){let jobs=[];Object.keys(state).forEach(k=>{if(state[k])jobs
 ['estArea','offType','incArea','incAge','estCapital','incCapital','moveCapital'].forEach(id=>$(id).addEventListener('change',calculate));const requestedJob=new URLSearchParams(location.search).get('job');if(Object.prototype.hasOwnProperty.call(state,requestedJob)){state[requestedJob]=true;const requestedBtn=document.querySelector('.opt[data-job="'+requestedJob+'"]');if(requestedBtn)requestedBtn.classList.add('on')}sync();
 </script><script src="/assets/firestore-counter-public.js?v=10"></script><script src="/assets/home-mobile-menu.js?v=20260917-1"></script><script src="/assets/site-footer.js?v=20260917-v6"></script><script id="calculator-tutorial-preview-js">
 (function(){
- var tip=null,target=null,armed=false;
- function clear(){
-  if(target)target.classList.remove('dg-guide-target');
-  if(tip&&tip.parentNode)tip.parentNode.removeChild(tip);
-  tip=null;target=null;armed=false;
+ var target=document.querySelector('.opts');
+ if(!target)return;
+ var tip=document.createElement('div');
+ tip.className='dg-guide-tip';
+ tip.innerHTML='<span class="dg-guide-pointer" aria-hidden="true"><svg class="dg-guide-hand-svg" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 25V9a4 4 0 0 1 8 0v12-5a4 4 0 0 1 8 0v6-3a4 4 0 0 1 8 0v11c0 10-6 15-15 15h-3c-6 0-10-3-13-8l-6-9a4 4 0 0 1 6-5l7 7"/></svg></span><span>계산할 법인등기를 선택하세요 · 복수 선택 가능</span>';
+ target.classList.add('dg-guide-target');
+ target.parentNode.insertBefore(tip,target);
+ function finish(e){
+  if(!e.target.closest('.opt'))return;
+  target.removeEventListener('click',finish);
+  target.classList.remove('dg-guide-target');
+  if(tip.parentNode)tip.parentNode.removeChild(tip);
  }
- function show(sel,msg,event,next){
-  clear(); target=document.querySelector(sel); if(!target){if(next)next();return}
-  tip=document.createElement('div');tip.className='dg-guide-tip';
-  tip.innerHTML='<span class="dg-guide-pointer" aria-hidden="true"><svg class="dg-guide-hand-svg" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 25V9a4 4 0 0 1 8 0v12-5a4 4 0 0 1 8 0v6-3a4 4 0 0 1 8 0v11c0 10-6 15-15 15h-3c-6 0-10-3-13-8l-6-9a4 4 0 0 1 6-5l7 7"/></svg></span><span>'+msg+'</span>';
-  target.classList.add('dg-guide-target');target.parentNode.insertBefore(tip,target);
-  setTimeout(function(){armed=true},250);
-  if(sel!=='.opts')target.scrollIntoView({behavior:'smooth',block:'center'});
-  if(!event){setTimeout(clear,4200);return}
-  function go(e){
-   if(!armed)return;
-   if(event==='input'&&!e.target.matches('input,select'))return;
-   target.removeEventListener(event,go,true);setTimeout(function(){clear();if(next)next()},160);
-  }
-  target.addEventListener(event,go,true);
- }
- function result(){show('.result','마지막으로 예상 합계금액을 확인하세요',null)}
- function optional(){show('.sub','필요하면 의사록 공증을 선택하세요','click',result)}
- function afterJob(job){
-  if(job==='est') return show('#estBox','자본금·본점 지역·회사 종류를 확인하세요','input',optional);
-  if(job==='off') return show('#offBox','임원변경 사유를 선택하세요','input',optional);
-  if(job==='inc') return show('#incBox','증자금액·본점 지역·설립 후 기간을 확인하세요','input',optional);
-  if(job==='move') return show('#moveBox','본점 이전 유형을 선택하세요','input',function(){
-    setTimeout(function(){
-      var extra=document.querySelector('#moveCapitalWrap:not(.hidden),#duplicateWrap:not(.hidden)');
-      if(extra) show('#moveBox','표시된 추가 조건도 확인하세요','input',optional); else optional();
-    },100);
-  });
-  // 상호변경·목적변경은 계산 입력조건이 없음
-  return optional();
- }
- clear(); target=document.querySelector('.opts');
- if(target){
-  tip=document.createElement('div');tip.className='dg-guide-tip';
-  tip.innerHTML='<span class="dg-guide-pointer" aria-hidden="true"><svg class="dg-guide-hand-svg" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 25V9a4 4 0 0 1 8 0v12-5a4 4 0 0 1 8 0v6-3a4 4 0 0 1 8 0v11c0 10-6 15-15 15h-3c-6 0-10-3-13-8l-6-9a4 4 0 0 1 6-5l7 7"/></svg></span><span>계산할 법인등기를 선택하세요 · 복수 선택 가능</span>';
-  target.classList.add('dg-guide-target');target.parentNode.insertBefore(tip,target);setTimeout(function(){armed=true},250);
-  target.addEventListener('click',function pick(e){var b=e.target.closest('.opt');if(!armed||!b)return;target.removeEventListener('click',pick,true);var job=b.dataset.job;setTimeout(function(){clear();if(state[job])afterJob(job);else optional()},160)},true);
- }
+ target.addEventListener('click',finish);
 })();
 </script></body></html>
