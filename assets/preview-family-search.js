@@ -19,10 +19,12 @@ const fixed=[
 {title:'며느리의 성년후견인 선임',keywords:'성년후견 며느리 시어머니 주택연금',href:'/posts/naver-224413510561.html',type:'처리사례'}
 ];
 let items=[...fixed];
+const fixedHrefs=new Set(fixed.map(x=>x.href));
 fetch('/assets/posts.json').then(r=>r.ok?r.json():[]).then(data=>{if(!Array.isArray(data))return;for(const p of data){if(!p||p.category!=='가사')continue;const href=p.href||p.url||'',title=p.title||'';if(title&&href&&!items.some(x=>x.href===href))items.push({title,keywords:title,href,type:'법률정보'});}}).catch(()=>{});
 const norm=s=>(s||'').toLowerCase().replace(/\s+/g,'');
+function score(x,key){const t=norm(x.title),k=norm(x.keywords),s=norm(x.summary);let n=0;if(t===key)n+=120;else if(t.startsWith(key))n+=90;else if(t.includes(key))n+=70;if(k.includes(key))n+=35;if(s.includes(key))n+=15;if(x.type==='핵심안내')n+=20;return n;}
 function matches(x,s){const n=norm(s);return norm(x.title+' '+(x.keywords||'')).includes(n);}
-function render(all=false){const s=q.value.trim();const a=(all||!s)?items:items.filter(x=>matches(x,s));list.innerHTML=a.slice(0,20).map(x=>'<li><a href="'+x.href+'"><span class="result-type">'+x.type+'</span>'+x.title+'</a></li>').join('')||'<li class="inheritance-empty">검색 결과가 없습니다.</li>';list.classList.add('is-open');q.setAttribute('aria-expanded','true');}
+function render(all=false){const s=q.value.trim(),key=norm(s);const a=(all||!s)?items:items.filter(x=>matches(x,s)).map((x,i)=>({...x,_score:score(x,key),_order:i})).sort((a,b)=>b._score-a._score||a._order-b._order);list.innerHTML=a.slice(0,20).map(x=>'<li><a href="'+x.href+'"><span class="result-type">'+x.type+'</span>'+x.title+'</a></li>').join('')||'<li class="inheritance-empty">검색 결과가 없습니다.</li>';list.classList.add('is-open');q.setAttribute('aria-expanded','true');}
 function close(){list.classList.remove('is-open');q.setAttribute('aria-expanded','false');}
 toggle.addEventListener('click',()=>list.classList.contains('is-open')?close():render(true));
 toggle.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle.click()}});
