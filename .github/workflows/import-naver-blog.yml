@@ -16,6 +16,7 @@ on:
       - 'scripts/seo-auto.mjs'
       - 'scripts/seo-hub-links.mjs'
       - 'scripts/inject_internal_links.py'
+      - 'scripts/site_maintenance.py'
       - 'assets/article-v2.js'
       - 'assets/article-v2.css'
       - '.github/workflows/import-naver-blog.yml'
