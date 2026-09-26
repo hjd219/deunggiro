@@ -7,6 +7,7 @@ on:
       - 'scripts/inject_internal_links.py'
       - 'data/posts.json'
       - 'posts/**'
+      - 'data/audit-trigger.txt'
   workflow_dispatch:
 jobs:
   audit:
