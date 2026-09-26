@@ -38,6 +38,26 @@ function pickCore(p){
   return null;
 }
 
+const CORE_PEERS={
+  inheritance:[CORE.missing,CORE.minor,CORE.overseas,CORE.substitute,CORE.division],
+  missing:[CORE.inheritance,CORE.minor],
+  minor:[CORE.inheritance,CORE.missing],
+  overseas:[CORE.inheritance,CORE.substitute],
+  substitute:[CORE.inheritance,CORE.division],
+  division:[CORE.inheritance,CORE.substitute],
+  renunciation:[CORE.renunciationAll],
+  renunciationAll:[CORE.renunciation],
+  corporate:[],
+  realestate:[],
+  family:[]
+};
+
+function coreKey(core){return Object.entries(CORE).find(([,v])=>v.href===core?.href)?.[0]||null;}
+function alternateCore(core,self){
+  const key=coreKey(core);
+  return (CORE_PEERS[key]||[]).find(x=>x.href!==self)||null;
+}
+
 function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
 function replaceMarked(html,block){
   const start='<!-- SEO_CORE_LINK_START -->',end='<!-- SEO_CORE_LINK_END -->';
@@ -57,7 +77,8 @@ for(const p of posts){
   if(!fs.existsSync(file)){skipped++;continue;}
   let html=fs.readFileSync(file,'utf8');
   const self=`/posts/${p.slug}.html`;
-  const block=core.href===self?'':`<aside class="seo-core-link" aria-label="핵심 안내"><div class="seo-link-kicker">핵심 안내</div><a href="${esc(core.href)}">${esc(core.label)} <span aria-hidden="true">→</span></a></aside>`;
+  const target=core.href===self?(alternateCore(core,self)||core):core;
+  const block=target.href===self?'':`<aside class="seo-core-link" aria-label="핵심 안내"><div class="seo-link-kicker">핵심 안내</div><a href="${esc(target.href)}">${esc(target.label)} <span aria-hidden="true">→</span></a></aside>`;
   const next=replaceMarked(html,block);
   if(next!==html){fs.writeFileSync(file,next);changed++;}
 }
