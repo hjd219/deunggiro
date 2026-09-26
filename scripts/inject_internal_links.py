@@ -275,7 +275,8 @@ def main():
         block = related_block(post, posts, core_slugs)
         # 허브 텍스트 링크는 상단 핵심안내 박스와 중복되어 더 이상 삽입하지 않는다.
         hub = ''
-        calculator = calculator_block(post)
+        # 하단 링크 UI는 핵심안내 박스 + 관련글로 일원화한다. 별도 계산기 텍스트 링크도 생성하지 않는다.
+        calculator = ''
         marker = '</article>'
         new = clean.replace(marker, hub + calculator + block + marker, 1) if marker in clean else clean
         if new != text:
