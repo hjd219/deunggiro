@@ -15,7 +15,7 @@ for p in posts:
     text=path.read_text(encoding='utf-8',errors='replace')
     m=re.search(r'<!-- SEO_RELATED_POSTS_START -->(.*?)<!-- SEO_RELATED_POSTS_END -->',text,re.S)
     if not m: continue
-    for target in re.findall(r'href=["\\\']/posts/([^"\\\']+)\\.html',m.group(1)):
+    for target in re.findall(r'''href=["']/posts/([^"']+)\.html''',m.group(1)):
         all_incoming[target]=all_incoming.get(target,0)+1
         if target in incoming: incoming[target]+=1
 meta={str(p.get('slug','')).replace('.html',''):p for p in posts}
