@@ -32,7 +32,7 @@ body{background:#fff!important}
 .dg-guide-hand-svg{width:25px;height:25px;transform:rotate(180deg);animation:dgGuideTap 1.05s ease-in-out infinite}
 .dg-guide-target{position:relative;z-index:2;border-radius:10px;box-shadow:0 0 0 3px rgba(55,174,228,.16)}
 .dg-guide-result-tip{margin-top:10px;margin-left:auto}@keyframes dgGuideTap{0%,100%{transform:rotate(180deg) translateY(2px)}50%{transform:rotate(180deg) translateY(-2px)}}
-@media(max-width:800px){.dg-guide-tip{padding:7px 10px;font-size:11px;margin-bottom:11px}.dg-guide-pointer{flex-basis:25px;width:25px;height:27px}.dg-guide-hand-svg{width:23px;height:23px}}
+@media(max-width:800px){.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%;max-width:none;overflow:visible;border-bottom:0;gap:6px}.opt{width:100%;padding:12px 6px;border:1px solid #d7e4ea;border-radius:10px;background:#f8fbfc;font-size:13px;text-align:center}.opt.on{border-color:#37aee4;background:#f0faff;color:#168fc2}.opt.on::after{display:none}.dg-guide-tip{padding:7px 10px;font-size:11px;margin-bottom:11px}.dg-guide-pointer{flex-basis:25px;width:25px;height:27px}.dg-guide-hand-svg{width:23px;height:23px}}
 </style><style id="calculator-hide-fixed-total">
 .fixed-total,.mobile-total,.sticky-total,.bottom-total,[class*="fixed-total"],[class*="mobile-total"],[class*="sticky-total"],[id*="fixed-total"],[id*="mobile-total"],[id*="sticky-total"]{display:none!important}
 </style></head><body>
@@ -102,9 +102,12 @@ function calculate(){let jobs=[];Object.keys(state).forEach(k=>{if(state[k])jobs
   // 상호변경·목적변경은 계산 입력조건이 없음
   return optional();
  }
- show('.opts','먼저 계산할 법인등기 유형을 선택하세요','click',function(){
-   var on=document.querySelector('.opt.on');
-   afterJob(on?on.dataset.job:null);
- });
+ clear(); target=document.querySelector('.opts');
+ if(target){
+  tip=document.createElement('div');tip.className='dg-guide-tip';
+  tip.innerHTML='<span class="dg-guide-pointer" aria-hidden="true"><svg class="dg-guide-hand-svg" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 25V9a4 4 0 0 1 8 0v12-5a4 4 0 0 1 8 0v6-3a4 4 0 0 1 8 0v11c0 10-6 15-15 15h-3c-6 0-10-3-13-8l-6-9a4 4 0 0 1 6-5l7 7"/></svg></span><span>먼저 계산할 법인등기 유형을 선택하세요</span>';
+  target.classList.add('dg-guide-target');target.parentNode.insertBefore(tip,target);setTimeout(function(){armed=true},250);
+  target.addEventListener('click',function pick(e){var b=e.target.closest('.opt');if(!armed||!b)return;target.removeEventListener('click',pick,true);var job=b.dataset.job;setTimeout(function(){clear();if(state[job])afterJob(job);else optional()},160)},true);
+ }
 })();
 </script></body></html>
