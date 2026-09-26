@@ -1,32 +1,38 @@
-(()=>{'use strict';
-const q=document.getElementById('inheritance-query'),list=document.getElementById('inheritance-results'),toggle=document.getElementById('inheritance-toggle'),go=document.getElementById('inheritance-search-button');
-if(!q||!list||!toggle||!go)return;
-const fixed=[
-{title:'상속등기 상세안내',keywords:'상속등기 공동상속 단독상속 협의분할',href:'/inheritance.html',type:'핵심안내'},
-{title:'상속·증여·매매 등기 필요서류',keywords:'상속 증여 매매 부동산등기 필요서류 준비서류',href:'/posts/naver-224242416419.html',type:'핵심안내'},
-{title:'등기권리증 분실 시 해결방법',keywords:'등기권리증 등기필증 분실 확인서면 매매',href:'/posts/sale-real-estate-guide-bvcdri.html',type:'핵심안내'},
-{title:'부모·자식 간 부동산 매매',keywords:'부모 자식 가족간 부동산 매매 증여',href:'/posts/naver-224271484086.html',type:'관련 법률정보'},
-{title:'미등기 건물 매매',keywords:'미등기 건물 매매 보존등기',href:'/posts/naver-224250931942.html',type:'관련 법률정보'},
-{title:'신탁등기된 부동산',keywords:'신탁등기 신탁원부 전세 보증금',href:'/posts/naver-224246353949.html',type:'관련 법률정보'},
-{title:'근저당·공장저당 담보설정',keywords:'근저당 공장저당 선박근저당 담보설정',href:'/posts/naver-224254103385.html',type:'관련 법률정보'},
-{title:'취득세 계산',keywords:'취득세 계산기 매매 증여 재산분할',href:'/acquisition-calculator.html',type:'계산기'},
-{title:'이혼 재산분할 아파트 이전',keywords:'재산분할 이혼 아파트 소유권이전',href:'/posts/naver-224413365255.html',type:'처리사례'},
-{title:'전세권자 직접 경매·낙찰',keywords:'전세권 임차인 보증금 경매 낙찰',href:'/posts/naver-224413471424.html',type:'처리사례'},
-{title:'가압류·임차권등기 말소',keywords:'가압류 압류 임차권등기 말소',href:'/posts/naver-224413495528.html',type:'처리사례'},
-{title:'유언대용신탁 귀속등기',keywords:'유언대용신탁 신탁 귀속등기 자녀',href:'/posts/naver-224411287172.html',type:'처리사례'},
-{title:'부모·자식 간 주택 매매 처리사례',keywords:'부모 자식 주택 매매 취득세 취득자금',href:'/posts/naver-224411310050.html',type:'처리사례'}
-];
-let items=[...fixed];
-const fixedHrefs=new Set(fixed.map(x=>x.href));
-fetch('/assets/posts.json').then(r=>r.ok?r.json():[]).then(data=>{if(!Array.isArray(data))return;for(const p of data){if(!p||p.category!=='부동산등기')continue;const href=p.href||p.url||'',title=p.title||'';if(title&&href&&!items.some(x=>x.href===href))items.push({title,keywords:title,href,type:'관련 법률정보'});}}).catch(()=>{});
-const norm=s=>(s||'').toLowerCase().replace(/\s+/g,'');
-function score(x,key){const t=norm(x.title),k=norm(x.keywords),s=norm(x.summary);let n=0;if(t===key)n+=120;else if(t.startsWith(key))n+=90;else if(t.includes(key))n+=70;if(k.includes(key))n+=35;if(s.includes(key))n+=15;if(x.type==='핵심안내')n+=20;return n;}
-function matches(x,s){const n=norm(s);return norm(x.title+' '+(x.keywords||'')).includes(n);}
-function render(all=false){const s=q.value.trim(),key=norm(s);const a=(all||!s)?items:items.filter(x=>matches(x,s)).map((x,i)=>({...x,_score:score(x,key),_order:i})).sort((a,b)=>b._score-a._score||a._order-b._order);list.innerHTML=a.slice(0,20).map(x=>'<li><a href="'+x.href+'"><span class="result-type">'+x.type+'</span>'+x.title+'</a></li>').join('')||'<li class="inheritance-empty">검색 결과가 없습니다.</li>';list.classList.add('is-open');document.body.classList.add('dg-search-open');q.setAttribute('aria-expanded','true');}
-function close(){list.classList.remove('is-open');document.body.classList.remove('dg-search-open');q.setAttribute('aria-expanded','false');}
-toggle.addEventListener('click',()=>list.classList.contains('is-open')?close():render(true));
-q.addEventListener('input',()=>render(false));q.addEventListener('focus',()=>{if(q.value.trim())render(false)});
-go.addEventListener('click',()=>{const a=list.querySelector('a');if(a)location.href=a.getAttribute('href');else render(false)});
-q.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();go.click()}if(e.key==='Escape')close()});
-document.addEventListener('click',e=>{if(!e.target.closest('.inheritance-finder-inline'))close()});
+/* UNIFIED_SERVICE_SEARCH_V2 */
+(function(){
+ const input=document.getElementById('inheritance-query'),toggle=document.getElementById('inheritance-toggle'),list=document.getElementById('inheritance-results'),search=document.getElementById('inheritance-search-button');
+ if(!input||!toggle||!list||!search)return;
+ const status=document.querySelector('.inheritance-search-status');
+ const fixed=[
+ {title:"상속등기 상세안내",keywords:"상속등기 공동상속 단독상속 협의분할",href:"/inheritance.html",type:"핵심안내"},
+ {title:"상속·증여·매매 등기 필요서류",keywords:"상속 증여 매매 부동산등기 필요서류 준비서류",href:"/posts/naver-224242416419.html",type:"핵심안내"},
+ {title:"등기권리증 분실 시 해결방법",keywords:"등기권리증 등기필증 분실 확인서면 매매",href:"/posts/sale-real-estate-guide-bvcdri.html",type:"핵심안내"},
+ {title:"취득세 계산",keywords:"취득세 계산기 매매 증여 재산분할",href:"/acquisition-calculator.html",type:"계산기"}
+ ];
+ let posts=[];
+ const fixedHrefs=new Set(fixed.map(x=>x.href));
+ const clean=s=>String(s||'').toLowerCase().replace(/\s+/g,'');
+ const open=()=>{list.classList.add('is-open');document.body.classList.add('dg-search-open');input.setAttribute('aria-expanded','true');toggle.textContent='▲'};
+ const close=()=>{list.classList.remove('is-open');document.body.classList.remove('dg-search-open');input.setAttribute('aria-expanded','false');toggle.textContent='▼'};
+ function score(x,key){if(!key)return 0;const t=clean(x.title),k=clean(x.keywords),s=clean(x.summary);let n=0;if(t===key)n+=120;else if(t.startsWith(key))n+=90;else if(t.includes(key))n+=70;if(k.includes(key))n+=35;if(s.includes(key))n+=15;if(x.type==='핵심안내')n+=20;return n;}
+ function render(query=''){
+  const key=clean(query);let items;
+  if(!key)items=[...fixed,...posts].slice(0,18);
+  else items=[...fixed,...posts].filter(x=>clean(x.title+' '+(x.summary||'')+' '+(x.keywords||'')).includes(key)).map((x,i)=>({...x,_score:score(x,key),_order:i})).sort((a,b)=>b._score-a._score||a._order-b._order).slice(0,18);
+  list.innerHTML='';
+  if(status){status.textContent=key?'검색 결과 '+items.length+'개':'부동산등기 관련 항목 '+items.length+'개';status.classList.add('is-active');}
+  if(!items.length){const li=document.createElement('li');li.className='inheritance-empty';li.textContent='부동산등기 관련 검색 결과가 없습니다.';list.appendChild(li);open();return;}
+  items.forEach(x=>{const li=document.createElement('li'),a=document.createElement('a'),tag=document.createElement('span');a.href=x.href;tag.className='result-type';tag.textContent=x.type||'관련 법률정보';a.appendChild(tag);a.appendChild(document.createTextNode(x.title));li.appendChild(a);list.appendChild(li);});open();
+ }
+ fetch('/data/posts.json?v='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():[]).then(data=>{
+  posts=(Array.isArray(data)?data:[]).filter(p=>p&&p.slug&&p.category==="부동산등기").map(p=>({title:p.title,summary:p.summary,keywords:p.keywords,href:'/posts/'+encodeURIComponent(String(p.slug).replace('.html',''))+'.html',type:'관련 법률정보'})).filter(p=>!fixedHrefs.has(p.href));
+  if(document.activeElement===input||input.value)render(input.value);
+ }).catch(()=>{});
+ toggle.addEventListener('click',e=>{e.stopPropagation();list.classList.contains('is-open')?close():render(input.value)});
+ input.addEventListener('focus',()=>render(input.value));
+ input.addEventListener('click',()=>render(input.value));
+ input.addEventListener('input',()=>render(input.value));
+ input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();render(input.value)}if(e.key==='Escape')close()});
+ search.addEventListener('click',()=>render(input.value));
+ document.addEventListener('click',e=>{if(!e.target.closest('.inheritance-combo')&&!e.target.closest('.inheritance-finder-inline'))close()});
 })();
