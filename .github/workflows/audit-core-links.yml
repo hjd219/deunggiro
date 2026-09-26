@@ -1,0 +1,20 @@
+name: Audit Core Internal Links
+on:
+  push:
+    paths:
+      - '.github/workflows/audit-core-links.yml'
+      - 'scripts/audit_core_internal_links.py'
+      - 'scripts/inject_internal_links.py'
+      - 'data/posts.json'
+      - 'posts/**'
+  workflow_dispatch:
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install beautifulsoup4
+      - run: python scripts/audit_core_internal_links.py
