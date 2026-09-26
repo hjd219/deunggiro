@@ -27,14 +27,13 @@ body{background:#fff!important}
  .calculator-page-bg>.dg-photo-credit{right:8px;bottom:6px;font-size:8px}
 }
 </style><style id="calculator-header-blur">body>header{position:fixed!important;top:0!important;left:0!important;right:0!important;z-index:1000!important;background:linear-gradient(180deg,rgba(7,25,35,.20),rgba(7,25,35,.15) 55%,rgba(7,25,35,0))!important;backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important}</style><style id="calculator-tutorial-preview">
-.calc-tabs{position:relative}
-.dg-tutorial-tip{display:flex;align-items:center;justify-content:center;gap:7px;width:max-content;max-width:100%;margin:0 0 13px;padding:8px 12px;border:1px solid #bfe6f5;border-radius:999px;background:#f2fbff;color:#426472;font-size:12px;font-weight:800;line-height:1.25;box-shadow:0 5px 16px rgba(26,126,169,.08);transition:.25s}
-.dg-tutorial-hand{display:inline-block;font-size:18px;line-height:1;transform-origin:50% 90%;animation:dgHandTap 1.15s ease-in-out infinite}
-.dg-tutorial-tip.is-done{opacity:0;transform:translateY(-5px);pointer-events:none}
-.dg-tutorial-target{position:relative;z-index:1;border-radius:10px;box-shadow:0 0 0 3px rgba(55,174,228,.13)}
-@keyframes dgHandTap{0%,100%{transform:translateY(-2px) rotate(-7deg)}50%{transform:translateY(3px) rotate(-7deg)}}
-@media(max-width:800px){.dg-tutorial-tip{margin-bottom:11px;padding:7px 10px;font-size:11px}.dg-tutorial-hand{font-size:17px}}
-@media(prefers-reduced-motion:reduce){.dg-tutorial-hand{animation:none}}
+.dg-guide-tip{display:flex;align-items:center;gap:8px;width:max-content;max-width:calc(100% - 8px);margin:0 0 13px;padding:8px 12px;border:1px solid #bfe6f5;border-radius:999px;background:#f2fbff;color:#426472;font-size:12px;font-weight:850;line-height:1.3;box-shadow:0 5px 16px rgba(26,126,169,.08);transition:.2s}
+.dg-guide-hand{display:inline-block;font-size:18px;line-height:1;animation:dgGuideTap 1.05s ease-in-out infinite}
+.dg-guide-target{position:relative;z-index:2;border-radius:10px;box-shadow:0 0 0 3px rgba(55,174,228,.16)}
+.dg-guide-result-tip{margin-top:10px;margin-left:auto}
+@keyframes dgGuideTap{0%,100%{transform:translateY(-2px)}50%{transform:translateY(3px)}}
+@media(max-width:800px){.dg-guide-tip{padding:7px 10px;font-size:11px;margin-bottom:11px}.dg-guide-hand{font-size:17px}}
+@media(prefers-reduced-motion:reduce){.dg-guide-hand{animation:none}}
 </style></head><body>
 <header><div class="wrap nav"><a class="logo" href="/" style="color:inherit;text-decoration:none">등기로<small>현재두 법무사 사무소 · 인천</small></a><nav class="menu"><a href="/">홈</a><a href="/inheritance.html">상속등기</a><a href="/renunciation.html">상속포기·한정승인</a><a href="/corporate.html">법인등기</a><a href="/realestate.html">부동산등기</a><a href="/family.html">가사</a><a href="/posts.html">법률정보</a></nav></div></header>
 <div class="calculator-page-bg" id="dg-intro"><div class="dg-photo-credit">사진 출처: 인천경제자유구역청(IFEZ) · 공공누리 제1유형</div><div class="calc-page-intro"><h1>법인등기 비용 <span>계산</span></h1><p>법인설립·임원변경·상호·목적변경·본점이전·자본금 증자의 등록면허세, 등기신청수수료와 예상 법무사 보수를 계산합니다.</p></div><main class="calculator-flow"><section class="calc-page-shell" data-scroll-end><div class="calc-wrap-current"><div id="dg-calculator-usage" class="hero-usage-counter" hidden>누적 계산기 이용자 <strong data-count></strong></div><div class="calc-tabs"><nav class="opts"><button class="opt on" data-job="est">법인설립</button><button class="opt" data-job="off">임원변경</button><button class="opt" data-job="name">상호변경</button><button class="opt" data-job="purpose">목적변경</button><button class="opt" data-job="move">본점이전</button><button class="opt" data-job="inc">자본금 증자</button></nav></div><div class="workspace"><div class="input-side"><section class="section"><div class="section-head"><h2>등기 정보</h2><span class="section-note">선택한 항목만 표시</span></div><div class="dynamic"><div id="offBox" class="box hidden"><div class="box-title">임원변경</div><div class="grid"><div class="field"><label>변경 사유</label><select id="offType"><option value="appoint">취임</option><option value="reappoint">중임</option><option value="resign">사임</option><option value="death">사망</option></select></div></div></div><div id="estBox" class="box hidden"><div class="box-title">법인설립</div><div class="grid"><div class="field"><label>자본금 (만원)</label><input id="estCapital" value="2,800"></div><div class="field"><label>본점 지역</label><select id="estArea"><option value="non">비과밀지역</option><option value="dense">과밀지역</option></select></div><div class="field"><label>회사 종류</label><select id="estCompanyType"><option value="stock">주식회사</option><option value="limited">유한회사</option><option value="llc">유한책임회사</option></select></div></div></div><div id="incBox" class="box hidden"><div class="box-title">자본금 증자</div><div class="grid"><div class="field"><label>증자금액 (만원)</label><input id="incCapital" value="2,800"></div><div class="field"><label>본점 지역</label><select id="incArea"><option value="non">비과밀지역</option><option value="dense">과밀지역</option></select></div><div class="field"><label>설립 후 기간</label><select id="incAge"><option value="under">5년 이내</option><option value="over">5년 경과</option></select></div></div></div><div id="moveBox" class="box hidden"><div class="box-title">본점이전</div><div class="grid"><div class="field"><label>이전 유형</label><select id="moveType"><option value="inside">관내 이전</option><option value="dense_dense">관외 · 과밀 → 과밀</option><option value="dense_non">관외 · 과밀 → 비과밀</option><option value="non_non">관외 · 비과밀 → 비과밀</option><option value="non_dense">관외 · 비과밀 → 과밀</option></select></div><div id="moveCapitalWrap" class="field hidden"><label>자본금 (만원)</label><input id="moveCapital" value="2,800"></div><div id="duplicateWrap" class="field hidden"><label>중복상호 여부</label><select id="duplicate"><option value="none">중복상호 없음</option><option value="change">중복상호 있음 · 상호변경 필요</option><option value="unknown">잘 모르겠음</option></select></div></div></div></div></section><section class="section"><div class="section-head"><h2>추가 항목</h2></div><div class="sub"><span class="check" id="notary">의사록 공증</span></div></section></div>
@@ -66,19 +65,26 @@ function calculate(){let jobs=[];Object.keys(state).forEach(k=>{if(state[k])jobs
 ['estArea','offType','incArea','incAge','estCapital','incCapital','moveCapital'].forEach(id=>$(id).addEventListener('change',calculate));const requestedJob=new URLSearchParams(location.search).get('job');if(Object.prototype.hasOwnProperty.call(state,requestedJob)){state[requestedJob]=true;const requestedBtn=document.querySelector('.opt[data-job="'+requestedJob+'"]');if(requestedBtn)requestedBtn.classList.add('on')}sync();
 </script><script src="/assets/firestore-counter-public.js?v=10"></script><script src="/assets/home-mobile-menu.js?v=20260917-1"></script><script src="/assets/site-footer.js?v=20260917-v6"></script><script id="calculator-tutorial-preview-js">
 (function(){
- var tabs=document.querySelector('.opts'), wrap=document.querySelector('.calc-tabs');
- if(!tabs||!wrap) return;
- var tip=document.createElement('div');
- tip.className='dg-tutorial-tip';
- tip.setAttribute('role','status');
- tip.innerHTML='<span class="dg-tutorial-hand" aria-hidden="true">👇</span><span>먼저 계산할 법인등기 유형을 선택하세요</span>';
- wrap.insertBefore(tip,wrap.firstChild);
- tabs.classList.add('dg-tutorial-target');
- function done(){
-   tip.classList.add('is-done');
-   tabs.classList.remove('dg-tutorial-target');
-   setTimeout(function(){if(tip&&tip.parentNode)tip.parentNode.removeChild(tip)},260);
+ var steps=[{"target":".opts","msg":"① 먼저 계산할 법인등기 유형을 선택하세요","event":"click"},{"target":".dynamic","msg":"② 등기에 필요한 정보를 입력하세요","event":"input"},{"target":".sub","msg":"③ 필요한 추가 항목을 확인하세요","event":"click"},{"target":".result","msg":"④ 마지막으로 예상 합계금액을 확인하세요","event":"done"}],i=0,tip=null,target=null,armed=false;
+ function clear(){if(target)target.classList.remove('dg-guide-target');if(tip&&tip.parentNode)tip.parentNode.removeChild(tip);tip=null;target=null;armed=false}
+ function show(){
+  clear(); if(i>=steps.length)return;
+  var s=steps[i]; target=document.querySelector(s.target); if(!target){i++;show();return}
+  tip=document.createElement('div');tip.className='dg-guide-tip'+(s.event==='done'?' dg-guide-result-tip':'');
+  tip.innerHTML='<span class="dg-guide-hand" aria-hidden="true">👇</span><span>'+s.msg+'</span>';
+  target.classList.add('dg-guide-target');
+  target.parentNode.insertBefore(tip,target);
+  setTimeout(function(){armed=true},250);
+  if(i>0) target.scrollIntoView({behavior:'smooth',block:'center'});
+  if(s.event==='done'){setTimeout(function(){clear()},4200);return}
+  var ev=s.event;
+  function next(e){
+   if(!armed)return;
+   if(ev==='input' && !(e.target.matches('input,select')))return;
+   target.removeEventListener(ev,next,true);i++;setTimeout(show,180);
+  }
+  target.addEventListener(ev,next,true);
  }
- tabs.addEventListener('click',done,{once:true});
+ show();
 })();
 </script></body></html>
