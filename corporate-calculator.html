@@ -29,14 +29,14 @@ body{background:#fff!important}
 </style><style id="calculator-header-blur">body>header{position:fixed!important;top:0!important;left:0!important;right:0!important;z-index:1000!important;background:linear-gradient(180deg,rgba(7,25,35,.20),rgba(7,25,35,.15) 55%,rgba(7,25,35,0))!important;backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important}</style><style id="calculator-tutorial-preview">
 .dg-guide-tip{display:flex;align-items:center;gap:9px;width:max-content;max-width:calc(100% - 8px);margin:0 0 13px;padding:8px 12px;border:1px solid #bfe6f5;border-radius:999px;background:#f2fbff;color:#426472;font-size:12px;font-weight:850;line-height:1.3;box-shadow:0 5px 16px rgba(26,126,169,.08);transition:.2s}
 .dg-guide-pointer{position:relative;display:inline-block;flex:0 0 27px;width:27px;height:29px;color:#37aee4}
-.dg-guide-hand-svg{position:absolute;left:4px;top:5px;width:25px;height:25px;animation:dgGuideTap 1.05s ease-in-out infinite;transform-origin:50% 90%}
+.dg-guide-hand-svg{position:absolute;left:4px;top:5px;width:25px;height:25px;animation:dgGuideTap 1.05s ease-in-out infinite;transform-origin:50% 50%;transform:rotate(180deg);}
 .dg-guide-pulse{position:absolute;left:0;top:0;width:11px;height:11px;border:2px solid #37aee4;border-radius:50%;animation:dgGuidePulse 1.2s ease-out infinite}
 .dg-guide-target{position:relative;z-index:2;border-radius:10px;box-shadow:0 0 0 3px rgba(55,174,228,.16)}
 .dg-guide-result-tip{margin-top:10px;margin-left:auto}
-@keyframes dgGuideTap{0%,100%{transform:translateY(-2px)}50%{transform:translateY(2px)}}
+@keyframes dgGuideTap{0%,100%{transform:rotate(180deg) translateY(2px)}50%{transform:rotate(180deg) translateY(-2px)}}
 @keyframes dgGuidePulse{0%{transform:scale(.45);opacity:.95}100%{transform:scale(2);opacity:0}}
 @media(max-width:800px){.dg-guide-tip{padding:7px 10px;font-size:11px;margin-bottom:11px}.dg-guide-pointer{flex-basis:25px;width:25px;height:27px}.dg-guide-hand-svg{width:23px;height:23px}}
-@media(prefers-reduced-motion:reduce){.dg-guide-hand-svg,.dg-guide-pulse{animation:none}}
+@media(prefers-reduced-motion:reduce){.dg-guide-hand-svg,.dg-guide-pulse{animation:none}.dg-guide-hand-svg{transform:rotate(180deg)}}
 </style><style id="calculator-hide-fixed-total">
 .fixed-total,.mobile-total,.sticky-total,.bottom-total,[class*="fixed-total"],[class*="mobile-total"],[class*="sticky-total"],[id*="fixed-total"],[id*="mobile-total"],[id*="sticky-total"]{display:none!important}
 </style></head><body>
