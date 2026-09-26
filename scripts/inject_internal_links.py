@@ -204,17 +204,14 @@ def related_block(current, posts, core_slugs):
     ranked.sort(key=lambda x: (x[0], x[1]), reverse=True)
     chosen = [x[2] for x in ranked[:3] if x[0] >= 0]
     if not chosen:
-        return START + '
-' + END
+        return START + '\n' + END
     items = []
     for p in chosen:
         slug = html.escape(str(p.get('slug','')).replace('.html',''), quote=True)
         title = html.escape(str(p.get('title','')).strip())
         category = html.escape(str(p.get('category','') or '법률정보').strip())
         items.append(f'<li><a href="/posts/{slug}.html"><span>{category}</span><strong>{title}</strong></a></li>')
-    return START + '
-<section class="seo-related-posts" aria-label="관련 법률정보"><h2>함께 보면 좋은 글</h2><ul>' + ''.join(items) + '</ul></section>
-' + END
+    return START + '\n<section class="seo-related-posts" aria-label="관련 법률정보"><h2>함께 보면 좋은 글</h2><ul>' + ''.join(items) + '</ul></section>\n' + END
 
 
 def remove_old_related(text):
