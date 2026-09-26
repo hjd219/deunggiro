@@ -14,6 +14,7 @@ on:
       - 'scripts/cleanup_duplicate_posts.py'
       - 'scripts/seo_quality_gate.py'
       - 'scripts/seo-auto.mjs'
+      - 'scripts/inject_internal_links.py'
       - '.github/workflows/import-naver-blog.yml'
   schedule:
     - cron: '17 0 * * *'
