@@ -1,4 +1,9 @@
 (function(){
+ /* Calculator pages now use normal document flow, not the fixed scroll scene. */
+ if(document.documentElement.classList.contains('dg-calculator-page')){
+  document.documentElement.classList.add('dg-home-ready');
+  return;
+ }
  const stage=document.querySelector('.v53-stage');
  const win=document.querySelector('.v53-window');
  const track=document.querySelector('.v53-track');
