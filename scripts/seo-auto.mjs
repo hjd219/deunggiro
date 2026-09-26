@@ -66,7 +66,7 @@ const CORE_TERMS=['상속등기','상속포기','한정승인','특별한정승�
 function coreScore(p){const text=`${p.title||''} ${p.keywords||''} ${p.summary||''}`;let v=0;for(const t of CORE_TERMS)if(text.includes(t))v+=10+Math.min(t.length,8);if(/총정리|절차|방법|비용|기간|주의사항|가능|필요/.test(text))v+=8;if(String(p.title||'').startsWith('[처리사례]'))v+=6;if(String(p.title||'').startsWith('[인천'))v+=8;return v}
 function buildCoreSlugs(){const core=new Set();for(const [category,quota] of Object.entries(CORE_QUOTAS)){posts.filter(p=>String(p.category||'').trim()===category).sort((a,b)=>coreScore(b)-coreScore(a)||String(b.date||'').localeCompare(String(a.date||''))).slice(0,quota).forEach(p=>core.add(String(p.slug||'').replace(/\\.html$/,'')))}return core}
 const CORE_SLUGS=buildCoreSlugs();
-function relatedPosts(p){const a=tokens(p);const scored=posts.filter(x=>x.slug!==p.slug).map(x=>{const b=tokens(x);let score=x.category===p.category?20:0;for(const t of a)if(b.has(t))score++;if(CORE_SLUGS.has(String(x.slug||'').replace(/\\.html$/,'')))score+=35;return{post:x,score}}).sort((x,y)=>y.score-x.score||String(y.post.date).localeCompare(String(x.post.date)));const selected=scored.filter(x=>x.score>0).slice(0,4).map(x=>x.post);if(selected.length<4)for(const p2 of sortPosts(posts.filter(x=>x.slug!==p.slug))){if(!selected.some(x=>x.slug===p2.slug))selected.push(p2);if(selected.length===4)break}return selected.slice(0,4)}
+function relatedPosts(p){return []}
 function gitModifiedDate(relPath,fallback){try{const out=execFileSync('git',['log','-1','--format=%cs','--',relPath],{cwd:root,encoding:'utf8'}).trim();return /^\d{4}-\d{2}-\d{2}$/.test(out)?out:fallback}catch{return fallback}}
 function plainTextFromArticle(html){const m=html.match(/<div class="article-body">([\s\S]*?)<\/div>\s*<!-- SEO_RELATED_POSTS_START -->/i)||html.match(/<div class="article-body">([\s\S]*?)<\/div>\s*<div class="related">/i);if(!m)return '';return m[1].replace(/<script[\s\S]*?<\/script>/gi,' ').replace(/<style[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&nbsp;/gi,' ').replace(/&amp;/gi,'&').replace(/\s+/g,' ').trim()}
 function optimizedDescription(p,html){const summary=clean(p.summary);if(summary.length>=50&&summary.length<=165)return summary;const source=plainTextFromArticle(html)||summary||p.title;const out=source.slice(0,160).trim();return out.length<30?`${p.title} 관련 절차와 핵심 내용을 정리한 등기로 법률정보입니다.`.slice(0,160):out}
@@ -98,15 +98,14 @@ for(const p of posts){
   html=replaceMarked(html,'SEO_STRUCTURED_DATA',ldBlock,'\n</head>');
   const crumb=`<nav aria-label="breadcrumb" style="max-width:850px;margin:0 auto 12px;padding:0 4px;font-size:13px;color:#68717d"><a href="/">홈</a> &gt; <a href="/posts.html">법률정보</a> &gt; <span>${esc(p.category)}</span></nav>`;
   html=replaceMarked(html,'SEO_BREADCRUMB',crumb,'<article class="article">');
-  const rel=relatedPosts(p),relatedBlock=rel.length?`<section aria-labelledby="related-posts-title" style="margin-top:34px;padding-top:24px;border-top:1px solid #e5e7eb"><h2 id="related-posts-title" style="font-size:22px;margin:0 0 14px">같이 보면 좋은 글</h2><div style="display:grid;gap:9px">${rel.map(x=>`<a href="/posts/${esc(x.slug)}.html" style="display:block;padding:12px 14px;border:1px solid #d9e0ea;border-radius:9px;text-decoration:none"><small style="color:#36a9e1;font-weight:800">${esc(x.category)}</small><strong style="display:block;margin-top:3px;color:#20242b;line-height:1.45">${esc(x.title)}</strong></a>`).join('')}</div></section>`:'';
-  html=replaceMarked(html,'SEO_RELATED_POSTS',relatedBlock,'<div class="related">');
+  const rel=[]; // 관련글 생성은 inject_internal_links.py 한 곳에서만 담당
   const issues=[];
   if(!/<link\b[^>]*rel=["']canonical["']/i.test(html))issues.push('canonical 누락');
   if(!/<meta\s+name=["']description["']/i.test(html))issues.push('description 누락');
   if(/<meta\s+name=["']robots["'][^>]*noindex/i.test(html))issues.push('noindex 발견');
   if(!/"@type":"Article"/.test(html))issues.push('Article 구조화데이터 누락');
   if(!/"@type":"BreadcrumbList"/.test(html))issues.push('Breadcrumb 구조화데이터 누락');
-  if(rel.length===0)issues.push('내부 관련글 없음');
+
   if(/SEO_(?:STRUCTURED_DATA|BREADCRUMB)_(?:START|END)(?!\s*-->)/.test(html))issues.push('SEO 마커 노출 위험');
   writeIfChanged(file,html);updateSitemapLastmod(p,modified);audit.push({slug:p.slug,status:issues.length?'warning':'ok',issues,modified,related:rel.map(x=>x.slug)});
 }
