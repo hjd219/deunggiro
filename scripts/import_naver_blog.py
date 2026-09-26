@@ -193,7 +193,7 @@ def main() -> None:
                 continue
 
             url = canonical_url(n)
-            slug = 'naver-' + n
+            slug = core.new_post_slug(title, n)
             try:
                 body, text, imgs = core.extract(url, slug)
                 chars, mojibake = core.quality_text(text)
