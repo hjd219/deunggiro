@@ -13,6 +13,7 @@ on:
       - 'scripts/category_rules.py'
       - 'scripts/cleanup_duplicate_posts.py'
       - 'scripts/seo_quality_gate.py'
+      - 'scripts/seo-auto.mjs'
       - '.github/workflows/import-naver-blog.yml'
   schedule:
     - cron: '17 0 * * *'
