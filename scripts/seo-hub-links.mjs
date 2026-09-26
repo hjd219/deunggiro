@@ -57,7 +57,7 @@ for(const p of posts){
   if(!fs.existsSync(file)){skipped++;continue;}
   let html=fs.readFileSync(file,'utf8');
   const self=`/posts/${p.slug}.html`;
-  const block=core.href===self?'':`<aside aria-label="핵심 안내" style="margin:28px 0 4px;padding:16px 18px;background:#f4f9fd;border:1px solid #cfe9f7;border-radius:9px"><strong style="display:block;margin-bottom:6px;color:#20242b">핵심 안내</strong><a href="${esc(core.href)}" style="color:#1677a8;font-weight:800;text-decoration:underline">${esc(core.label)} →</a></aside>`;
+  const block=core.href===self?'':`<aside class="seo-core-link" aria-label="핵심 안내"><div class="seo-link-kicker">핵심 안내</div><a href="${esc(core.href)}">${esc(core.label)} <span aria-hidden="true">→</span></a></aside>`;
   const next=replaceMarked(html,block);
   if(next!==html){fs.writeFileSync(file,next);changed++;}
 }
