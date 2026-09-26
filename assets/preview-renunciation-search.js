@@ -20,8 +20,8 @@
  let posts=[];
  const coreHrefs=new Set(fixed.filter(x=>x.type==='핵심 안내').map(x=>x.href));
  const clean=s=>String(s||'').toLowerCase().replace(/\s+/g,'');
- const open=()=>{list.classList.add('is-open');input.setAttribute('aria-expanded','true');toggle.textContent='▲'};
- const close=()=>{list.classList.remove('is-open');input.setAttribute('aria-expanded','false');toggle.textContent='▼'};
+ const open=()=>{list.classList.add('is-open');document.body.classList.add('dg-search-open');input.setAttribute('aria-expanded','true');toggle.textContent='▲'};
+ const close=()=>{list.classList.remove('is-open');document.body.classList.remove('dg-search-open');input.setAttribute('aria-expanded','false');toggle.textContent='▼'};
  function score(x,key){const t=clean(x.title),k=clean(x.keywords),s=clean(x.summary);let n=0;if(t===key)n+=120;else if(t.startsWith(key))n+=90;else if(t.includes(key))n+=70;if(k.includes(key))n+=35;if(s.includes(key))n+=15;if(x.isCore)n+=20;return n;}
  function render(query=''){
    const key=clean(query);
