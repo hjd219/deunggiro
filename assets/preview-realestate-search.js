@@ -2,12 +2,6 @@
 const q=document.getElementById('inheritance-query'),list=document.getElementById('inheritance-results'),toggle=document.getElementById('inheritance-toggle'),go=document.getElementById('inheritance-search-button');
 if(!q||!list||!toggle||!go)return;
 const fixed=[
-{title:'부동산등기 한눈에 보기',keywords:'부동산등기 인천 소유권이전 필요서류 비용',href:'#documents',type:'메인안내'},
-{title:'매매 소유권이전등기',keywords:'매매등기 매도인 매수인 거래신고 취득세',href:'#service-1',type:'업무안내'},
-{title:'증여 소유권이전등기',keywords:'증여등기 증여자 수증자 가족간 증여 취득세',href:'#service-2',type:'업무안내'},
-{title:'상속 소유권이전등기',keywords:'상속등기 협의분할 피상속인 상속인 제적등본',href:'#service-3',type:'업무안내'},
-{title:'이혼 재산분할등기',keywords:'재산분할 협의이혼 재판이혼 아파트 소유권이전',href:'#service-4',type:'업무안내'},
-{title:'근저당권 설정·말소',keywords:'근저당 설정 말소 담보 대출 해지증서',href:'#mortgage-guide',type:'업무안내'},
 {title:'상속등기 상세안내',keywords:'상속등기 공동상속 단독상속 협의분할',href:'/inheritance.html',type:'핵심안내'},
 {title:'상속·증여·매매 등기 필요서류',keywords:'상속 증여 매매 부동산등기 필요서류 준비서류',href:'/posts/naver-224242416419.html',type:'핵심안내'},
 {title:'등기권리증 분실 시 해결방법',keywords:'등기권리증 등기필증 분실 확인서면 매매',href:'/posts/sale-real-estate-guide-bvcdri.html',type:'핵심안내'},
@@ -16,7 +10,6 @@ const fixed=[
 {title:'신탁등기된 부동산',keywords:'신탁등기 신탁원부 전세 보증금',href:'/posts/naver-224246353949.html',type:'핵심안내'},
 {title:'근저당·공장저당 담보설정',keywords:'근저당 공장저당 선박근저당 담보설정',href:'/posts/naver-224254103385.html',type:'핵심안내'},
 {title:'취득세 계산',keywords:'취득세 계산기 매매 증여 재산분할',href:'/acquisition-calculator.html',type:'계산기'},
-{title:'부동산등기 자주 묻는 질문',keywords:'FAQ 질문 권리증 취득세 가족간매매 증여 매매',href:'#realestate-faq',type:'세부안내'},
 {title:'이혼 재산분할 아파트 이전',keywords:'재산분할 이혼 아파트 소유권이전',href:'/posts/naver-224413365255.html',type:'처리사례'},
 {title:'전세권자 직접 경매·낙찰',keywords:'전세권 임차인 보증금 경매 낙찰',href:'/posts/naver-224413471424.html',type:'처리사례'},
 {title:'가압류·임차권등기 말소',keywords:'가압류 압류 임차권등기 말소',href:'/posts/naver-224413495528.html',type:'처리사례'},
