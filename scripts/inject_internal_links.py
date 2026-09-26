@@ -196,7 +196,11 @@ def related_block(current, posts, core_slugs):
     for p in posts:
         if str(p.get('slug','')).replace('.html','') == str(current.get('slug','')).replace('.html',''):
             continue
-        candidate_score = score(current, p)\n        candidate_slug = str(p.get('slug','')).replace('.html','')\n        if candidate_slug in core_slugs:\n            candidate_score += 35\n        ranked.append((candidate_score, str(p.get('date','')), p))
+        candidate_score = score(current, p)
+        candidate_slug = str(p.get('slug','')).replace('.html','')
+        if candidate_slug in core_slugs:
+            candidate_score += 35
+        ranked.append((candidate_score, str(p.get('date','')), p))
     ranked.sort(key=lambda x: (x[0], x[1]), reverse=True)
     chosen = [x[2] for x in ranked[:3] if x[0] >= 0]
     if not chosen:
