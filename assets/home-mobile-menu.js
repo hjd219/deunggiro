@@ -48,7 +48,7 @@
   /* 빠른 이용 비용계산: 모바일 2분할 */
   const mmStyle=document.createElement('style');
   mmStyle.id='dg-mm-calc-split-style';
-  mmStyle.textContent='.dg-mm-calc-split{display:grid;grid-template-columns:1fr 1fr;gap:8px;min-width:0}.dg-mm-calc-split .dg-mm-calc-btn{display:flex;align-items:center;justify-content:center;min-width:0;padding-left:8px;padding-right:8px;white-space:nowrap;font-size:13px}.dg-mm-corp-calc-btn{border-left:1px solid rgba(255,255,255,.18)}';
+  mmStyle.textContent='.dg-mm-calc-split{display:grid;grid-template-columns:1fr 1fr;gap:0;min-width:0;border:1.5px solid #37aee4;border-radius:16px;overflow:hidden;background:#fff}.dg-mm-calc-split .dg-mm-calc-btn{display:flex;align-items:center;justify-content:center;min-width:0;height:58px;padding:0 8px!important;border:0!important;border-radius:0!important;background:#fff!important;box-shadow:none!important;white-space:nowrap;font-size:13px}.dg-mm-calc-split .dg-mm-calc-btn+.dg-mm-calc-btn{border-left:1px solid #d5eaf3!important}';
   document.head.appendChild(mmStyle);
 
   const close=panel.querySelector('#dg-shell-menu-close');
