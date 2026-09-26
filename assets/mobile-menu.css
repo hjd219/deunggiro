@@ -42,9 +42,11 @@
   .dg-mm-info{--mm-color:#8b7fbe;--mm-bg:#f4f2fb}
   .dg-mm-divider{height:1px;margin:22px 0 16px;background:#e8edf2}
   .dg-mm-quick-title{margin:0 0 12px;color:#8d98a3;font-size:13px;font-weight:900}
-  .dg-mm-quick{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .dg-mm-quick{display:grid;grid-template-columns:1fr;gap:10px}
   .dg-mm-quick a{display:flex;min-height:52px;align-items:center;justify-content:center;border-radius:15px;text-decoration:none!important;font-size:14px;font-weight:900}
-  .dg-mm-calc-btn{border:1px solid #36a9e1;background:#f4f8fb;color:#344250!important}
+  .dg-mm-calc-split{display:grid;grid-template-columns:1fr 1fr;gap:0;min-width:0;border:1px solid #36a9e1;border-radius:15px;overflow:hidden;background:#f4f8fb}
+  .dg-mm-calc-split .dg-mm-calc-btn{min-width:0;min-height:52px;padding:0 7px;border:0;border-radius:0;background:transparent;color:#344250!important;white-space:nowrap;font-size:13px;box-shadow:none}
+  .dg-mm-calc-split .dg-mm-calc-btn+.dg-mm-calc-btn{border-left:1px solid #cfe6f1}
   .dg-mm-call-btn{border:1px solid #35a8df;background:#35a8df;color:#fff!important}
   .dg-mm-footer{margin-top:25px;text-align:center;color:#4f5d69;font-size:15px;font-weight:750;letter-spacing:-.2px}
   .dg-mm-footer .dg-mm-footer-brand{color:#35a8df;font-weight:900}
@@ -59,7 +61,6 @@
   .dg-mm-label{font-size:15px}
   .dg-mm-desc{font-size:11.5px}
   .dg-mm-arrow{font-size:24px}
-  .dg-mm-quick{grid-template-columns:1fr}
   .dg-mm-footer{font-size:13px}
 }
 @media (max-width:360px){
