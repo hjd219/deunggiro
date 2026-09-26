@@ -5,5 +5,3 @@
 
 /* Keep mobile poster and video on the exact same first-paint geometry. */
 @media(max-width:800px){html.dg-mobile-firstpaint .hero video{object-fit:cover;object-position:center center}}
-
-.dg-mm-calc-split{display:grid;grid-template-columns:1fr 1fr;gap:0;min-width:0;border:1.5px solid #37aee4;border-radius:16px;overflow:hidden;background:#fff}.dg-mm-calc-split .dg-mm-calc-btn{display:flex;align-items:center;justify-content:center;min-width:0;height:58px;padding-left:8px!important;padding-right:8px!important;border:0!important;border-radius:0!important;background:#fff!important;box-shadow:none!important;white-space:nowrap;font-size:13px}.dg-mm-calc-split .dg-mm-calc-btn+.dg-mm-calc-btn{border-left:1px solid #d5eaf3!important}
