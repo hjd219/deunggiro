@@ -8,8 +8,8 @@
  let posts=[];
  const coreSlugs=new Set(['inheritance-registration-acquisition-tax-incheon-procedure-doc-v9aban','naver-224399413497']);
  const clean=s=>String(s||'').toLowerCase().replace(/\s+/g,'');
- const open=()=>{list.classList.add('is-open');input.setAttribute('aria-expanded','true');toggle.textContent='▲'};
- const close=()=>{list.classList.remove('is-open');input.setAttribute('aria-expanded','false');toggle.textContent='▼'};
+ const open=()=>{list.classList.add('is-open');document.body.classList.add('dg-search-open');input.setAttribute('aria-expanded','true');toggle.textContent='▲'};
+ const close=()=>{list.classList.remove('is-open');document.body.classList.remove('dg-search-open');input.setAttribute('aria-expanded','false');toggle.textContent='▼'};
  function score(x,key){
    if(!key)return 0;
    const title=clean(x.title),keywords=clean(x.keywords),summary=clean(x.summary);
