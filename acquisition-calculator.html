@@ -68,7 +68,16 @@ body{background:#fff!important}
  .calculator-page-bg .calc-wrap-current{padding-top:28px!important}
  .calculator-page-bg>.dg-photo-credit{right:8px;bottom:6px;font-size:8px}
 }
-</style><style id="calculator-header-blur">body>header{position:fixed!important;top:0!important;left:0!important;right:0!important;z-index:1000!important;background:linear-gradient(180deg,rgba(7,25,35,.20),rgba(7,25,35,.15) 55%,rgba(7,25,35,0))!important;backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important}</style></head><body>
+</style><style id="calculator-header-blur">body>header{position:fixed!important;top:0!important;left:0!important;right:0!important;z-index:1000!important;background:linear-gradient(180deg,rgba(7,25,35,.20),rgba(7,25,35,.15) 55%,rgba(7,25,35,0))!important;backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important}</style><style id="calculator-tutorial-preview">
+.calc-tabs{position:relative}
+.dg-tutorial-tip{display:flex;align-items:center;justify-content:center;gap:7px;width:max-content;max-width:100%;margin:0 0 13px;padding:8px 12px;border:1px solid #bfe6f5;border-radius:999px;background:#f2fbff;color:#426472;font-size:12px;font-weight:800;line-height:1.25;box-shadow:0 5px 16px rgba(26,126,169,.08);transition:.25s}
+.dg-tutorial-hand{display:inline-block;font-size:18px;line-height:1;transform-origin:50% 90%;animation:dgHandTap 1.15s ease-in-out infinite}
+.dg-tutorial-tip.is-done{opacity:0;transform:translateY(-5px);pointer-events:none}
+.dg-tutorial-target{position:relative;z-index:1;border-radius:10px;box-shadow:0 0 0 3px rgba(55,174,228,.13)}
+@keyframes dgHandTap{0%,100%{transform:translateY(-2px) rotate(-7deg)}50%{transform:translateY(3px) rotate(-7deg)}}
+@media(max-width:800px){.dg-tutorial-tip{margin-bottom:11px;padding:7px 10px;font-size:11px}.dg-tutorial-hand{font-size:17px}}
+@media(prefers-reduced-motion:reduce){.dg-tutorial-hand{animation:none}}
+</style></head><body>
 <header><div class="wrap nav"><a class="logo" href="/" style="color:inherit;text-decoration:none">등기로<small>현재두 법무사 사무소 · 인천</small></a><nav class="menu"><a href="/">홈</a><a href="/inheritance.html">상속등기</a><a href="/renunciation.html">상속포기·한정승인</a><a href="/corporate.html">법인등기</a><a href="/realestate.html">부동산등기</a><a href="/family.html">가사</a><a href="/posts.html">법률정보</a></nav></div></header>
 <div class="calculator-page-bg" id="dg-intro"><div class="dg-photo-credit">사진 출처: 인천경제자유구역청(IFEZ) · 공공누리 제1유형</div><div class="calc-page-intro"><h1>부동산등기 비용 <span>계산</span></h1><p>상속·증여·매매·이혼 재산분할 부동산의 취득세와 등기비용, 법무사 보수를 간편하게 계산합니다.</p></div><main class="calculator-flow"><section class="calc-page-shell" data-scroll-end><div class="calc-wrap-current"><div id="dg-calculator-usage" class="hero-usage-counter" hidden>누적 계산기 이용자 <strong data-count></strong></div><div class="calc-tabs"><div class="mode-row"><nav class="modes"><button class="active" data-mode="inherit">상속</button><button data-mode="gift">증여</button><button data-mode="sale">매매</button><button data-mode="divorce">이혼 재산분할</button></nav></div></div><div class="workspace"><div class="input-side"><section class="section"><div class="section-head"><h2>부동산 정보</h2><div class="lookup"><a href="https://www.wetax.go.kr/tcp/loi/J030901M01.do" target="_blank">시가인정액 조회</a><a href="https://www.wetax.go.kr/tcp/loi/J030401M01.do" target="_blank">시가표준액 조회</a></div></div><div id="properties"></div><button class="add" id="add">＋ 부동산 추가</button></section><section class="section"><div class="section-head"><h2>계산 조건</h2><span class="section-no">필요한 항목만 표시</span></div><div class="conditions"><div class="field saleOnly"><label>취득 후 주택 수</label><select id="homes"><option value="1">1주택</option><option value="2">2주택</option><option value="3">3주택</option><option value="4">4주택 이상</option></select></div><div class="field saleGift"><label>조정대상지역</label><select id="area"><option value="non">이외</option><option value="adj">조정대상지역</option></select></div><div class="field saleGift"><label>전용면적</label><select id="size"><option value="small">85㎡ 이하</option><option value="large">85㎡ 초과</option></select></div><div class="field inheritOnly hidden"><label>상속인 수</label><input id="heirs" type="number" min="1" value="5"></div><div class="field inheritOnly hidden"><label>외국인 상속인</label><select id="foreign"><option value="no">없음</option><option value="yes">있음</option></select></div><div class="field inheritOnly hidden"><label>상속 1가구 1주택</label><select id="oneHouse"><option value="no">아니오</option><option value="yes">예</option></select></div><div class="field inheritOnly hidden"><label>상속등기 방식</label><select id="inheritDivision"><option value="agreement">협의분할</option><option value="statutory">법정지분</option></select></div><div class="field divorceOnly hidden"><label>재산분할 방식</label><select id="divorceType"><option value="agreement">협의</option><option value="judgment">판결·조정</option></select></div></div></section></div><aside class="result-side result" id="resultPanel"><div class="total-label">예상 합계금액</div><div class="total" id="grand">0원</div><div class="caption">세금·공과금과 법무사 보수를 합산한 예상금액</div><div class="breakdown"><div class="group"><h3>세금·공과금</h3><div class="rate-inline"><span>오늘 채권 할인율</span><strong id="dailyBondRate">16.12610%</strong><small id="dailyBondDate">2026.09.23 기준</small></div><div class="row"><span>취득세</span><b id="acq">0원</b></div><div class="row"><span>지방교육세</span><b id="edu">0원</b></div><div class="row"><span>농어촌특별세</span><b id="rural">0원</b></div><div class="row"><span>국민주택채권 매입액</span><b id="bond">0원</b></div><div class="row"><span>채권 할인금액</span><b id="discountCost">0원</b></div><div class="row"><span>등기신청수수료</span><b id="registry">0원</b></div><div class="row"><span>교통비</span><b id="travelOut">80,000원</b></div><div class="row"><span>제증명 비용</span><b id="certOut">0원</b></div><div class="row" id="stampRow"><span>매매계약서 인지세</span><b id="stamp">0원</b></div><div class="subtotal"><span>공과금 합계</span><strong id="publicTotal">0원</strong></div></div><div class="group"><h3>법무사 보수</h3><div class="row"><span id="basicLabel">소유권이전 보수</span><b id="basic">0원</b></div><div class="row"><span>취득세 신고·채권 매입 대행</span><b id="agency">90,000원</b></div><div class="row"><span>부가가치세 10%</span><b id="vat">0원</b></div><div class="subtotal"><span>법무사 보수 합계</span><strong id="legalTotal">0원</strong></div></div></div><div class="documents"><h3>준비서류</h3><div id="documentList"></div></div><div class="actions"><button class="pdf-download" onclick="printEstimate()">견적서 PDF</button><a class="consult" href="tel:0324251500">상담하기</a></div></aside></div></section></main></div>
 <button class="mobile-total" id="mobileTotal"><span>예상 합계금액</span><strong id="mobileGrand">0원</strong></button>
@@ -117,4 +126,21 @@ document.addEventListener('input',e=>{if(e.target.matches('input'))calc()});
 document.addEventListener('change',e=>{if(e.target.matches('select'))calc()});
 document.getElementById('mobileTotal').addEventListener('click',()=>document.getElementById('resultPanel').scrollIntoView({behavior:'smooth'}));</script><script src="/assets/firestore-counter-public.js?v=10"></script><!-- DG_COUNTER_DEPLOY_SYNC_V6 -->
 <script src="/assets/home-mobile-menu.js?v=20260917-1"></script><script src="/assets/site-footer.js?v=20260917-v6"></script>
-</body></html>
+<script id="calculator-tutorial-preview-js">
+(function(){
+ var tabs=document.querySelector('.modes'), wrap=document.querySelector('.calc-tabs');
+ if(!tabs||!wrap) return;
+ var tip=document.createElement('div');
+ tip.className='dg-tutorial-tip';
+ tip.setAttribute('role','status');
+ tip.innerHTML='<span class="dg-tutorial-hand" aria-hidden="true">👇</span><span>먼저 계산할 등기 유형을 선택하세요</span>';
+ wrap.insertBefore(tip,wrap.firstChild);
+ tabs.classList.add('dg-tutorial-target');
+ function done(){
+   tip.classList.add('is-done');
+   tabs.classList.remove('dg-tutorial-target');
+   setTimeout(function(){if(tip&&tip.parentNode)tip.parentNode.removeChild(tip)},260);
+ }
+ tabs.addEventListener('click',done,{once:true});
+})();
+</script></body></html>
