@@ -42,7 +42,14 @@
     ['family','가사','이혼 · 후견 · 개명 · 친생자관계','/family.html'],
     ['info','법률정보','최신정보 · 판례 · 실무가이드','/posts.html']
   ];
-  panel.innerHTML='<div class="dg-mm-top"><span class="dg-mm-brand">메뉴</span><button class="dg-mm-close" id="dg-shell-menu-close" type="button" aria-label="메뉴 닫기">×</button></div><div class="dg-mm-body"><nav class="dg-mm-grid" aria-label="모바일 메뉴">'+items.map(item=>'<a class="dg-mm-item dg-mm-'+item[0]+(item[0]==='home'?' is-current':'')+'" href="'+item[3]+'"><span class="dg-mm-icon">'+icons[item[0]]+'</span><span class="dg-mm-copy"><span class="dg-mm-label">'+item[1]+'</span><span class="dg-mm-desc">'+item[2]+'</span></span><span class="dg-mm-arrow" aria-hidden="true">›</span></a>').join('')+'</nav><div class="dg-mm-divider"></div><div class="dg-mm-quick-title">빠른 이용</div><div class="dg-mm-quick"><a class="dg-mm-calc-btn" href="/acquisition-calculator.html">비용 계산</a><a class="dg-mm-call-btn" href="tel:0324251500">032-425-1500 상담</a></div><div class="dg-mm-footer"><span class="dg-mm-footer-brand">등기로</span><span class="dg-mm-footer-sep">|</span><span>현재두 법무사 사무소</span></div></div>';
+  panel.innerHTML='<div class="dg-mm-top"><span class="dg-mm-brand">메뉴</span><button class="dg-mm-close" id="dg-shell-menu-close" type="button" aria-label="메뉴 닫기">×</button></div><div class="dg-mm-body"><nav class="dg-mm-grid" aria-label="모바일 메뉴">'+items.map(item=>'<a class="dg-mm-item dg-mm-'+item[0]+(item[0]==='home'?' is-current':'')+'" href="'+item[3]+'"><span class="dg-mm-icon">'+icons[item[0]]+'</span><span class="dg-mm-copy"><span class="dg-mm-label">'+item[1]+'</span><span class="dg-mm-desc">'+item[2]+'</span></span><span class="dg-mm-arrow" aria-hidden="true">›</span></a>').join('')+'</nav><div class="dg-mm-divider"></div><div class="dg-mm-quick-title">빠른 이용</div><div class="dg-mm-quick"><div class="dg-mm-calc-split"><a class="dg-mm-calc-btn" href="/acquisition-calculator.html">부동산 비용계산</a><a class="dg-mm-calc-btn dg-mm-corp-calc-btn" href="/corporate-calculator.html">법인 비용계산</a></div><a class="dg-mm-call-btn" href="tel:0324251500">032-425-1500 상담</a></div><div class="dg-mm-footer"><span class="dg-mm-footer-brand">등기로</span><span class="dg-mm-footer-sep">|</span><span>현재두 법무사 사무소</span></div></div>';
+
+
+  /* 빠른 이용 비용계산: 모바일 2분할 */
+  const mmStyle=document.createElement('style');
+  mmStyle.id='dg-mm-calc-split-style';
+  mmStyle.textContent='.dg-mm-calc-split{display:grid;grid-template-columns:1fr 1fr;gap:8px;min-width:0}.dg-mm-calc-split .dg-mm-calc-btn{display:flex;align-items:center;justify-content:center;min-width:0;padding-left:8px;padding-right:8px;white-space:nowrap;font-size:13px}.dg-mm-corp-calc-btn{border-left:1px solid rgba(255,255,255,.18)}';
+  document.head.appendChild(mmStyle);
 
   const close=panel.querySelector('#dg-shell-menu-close');
   const setOpen=open=>{
