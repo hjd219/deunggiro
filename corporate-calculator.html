@@ -105,7 +105,7 @@ function calculate(){let jobs=[];Object.keys(state).forEach(k=>{if(state[k])jobs
  clear(); target=document.querySelector('.opts');
  if(target){
   tip=document.createElement('div');tip.className='dg-guide-tip';
-  tip.innerHTML='<span class="dg-guide-pointer" aria-hidden="true"><svg class="dg-guide-hand-svg" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 25V9a4 4 0 0 1 8 0v12-5a4 4 0 0 1 8 0v6-3a4 4 0 0 1 8 0v11c0 10-6 15-15 15h-3c-6 0-10-3-13-8l-6-9a4 4 0 0 1 6-5l7 7"/></svg></span><span>계산할 법인등기를 선택하세요 · 복수 선택 가능</span>';
+  tip.innerHTML='<span class="dg-guide-pointer" aria-hidden="true"><svg class="dg-guide-hand-svg" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 25V9a4 4 0 0 1 8 0v12-5a4 4 0 0 1 8 0v6-3a4 4 0 0 1 8 0v11c0 10-6 15-15 15h-3c-6 0-10-3-13-8l-6-9a4 4 0 0 1 6-5l7 7"/></svg></span><span>먼저 계산할 법인등기 유형을 선택하세요</span>';
   target.classList.add('dg-guide-target');target.parentNode.insertBefore(tip,target);setTimeout(function(){armed=true},250);
   target.addEventListener('click',function pick(e){var b=e.target.closest('.opt');if(!armed||!b)return;target.removeEventListener('click',pick,true);var job=b.dataset.job;setTimeout(function(){clear();if(state[job])afterJob(job);else optional()},160)},true);
  }
