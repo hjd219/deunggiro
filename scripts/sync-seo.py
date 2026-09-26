@@ -20,7 +20,6 @@ STATIC_URLS = [
     ("/family.html", "0.9", "monthly"),
     ("/acquisition-calculator.html", "0.8", "monthly"),
     ("/corporate-calculator.html", "0.8", "monthly"),
-    ("/divorce-calculator.html", "0.8", "monthly"),
     ("/posts.html", "0.8", "weekly"),
 ]
 
