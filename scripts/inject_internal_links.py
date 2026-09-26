@@ -43,8 +43,8 @@ HUB_RULES = [
     (('/inheritance-missing-heir.html', '연락두절·행방불명 상속인 안내'), ('연락두절','연락 두절','행방불명','실종선고','실종 선고')),
     (('/inheritance-substitute-succession.html', '대습상속 안내'), ('대습상속','대습 상속')),
     (('/inheritance-division.html', '상속재산분할 안내'), ('상속재산분할','상속재산 분할','협의분할','협의 분할','기여분','특별수익')),
-    (('/limited-acceptance-liquidation.html', '한정승인 후 청산 안내'), ('상속재산파산','상속재산 파산','한정승인 후','청산')),
-    (('/renunciation-after.html', '상속포기 후 절차 안내'), ('상속포기 후','후순위 상속인','후순위상속인')),
+    (('/renunciation-limited-acceptance-liquidation.html', '한정승인 후 청산 안내'), ('상속재산파산','상속재산 파산','한정승인 후','청산')),
+    (('/renunciation-after-procedure.html', '상속포기 후 절차 안내'), ('상속포기 후','후순위 상속인','후순위상속인')),
 ]
 
 CATEGORY_HUBS = {
@@ -147,12 +147,56 @@ def hub_block(current):
     )
 
 
-def related_block(current, posts):
+CORE_QUOTAS = {
+    '상속등기': 30,
+    '상속포기·한정승인': 25,
+    '상속재산분할': 5,
+    '법인등기': 20,
+    '부동산등기': 15,
+    '가사': 5,
+}
+
+CORE_TERMS = (
+    '상속등기','상속포기','한정승인','특별한정승인','상속재산분할','대습상속','미성년',
+    '해외','외국인','재외국민','필요서류','취득세','상속순위','보험금','예금',
+    '법인설립','임원','대표이사','본점이전','증자','해산','청산','과태료','의사록','공증',
+    '소유권이전','증여','근저당','전세권','등기권리증','미등기','성년후견','특별대리인','인천'
+)
+
+
+def core_score(post):
+    text = ' '.join((str(post.get('title','')), str(post.get('keywords','')), str(post.get('summary',''))))
+    value = 0
+    for term in CORE_TERMS:
+        if term in text:
+            value += 10 + min(len(term), 8)
+    if re.search(r'총정리|절차|방법|비용|기간|주의사항|가능|필요', text):
+        value += 8
+    if str(post.get('title','')).startswith('[처리사례]'):
+        value += 6
+    if str(post.get('title','')).startswith('[인천'):
+        value += 8
+    return value
+
+
+def build_core_slugs(posts):
+    core = set()
+    for category, quota in CORE_QUOTAS.items():
+        candidates = [p for p in posts if str(p.get('category','')).strip() == category]
+        candidates.sort(key=lambda p: (core_score(p), str(p.get('date',''))), reverse=True)
+        for p in candidates[:quota]:
+            slug = str(p.get('slug','')).replace('.html','')
+            if slug:
+                core.add(slug)
+    return core
+
+
+def related_block(current, posts, core_slugs):
     ranked = []
     for p in posts:
         if str(p.get('slug','')).replace('.html','') == str(current.get('slug','')).replace('.html',''):
             continue
-        ranked.append((score(current, p), str(p.get('date','')), p))
+        candidate_score = score(current, p)\n        candidate_slug = str(p.get('slug','')).replace('.html','')\n        if candidate_slug in core_slugs:\n            candidate_score += 35\n        ranked.append((candidate_score, str(p.get('date','')), p))
     ranked.sort(key=lambda x: (x[0], x[1]), reverse=True)
     chosen = [x[2] for x in ranked[:3] if x[0] >= 0]
     if not chosen:
@@ -210,8 +254,7 @@ def remove_old_related(text):
 
 
 def main():
-    posts = json.loads(POSTS_JSON.read_text(encoding='utf-8'))
-    changed = 0
+    posts = json.loads(POSTS_JSON.read_text(encoding='utf-8'))\n    core_slugs = build_core_slugs(posts)\n    print('core SEO posts selected:', len(core_slugs))\n    changed = 0
     for post in posts:
         slug = str(post.get('slug','')).replace('.html','')
         if not slug:
@@ -221,7 +264,7 @@ def main():
             continue
         text = path.read_text(encoding='utf-8')
         clean = remove_old_related(text)
-        block = related_block(post, posts)
+        block = related_block(post, posts, core_slugs)
         hub = hub_block(post)
         calculator = calculator_block(post)
         marker = '</article>'
