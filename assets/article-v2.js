@@ -26,11 +26,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     /* Reserve the lower dynamic area so async navigation does not visibly push the article on mobile. */
     article.classList.add('dg-dynamic-building');
     removeLegacyActions(article);
-    const existing=[...article.querySelectorAll('.article-prev-next')];
-    existing.slice(1).forEach(el=>el.remove());
-    if(existing.length)return;
-    if(article.dataset.navBuilding==='1')return;
-    article.dataset.navBuilding='1';
+    article.querySelectorAll('.article-prev-next').forEach(el=>el.remove());
     const match=location.pathname.match(/\/posts\/([^/]+)\.html$/i);if(!match){delete article.dataset.navBuilding;return;}
     const currentSlug=decodeURIComponent(match[1]);
     try{
