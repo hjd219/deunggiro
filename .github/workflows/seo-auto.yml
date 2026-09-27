@@ -7,13 +7,11 @@ on:
       - 'data/posts.json'
       - 'posts/**'
       - 'sitemap.xml'
-      - 'scripts/seo-auto.mjs'
-      - 'scripts/seo-hub-links.mjs'
       - 'scripts/category-fix.mjs'
       - 'scripts/seo-canonical-fix.mjs'
       - 'scripts/rss-auto.mjs'
-      - 'scripts/seo_quality_gate.py'
       - 'scripts/seo-trigger.txt'
+      - '.github/workflows/seo-auto.yml'
   workflow_dispatch:
 
 permissions:
