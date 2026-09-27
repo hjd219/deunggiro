@@ -47,6 +47,19 @@ def main():
         ogurl=soup.find("meta",attrs={"property":re.compile("^og:url$",re.I)})
         if not ogurl or str(ogurl.get("content","")).strip()!=expected: issues.append("og:url")
         if issues: bad.append(f"{slug}:"+",".join(issues))
+    static_expected=[
+        "/", "/inheritance.html", "/inheritance-division.html", "/inheritance-minor-heir.html",
+        "/inheritance-missing-heir.html", "/inheritance-overseas-heir.html", "/inheritance-substitute-succession.html",
+        "/corporate.html", "/realestate.html", "/renunciation.html",
+        "/renunciation-after-procedure.html", "/renunciation-limited-acceptance-liquidation.html",
+        "/renunciation-death-insurance.html", "/renunciation-deceased-deposit.html",
+        "/family.html", "/acquisition-calculator.html", "/corporate-calculator.html", "/posts.html",
+    ]
+    for rel in static_expected:
+        loc=BASE + rel
+        if f"<loc>{loc}</loc>" not in sitemap: bad.append(f"STATIC_SITEMAP_MISSING:{rel}")
+    for rel in ("/renunciation-after.html","/limited-acceptance-liquidation.html"):
+        if f"<loc>{BASE + rel}</loc>" in sitemap: bad.append(f"STATIC_SITEMAP_LEGACY:{rel}")
     print(f"SEO_QUALITY_GATE checked={checked} bad={len(bad)}")
     if bad:
         print("\n".join(bad[:100]))
