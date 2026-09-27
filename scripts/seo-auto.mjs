@@ -100,7 +100,7 @@ for(const p of posts){
   if(!fs.existsSync(file)){audit.push({slug:p.slug,status:'warning',issues:['HTML 파일 없음']});continue}
   let html=sanitizeSeoArtifacts(fs.readFileSync(file,'utf8'));
   const url=`${BASE}/posts/${p.slug}.html`,image=abs(p.thumbnail),modified=gitModifiedDate(relFile,p.date||todayKST()),description=optimizedDescription(p,html),hub=categoryHub(p.category);
-  html=replaceMeta(html,'description',description);html=replaceOg(html,'og:description',description);html=enhanceImages(html,p);
+  html=replaceMeta(html,'description',description);html=replaceOg(html,'og:description',description);html=replaceOg(html,'og:url',url);html=enhanceImages(html,p);
   const articleLd={'@context':'https://schema.org','@type':'Article',headline:p.title,description,datePublished:p.date,dateModified:modified,mainEntityOfPage:{'@type':'WebPage','@id':url},author:{'@type':'Person',name:'현재두'},publisher:{'@type':'Organization',name:'현재두 법무사 사무소',url:BASE},...(image?{image:[image]}:{})};
   const breadcrumbLd={'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'홈',item:BASE+'/'},{'@type':'ListItem',position:2,name:hub.name,item:BASE+hub.path},{'@type':'ListItem',position:3,name:p.title,item:url}]};
   const ldBlock=`<script type="application/ld+json">${JSON.stringify(articleLd).replace(/<\//g,'<\\/')}</script>\n<script type="application/ld+json">${JSON.stringify(breadcrumbLd).replace(/<\//g,'<\\/')}</script>`;
