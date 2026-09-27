@@ -20,7 +20,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: seo-auto-main
+  group: deunggiro-content-main
   cancel-in-progress: true
 
 jobs:
