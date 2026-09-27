@@ -40,6 +40,12 @@ def main():
         related=soup.select(".seo-related-posts a[href]")
         if len(related)!=3: issues.append(f"related-links={len(related)}")
         if f"<loc>{expected}</loc>" not in sitemap: issues.append("sitemap")
+        category=str(post.get("category","")).strip()
+        expected_hub={"상속등기":"/inheritance.html","상속재산분할":"/inheritance.html","상속포기·한정승인":"/renunciation.html","법인등기":"/corporate.html","부동산등기":"/realestate.html","가사":"/family.html","기타":"/posts.html"}.get(category,"/posts.html")
+        crumb=soup.find("nav",attrs={"aria-label":"breadcrumb"})
+        if not crumb or not crumb.find("a",href=expected_hub): issues.append("breadcrumb-hub")
+        ogurl=soup.find("meta",attrs={"property":re.compile("^og:url$",re.I)})
+        if not ogurl or str(ogurl.get("content","")).strip()!=expected: issues.append("og:url")
         if issues: bad.append(f"{slug}:"+",".join(issues))
     print(f"SEO_QUALITY_GATE checked={checked} bad={len(bad)}")
     if bad:
