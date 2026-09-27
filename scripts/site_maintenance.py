@@ -89,7 +89,7 @@ def clear_legacy_related_actions(text: str):
 def remove_legacy_full_guide(text: str):
     # Old one-off links such as "인천 상속포기 전체 안내" lived outside <article>.
     # The unified SEO core box now owns this navigation, so remove only standalone paragraphs whose anchor text ends with 전체 안내.
-    pat = re.compile(r'<p\\b[^>]*>\\s*<a\\b[^>]*>[\\s\\S]*?전체\\s*안내[\\s\\S]*?<\\/a>\\s*<\\/p>', re.I)
+    pat = re.compile(r'<p\b[^>]*>\s*<a\b[^>]*>[\s\S]*?전체\s*안내[\s\S]*?</a>\s*</p>', re.I)
     return pat.subn('', text)
 
 
