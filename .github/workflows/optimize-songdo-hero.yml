@@ -70,12 +70,12 @@ jobs:
                   t=q.read_text(encoding='utf-8')
                   t=t.replace('/images/(260623)송도국제도시(02).jpg','/images/songdo-hero.webp')
                   q.write_text(t,encoding='utf-8')
-          for name in ['renunciation.html','renunciation-after.html','limited-acceptance-liquidation.html']:
+          for name in ['renunciation.html','renunciation-after-procedure.html','renunciation-limited-acceptance-liquidation.html','renunciation-death-insurance.html','renunciation-deceased-deposit.html']:
               q=Path(name)
               if q.exists():
                   t=q.read_text(encoding='utf-8')
                   t=t.replace('/images/(260406)송도국제도시(0262).jpg','/images/songdo-cherry-hero.webp')
                   q.write_text(t,encoding='utf-8')
           PY
-          git add images/songdo-hero.webp images/songdo-cherry-hero.webp images/cheongna-realestate-hero.webp images/songdo-hero-mobile.webp images/songdo-cherry-hero-mobile.webp images/cheongna-realestate-hero-mobile.webp realestate.html inheritance.html corporate.html family.html inheritance-division.html inheritance-minor-heir.html inheritance-missing-heir.html inheritance-overseas-heir.html inheritance-substitute-succession.html renunciation.html renunciation-after.html limited-acceptance-liquidation.html
+          git add images/songdo-hero.webp images/songdo-cherry-hero.webp images/cheongna-realestate-hero.webp images/songdo-hero-mobile.webp images/songdo-cherry-hero-mobile.webp images/cheongna-realestate-hero-mobile.webp realestate.html inheritance.html corporate.html family.html inheritance-division.html inheritance-minor-heir.html inheritance-missing-heir.html inheritance-overseas-heir.html inheritance-substitute-succession.html renunciation.html renunciation-after-procedure.html renunciation-limited-acceptance-liquidation.html renunciation-death-insurance.html renunciation-deceased-deposit.html
           git diff --cached --quiet || (git commit -m "Add optimized Songdo hero image" && git push)
