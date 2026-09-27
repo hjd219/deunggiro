@@ -105,7 +105,11 @@ for(const p of posts){
   const breadcrumbLd={'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'홈',item:BASE+'/'},{'@type':'ListItem',position:2,name:hub.name,item:BASE+hub.path},{'@type':'ListItem',position:3,name:p.title,item:url}]};
   const ldBlock=`<script type="application/ld+json">${JSON.stringify(articleLd).replace(/<\//g,'<\\/')}</script>\n<script type="application/ld+json">${JSON.stringify(breadcrumbLd).replace(/<\//g,'<\\/')}</script>`;
   html=replaceMarked(html,'SEO_STRUCTURED_DATA',ldBlock,'\n</head>');
-  // 화면에는 breadcrumb를 노출하지 않는다. SEO용 BreadcrumbList JSON-LD만 유지한다.
+  // 화면에는 현재 글 제목을 제외한 2단계 breadcrumb만 노출한다.
+  // 홈과 업무명 모두 실제 링크이며, 업무명은 카테고리별 허브로 연결한다.
+  const visibleBreadcrumb=`<nav class="dg-post-breadcrumb" aria-label="breadcrumb"><a href="/">홈</a><span aria-hidden="true">›</span><a href="${esc(hub.path)}">${esc(hub.name)}</a></nav>`;
+  const articleStart=html.search(/<article\b/i);
+  if(articleStart>=0) html=html.slice(0,articleStart)+visibleBreadcrumb+'\n'+html.slice(articleStart);
   const rel=[]; // 관련글 생성은 inject_internal_links.py 한 곳에서만 담당
   const issues=[];
   if(!/<link\b[^>]*rel=["']canonical["']/i.test(html))issues.push('canonical 누락');
