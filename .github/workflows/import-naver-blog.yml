@@ -29,7 +29,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: import-naver-blog-main
+  group: deunggiro-content-main
   cancel-in-progress: true
 
 jobs:
