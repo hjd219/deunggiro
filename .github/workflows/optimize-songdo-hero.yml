@@ -6,11 +6,18 @@ on:
       - '.github/workflows/optimize-songdo-hero.yml'
 permissions:
   contents: write
+
+concurrency:
+  group: deunggiro-content-main
+  cancel-in-progress: false
+
 jobs:
   optimize:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.x'
@@ -78,4 +85,19 @@ jobs:
                   q.write_text(t,encoding='utf-8')
           PY
           git add images/songdo-hero.webp images/songdo-cherry-hero.webp images/cheongna-realestate-hero.webp images/songdo-hero-mobile.webp images/songdo-cherry-hero-mobile.webp images/cheongna-realestate-hero-mobile.webp realestate.html inheritance.html corporate.html family.html inheritance-division.html inheritance-minor-heir.html inheritance-missing-heir.html inheritance-overseas-heir.html inheritance-substitute-succession.html renunciation.html renunciation-after-procedure.html renunciation-limited-acceptance-liquidation.html renunciation-death-insurance.html renunciation-deceased-deposit.html
-          git diff --cached --quiet || (git commit -m "Add optimized Songdo hero image" && git push)
+          if git diff --cached --quiet; then
+            echo "No image changes"
+            exit 0
+          fi
+          git commit -m "Add optimized Songdo hero image"
+          for attempt in 1 2 3; do
+            git fetch origin main
+            if git rebase origin/main && git push origin HEAD:main; then
+              echo "Push success"
+              exit 0
+            fi
+            git rebase --abort || true
+            sleep $((attempt * 5))
+          done
+          echo "Push failed after 3 attempts"
+          exit 1
