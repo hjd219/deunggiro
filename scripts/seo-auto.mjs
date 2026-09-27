@@ -62,6 +62,15 @@ function sanitizeSeoArtifacts(html){
 
 function tokens(p){return new Set(`${p.title} ${p.keywords} ${p.summary}`.toLowerCase().replace(/[^0-9a-z가-힣]+/g,' ').split(/\s+/).filter(x=>x.length>=2))}
 const CORE_QUOTAS={'상속등기':30,'상속포기·한정승인':25,'상속재산분할':5,'법인등기':20,'부동산등기':15,'가사':5};
+const CATEGORY_HUBS={
+  '상속등기':{name:'상속등기',path:'/inheritance.html'},
+  '상속포기·한정승인':{name:'상속포기·한정승인',path:'/renunciation.html'},
+  '상속재산분할':{name:'상속등기',path:'/inheritance.html'},
+  '법인등기':{name:'법인등기',path:'/corporate.html'},
+  '부동산등기':{name:'부동산등기',path:'/realestate.html'},
+  '가사':{name:'가사',path:'/family.html'}
+};
+function categoryHub(category){return CATEGORY_HUBS[String(category||'').trim()]||{name:'법률정보',path:'/posts.html'}}
 const CORE_TERMS=['상속등기','상속포기','한정승인','특별한정승인','상속재산분할','대습상속','미성년','해외','외국인','재외국민','필요서류','취득세','상속순위','보험금','예금','법인설립','임원','대표이사','본점이전','증자','해산','청산','과태료','의사록','공증','소유권이전','증여','근저당','전세권','등기권리증','미등기','성년후견','특별대리인','인천'];
 function coreScore(p){const text=`${p.title||''} ${p.keywords||''} ${p.summary||''}`;let v=0;for(const t of CORE_TERMS)if(text.includes(t))v+=10+Math.min(t.length,8);if(/총정리|절차|방법|비용|기간|주의사항|가능|필요/.test(text))v+=8;if(String(p.title||'').startsWith('[처리사례]'))v+=6;if(String(p.title||'').startsWith('[인천'))v+=8;return v}
 function buildCoreSlugs(){const core=new Set();for(const [category,quota] of Object.entries(CORE_QUOTAS)){posts.filter(p=>String(p.category||'').trim()===category).sort((a,b)=>coreScore(b)-coreScore(a)||String(b.date||'').localeCompare(String(a.date||''))).slice(0,quota).forEach(p=>core.add(String(p.slug||'').replace(/\\.html$/,'')))}return core}
@@ -90,13 +99,13 @@ for(const p of posts){
   const relFile=`posts/${p.slug}.html`,file=path.join(root,relFile);
   if(!fs.existsSync(file)){audit.push({slug:p.slug,status:'warning',issues:['HTML 파일 없음']});continue}
   let html=sanitizeSeoArtifacts(fs.readFileSync(file,'utf8'));
-  const url=`${BASE}/posts/${p.slug}.html`,image=abs(p.thumbnail),modified=gitModifiedDate(relFile,p.date||todayKST()),description=optimizedDescription(p,html);
+  const url=`${BASE}/posts/${p.slug}.html`,image=abs(p.thumbnail),modified=gitModifiedDate(relFile,p.date||todayKST()),description=optimizedDescription(p,html),hub=categoryHub(p.category);
   html=replaceMeta(html,'description',description);html=replaceOg(html,'og:description',description);html=enhanceImages(html,p);
   const articleLd={'@context':'https://schema.org','@type':'Article',headline:p.title,description,datePublished:p.date,dateModified:modified,mainEntityOfPage:{'@type':'WebPage','@id':url},author:{'@type':'Person',name:'현재두'},publisher:{'@type':'Organization',name:'현재두 법무사 사무소',url:BASE},...(image?{image:[image]}:{})};
-  const breadcrumbLd={'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'홈',item:BASE+'/'},{'@type':'ListItem',position:2,name:'법률정보',item:BASE+'/posts.html'},{'@type':'ListItem',position:3,name:p.category,item:BASE+'/posts.html'},{'@type':'ListItem',position:4,name:p.title,item:url}]};
+  const breadcrumbLd={'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'홈',item:BASE+'/'},{'@type':'ListItem',position:2,name:hub.name,item:BASE+hub.path},{'@type':'ListItem',position:3,name:p.title,item:url}]};
   const ldBlock=`<script type="application/ld+json">${JSON.stringify(articleLd).replace(/<\//g,'<\\/')}</script>\n<script type="application/ld+json">${JSON.stringify(breadcrumbLd).replace(/<\//g,'<\\/')}</script>`;
   html=replaceMarked(html,'SEO_STRUCTURED_DATA',ldBlock,'\n</head>');
-  const crumb=`<nav aria-label="breadcrumb" style="max-width:850px;margin:0 auto 12px;padding:0 4px;font-size:13px;color:#68717d"><a href="/">홈</a> &gt; <a href="/posts.html">법률정보</a> &gt; <span>${esc(p.category)}</span></nav>`;
+  const crumb=`<nav aria-label="breadcrumb" style="max-width:850px;margin:0 auto 12px;padding:0 4px;font-size:13px;color:#68717d"><a href="/">홈</a> &gt; <a href="${hub.path}">${esc(hub.name)}</a> &gt; <span>${esc(p.title)}</span></nav>`;
   html=replaceMarked(html,'SEO_BREADCRUMB',crumb,'<article class="article">');
   const rel=[]; // 관련글 생성은 inject_internal_links.py 한 곳에서만 담당
   const issues=[];
