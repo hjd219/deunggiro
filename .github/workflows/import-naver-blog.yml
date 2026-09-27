@@ -5,6 +5,7 @@ on:
     paths:
       - 'scripts/import_naver_blog.py'
       - 'scripts/generate_thumbnails.py'
+      - 'scripts/generate_sitemap.py'
       - 'scripts/refresh_naver_format.py'
       - 'scripts/strip_naver_consultation_footer.py'
       - 'scripts/strip_naver_nonnumber_emoji.py'
