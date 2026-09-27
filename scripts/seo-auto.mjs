@@ -91,7 +91,7 @@ function replaceSingleMeta(html,attr,key,value){
 function replaceMeta(html,name,value){return replaceSingleMeta(html,'name',name,value)}
 function replaceOg(html,prop,value){return replaceSingleMeta(html,'property',prop,value)}
 function enhanceImages(html,p){return html.replace(/<img\b([^>]*?)>/gi,(full,attrs)=>{if(/class=["'][^"']*social/i.test(attrs))return full;let a=attrs;if(!/\balt\s*=/i.test(a))a+=` alt="${esc(p.title)} 관련 이미지"`;else a=a.replace(/\balt\s*=\s*["']\s*["']/i,`alt="${esc(p.title)} 관련 이미지"`);if(!/\bloading\s*=/i.test(a))a+=' loading="lazy"';if(!/\bdecoding\s*=/i.test(a))a+=' decoding="async"';return `<img${a}>`})}
-function updateSitemapLastmod(p,modified){const sitemap=path.join(root,'sitemap.xml');if(!fs.existsSync(sitemap))return;let xml=fs.readFileSync(sitemap,'utf8'),url=`${BASE}/posts/${p.slug}.html`,escaped=url.replace(/[.*+?^${}()|[\]\\]/g,'\\const audit=[];'),re=new RegExp(`(<loc>${escaped}<\\/loc>\\s*<lastmod>)[^<]+(<\\/lastmod>)`);if(re.test(xml)){xml=xml.replace(re,`$1${modified}$2`);fs.writeFileSync(sitemap,xml)}}
+function updateSitemapLastmod(p,modified){const sitemap=path.join(root,'sitemap.xml');if(!fs.existsSync(sitemap))return;let xml=fs.readFileSync(sitemap,'utf8'),url=`${BASE}/posts/${p.slug}.html`,escaped=url.replace(/[.*+?^${}()|[\]\\]/g,'\\escaped=url.replace(/[.*+?^${}()|[\]\\]/g,'\\const audit=[];')'),re=new RegExp(`(<loc>${escaped}<\\/loc>\\s*<lastmod>)[^<]+(<\\/lastmod>)`);if(re.test(xml)){xml=xml.replace(re,`$1${modified}$2`);fs.writeFileSync(sitemap,xml)}}
 function writeIfChanged(file,next){const current=fs.readFileSync(file,'utf8');if(current!==next)fs.writeFileSync(file,next)}
 
 const audit=[];
