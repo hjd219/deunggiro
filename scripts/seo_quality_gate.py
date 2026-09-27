@@ -67,9 +67,13 @@ def main():
         if f"<loc>{BASE + rel}</loc>" in sitemap: bad.append(f"STATIC_SITEMAP_LEGACY:{rel}")
     legacy_full=[]
     for page in sorted((ROOT / "posts").glob("*.html")):
-        txt=page.read_text(encoding="utf-8", errors="ignore")
-        if "전체 안내" in txt:
-            legacy_full.append((page.stem, txt.count("전체 안내")))
+        psoup=BeautifulSoup(page.read_text(encoding="utf-8", errors="ignore"),"html.parser")
+        stale=0
+        for ptag in psoup.find_all("p"):
+            links=ptag.find_all("a", recursive=False)
+            if len(links)==1 and "전체 안내" in links[0].get_text(" ",strip=True) and not ptag.get_text(" ",strip=True).replace(links[0].get_text(" ",strip=True),"").strip():
+                stale+=1
+        if stale: legacy_full.append((page.stem,stale))
     print("LEGACY_FULL_GUIDE_AUDIT", "posts=", len(legacy_full), "occurrences=", sum(n for _,n in legacy_full))
     if legacy_full:
         for slug,n in legacy_full[:100]: print("LEGACY_FULL_GUIDE", slug, n)
