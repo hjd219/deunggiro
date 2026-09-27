@@ -119,4 +119,14 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add acquisition-calculator.html
           git commit -m "국민주택채권 할인율 자동 갱신"
-          git push
+          for attempt in 1 2 3; do
+            git fetch origin main
+            if git rebase origin/main && git push origin HEAD:main; then
+              echo "Push success"
+              exit 0
+            fi
+            git rebase --abort || true
+            sleep $((attempt * 5))
+          done
+          echo "Push failed after 3 attempts"
+          exit 1
