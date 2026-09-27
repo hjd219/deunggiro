@@ -1,6 +1,7 @@
 name: Audit Core Internal Links
 on:
   push:
+    branches: [main]
     paths:
       - '.github/workflows/audit-core-links.yml'
       - 'scripts/audit_core_internal_links.py'
@@ -11,6 +12,7 @@ on:
   workflow_dispatch:
 jobs:
   audit:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
