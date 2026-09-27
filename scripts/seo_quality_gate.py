@@ -65,22 +65,22 @@ def main():
         if f"<loc>{loc}</loc>" not in sitemap: bad.append(f"STATIC_SITEMAP_MISSING:{rel}")
     for rel in ("/renunciation-after.html","/limited-acceptance-liquidation.html"):
         if f"<loc>{BASE + rel}</loc>" in sitemap: bad.append(f"STATIC_SITEMAP_LEGACY:{rel}")
+    legacy_full=[]
+    for page in sorted((ROOT / "posts").glob("*.html")):
+        txt=page.read_text(encoding="utf-8", errors="ignore")
+        if "전체 안내" in txt:
+            legacy_full.append((page.stem, txt.count("전체 안내")))
+    print("LEGACY_FULL_GUIDE_AUDIT", "posts=", len(legacy_full), "occurrences=", sum(n for _,n in legacy_full))
+    if legacy_full:
+        for slug,n in legacy_full[:100]: print("LEGACY_FULL_GUIDE", slug, n)
+        bad.extend(f"LEGACY_FULL_GUIDE:{slug}:{n}" for slug,n in legacy_full)
+
     print(f"SEO_QUALITY_GATE checked={checked} bad={len(bad)}")
     if bad:
         print("\n".join(bad[:100]))
         if len(bad)>100: print(f"... 외 {len(bad)-100}건")
         raise SystemExit(1)
 
+
 if __name__=="__main__":
     main()
-
-
-# LEGACY_FULL_GUIDE_AUDIT: inventory old standalone "전체 안내" elements.
-legacy_full=[]
-for page in sorted((ROOT / "posts").glob("*.html")):
-    txt=page.read_text(encoding="utf-8", errors="ignore")
-    if "전체 안내" in txt:
-        legacy_full.append((page.stem, txt.count("전체 안내")))
-print("LEGACY_FULL_GUIDE_AUDIT", "posts=", len(legacy_full), "occurrences=", sum(n for _,n in legacy_full))
-for slug,n in legacy_full:
-    print("LEGACY_FULL_GUIDE", slug, n)
