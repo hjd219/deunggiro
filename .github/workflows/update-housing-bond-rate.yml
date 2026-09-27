@@ -79,8 +79,10 @@ jobs:
           kst = timezone(timedelta(hours=9))
           today = datetime.now(kst).date()
           rate_date = datetime.strptime(date_text, "%Y.%m.%d").date()
-          if rate_date > today or (today - rate_date).days > 7:
-              raise SystemExit(f"Stale or future rate date: {date_text}")
+          # 채권 사이트는 다음 영업일 할인율을 하루 먼저 게시할 수 있다.
+          # 하루 앞선 값까지만 허용하고, 그보다 미래이거나 7일보다 오래된 값은 차단한다.
+          if rate_date > today + timedelta(days=1) or (today - rate_date).days > 7:
+              raise SystemExit(f"Stale or invalid future rate date: {date_text}")
 
           path = Path("acquisition-calculator.html")
           html = path.read_text(encoding="utf-8")
