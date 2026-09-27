@@ -105,8 +105,7 @@ for(const p of posts){
   const breadcrumbLd={'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'홈',item:BASE+'/'},{'@type':'ListItem',position:2,name:hub.name,item:BASE+hub.path},{'@type':'ListItem',position:3,name:p.title,item:url}]};
   const ldBlock=`<script type="application/ld+json">${JSON.stringify(articleLd).replace(/<\//g,'<\\/')}</script>\n<script type="application/ld+json">${JSON.stringify(breadcrumbLd).replace(/<\//g,'<\\/')}</script>`;
   html=replaceMarked(html,'SEO_STRUCTURED_DATA',ldBlock,'\n</head>');
-  const crumb=`<nav aria-label="breadcrumb" style="max-width:850px;margin:0 auto 12px;padding:0 4px;font-size:13px;color:#68717d"><a href="/">홈</a> &gt; <a href="${hub.path}">${esc(hub.name)}</a> &gt; <span>${esc(p.title)}</span></nav>`;
-  html=replaceMarked(html,'SEO_BREADCRUMB',crumb,'<article class="article">');
+  // 화면에는 breadcrumb를 노출하지 않는다. SEO용 BreadcrumbList JSON-LD만 유지한다.
   const rel=[]; // 관련글 생성은 inject_internal_links.py 한 곳에서만 담당
   const issues=[];
   if(!/<link\b[^>]*rel=["']canonical["']/i.test(html))issues.push('canonical 누락');
