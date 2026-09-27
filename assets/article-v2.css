@@ -16,3 +16,10 @@ body.article-v2 .seo-related-posts ul{list-style:none;margin:0;padding:0;display
 body.article-v2 .seo-related-posts li{margin:0;padding:0}
 body.article-v2 .seo-related-posts a{display:block;padding:12px 13px;border:1px solid #e1e8ed;border-radius:9px;background:#fff;text-decoration:none}
 @media(max-width:700px){body.article-v2 .seo-core-link,body.article-v2 .seo-related-posts{margin-top:24px;padding:15px 14px;border-radius:10px}body.article-v2 .seo-core-link>a{font-size:14px}body.article-v2 .seo-related-posts h2{font-size:17px!important}}
+
+/* Compact visible breadcrumb: home > practice hub */
+body.article-v2 .dg-post-breadcrumb{width:min(100%,920px);margin:0 auto 10px;padding:0 2px;display:flex;align-items:center;gap:7px;box-sizing:border-box;font-size:13px;line-height:1.4;font-weight:700}
+body.article-v2 .dg-post-breadcrumb a{color:#36a9e1;text-decoration:none}
+body.article-v2 .dg-post-breadcrumb a:hover,body.article-v2 .dg-post-breadcrumb a:focus-visible{text-decoration:underline;text-underline-offset:3px}
+body.article-v2 .dg-post-breadcrumb span{color:#9ab6c5;font-weight:500}
+@media(max-width:700px){body.article-v2 .dg-post-breadcrumb{margin:0 0 8px;padding:0 15px;font-size:12px;gap:6px}}
