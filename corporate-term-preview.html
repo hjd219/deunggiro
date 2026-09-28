@@ -1,66 +1,86 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>법인 임원 임기 자동계산 | 등기로</title>
-<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Pretendard,"Noto Sans KR",Arial,sans-serif;color:#102b3a;background:#fff}
-header{height:72px;border-bottom:1px solid #e4edf1;display:flex;align-items:center;padding:0 5vw;background:rgba(255,255,255,.94)}
-header b{font-size:22px;color:#169bd5}header span{margin-left:18px;font-size:13px;color:#71858f}
-main{max-width:1180px;margin:0 auto;padding:64px 28px 90px}
-.intro h1{font-size:38px;margin:0 0 12px;letter-spacing:-1.6px}.intro h1 span{color:#169bd5}.intro p{margin:0;color:#71858f;line-height:1.7}
-.steps{display:flex;margin:42px 0 36px;border-bottom:1px solid #dce6ea}.step{flex:1;padding:0 0 16px;font-size:12px;font-weight:800;color:#7a8d96}.step b{display:inline-grid;place-items:center;width:25px;height:25px;margin-right:8px;border:1px solid #cbd9df;border-radius:50%}.step.on{color:#168fc2;border-bottom:2px solid #37aee4}
-.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(420px,1fr);gap:68px}
-h2{font-size:21px;margin:0 0 8px}.desc{font-size:13px;color:#71858f;margin-bottom:20px}
-.upload{position:relative;display:flex;min-height:238px;flex-direction:column;align-items:center;justify-content:center;border:1.5px dashed #9fcddd;background:#f7fcfe;cursor:pointer;text-align:center}
-.upload input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}.icon{display:grid;place-items:center;width:48px;height:58px;border:2px solid #37aee4;border-radius:5px;background:#fff;color:#168fc2;font-size:11px;font-weight:900;margin-bottom:14px}
-.upload strong{font-size:16px}.upload small{margin-top:7px;color:#758b95}.filename{margin-top:13px;color:#168fc2;font-size:12px;font-weight:800}
-.privacy{margin:12px 0 28px;font-size:11px;color:#71858f}.rules{border-top:1px solid #e0e9ed;padding-top:24px}.rulecards{display:grid;grid-template-columns:1fr 1fr;gap:12px}.rule{padding:17px;background:#f5fafc}.rule small{display:block;color:#71858f;margin-bottom:5px}.rule strong{font-size:13px}
-.analyze{width:100%;height:52px;margin-top:22px;border:0;background:#169bd5;color:#fff;font-weight:900;cursor:pointer}.analyze:disabled{opacity:.5}
-.result{border-top:2px solid #37aee4}.status{display:flex;justify-content:space-between;align-items:center;padding:18px 0;border-bottom:1px solid #dce6ea;color:#71858f;font-size:12px}.status strong{font-size:24px;color:#169bd5}
-.corp,.officer{padding:24px 0;border-bottom:1px solid #dce6ea}.corp small{display:block;color:#71858f;font-size:11px;margin-bottom:6px}.corp b{display:block;font-size:17px}.officer-head{display:flex;justify-content:space-between;gap:15px}.officer-head b{font-size:15px}.badge{padding:6px 8px;background:#edf8fc;color:#168fc2;font-size:10px;font-weight:800}.rows{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}.r{font-size:11px;color:#71858f}.r strong{display:block;margin-top:5px;color:#173647;font-size:13px}.warn{padding:18px;background:#f7fafb;color:#667f8b;font-size:12px;line-height:1.6}.raw{margin-top:18px}.raw summary{font-size:11px;color:#71858f;cursor:pointer}.raw pre{white-space:pre-wrap;max-height:220px;overflow:auto;background:#f7fafb;padding:12px;font-size:10px}
-@media(max-width:800px){main{padding:38px 18px 70px}.intro h1{font-size:29px}.grid{grid-template-columns:1fr;gap:45px}.steps{overflow:auto}.step{min-width:130px}.rows{grid-template-columns:1fr}}
+*{box-sizing:border-box}body{margin:0;font-family:Pretendard,"Noto Sans KR",Arial,sans-serif;color:#102b3a;background:#fff}header{height:72px;display:flex;align-items:center;padding:0 5vw;border-bottom:1px solid #e3edf1}header b{font-size:22px;color:#169bd5}header span{margin-left:18px;font-size:13px;color:#71858f}main{max-width:1160px;margin:auto;padding:64px 28px 90px}.intro h1{margin:0 0 12px;font-size:38px;letter-spacing:-1.5px}.intro h1 em{font-style:normal;color:#169bd5}.intro p{margin:0;color:#71858f;font-size:14px}.steps{display:flex;margin:42px 0 36px;border-bottom:1px solid #dce6ea}.step{flex:1;padding-bottom:16px;color:#7a8d96;font-size:12px;font-weight:800}.step b{display:inline-grid;place-items:center;width:25px;height:25px;margin-right:8px;border:1px solid #cbd9df;border-radius:50%}.step.active{color:#168fc2;border-bottom:2px solid #37aee4}.grid{display:grid;grid-template-columns:1fr 1fr;gap:68px}h2{margin:0 0 8px;font-size:21px}.desc{margin-bottom:20px;color:#71858f;font-size:13px}.upload{display:flex;min-height:238px;flex-direction:column;align-items:center;justify-content:center;border:1.5px dashed #9fcddd;background:#f7fcfe;text-align:center;cursor:pointer}.upload:hover{background:#f1faff}.upload-icon{display:grid;place-items:center;width:48px;height:58px;margin-bottom:14px;border:2px solid #37aee4;border-radius:5px;background:#fff;color:#168fc2;font-size:11px;font-weight:900}.upload strong{font-size:16px}.upload small{margin-top:7px;color:#758b95}.filename{min-height:18px;margin-top:12px;color:#168fc2;font-size:12px;font-weight:800}.privacy{margin:12px 0 28px;color:#71858f;font-size:11px}.rules{padding-top:24px;border-top:1px solid #e0e9ed}.rulecards{display:grid;grid-template-columns:1fr 1fr;gap:12px}.rule{padding:17px;background:#f5fafc}.rule small{display:block;margin-bottom:5px;color:#71858f}.rule strong{font-size:13px}.analyze{width:100%;height:52px;margin-top:22px;border:0;background:#169bd5;color:#fff;font-weight:900;cursor:pointer}.analyze:disabled{opacity:.45}.result{border-top:2px solid #37aee4}.status{display:flex;justify-content:space-between;align-items:center;padding:18px 0;border-bottom:1px solid #dce6ea;color:#71858f;font-size:12px}.status strong{color:#169bd5;font-size:24px}.box{padding:24px 0;border-bottom:1px solid #dce6ea}.box small{display:block;margin-bottom:6px;color:#71858f;font-size:11px}.box>strong{display:block;font-size:16px}.head{display:flex;justify-content:space-between;gap:15px}.badge{padding:6px 8px;background:#edf8fc;color:#168fc2;font-size:10px;font-weight:800}.rows{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}.row{color:#71858f;font-size:11px}.row strong{display:block;margin-top:5px;color:#173647;font-size:13px}.notice{padding:22px 0;color:#71858f;font-size:12px;line-height:1.7}@media(max-width:800px){main{padding:38px 18px 70px}.intro h1{font-size:29px}.grid{grid-template-columns:1fr;gap:45px}.step{min-width:120px}.steps{overflow:auto}.rows{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <header><b>등기로</b><span>법인 임원 임기 자동계산</span></header>
 <main>
-<div class="intro"><h1>법인 임원 임기 <span>자동계산</span></h1><p>등기사항증명서 PDF를 올리면 임원과 취임·중임일을 확인하고 임기만료 예상일을 정리합니다.</p></div>
-<div class="steps"><div class="step on"><b>1</b>PDF 업로드</div><div class="step"><b>2</b>임원 자동인식</div><div class="step"><b>3</b>임기 확인</div></div>
-<div class="grid"><section>
+<section class="intro"><h1>법인 임원 임기 <em>자동계산</em></h1><p>등기사항증명서 PDF를 선택하고 임원 임기만료 예상일을 확인합니다.</p></section>
+<div class="steps"><div class="step active"><b>1</b>PDF 업로드</div><div class="step"><b>2</b>임원 자동인식</div><div class="step"><b>3</b>임기 확인</div></div>
+<div class="grid">
+<section>
 <h2>등기사항증명서 올리기</h2><div class="desc">인터넷등기소에서 발급한 PDF 또는 스캔 PDF를 선택하세요.</div>
-<label class="upload"><input id="file" type="file" accept=".pdf,application/pdf" onchange="window.pickPdf&&window.pickPdf(this)"><span class="icon">PDF</span><strong>PDF 파일을 선택하세요</strong><small>클릭하여 파일을 선택하세요</small><span id="filename" class="filename"></span></label>
-<div class="privacy">미리보기에서는 파일을 서버에 전송하지 않고 브라우저에서 분석합니다.</div>
-<div class="rules"><h2>임기 계산 기준</h2><div class="rulecards"><div class="rule"><small>이사</small><strong>취임·중임일 + 3년</strong></div><div class="rule"><small>감사</small><strong>3년 내 최종 결산기 정기주주총회 기준</strong></div></div></div>
-<button id="analyze" class="analyze">PDF 분석</button>
+<input id="pdfFile" type="file" accept="application/pdf,.pdf" hidden>
+<div id="uploadBox" class="upload" role="button" tabindex="0"><span class="upload-icon">PDF</span><strong>PDF 파일을 선택하세요</strong><small>클릭하여 파일을 선택하세요</small><span id="fileName" class="filename"></span></div>
+<div class="privacy">파일은 서버로 전송하지 않고 현재 브라우저에서만 처리합니다.</div>
+<div class="rules"><h2>임기 계산 기준</h2><div class="rulecards"><div class="rule"><small>이사</small><strong>취임·중임일 + 3년</strong></div><div class="rule"><small>감사</small><strong>최종 결산기 정기주주총회 기준</strong></div></div></div>
+<button id="analyze" class="analyze" type="button" disabled>PDF 분석</button>
 </section>
-<aside class="result"><div class="status"><span id="status">PDF를 올리고 분석을 눌러주세요</span><strong id="count">-</strong></div><div id="output"><div class="warn">분석 결과가 여기에 표시됩니다.</div></div></aside>
-</div></main>
+<aside class="result"><div class="status"><span id="status">PDF를 선택해 주세요</span><strong id="count">-</strong></div><div id="result"><div class="notice">분석 결과가 여기에 표시됩니다.</div></div></aside>
+</div>
+</main>
 <script>
-window.pickPdf=function(input){
- const f=input.files&&input.files[0];
- const n=document.getElementById('filename'),s=document.getElementById('status'),ct=document.getElementById('count');
- if(n)n.textContent=f?'선택됨 · '+f.name:'';
- if(s)s.textContent=f?'분석 준비 완료':'PDF를 올리고 분석을 눌러주세요';
- if(ct)ct.textContent='-';
-};
+(function(){
+'use strict';
+var input=document.getElementById('pdfFile');
+var box=document.getElementById('uploadBox');
+var nameEl=document.getElementById('fileName');
+var analyze=document.getElementById('analyze');
+var statusEl=document.getElementById('status');
+var countEl=document.getElementById('count');
+var resultEl=document.getElementById('result');
+var selected=null;
+function openPicker(){input.click()}
+box.addEventListener('click',openPicker);
+box.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();openPicker()}});
+input.addEventListener('change',function(){
+ selected=input.files&&input.files.length?input.files[0]:null;
+ if(!selected){nameEl.textContent='';analyze.disabled=true;statusEl.textContent='PDF를 선택해 주세요';return}
+ if(selected.type&&selected.type!=='application/pdf'&&!/\.pdf$/i.test(selected.name)){selected=null;input.value='';nameEl.textContent='PDF 파일만 선택할 수 있습니다.';analyze.disabled=true;return}
+ nameEl.textContent='선택됨 · '+selected.name;
+ statusEl.textContent='분석 준비 완료';
+ countEl.textContent='-';
+ analyze.disabled=false;
+});
+function dateOf(s){var m=String(s||'').replace(/[Oo]/g,'0').replace(/[Il]/g,'1').match(/((?:19|20)\d{2})\D{0,3}(\d{1,2})\D{0,3}(\d{1,2})/);if(!m)return'';var mo=Number(m[2]),d=Number(m[3]);return mo>=1&&mo<=12&&d>=1&&d<=31?m[1]+'.'+String(mo).padStart(2,'0')+'.'+String(d).padStart(2,'0'):''}
+function directorEnd(d){return d?String(Number(d.slice(0,4))+3)+d.slice(4):'확인 필요'}
+function auditorEnd(d){if(!d)return'확인 필요';var y=Number(d.slice(0,4)),m=Number(d.slice(5,7)),day=Number(d.slice(8,10)),limit=new Date(y+3,m-1,day),fy=new Date(limit.getFullYear(),11,31)<=limit?limit.getFullYear():limit.getFullYear()-1;return String(fy+1)+'.03.31'}
+function roleOf(s){var roles=['대표이사','사내이사','기타비상무이사','사외이사','감사'],x=String(s||'').replace(/\s/g,'');for(var i=0;i<roles.length;i++)if(x.indexOf(roles[i])>=0)return roles[i];return''}
+function nameOf(lines,role){var stop=/^(이사|감사|대표이사|사내이사|사외이사|연월일|주소|취임|중임|퇴임|사임|해임|변경|등기)$/;for(var i=0;i<lines.length;i++){var s=lines[i].replace(role,' ').replace(/\d{6}\s*[-–]?\s*[\d*]{1,7}.*$/,' '),a=s.match(/[가-힣]{2,4}/g)||[];for(var j=0;j<a.length;j++)if(!stop.test(a[j])&&!/(광역시|특별시|남동구|연수구|미추홀구|부평구|계양구|강화군|옹진군|연월일)/.test(a[j]))return a[j]}return'성명 확인 필요'}
+function parse(text){
+ var lines=String(text||'').split(/\n+/).map(function(x){return x.trim()}).filter(Boolean),founded='',corp='법인명 인식 필요',officers=[];
+ for(var i=0;i<lines.length;i++){if(corp==='법인명 인식 필요'&&lines[i].indexOf('주식회사')>=0)corp=lines[i].slice(0,100);if(/회사성립|성립연월일/.test(lines[i]))for(var q=i;q<Math.min(i+4,lines.length);q++){var fd=dateOf(lines[q]);if(fd){founded=fd;break}}}
+ for(var n=0;n<lines.length;n++){var role=roleOf(lines[n]);if(!role)continue;var end=Math.min(n+10,lines.length);for(var z=n+1;z<end;z++)if(roleOf(lines[z])){end=z;break}var block=lines.slice(n,end),explicit='',kind='';for(var k=0;k<block.length;k++)if(/취임|중임/.test(block[k])){explicit=dateOf(block[k])||dateOf(block[k+1]||'');if(explicit){kind=block[k].indexOf('중임')>=0?'중임':'취임';break}}officers.push({role:role,name:nameOf(block,role),date:explicit||founded,fallback:!explicit,kind:kind})}
+ return{corp:corp,founded:founded,officers:officers.filter(function(o,i,a){return a.findIndex(function(x){return x.role===o.role&&x.name===o.name&&x.date===o.date})===i}).slice(0,12)}
+}
+function esc(s){return String(s||'').replace(/[&<>"]/g,function(x){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[x]})}
+function render(r){countEl.textContent=r.officers.length+'명';statusEl.textContent='OCR 분석 완료';var h='<div class="box"><small>법인명</small><strong>'+esc(r.corp)+'</strong><small style="margin-top:12px">회사성립연월일</small><strong>'+esc(r.founded||'인식 필요')+'</strong></div>';r.officers.forEach(function(o){var end=o.role==='감사'?auditorEnd(o.date):directorEnd(o.date);h+='<div class="box"><div class="head"><strong>'+esc(o.role)+' · '+esc(o.name)+'</strong><span class="badge">'+(o.fallback?'설립일 적용':esc(o.kind))+'</span></div><div class="rows"><div class="row">임기 기준일<strong>'+esc(o.date||'확인 필요')+'</strong></div><div class="row">기준<strong>'+(o.fallback?'취임·중임 없음 → 회사성립연월일':esc(o.kind)+'일')+'</strong></div><div class="row">임기만료<strong>'+esc(end)+'</strong></div></div></div>'});resultEl.innerHTML=h}
+function loadScript(src){return new Promise(function(resolve,reject){var s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=function(){reject(new Error('외부 분석 모듈을 불러오지 못했습니다.'))};document.head.appendChild(s)})}
+async function ensureLibraries(){if(!window.pdfjsLib)await loadScript('https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js');if(!window.Tesseract)await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js');pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js'}
+analyze.addEventListener('click',async function(){
+ if(!selected)return;
+ analyze.disabled=true;statusEl.textContent='분석 모듈 준비 중';countEl.textContent='…';
+ var worker=null;
+ try{
+  await ensureLibraries();
+  statusEl.textContent='PDF 읽는 중';
+  var pdf=await pdfjsLib.getDocument({data:new Uint8Array(await selected.arrayBuffer())}).promise;
+  worker=await Tesseract.createWorker('kor+eng',1,{logger:function(m){if(m.status==='recognizing text')statusEl.textContent='한글 OCR 분석 중 '+Math.round((m.progress||0)*100)+'%'}});
+  var text='';
+  for(var p=1;p<=pdf.numPages;p++){statusEl.textContent='페이지 '+p+'/'+pdf.numPages+' 분석 중';var page=await pdf.getPage(p),vp=page.getViewport({scale:3}),canvas=document.createElement('canvas');canvas.width=vp.width;canvas.height=vp.height;await page.render({canvasContext:canvas.getContext('2d'),viewport:vp}).promise;var rec=await worker.recognize(canvas);text+='\n'+rec.data.text}
+  render(parse(text));
+  document.querySelectorAll('.step').forEach(function(x){x.classList.add('active')});
+ }catch(e){console.error(e);statusEl.textContent='분석 실패';countEl.textContent='!';resultEl.innerHTML='<div class="notice">'+esc(e.message||e)+'</div>'}
+ finally{if(worker)try{await worker.terminate()}catch(_e){}analyze.disabled=!selected}
+});
+})();
 </script>
-<script>
-pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
-const $=id=>document.getElementById(id),file=$('file'),filename=$('filename'),button=$('analyze'),statusEl=$('status'),countEl=$('count'),output=$('output');
-const dateOf=s=>{const m=(s||'').replace(/[Oo]/g,'0').replace(/[Il]/g,'1').match(/((?:19|20)\d{2})\D{0,3}(\d{1,2})\D{0,3}(\d{1,2})/);if(!m)return'';const mo=+m[2],d=+m[3];return mo>0&&mo<13&&d>0&&d<32?m[1]+'.'+String(mo).padStart(2,'0')+'.'+String(d).padStart(2,'0'):''};
-const directorEnd=d=>d?String(+d.slice(0,4)+3)+d.slice(4):'날짜 확인 필요';
-const auditorEnd=d=>{if(!d)return'날짜 확인 필요';const y=+d.slice(0,4),m=+d.slice(5,7),day=+d.slice(8,10),limit=new Date(y+3,m-1,day),fy=new Date(limit.getFullYear(),11,31)<=limit?limit.getFullYear():limit.getFullYear()-1;return(fy+1)+'.03.31'};
-const roleOf=s=>['대표이사','사내이사','기타비상무이사','사외이사','감사'].find(x=>(s||'').replace(/\s/g,'').includes(x))||'';
-const badName=/^(이사|감사|대표이사|사내이사|사외이사|연월일|주소|취임|중임|퇴임|사임|해임|변경|등기)$/;
-function personName(block,role){for(const line of block){let s=line.replace(role,' ').replace(/\d{6}\s*[-–]?\s*[\d*]{1,7}.*$/,' ');const names=s.match(/[가-힣]{2,4}/g)||[];for(const n of names){if(!badName.test(n)&&!/(광역시|특별시|남동구|연수구|미추홀구|부평구|계양구|강화군|옹진군|연월일)/.test(n))return n}}return'성명 확인 필요'}
-function parse(text){const lines=text.split(/\n+/).map(x=>x.trim()).filter(Boolean);let founded='',corp='법인명 인식 필요';for(let i=0;i<lines.length;i++){if(corp==='법인명 인식 필요'&&/주식회사/.test(lines[i]))corp=lines[i].slice(0,100);if(/회사성립|성립연월일/.test(lines[i]))for(let j=i;j<Math.min(i+4,lines.length);j++){const d=dateOf(lines[j]);if(d){founded=d;break}}}
-const officers=[];for(let i=0;i<lines.length;i++){const role=roleOf(lines[i]);if(!role)continue;let end=Math.min(i+10,lines.length);for(let j=i+1;j<end;j++)if(roleOf(lines[j])){end=j;break}const block=lines.slice(i,end);let explicit='',kind='';for(let j=0;j<block.length;j++)if(/취임|중임/.test(block[j])){explicit=dateOf(block[j])||dateOf(block[j+1]||'');if(explicit){kind=/중임/.test(block[j])?'중임':'취임';break}}officers.push({role,name:personName(block,role),date:explicit||founded,fallback:!explicit,kind})}
-return{corp,founded,officers:officers.filter((o,i,a)=>a.findIndex(x=>x.role===o.role&&x.name===o.name&&x.date===o.date)===i).slice(0,12),raw:text}}
-function render(r){countEl.textContent=r.officers.length+'명';statusEl.textContent='OCR 분석 완료';let h='<div class="corp"><small>법인명</small><b>'+r.corp+'</b><small style="margin-top:12px">회사성립연월일</small><b style="font-size:14px">'+(r.founded||'인식 필요')+'</b></div>';for(const o of r.officers){const end=o.role==='감사'?auditorEnd(o.date):directorEnd(o.date);h+='<div class="officer"><div class="officer-head"><b>'+o.role+' · '+o.name+'</b><span class="badge">'+(o.fallback?'설립일 적용':o.kind)+'</span></div><div class="rows"><div class="r">임기 기준일<strong>'+(o.date||'확인 필요')+'</strong></div><div class="r">기준<strong>'+(o.fallback?'취임·중임 없음 → 회사성립연월일':o.kind+'일')+'</strong></div><div class="r">임기만료<strong>'+end+'</strong></div></div></div>'}h+='<details class="raw"><summary>OCR 인식 원문 보기</summary><pre>'+r.raw.replace(/[&<>]/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[x]))+'</pre></details>';output.innerHTML=h}
-button.addEventListener('click',async()=>{const f=file.files[0];if(!f){alert('PDF 파일을 먼저 선택하세요.');return}button.disabled=true;try{statusEl.textContent='PDF 읽는 중';countEl.textContent='…';const pdf=await pdfjsLib.getDocument({data:new Uint8Array(await f.arrayBuffer())}).promise;const worker=await Tesseract.createWorker('kor+eng',1,{logger:m=>{if(m.status==='recognizing text')statusEl.textContent='한글 OCR 분석 중 '+Math.round((m.progress||0)*100)+'%'}});await worker.setParameters({tessedit_pageseg_mode:'3',preserve_interword_spaces:'1'});let text='';for(let p=1;p<=pdf.numPages;p++){const page=await pdf.getPage(p),vp=page.getViewport({scale:3});const canvas=document.createElement('canvas');canvas.width=vp.width;canvas.height=vp.height;await page.render({canvasContext:canvas.getContext('2d'),viewport:vp}).promise;const r=await worker.recognize(canvas);text+='\n'+r.data.text}await worker.terminate();render(parse(text));document.querySelectorAll('.step').forEach((x,i)=>x.classList.toggle('on',i<3))}catch(e){console.error(e);statusEl.textContent='분석 실패';countEl.textContent='!';output.innerHTML='<div class="warn">PDF 분석 중 오류가 발생했습니다.<br>'+String(e.message||e)+'</div>'}finally{button.disabled=false}});
-</script>
-</body></html>
+</body>
+</html>
