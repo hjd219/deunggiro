@@ -116,15 +116,30 @@ function parse(rows){
   let name='성명 확인 필요';
   for(const r of block){const n=personName(r.text,role);if(n!=='성명 확인 필요'){name=n;break}}
   let ex=null;
+  const events=[];
   for(const r of block){
-   if(!/취임|중임/.test(r.text))continue;
-   const d=dateOf(r.text);
-   if(d){ex={date:d,kind:/중임/.test(r.text)?'중임':'취임'};break}
    const marker=r.words.find(w=>/취임|중임/.test(w.text));
    if(!marker)continue;
-   const sameVisual=block.filter(x=>Math.max(x.top,r.top)<=Math.min(x.bottom,r.bottom)+4);
-   for(const vr of sameVisual){const vd=dateOf(vr.text);if(vd){ex={date:vd,kind:/중임/.test(r.text)?'중임':'취임'};break}}
-   if(ex)break;
+   const kind=/중임/.test(marker.text)?'중임':'취임';
+   let d=dateOf(r.text);
+   if(!d){
+    const mc=marker.top+(marker.height||12)/2;
+    const visualWords=[];
+    for(const vr of block){
+     for(const w of vr.words){
+      const wc=w.top+(w.height||12)/2;
+      const tol=Math.max(20,(marker.height||12)*1.5,(w.height||12)*1.5);
+      if(Math.abs(wc-mc)<=tol)visualWords.push(w);
+     }
+    }
+    visualWords.sort((a,b)=>a.left-b.left);
+    d=dateOf(visualWords.map(w=>w.text).join(' '));
+   }
+   if(d)events.push({date:d,kind});
+  }
+  if(events.length){
+   events.sort((a,b)=>a.date.localeCompare(b.date));
+   ex=events[events.length-1];
   }
   // 좌표상 같은 행에서 확인된 취임·중임일은 직위와 관계없이 우선 적용한다.
   // 같은 행에서 취임·중임일을 확인하지 못한 경우에만 회사성립연월일을 적용한다.
