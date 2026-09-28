@@ -1,90 +1,58 @@
 <!doctype html>
-<html lang="ko"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<meta name="robots" content="noindex,nofollow"><title>법인 임원 임기 자동계산 미리보기 | 등기로</title>
-<link rel="stylesheet" href="/assets/home-v56-a.css?v=20260918-1"><link rel="stylesheet" href="/assets/home-v56-b.css?v=20260918-1"><link rel="stylesheet" href="/assets/mobile-menu.css?v=20260917-1">
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>법인 임원 임기 자동계산 | 등기로</title>
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#fff;color:#102b3a;font-family:Pretendard,"Noto Sans KR","Malgun Gothic",sans-serif;font-weight:500}button,input,select{font:inherit}
-body>header{position:fixed;top:0;left:0;right:0;z-index:1000;background:linear-gradient(180deg,rgba(7,25,35,.20),rgba(7,25,35,.15) 55%,rgba(7,25,35,0));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-.page{position:relative;min-height:100vh;padding:150px 0 88px;background:url("/images/songdo-hero.webp") center/cover fixed no-repeat}.page:before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,25,35,.20),rgba(7,25,35,.12) 52%,rgba(7,25,35,.04))}
-.intro,.flow{position:relative;z-index:2;width:min(1180px,calc(100% - 44px));margin:auto}.intro{padding:0 0 28px;color:#fff}.intro h1{margin:0 0 10px;font-size:36px;letter-spacing:-2px;font-weight:900;text-shadow:0 2px 8px #0004}.intro h1 span{color:#37aee4}.intro p{margin:0;max-width:850px;font-size:15px;line-height:1.7;color:#fffffff0;text-shadow:0 1px 5px #0005}
-.shell{background:#fff;border-radius:26px;box-shadow:0 18px 55px #051c2b29;overflow:hidden}.wrap2{padding:48px 58px 68px}.steps{display:flex;gap:0;border-bottom:1px solid #dce6ea;margin-bottom:38px}.step{flex:1;padding:0 0 17px;color:#7a8d96;font-size:12px;font-weight:850}.step b{display:inline-grid;place-items:center;width:25px;height:25px;margin-right:8px;border:1px solid #cbd9df;border-radius:50%}.step.on{color:#168fc2;border-bottom:2px solid #37aee4}.step.on b{border-color:#37aee4;background:#edf9fe}
-.grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(390px,.95fr);gap:70px}.title{font-size:22px;font-weight:900;letter-spacing:-.7px;margin:0 0 8px}.desc{font-size:13px;color:#71858f;line-height:1.65;margin-bottom:22px}
-.term-upload-box{position:relative!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;width:100%!important;min-height:238px!important;margin:0!important;padding:34px 24px!important;border:1.5px dashed #9fcddd!important;background:#f7fcfe!important;text-align:center!important;overflow:hidden!important;cursor:pointer!important;transition:.2s!important}.term-upload-box:hover{border-color:#37aee4!important;background:#f1faff!important}.term-upload-box .term-file-input{position:absolute!important;inset:0!important;z-index:5!important;display:block!important;width:100%!important;height:100%!important;margin:0!important;padding:0!important;border:0!important;opacity:0!important;cursor:pointer!important}.term-pdf-icon{display:grid!important;place-items:center!important;flex:0 0 58px!important;width:48px!important;height:58px!important;margin:0 0 15px!important;border:2px solid #37aee4!important;border-radius:5px!important;background:#fff!important;color:#168fc2!important;font-size:11px!important;font-weight:900!important}.term-upload-title{display:block!important;width:100%!important;margin:0 0 7px!important;color:#102b3a!important;font-size:16px!important;font-weight:900!important;line-height:1.4!important}.term-upload-help{display:block!important;width:100%!important;margin:0!important;color:#758b95!important;font-size:12px!important;line-height:1.5!important}.privacy{margin:13px 0 30px;font-size:11px;color:#71858f}.privacy b{color:#168fc2}
-.settings{border-top:1px solid #e0e9ed;padding-top:26px}.field input:focus,.field select:focus{border-color:#37aee4}
-.analyze{width:100%;margin-top:25px;border:0;background:#159bd2;color:#fff;padding:15px;font-size:13px;font-weight:900;cursor:pointer}
-.result{min-width:0}.status{display:flex;justify-content:space-between;align-items:end;padding-bottom:18px;border-bottom:1px solid #dce6ea}.status span{font-size:12px;color:#71858f}.status strong{font-size:22px;color:#159bd2}.corp{padding:22px 0;border-bottom:1px solid #dce6ea}.corp small{display:block;color:#7a8d96;font-size:11px;margin-bottom:5px}.corp b{font-size:17px}
-.officer{padding:20px 0;border-bottom:1px solid #e1eaed}.officer-head{display:flex;justify-content:space-between;gap:16px;margin-bottom:12px}.officer-head b{font-size:15px}.badge{font-size:10px;font-weight:900;padding:5px 8px;background:#edf8fc;color:#168fc2}.rows{display:grid;grid-template-columns:1fr 1fr;gap:9px 22px}.r{font-size:11px;color:#71858f}.r strong{display:block;color:#294856;font-size:13px;margin-top:3px}.warn{margin-top:19px;padding:13px 15px;background:#f7fafb;color:#647b86;font-size:11px;line-height:1.65}.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:18px}.actions button{border:0;padding:14px;font-size:11px;font-weight:900;cursor:pointer}.mail{background:#159bd2;color:#fff}.pdf{background:#eaf5f8;color:#227da3}
-.filename{display:none;margin-top:12px;color:#168fc2;font-size:12px;font-weight:850}.filename.show{display:block}.rulecards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}.rulecard{padding:16px;border:1px solid #dce8ed;background:#f9fcfd}.rulecard small{display:block;color:#71858f;font-size:11px;margin-bottom:5px}.rulecard strong{font-size:15px;color:#173b4c}.reminder{margin-top:14px;padding:15px;border:1px solid #bfe6f5;background:#f2fbff}.reminder b{display:block;color:#168fc2;font-size:12px;margin-bottom:5px}.reminder span{font-size:12px;color:#496875;line-height:1.55}
-@media(max-width:850px){.page{padding:94px 0 52px;background-image:url("/images/songdo-hero-mobile.webp");background-attachment:scroll}.intro,.flow{width:calc(100% - 24px)}.intro{padding:0 8px 22px}.intro h1{font-size:32px}.shell{border-radius:20px}.wrap2{padding:32px 20px 48px}.steps{overflow:auto}.step{min-width:115px}.grid{display:block}.result{margin-top:42px;padding-top:30px;border-top:1px solid #dce6ea}.fields{grid-template-columns:1fr}.rows{grid-template-columns:1fr 1fr}}
-</style><script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script><script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script></head><body>
-<header><div class="wrap nav"><a class="logo" href="/" style="color:inherit;text-decoration:none">등기로<small>현재두 법무사 사무소 · 인천</small></a><nav class="menu"><a href="/">홈</a><a href="/inheritance.html">상속등기</a><a href="/renunciation.html">상속포기·한정승인</a><a href="/corporate.html">법인등기</a><a href="/realestate.html">부동산등기</a><a href="/family.html">가사</a><a href="/posts.html">법률정보</a></nav></div></header>
-<div class="page"><div class="intro"><h1>법인 임원 임기 <span>자동계산</span></h1><p>등기사항증명서 PDF를 올리면 임원과 취임·중임일을 확인하고 임기만료 예상일을 한눈에 정리합니다.</p></div>
-<main class="flow"><section class="shell"><div class="wrap2">
+*{box-sizing:border-box}body{margin:0;font-family:Pretendard,"Noto Sans KR",Arial,sans-serif;color:#102b3a;background:#fff}
+header{height:72px;border-bottom:1px solid #e4edf1;display:flex;align-items:center;padding:0 5vw;background:rgba(255,255,255,.94)}
+header b{font-size:22px;color:#169bd5}header span{margin-left:18px;font-size:13px;color:#71858f}
+main{max-width:1180px;margin:0 auto;padding:64px 28px 90px}
+.intro h1{font-size:38px;margin:0 0 12px;letter-spacing:-1.6px}.intro h1 span{color:#169bd5}.intro p{margin:0;color:#71858f;line-height:1.7}
+.steps{display:flex;margin:42px 0 36px;border-bottom:1px solid #dce6ea}.step{flex:1;padding:0 0 16px;font-size:12px;font-weight:800;color:#7a8d96}.step b{display:inline-grid;place-items:center;width:25px;height:25px;margin-right:8px;border:1px solid #cbd9df;border-radius:50%}.step.on{color:#168fc2;border-bottom:2px solid #37aee4}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(420px,1fr);gap:68px}
+h2{font-size:21px;margin:0 0 8px}.desc{font-size:13px;color:#71858f;margin-bottom:20px}
+.upload{position:relative;display:flex;min-height:238px;flex-direction:column;align-items:center;justify-content:center;border:1.5px dashed #9fcddd;background:#f7fcfe;cursor:pointer;text-align:center}
+.upload input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}.icon{display:grid;place-items:center;width:48px;height:58px;border:2px solid #37aee4;border-radius:5px;background:#fff;color:#168fc2;font-size:11px;font-weight:900;margin-bottom:14px}
+.upload strong{font-size:16px}.upload small{margin-top:7px;color:#758b95}.filename{margin-top:13px;color:#168fc2;font-size:12px;font-weight:800}
+.privacy{margin:12px 0 28px;font-size:11px;color:#71858f}.rules{border-top:1px solid #e0e9ed;padding-top:24px}.rulecards{display:grid;grid-template-columns:1fr 1fr;gap:12px}.rule{padding:17px;background:#f5fafc}.rule small{display:block;color:#71858f;margin-bottom:5px}.rule strong{font-size:13px}
+.analyze{width:100%;height:52px;margin-top:22px;border:0;background:#169bd5;color:#fff;font-weight:900;cursor:pointer}.analyze:disabled{opacity:.5}
+.result{border-top:2px solid #37aee4}.status{display:flex;justify-content:space-between;align-items:center;padding:18px 0;border-bottom:1px solid #dce6ea;color:#71858f;font-size:12px}.status strong{font-size:24px;color:#169bd5}
+.corp,.officer{padding:24px 0;border-bottom:1px solid #dce6ea}.corp small{display:block;color:#71858f;font-size:11px;margin-bottom:6px}.corp b{display:block;font-size:17px}.officer-head{display:flex;justify-content:space-between;gap:15px}.officer-head b{font-size:15px}.badge{padding:6px 8px;background:#edf8fc;color:#168fc2;font-size:10px;font-weight:800}.rows{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}.r{font-size:11px;color:#71858f}.r strong{display:block;margin-top:5px;color:#173647;font-size:13px}.warn{padding:18px;background:#f7fafb;color:#667f8b;font-size:12px;line-height:1.6}.raw{margin-top:18px}.raw summary{font-size:11px;color:#71858f;cursor:pointer}.raw pre{white-space:pre-wrap;max-height:220px;overflow:auto;background:#f7fafb;padding:12px;font-size:10px}
+@media(max-width:800px){main{padding:38px 18px 70px}.intro h1{font-size:29px}.grid{grid-template-columns:1fr;gap:45px}.steps{overflow:auto}.step{min-width:130px}.rows{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><b>등기로</b><span>법인 임원 임기 자동계산</span></header>
+<main>
+<div class="intro"><h1>법인 임원 임기 <span>자동계산</span></h1><p>등기사항증명서 PDF를 올리면 임원과 취임·중임일을 확인하고 임기만료 예상일을 정리합니다.</p></div>
 <div class="steps"><div class="step on"><b>1</b>PDF 업로드</div><div class="step"><b>2</b>임원 자동인식</div><div class="step"><b>3</b>임기 확인</div></div>
-<div class="grid"><div>
-<h2 class="title">등기사항증명서 올리기</h2><div class="desc">인터넷등기소에서 발급한 PDF 또는 스캔된 PDF를 선택하세요.</div>
-<label class="term-upload-box" for="file"><input class="term-file-input" id="file" type="file" accept=".pdf,application/pdf"><span class="term-pdf-icon">PDF</span><strong class="term-upload-title">PDF 파일을 선택하세요</strong><span class="term-upload-help">클릭하거나 파일을 끌어 놓으세요</span><span id="filename" class="filename"></span></label>
-<div class="privacy"><b>개인정보 보호</b> · 미리보기에서는 파일을 서버에 전송하지 않습니다.</div>
-<div class="settings"><h2 class="title">임기 계산 기준</h2><div class="desc">임기는 자동으로 계산합니다. 사용자는 결산월만 확인하면 됩니다.</div><div class="rulecards"><div class="rulecard"><small>이사</small><strong>취임·중임일 + 3년</strong></div><div class="rulecard"><small>감사</small><strong>정기주주총회 기준</strong></div></div></div>
-<button class="analyze" id="analyze">PDF 분석 미리보기</button>
-</div>
-<aside class="result" id="result"><div class="status"><span id="statusText">PDF를 올리고 분석을 눌러주세요</span><strong id="officerCount">-</strong></div><div id="dynamicResult">
-<div class="corp"><small>법인명</small><b>주식회사 ○○○○</b><small style="margin-top:10px">회사성립연월일</small><b style="font-size:14px">2026. 09. 09.</b></div>
-<div class="officer"><div class="officer-head"><b>사내이사 · 김○○</b><span class="badge">최초 설립 임원</span></div><div class="rows"><div class="r">취임 기록<strong>없음</strong></div><div class="r">임기 기준일<strong>2026. 09. 09.</strong></div><div class="r">기준<strong>회사성립연월일 자동 적용</strong></div><div class="r">임기만료<strong>2029. 09. 09.</strong></div></div></div>
-<div class="officer"><div class="officer-head"><b>감사 · 이○○</b><span class="badge">최초 설립 임원</span></div><div class="rows"><div class="r">취임 기록<strong>없음</strong></div><div class="r">임기 기준일<strong>2026. 09. 09.</strong></div><div class="r">기준<strong>회사성립연월일 자동 적용</strong></div><div class="r">관리기한 (12월 결산)<strong>2029. 03. 31.</strong></div></div></div>
-<div class="officer"><div class="officer-head"><b>대표이사 · 박○○</b><span class="badge">자동 인식</span></div><div class="rows"><div class="r">등기사항<strong>대표이사</strong></div><div class="r">임기 계산<strong>이사 임기와 연동</strong></div></div></div>
-<div class="reminder"><b>최초 설립 임원 자동판별</b><span>임원란에 취임·중임일이 없으면 회사성립연월일을 최초 취임 기준일로 자동 적용합니다.</span></div><div class="warn">※ 감사의 실제 임기만료는 해당 정기주주총회 종결 시이며, 12월 결산법인은 관리 편의를 위해 3월 31일을 기준일로 표시합니다.</div>
-<div class="actions"><button class="pdf">결과 PDF</button><button class="mail" disabled style="opacity:.45">이메일은 추후 연결</button></div></div>
-</aside></div></div></section></main></div>
+<div class="grid"><section>
+<h2>등기사항증명서 올리기</h2><div class="desc">인터넷등기소에서 발급한 PDF 또는 스캔 PDF를 선택하세요.</div>
+<label class="upload"><input id="file" type="file" accept=".pdf,application/pdf"><span class="icon">PDF</span><strong>PDF 파일을 선택하세요</strong><small>클릭하여 파일을 선택하세요</small><span id="filename" class="filename"></span></label>
+<div class="privacy">미리보기에서는 파일을 서버에 전송하지 않고 브라우저에서 분석합니다.</div>
+<div class="rules"><h2>임기 계산 기준</h2><div class="rulecards"><div class="rule"><small>이사</small><strong>취임·중임일 + 3년</strong></div><div class="rule"><small>감사</small><strong>3년 내 최종 결산기 정기주주총회 기준</strong></div></div></div>
+<button id="analyze" class="analyze">PDF 분석</button>
+</section>
+<aside class="result"><div class="status"><span id="status">PDF를 올리고 분석을 눌러주세요</span><strong id="count">-</strong></div><div id="output"><div class="warn">분석 결과가 여기에 표시됩니다.</div></div></aside>
+</div></main>
 <script>
 pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
-const file=document.getElementById('file'),name=document.getElementById('filename'),btn=document.getElementById('analyze'),statusText=document.getElementById('statusText'),countEl=document.getElementById('officerCount'),out=document.getElementById('dynamicResult');
-file.addEventListener('change',()=>{if(file.files[0]){name.textContent='선택됨 · '+file.files[0].name;name.classList.add('show');statusText.textContent='분석 준비 완료';countEl.textContent='-'}});
-function normDateText(s){return (s||'').replace(/\s/g,'').replace(/[Oo]/g,'0').replace(/[Il]/g,'1')}
-function extractDate(s){const x=normDateText(s),m=x.match(/((?:19|20)\d{2})\D{0,3}(\d{1,2})\D{0,3}(\d{1,2})/);if(!m)return '';const mo=+m[2],d=+m[3];return mo>=1&&mo<=12&&d>=1&&d<=31?m[1]+'.'+String(mo).padStart(2,'0')+'.'+String(d).padStart(2,'0'):''}
-function auditEnd(s){const m=s.match(/(\d{4})\.(\d{2})\.(\d{2})/);if(!m)return '날짜 확인 필요';const limit=new Date(+m[1]+3,+m[2]-1,+m[3]);const y=limit.getFullYear(),fy=new Date(y,11,31)<=limit?y:y-1;return (fy+1)+'.03.31'}
-function flattenWords(blocks){const out=[];(blocks||[]).forEach(b=>(b.paragraphs||[]).forEach(p=>(p.lines||[]).forEach(l=>(l.words||[]).forEach(w=>out.push(w)))));return out}
-function makeLines(words){const a=(words||[]).filter(w=>w.text&&w.bbox&&w.confidence>=25).sort((a,b)=>a.bbox.y0-b.bbox.y0||a.bbox.x0-b.bbox.x0),lines=[];for(const w of a){const cy=(w.bbox.y0+w.bbox.y1)/2,h=w.bbox.y1-w.bbox.y0;let l=lines.find(q=>Math.abs(q.y-cy)<Math.max(9,h*.45));if(!l){l={y:cy,words:[]};lines.push(l)}l.words.push(w)}return lines.map(l=>{l.words.sort((a,b)=>a.bbox.x0-b.bbox.x0);l.text=l.words.map(w=>w.text).join(' ');return l}).sort((a,b)=>a.y-b.y)}
-const ROLES=['대표이사','사내이사','기타비상무이사','사외이사','감사'];
-function roleOf(s){const x=(s||'').replace(/\s/g,'');return ROLES.find(r=>x.includes(r))||''}
-function foundedFrom(lines){for(let i=0;i<lines.length;i++){if(/회사성립|성립연월일/.test(lines[i].text)){for(let j=i;j<Math.min(i+4,lines.length);j++){const d=extractDate(lines[j].text);if(d)return d}}}return ''}
-function corpFrom(lines){for(const l of lines){if(/주식회사/.test(l.text)){return l.text.replace(/^.*?(?=주식회사)/,'').trim().slice(0,80)}}return '법인명 인식 필요'}
-function personFromBlock(lines,start,end,role){
- const reserved=/^(이사|감사|대표이사|사내이사|사외이사|취임|중임|퇴임|사임|해임|연월일|주소|변경|등기)$/;
- for(let i=start;i<end;i++){
-   let t=lines[i].text.replace(role,' ').replace(/미합중국인?|대한민국인?|외국인/g,' ');
-   const id=t.search(/\d{6}\s*[-–]?\s*[\d*]{1,7}/);if(id>=0)t=t.slice(0,id);
-   const arr=t.match(/[가-힣]{2,4}/g)||[];
-   for(const x of arr){if(!reserved.test(x)&&!/(광역시|특별시|남동구|연수구|미추홀구|부평구|계양구|강화군|옹진군|연월일)/.test(x))return x}
- }
- return '성명 확인 필요'
-}
-function termFromBlock(lines,start,end){
- for(let i=start;i<end;i++){const compact=lines[i].text.replace(/\s/g,'');const m=compact.match(/(취임|중임)/);if(!m)continue;let d=extractDate(lines[i].text);if(!d&&i+1<end)d=extractDate(lines[i+1].text);if(d)return {date:d,kind:m[1]}}
- return {date:'',kind:''}
-}
-function parsePage(words,pageNo){const lines=makeLines(words),out=[];for(let i=0;i<lines.length;i++){const role=roleOf(lines[i].text);if(!role)continue;let end=Math.min(lines.length,i+12);for(let j=i+1;j<end;j++){if(roleOf(lines[j].text)){end=j;break}}const term=termFromBlock(lines,i,end);out.push({role,name:personFromBlock(lines,i,end,role),explicit:term.date,kind:term.kind,pageNo})}return {lines,out}}
-function parseOCR(text,pages){let allLines=[],officers=[];(pages||[]).forEach((w,i)=>{const p=parsePage(w,i+1);allLines.push(...p.lines);officers.push(...p.out)});const founded=foundedFrom(allLines);officers=officers.map(o=>({...o,date:o.explicit||founded,fallback:!o.explicit})).filter((o,i,a)=>a.findIndex(x=>x.role===o.role&&x.name===o.name&&x.date===o.date)===i).slice(0,12);return {corp:corpFrom(allLines),founded,officers,raw:text}}
-function render(r){
- countEl.textContent=r.officers.length+'명'; statusText.textContent='OCR 분석 완료';
- let h='<div class="corp"><small>법인명</small><b>'+r.corp+'</b>'+(r.founded?'<small style="margin-top:10px">회사성립연월일</small><b style="font-size:14px">'+r.founded+'</b>':'')+'</div>';
- if(!r.officers.length) h+='<div class="warn">임원 정보를 자동으로 찾지 못했습니다. OCR 원문을 확인해 주세요.</div>';
- r.officers.forEach(o=>{let end=o.role==='감사'?auditEnd(o.date):(o.date?addYears(o.date,3):'날짜 확인 필요');h+='<div class="officer"><div class="officer-head"><b>'+o.role+' · '+o.name+'</b><span class="badge">'+(o.fallback?'설립일 적용':(o.kind||'OCR 인식'))+'</span></div><div class="rows"><div class="r">임기 기준일<strong>'+(o.date||'확인 필요')+'</strong></div><div class="r">기준<strong>'+(o.fallback?'취임·중임 없음 → 회사성립연월일':'취임·중임일')+'</strong></div><div class="r">임기만료<strong>'+end+'</strong></div></div></div>'});
- h+='<div class="warn">※ 무료 브라우저 OCR 시험버전입니다. 인식 결과는 반드시 원본 등기사항증명서와 대조하세요.</div><details style="margin-top:14px"><summary style="cursor:pointer;font-size:11px;color:#71858f">OCR 인식 원문 보기</summary><pre style="white-space:pre-wrap;font-size:10px;line-height:1.5;max-height:240px;overflow:auto;background:#f7fafb;padding:12px">'+r.raw.replace(/[&<>]/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[x]))+'</pre></details><div class="actions"><button class="pdf">결과 PDF</button><button class="mail" disabled style="opacity:.45">이메일은 추후 연결</button></div>';
- out.innerHTML=h;
-}
-btn.onclick=async()=>{
- if(!file.files[0]){alert('PDF 파일을 먼저 선택하세요.');return}
- btn.disabled=true;btn.textContent='PDF 읽는 중...';statusText.textContent='PDF 페이지 변환 중';countEl.textContent='…';
- try{
-  const data=new Uint8Array(await file.files[0].arrayBuffer()); const pdf=await pdfjsLib.getDocument({data}).promise;
-  const worker=await Tesseract.createWorker('kor+eng',1,{logger:m=>{if(m.status==='recognizing text'){const p=Math.round((m.progress||0)*100);btn.textContent='글자 인식 중 '+p+'%';statusText.textContent='한글 OCR 분석 중 '+p+'%'}}});
-  await worker.setParameters({tessedit_pageseg_mode:'3',preserve_interword_spaces:'1'});
-  let all='',wordPages=[];
-  for(let p=1;p<=pdf.numPages;p++){statusText.textContent='페이지 '+p+'/'+pdf.numPages+' 분석 중';const page=await pdf.getPage(p);const vp=page.getViewport({scale:3.25});const canvas=document.createElement('canvas');canvas.width=vp.width;canvas.height=vp.height;await page.render({canvasContext:canvas.getContext('2d'),viewport:vp}).promise;const ret=await worker.recognize(canvas,{}, {text:true,blocks:true});all+='\n'+ret.data.text;wordPages.push(flattenWords(ret.data.blocks));}
-  await worker.terminate();render(parseOCR(all,wordPages));document.querySelectorAll('.step').forEach((x,i)=>x.classList.toggle('on',i<3));document.getElementById('result').scrollIntoView({behavior:'smooth',block:'start'});
- }catch(e){console.error(e);statusText.textContent='분석 실패';countEl.textContent='!';out.innerHTML='<div class="warn">PDF 분석 중 오류가 발생했습니다. 새로고침 후 다시 시도해 주세요.<br><small>'+String(e.message||e)+'</small></div>'}
- finally{btn.disabled=false;btn.textContent='PDF 분석'}
-};
-</script></body></html>
+const $=id=>document.getElementById(id),file=$('file'),filename=$('filename'),button=$('analyze'),statusEl=$('status'),countEl=$('count'),output=$('output');
+file.addEventListener('change',()=>{const f=file.files[0];filename.textContent=f?'선택됨 · '+f.name:'';statusEl.textContent=f?'분석 준비 완료':'PDF를 올리고 분석을 눌러주세요';countEl.textContent='-'});
+const dateOf=s=>{const m=(s||'').replace(/[Oo]/g,'0').replace(/[Il]/g,'1').match(/((?:19|20)\d{2})\D{0,3}(\d{1,2})\D{0,3}(\d{1,2})/);if(!m)return'';const mo=+m[2],d=+m[3];return mo>0&&mo<13&&d>0&&d<32?m[1]+'.'+String(mo).padStart(2,'0')+'.'+String(d).padStart(2,'0'):''};
+const directorEnd=d=>d?String(+d.slice(0,4)+3)+d.slice(4):'날짜 확인 필요';
+const auditorEnd=d=>{if(!d)return'날짜 확인 필요';const y=+d.slice(0,4),m=+d.slice(5,7),day=+d.slice(8,10),limit=new Date(y+3,m-1,day),fy=new Date(limit.getFullYear(),11,31)<=limit?limit.getFullYear():limit.getFullYear()-1;return(fy+1)+'.03.31'};
+const roleOf=s=>['대표이사','사내이사','기타비상무이사','사외이사','감사'].find(x=>(s||'').replace(/\s/g,'').includes(x))||'';
+const badName=/^(이사|감사|대표이사|사내이사|사외이사|연월일|주소|취임|중임|퇴임|사임|해임|변경|등기)$/;
+function personName(block,role){for(const line of block){let s=line.replace(role,' ').replace(/\d{6}\s*[-–]?\s*[\d*]{1,7}.*$/,' ');const names=s.match(/[가-힣]{2,4}/g)||[];for(const n of names){if(!badName.test(n)&&!/(광역시|특별시|남동구|연수구|미추홀구|부평구|계양구|강화군|옹진군|연월일)/.test(n))return n}}return'성명 확인 필요'}
+function parse(text){const lines=text.split(/\n+/).map(x=>x.trim()).filter(Boolean);let founded='',corp='법인명 인식 필요';for(let i=0;i<lines.length;i++){if(corp==='법인명 인식 필요'&&/주식회사/.test(lines[i]))corp=lines[i].slice(0,100);if(/회사성립|성립연월일/.test(lines[i]))for(let j=i;j<Math.min(i+4,lines.length);j++){const d=dateOf(lines[j]);if(d){founded=d;break}}}
+const officers=[];for(let i=0;i<lines.length;i++){const role=roleOf(lines[i]);if(!role)continue;let end=Math.min(i+10,lines.length);for(let j=i+1;j<end;j++)if(roleOf(lines[j])){end=j;break}const block=lines.slice(i,end);let explicit='',kind='';for(let j=0;j<block.length;j++)if(/취임|중임/.test(block[j])){explicit=dateOf(block[j])||dateOf(block[j+1]||'');if(explicit){kind=/중임/.test(block[j])?'중임':'취임';break}}officers.push({role,name:personName(block,role),date:explicit||founded,fallback:!explicit,kind})}
+return{corp,founded,officers:officers.filter((o,i,a)=>a.findIndex(x=>x.role===o.role&&x.name===o.name&&x.date===o.date)===i).slice(0,12),raw:text}}
+function render(r){countEl.textContent=r.officers.length+'명';statusEl.textContent='OCR 분석 완료';let h='<div class="corp"><small>법인명</small><b>'+r.corp+'</b><small style="margin-top:12px">회사성립연월일</small><b style="font-size:14px">'+(r.founded||'인식 필요')+'</b></div>';for(const o of r.officers){const end=o.role==='감사'?auditorEnd(o.date):directorEnd(o.date);h+='<div class="officer"><div class="officer-head"><b>'+o.role+' · '+o.name+'</b><span class="badge">'+(o.fallback?'설립일 적용':o.kind)+'</span></div><div class="rows"><div class="r">임기 기준일<strong>'+(o.date||'확인 필요')+'</strong></div><div class="r">기준<strong>'+(o.fallback?'취임·중임 없음 → 회사성립연월일':o.kind+'일')+'</strong></div><div class="r">임기만료<strong>'+end+'</strong></div></div></div>'}h+='<details class="raw"><summary>OCR 인식 원문 보기</summary><pre>'+r.raw.replace(/[&<>]/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[x]))+'</pre></details>';output.innerHTML=h}
+button.addEventListener('click',async()=>{const f=file.files[0];if(!f){alert('PDF 파일을 먼저 선택하세요.');return}button.disabled=true;try{statusEl.textContent='PDF 읽는 중';countEl.textContent='…';const pdf=await pdfjsLib.getDocument({data:new Uint8Array(await f.arrayBuffer())}).promise;const worker=await Tesseract.createWorker('kor+eng',1,{logger:m=>{if(m.status==='recognizing text')statusEl.textContent='한글 OCR 분석 중 '+Math.round((m.progress||0)*100)+'%'}});await worker.setParameters({tessedit_pageseg_mode:'3',preserve_interword_spaces:'1'});let text='';for(let p=1;p<=pdf.numPages;p++){const page=await pdf.getPage(p),vp=page.getViewport({scale:3});const canvas=document.createElement('canvas');canvas.width=vp.width;canvas.height=vp.height;await page.render({canvasContext:canvas.getContext('2d'),viewport:vp}).promise;const r=await worker.recognize(canvas);text+='\n'+r.data.text}await worker.terminate();render(parse(text));document.querySelectorAll('.step').forEach((x,i)=>x.classList.toggle('on',i<3))}catch(e){console.error(e);statusEl.textContent='분석 실패';countEl.textContent='!';output.innerHTML='<div class="warn">PDF 분석 중 오류가 발생했습니다.<br>'+String(e.message||e)+'</div>'}finally{button.disabled=false}});
+</script>
+</body></html>
