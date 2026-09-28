@@ -42,11 +42,44 @@ function roleOf(s){var x=String(s||'').replace(/\s/g,''),roles=['대표이사','
 function cleanName(s,role){s=String(s||'').replace(role,' ').replace(/\d{6}\s*[-–]?\s*[\d*]{1,7}.*$/,' ').replace(/^(성명|성명:|성명：)/,'').trim();var nat=s.match(/((?:미합중국|미국|일본|중국|캐나다|호주|영국|프랑스|독일)(?:인)?\s*[가-힣]{2,4})/);if(nat)return nat[1].replace(/\s+/g,' ');var id=s.match(/([가-힣]{2,4})\s*(?=\d{6}\s*[-–]?)/);if(id)return id[1];var a=s.match(/[가-힣]{2,4}/g)||[],stop=/^(이사|감사|대표이사|사내이사|사외이사|취임|중임|퇴임|사임|해임|변경|등기|연월일|미합중국|광역시|특별시|남동구|연수구|미추홀구|부평구|계양구|강화군|옹진군)$/;for(var i=0;i<a.length;i++)if(!stop.test(a[i]))return a[i];return'성명 확인 필요'}
 function parse(text){
  var lines=String(text||'').split(/\n+/).map(function(x){return x.replace(/\s+/g,' ').trim()}).filter(Boolean),founded='',corp='법인명 인식 필요',officers=[];
- for(var i=0;i<lines.length;i++){if(corp==='법인명 인식 필요'&&/주식회사/.test(lines[i]))corp=lines[i].replace(/^상\s*호\s*/,'').slice(0,120);if(/회사성립|성립연월일/.test(lines[i]))for(var q=i;q<Math.min(i+5,lines.length);q++){var fd=dateOf(lines[q]);if(fd){founded=fd;break}}}
- for(var n=0;n<lines.length;n++){var role=roleOf(lines[n]);if(!role)continue;var end=Math.min(n+12,lines.length);for(var z=n+1;z<end;z++)if(roleOf(lines[z])){end=z;break}var block=lines.slice(n,end),explicit='',kind='',name='성명 확인 필요';
+ for(var i=0;i<lines.length;i++){
+  if(corp==='법인명 인식 필요'&&/주식회사/.test(lines[i]))corp=lines[i].replace(/^상\s*호\s*/,'').slice(0,120);
+  if(/회사성립|성립연월일/.test(lines[i]))for(var q=i;q<Math.min(i+5,lines.length);q++){var fd=dateOf(lines[q]);if(fd){founded=fd;break}}
+ }
+ function isNoiseDateLine(s){return /등기|변경|말소|접수|원인|연월일/.test(s)&&!/취임|중임/.test(s)}
+ function explicitOfficerDate(block){
+  for(var k=0;k<block.length;k++){
+   var line=block[k];
+   if(!/취임|중임/.test(line))continue;
+   var same=dateOf(line);
+   if(same)return{date:same,kind:/중임/.test(line)?'중임':'취임'};
+   // OCR.space table mode can split one visual row into adjacent text lines.
+   // Only borrow an adjacent date when the date-only line is directly attached to the marker,
+   // and reject registry/change/receipt labels.
+   for(var d=1;d<=2;d++){
+    var j=k-d;
+    if(j>=0&&/^(?:19|20)\d{2}\D{0,3}\d{1,2}\D{0,3}\d{1,2}\s*$/.test(block[j])&&!isNoiseDateLine(block[j])){
+     var prev=dateOf(block[j]);if(prev)return{date:prev,kind:/중임/.test(line)?'중임':'취임'};
+    }
+   }
+  }
+  return null;
+ }
+ for(var n=0;n<lines.length;n++){
+  var role=roleOf(lines[n]);if(!role)continue;
+  var endBlock=Math.min(n+12,lines.length);
+  for(var z=n+1;z<endBlock;z++)if(roleOf(lines[z])){endBlock=z;break}
+  var block=lines.slice(n,endBlock),name='성명 확인 필요';
   for(var b=0;b<block.length;b++){var cn=cleanName(block[b],role);if(cn!=='성명 확인 필요'){name=cn;break}}
-  for(var k=0;k<block.length;k++){if(/취임|중임/.test(block[k])){var same=dateOf(block[k]);if(same){var isRe=/중임/.test(block[k]);if(isRe||!founded||same<=founded){explicit=same;kind=isRe?'중임':'취임';break}}}}
-  officers.push({role:role,name:name,date:explicit||founded,fallback:!explicit,kind:kind});
+  var ex=explicitOfficerDate(block);
+  // Initial-incorporation safeguard:
+  // A date after the company establishment date is never used merely because OCR placed it
+  // near "취임". If no reliable appointment/reappointment row is available, use establishment date.
+  if(ex&&founded&&ex.kind==='취임'&&ex.date>founded){
+   var markerLine=block.find(function(x){return /취임/.test(x)});
+   if(markerLine&&!dateOf(markerLine))ex=null;
+  }
+  officers.push({role:role,name:name,date:ex?ex.date:founded,fallback:!ex,kind:ex?ex.kind:''});
  }
  return{corp:corp,founded:founded,officers:officers.filter(function(o,i,a){return a.findIndex(function(x){return x.role===o.role&&x.name===o.name&&x.date===o.date})===i}).slice(0,12)}
 }
