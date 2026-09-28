@@ -55,7 +55,7 @@ function render(r){countEl.textContent=r.officers.length+'명';statusEl.textCont
 function ocrText(data){if(!data||!Array.isArray(data.ParsedResults))return'';return data.ParsedResults.map(function(p){return p&&p.ParsedText?p.ParsedText:''}).join('\n')}
 analyze.addEventListener('click',async function(){
  if(!selected)return;analyze.disabled=true;statusEl.textContent='OCR.space 분석 중';countEl.textContent='…';
- try{var fd=new FormData();fd.append('file',selected,selected.name);var res=await fetch(OCR_ENDPOINT,{method:'POST',body:fd});var data=await res.json().catch(function(){return{}});if(!res.ok)throw new Error(data.error||data.detail||('OCR 서버 오류 ('+res.status+')'));var text=ocrText(data);if(!text.trim())throw new Error('OCR 결과에서 문자를 찾지 못했습니다.');render(parse(text));document.querySelectorAll('.step').forEach(function(x){x.classList.add('active')})}
+ try{var fd=new FormData();fd.append('file',selected,selected.name);var res=await fetch(OCR_ENDPOINT,{method:'POST',body:fd});var data=await res.json().catch(function(){return{}});if(!res.ok)throw new Error(data.detail||data.error||('OCR 서버 오류 ('+res.status+')'));var text=ocrText(data);if(!text.trim())throw new Error('OCR 결과에서 문자를 찾지 못했습니다.');render(parse(text));document.querySelectorAll('.step').forEach(function(x){x.classList.add('active')})}
  catch(e){console.error(e);statusEl.textContent='분석 실패';countEl.textContent='!';resultEl.innerHTML='<div class="notice">'+esc(e.message||e)+'</div>'}
  finally{analyze.disabled=!selected}
 });
