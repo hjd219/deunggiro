@@ -43,6 +43,13 @@ def main():
         category=str(post.get("category","")).strip()
         expected_hub={"상속등기":"/inheritance.html","상속재산분할":"/inheritance.html","상속포기·한정승인":"/renunciation.html","법인등기":"/corporate.html","부동산등기":"/realestate.html","가사":"/family.html","기타":"/posts.html"}.get(category,"/posts.html")
         expected_hub_url=BASE+expected_hub
+        # 상단 핵심안내는 항상 현재 글의 업무 허브를 가리켜야 한다.
+        # 관련 핵심 콘텐츠 100개는 하단 관련글 시스템이 담당하므로 두 역할을 섞지 않는다.
+        if category not in ("기타",):
+            if not core:
+                issues.append("core-link")
+            elif str(core.get("href","")).strip()!=expected_hub:
+                issues.append(f"core-link-hub={str(core.get('href','')).strip()}")
         breadcrumb_ok=False
         for tag in soup.find_all("script",attrs={"type":"application/ld+json"}):
             raw=tag.string or tag.get_text() or ""
