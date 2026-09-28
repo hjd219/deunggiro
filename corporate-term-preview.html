@@ -48,12 +48,13 @@ function addYears(s,n){const m=s.match(/(\d{4})\D*(\d{1,2})\D*(\d{1,2})/);if(!m)
 function normDateText(s){return (s||'').replace(/\s/g,'').replace(/[Oo]/g,'0').replace(/[Il]/g,'1')}
 function extractDate(s){s=normDateText(s);const m=s.match(/((?:19|20)\d{2})\D{0,3}(\d{1,2})\D{0,3}(\d{1,2})/);if(!m)return '';const mo=+m[2],d=+m[3];if(mo<1||mo>12||d<1||d>31)return '';return m[1]+'.'+String(mo).padStart(2,'0')+'.'+String(d).padStart(2,'0')}
 function auditEnd(s){const m=s.match(/(\d{4})\.(\d{2})\.(\d{2})/);if(!m)return '날짜 확인 필요';const y=+m[1],mo=+m[2],d=+m[3];const limit=new Date(y+3,mo-1,d);const fy=new Date(limit.getFullYear(),11,31)<=limit?limit.getFullYear():limit.getFullYear()-1;return (fy+1)+'.03.31'}
+function nameBeforeId(lines,start,stop){for(let j=start;j<stop;j++){const t=lines[j].text.replace(/\s+/g,' ').trim();const id=t.match(/(?:\d{6}|[0-9OIl]{6})\s*[-–]?\s*[0-9OIl*]{1,7}/);if(!id)continue;let before=t.slice(0,id.index).replace(/미합중국인?|대한민국인?|외국인/g,' ').trim();const names=before.match(/[가-힣]{2,4}/g)||[];const bad=/^(이사|감사|대표|취임|중임|퇴임|사임|해임|주소|연월일)$/;for(let k=names.length-1;k>=0;k--){if(!bad.test(names[k]))return names[k]}}return ''}
 function validName(s){if(!s)return '';const bad=/^(이사|감사|대표|대표이사|사내이사|사외이사|취임|중임|퇴임|사임|해임|주소|미합중국|대한민국)$/;const a=(s.match(/[가-힣]{2,4}/g)||[]).filter(x=>!bad.test(x)&&!/광역시|특별시|남동구|연수구|미추홀|중구|서구|동구|부평구|계양구|강화군|옹진군/.test(x));return a.length?a[a.length-1]:''}
 function wordsFromBlocks(blocks){const a=[];(blocks||[]).forEach(b=>(b.paragraphs||[]).forEach(p=>(p.lines||[]).forEach(l=>(l.words||[]).forEach(w=>a.push(w)))));return a}
 function groupLines(words){const good=(words||[]).filter(w=>w.text&&w.confidence>=35&&w.bbox);good.sort((a,b)=>a.bbox.y0-b.bbox.y0||a.bbox.x0-b.bbox.x0);const lines=[];for(const w of good){const cy=(w.bbox.y0+w.bbox.y1)/2,h=w.bbox.y1-w.bbox.y0;let line=lines.find(l=>Math.abs(l.cy-cy)<Math.max(10,h*.42));if(!line){line={cy,words:[]};lines.push(line)}line.words.push(w)}return lines.map(l=>{l.words.sort((a,b)=>a.bbox.x0-b.bbox.x0);return {y:l.cy,x0:Math.min(...l.words.map(w=>w.bbox.x0)),text:l.words.map(w=>w.text).join(' '),words:l.words}}).sort((a,b)=>a.y-b.y)}
 function exactTerm(line){for(const w of line.words||[]){const t=(w.text||'').replace(/[^가-힣]/g,'');if((t==='취임'||t==='중임')&&w.confidence>=75)return t}return ''}
 function parsePageWords(words,pageNo){const lines=groupLines(words),roles=['대표이사','사내이사','기타비상무이사','사외이사','감사'],found=[];for(let i=0;i<lines.length;i++){const compact=lines[i].text.replace(/\s/g,'');const role=roles.find(r=>compact.includes(r));if(!role)continue;let stop=Math.min(lines.length,i+12);for(let k=i+1;k<stop;k++){if(roles.some(r=>lines[k].text.replace(/\s/g,'').includes(r))){stop=k;break}}
- let name=validName(lines[i].text.replace(role,''));
+ let name=nameBeforeId(lines,i,stop)||validName(lines[i].text.replace(role,''));
  if(!name){for(let j=i+1;j<stop;j++){const txt=lines[j].text;if(/취임|중임|퇴임|사임|해임|주소|광역시|특별시|미합중국|대한민국|\d{4}/.test(txt))continue;name=validName(txt);if(name)break}}
  let explicit='',kind='';
  for(let j=i;j<stop;j++){const k=exactTerm(lines[j]);if(!k)continue;const same=extractDate(lines[j].text);const next=j+1<stop?extractDate(lines[j+1].text):'';if(same||next){explicit=same||next;kind=k;break}}
@@ -75,24 +76,7 @@ btn.onclick=async()=>{
   const data=new Uint8Array(await file.files[0].arrayBuffer()); const pdf=await pdfjsLib.getDocument({data}).promise;
   const worker=await Tesseract.createWorker('kor+eng',1,{logger:m=>{if(m.status==='recognizing text'){const p=Math.round((m.progress||0)*100);btn.textContent='글자 인식 중 '+p+'%';statusText.textContent='한글 OCR 분석 중 '+p+'%'}}});
   let all='',wordPages=[];
-  for(let p=1;p<=pdf.numPages;p++){statusText.textContent='페이지 '+p+'/'+pdf.numPages+' 분석 중';const page=await pdf.getPage(p);const vp=page.getViewport({scale:3.5});const canvas=document.createElement('canvas');canvas.width=vp.width;canvas.height=vp.height;await page.render({canvasContext:canvas.getContext('2d'),viewport:vp}).promise;const ret=await worker.recognize(canvas,{}, {blocks:true,tsv:true});all+='\n'+ret.data.text;
-  let baseWords=wordsFromBlocks(ret.data.blocks), baseLines=groupLines(baseWords);
-  const roleRows=baseLines.filter(l=>/대표이사|사내이사|기타비상무이사|사외이사|감사/.test(l.text.replace(/\s/g,'')));
-  let refined=[];
-  if(roleRows.length){
-   for(let ri=0;ri<roleRows.length;ri++){
-    const top=Math.max(0,Math.floor(roleRows[ri].y-45));
-    const bottom=Math.min(canvas.height,Math.floor((ri+1<roleRows.length?roleRows[ri+1].y:roleRows[ri].y+330)-18));
-    if(bottom<=top+40)continue;
-    const crop=document.createElement('canvas');crop.width=canvas.width;crop.height=bottom-top;
-    crop.getContext('2d').drawImage(canvas,0,top,canvas.width,bottom-top,0,0,canvas.width,bottom-top);
-    const rr=await worker.recognize(crop,{}, {blocks:true,tsv:true});
-    const rw=wordsFromBlocks(rr.data.blocks);
-    rw.forEach(w=>{if(w.bbox){w.bbox={x0:w.bbox.x0,y0:w.bbox.y0+top,x1:w.bbox.x1,y1:w.bbox.y1+top}}});
-    refined.push(...rw);
-   }
-  }
-  wordPages.push(refined.length?refined:baseWords);}
+  for(let p=1;p<=pdf.numPages;p++){statusText.textContent='페이지 '+p+'/'+pdf.numPages+' 분석 중';const page=await pdf.getPage(p);const vp=page.getViewport({scale:3});const canvas=document.createElement('canvas');canvas.width=vp.width;canvas.height=vp.height;await page.render({canvasContext:canvas.getContext('2d'),viewport:vp}).promise;const ret=await worker.recognize(canvas,{}, {blocks:true,tsv:true});all+='\n'+ret.data.text;wordPages.push(wordsFromBlocks(ret.data.blocks));}
   await worker.terminate();render(parseOCR(all,wordPages));document.querySelectorAll('.step').forEach((x,i)=>x.classList.toggle('on',i<3));document.getElementById('result').scrollIntoView({behavior:'smooth',block:'start'});
  }catch(e){console.error(e);statusText.textContent='분석 실패';countEl.textContent='!';out.innerHTML='<div class="warn">PDF 분석 중 오류가 발생했습니다. 새로고침 후 다시 시도해 주세요.<br><small>'+String(e.message||e)+'</small></div>'}
  finally{btn.disabled=false;btn.textContent='PDF 분석'}
