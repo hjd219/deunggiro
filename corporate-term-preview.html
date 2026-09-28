@@ -63,13 +63,22 @@ async function sendImage(blob,name){
  var text=ocrText(data);if(!text.trim())throw new Error('OCR 결과에서 문자를 찾지 못했습니다.');return text;
 }
 async function pageBlob(page){
- var base=page.getViewport({scale:2.2}),canvas=document.createElement('canvas'),ctx=canvas.getContext('2d',{alpha:false});
- canvas.width=Math.ceil(base.width);canvas.height=Math.ceil(base.height);ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);
- await page.render({canvasContext:ctx,viewport:base}).promise;
- var quality=.88,blob=await new Promise(function(ok){canvas.toBlob(ok,'image/jpeg',quality)});
- while(blob&&blob.size>900000&&quality>.45){quality-=.08;blob=await new Promise(function(ok){canvas.toBlob(ok,'image/jpeg',quality)})}
- if(blob&&blob.size>900000){var ratio=Math.sqrt(850000/blob.size),w=Math.max(900,Math.floor(canvas.width*ratio)),h=Math.floor(canvas.height*ratio),small=document.createElement('canvas');small.width=w;small.height=h;var sc=small.getContext('2d',{alpha:false});sc.fillStyle='#fff';sc.fillRect(0,0,w,h);sc.drawImage(canvas,0,0,w,h);blob=await new Promise(function(ok){small.toBlob(ok,'image/jpeg',.72)})}
- if(!blob)throw new Error('PDF 페이지 이미지 변환에 실패했습니다.');return blob;
+ var scale=2.0,quality=.82,target=700000,minWidth=720;
+ for(var attempt=0;attempt<8;attempt++){
+  var vp=page.getViewport({scale:scale}),canvas=document.createElement('canvas'),ctx=canvas.getContext('2d',{alpha:false});
+  canvas.width=Math.ceil(vp.width);canvas.height=Math.ceil(vp.height);
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);
+  await page.render({canvasContext:ctx,viewport:vp}).promise;
+  var blob=await new Promise(function(ok){canvas.toBlob(ok,'image/jpeg',quality)});
+  if(!blob)throw new Error('PDF 페이지 이미지 변환에 실패했습니다.');
+  if(blob.size<=target)return blob;
+  var ratio=Math.min(.88,Math.sqrt(target/blob.size)*.92);
+  var nextScale=scale*ratio;
+  if(vp.width*ratio<minWidth)nextScale=scale*(minWidth/vp.width);
+  scale=Math.max(.75,nextScale);
+  quality=Math.max(.48,quality-.07);
+ }
+ throw new Error('페이지 압축에 실패했습니다. 다른 PDF로 다시 시도해 주세요.');
 }
 analyze.addEventListener('click',async function(){
  if(!selected)return;analyze.disabled=true;statusEl.textContent='PDF 변환 준비 중';countEl.textContent='…';
@@ -79,7 +88,7 @@ analyze.addEventListener('click',async function(){
   for(var p=1;p<=pdf.numPages;p++){
    statusEl.textContent='페이지 '+p+'/'+pdf.numPages+' 이미지 변환 중';
    var page=await pdf.getPage(p),blob=await pageBlob(page);
-   statusEl.textContent='페이지 '+p+'/'+pdf.numPages+' OCR.space 분석 중';
+   statusEl.textContent='페이지 '+p+'/'+pdf.numPages+' OCR.space 분석 중 ('+Math.ceil(blob.size/1024)+'KB)';
    text+='\n'+await sendImage(blob,'page-'+p+'.jpg');
   }
   render(parse(text));document.querySelectorAll('.step').forEach(function(x){x.classList.add('active')});
