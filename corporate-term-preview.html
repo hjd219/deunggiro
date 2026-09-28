@@ -76,8 +76,7 @@ function parse(text){
   // A date after the company establishment date is never used merely because OCR placed it
   // near "취임". If no reliable appointment/reappointment row is available, use establishment date.
   if(ex&&founded&&ex.kind==='취임'&&ex.date>founded){
-   var markerLine=block.find(function(x){return /취임/.test(x)});
-   if(markerLine&&!dateOf(markerLine))ex=null;
+   ex=null;
   }
   officers.push({role:role,name:name,date:ex?ex.date:founded,fallback:!ex,kind:ex?ex.kind:''});
  }
