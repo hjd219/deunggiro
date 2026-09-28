@@ -48,13 +48,13 @@ function addYears(s,n){const m=s.match(/(\d{4})\D*(\d{1,2})\D*(\d{1,2})/);if(!m)
 function extractDate(s){const m=s.match(/(19|20)\d{2}\s*[.년\-\/]\s*(\d{1,2})\s*[.월\-\/]\s*(\d{1,2})/);if(!m)return '';const y=m[0].match(/(19|20)\d{2}/)[0], nums=m[0].match(/\d+/g);const mo=Number(nums[1]),d=Number(nums[2]);if(mo<1||mo>12||d<1||d>31)return '';return y+'.'+String(mo).padStart(2,'0')+'.'+String(d).padStart(2,'0')}
 function findFounded(lines){for(let i=0;i<lines.length;i++){if(/회사성립|성립연월일/.test(lines[i])){for(let j=i;j<Math.min(lines.length,i+4);j++){const d=extractDate(lines[j]);if(d)return d}}}return ''}
 function explicitOfficerDate(lines,i){for(let j=i;j<Math.min(lines.length,i+7);j++){if(/취임|중임/.test(lines[j])){const d=extractDate(lines[j])||extractDate(lines[j+1]||'');if(d)return d}if(j>i&&/등기|변경|퇴임|사임|해임/.test(lines[j])&&!/취임|중임/.test(lines[j]))break}return ''}
-function auditEnd(s){const m=s.match(/(\d{4})\.(\d{2})\.(\d{2})/);if(!m)return '날짜 확인 필요';const y=Number(m[1]),mo=Number(m[2]),d=Number(m[3]);const limit=new Date(y+3,mo-1,d);let fy=y;while(new Date(fy,11,31)>limit)fy--;return (fy+1)+'.03.31'}
+function auditEnd(s){const m=s.match(/(\d{4})\.(\d{2})\.(\d{2})/);if(!m)return '날짜 확인 필요';const y=Number(m[1]),mo=Number(m[2]),d=Number(m[3]);const limit=new Date(y+3,mo-1,d);const ly=limit.getFullYear();const fy=new Date(ly,11,31)<=limit?ly:ly-1;return (fy+1)+'.03.31'}
 function parseOCR(text){
  const clean=text.replace(/\r/g,'');const lines=clean.split('\n').map(x=>x.replace(/\s+/g,' ').trim()).filter(Boolean);
  let corp='법인명 인식 필요',founded=findFounded(lines);
  for(const line of lines){if(/주식회사/.test(line)&&corp==='법인명 인식 필요')corp=line.slice(0,60)}
  const roles=['대표이사','사내이사','기타비상무이사','사외이사','감사'],officers=[];
- for(let i=0;i<lines.length;i++){const role=roles.find(r=>lines[i].includes(r));if(!role)continue;let nm=lines[i].replace(role,'').replace(/[^가-힣A-Za-z·]/g,'').trim();if(nm.length>10)nm=nm.slice(0,10);const explicit=explicitOfficerDate(lines,i);const basis=explicit||founded;if(!officers.some(o=>o.role===role&&o.name===nm&&o.date===basis))officers.push({role,name:nm||'성명 확인 필요',date:basis||'',fallback:!explicit});}
+ for(let i=0;i<lines.length;i++){const role=roles.find(r=>lines[i].includes(r));if(!role)continue;let nm=lines[i].replace(role,'').trim();nm=nm.split(/인천광역시|서울특별시|부산광역시|대구광역시|대전광역시|광주광역시|울산광역시|세종특별자치시|경기도|강원특별자치도|충청|전라|경상|제주특별자치도/)[0];const km=nm.match(/^[^가-힣]*([가-힣]{2,4})(?=[^가-힣]|$)/);if(km)nm=km[1];else{const kr=nm.match(/[가-힣]{2,4}/);nm=kr?kr[0]:'성명 확인 필요'};const explicit=explicitOfficerDate(lines,i);const basis=explicit||founded;if(!officers.some(o=>o.role===role&&o.name===nm&&o.date===basis))officers.push({role,name:nm||'성명 확인 필요',date:basis||'',fallback:!explicit});}
  return {corp,founded,officers:officers.slice(0,12),raw:text};
 }
 function render(r){
