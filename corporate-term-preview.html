@@ -46,20 +46,30 @@ file.addEventListener('change',()=>{if(file.files[0]){name.textContent='선택�
 const fmt=d=>d?d.replace(/(\d{4})\D*(\d{1,2})\D*(\d{1,2}).*/,'$1.$2.$3'):'';
 function addYears(s,n){const m=s.match(/(\d{4})\D*(\d{1,2})\D*(\d{1,2})/);if(!m)return '';return (Number(m[1])+n)+'.'+String(m[2]).padStart(2,'0')+'.'+String(m[3]).padStart(2,'0')}
 function normDateText(s){return (s||'').replace(/\s/g,'').replace(/[Oo]/g,'0').replace(/[Il]/g,'1')}
-function extractDate(s){s=normDateText(s);const m=s.match(/((?:19|20)\d{2})\D{0,3}(\d{1,2})\D{0,3}(\d{1,2})/);if(!m)return '';const mo=+m[2],d=+m[3];if(mo<1||mo>12||d<1||d>31)return '';return m[1]+'.'+String(mo).padStart(2,'0')+'.'+String(d).padStart(2,'0')}
-function auditEnd(s){const m=s.match(/(\d{4})\.(\d{2})\.(\d{2})/);if(!m)return '날짜 확인 필요';const y=+m[1],mo=+m[2],d=+m[3];const limit=new Date(y+3,mo-1,d);const fy=new Date(limit.getFullYear(),11,31)<=limit?limit.getFullYear():limit.getFullYear()-1;return (fy+1)+'.03.31'}
-function nameBeforeId(lines,start,stop){for(let j=start;j<stop;j++){const t=lines[j].text.replace(/\s+/g,' ').trim();const id=t.match(/(?:\d{6}|[0-9OIl]{6})\s*[-–]?\s*[0-9OIl*]{1,7}/);if(!id)continue;let before=t.slice(0,id.index).replace(/미합중국인?|대한민국인?|외국인/g,' ').trim();const names=before.match(/[가-힣]{2,4}/g)||[];const bad=/^(이사|감사|대표|취임|중임|퇴임|사임|해임|주소|연월일)$/;for(let k=names.length-1;k>=0;k--){if(!bad.test(names[k]))return names[k]}}return ''}
-function validName(s){if(!s)return '';const bad=/^(이사|감사|대표|대표이사|사내이사|사외이사|취임|중임|퇴임|사임|해임|주소|미합중국|대한민국)$/;const a=(s.match(/[가-힣]{2,4}/g)||[]).filter(x=>!bad.test(x)&&!/광역시|특별시|남동구|연수구|미추홀|중구|서구|동구|부평구|계양구|강화군|옹진군/.test(x));return a.length?a[a.length-1]:''}
-function wordsFromBlocks(blocks){const a=[];(blocks||[]).forEach(b=>(b.paragraphs||[]).forEach(p=>(p.lines||[]).forEach(l=>(l.words||[]).forEach(w=>a.push(w)))));return a}
-function groupLines(words){const good=(words||[]).filter(w=>w.text&&w.confidence>=35&&w.bbox);good.sort((a,b)=>a.bbox.y0-b.bbox.y0||a.bbox.x0-b.bbox.x0);const lines=[];for(const w of good){const cy=(w.bbox.y0+w.bbox.y1)/2,h=w.bbox.y1-w.bbox.y0;let line=lines.find(l=>Math.abs(l.cy-cy)<Math.max(10,h*.42));if(!line){line={cy,words:[]};lines.push(line)}line.words.push(w)}return lines.map(l=>{l.words.sort((a,b)=>a.bbox.x0-b.bbox.x0);return {y:l.cy,x0:Math.min(...l.words.map(w=>w.bbox.x0)),text:l.words.map(w=>w.text).join(' '),words:l.words}}).sort((a,b)=>a.y-b.y)}
-function exactTerm(line){for(const w of line.words||[]){const t=(w.text||'').replace(/[^가-힣]/g,'');if((t==='취임'||t==='중임')&&w.confidence>=75)return t}return ''}
-function parsePageWords(words,pageNo){const lines=groupLines(words),roles=['대표이사','사내이사','기타비상무이사','사외이사','감사'],found=[];for(let i=0;i<lines.length;i++){const compact=lines[i].text.replace(/\s/g,'');const role=roles.find(r=>compact.includes(r));if(!role)continue;let stop=Math.min(lines.length,i+12);for(let k=i+1;k<stop;k++){if(roles.some(r=>lines[k].text.replace(/\s/g,'').includes(r))){stop=k;break}}
- let rawName=lines[i].text.replace(role,'').trim();rawName=rawName.split(/인천광역시|서울특별시|부산광역시|대구광역시|대전광역시|광주광역시|울산광역시|세종특별자치시|경기도|강원특별자치도|충청|전라|경상|제주특별자치도/)[0];let km=rawName.match(/^[^가-힣]*([가-힣]{2,4})(?=[^가-힣]|$)/);let name=km?km[1]:'';if(!name){const kr=rawName.match(/[가-힣]{2,4}/);name=kr?kr[0]:'성명 확인 필요'}
- let explicit='',kind='';
- for(let j=i;j<stop;j++){const k=exactTerm(lines[j]);if(!k)continue;const same=extractDate(lines[j].text);const next=j+1<stop?extractDate(lines[j+1].text):'';if(same||next){explicit=same||next;kind=k;break}}
- found.push({role,name:name||'성명 확인 필요',explicit,kind,pageNo})}return found}
-function findFoundedFromText(text){const lines=text.split(/\n/).map(x=>x.trim()).filter(Boolean);for(let i=0;i<lines.length;i++){if(/회사성립|성립연월일/.test(lines[i])){for(let j=i;j<Math.min(lines.length,i+4);j++){const d=extractDate(lines[j]);if(d)return d}}}return ''}
-function parseOCR(text,wordPages){let corp='법인명 인식 필요';for(const line of text.split(/\n/)){if(/주식회사/.test(line)){corp=line.trim().slice(0,70);break}}const founded=findFoundedFromText(text);let officers=[];(wordPages||[]).forEach((w,i)=>officers.push(...parsePageWords(w,i+1)));officers=officers.map(o=>({...o,date:o.explicit||founded,fallback:!o.explicit})).filter((o,i,a)=>a.findIndex(x=>x.role===o.role&&x.name===o.name&&x.date===o.date)===i).slice(0,12);return {corp,founded,officers,raw:text}}
+function extractDate(s){const x=normDateText(s),m=x.match(/((?:19|20)\d{2})\D{0,3}(\d{1,2})\D{0,3}(\d{1,2})/);if(!m)return '';const mo=+m[2],d=+m[3];return mo>=1&&mo<=12&&d>=1&&d<=31?m[1]+'.'+String(mo).padStart(2,'0')+'.'+String(d).padStart(2,'0'):''}
+function auditEnd(s){const m=s.match(/(\d{4})\.(\d{2})\.(\d{2})/);if(!m)return '날짜 확인 필요';const limit=new Date(+m[1]+3,+m[2]-1,+m[3]);const y=limit.getFullYear(),fy=new Date(y,11,31)<=limit?y:y-1;return (fy+1)+'.03.31'}
+function flattenWords(blocks){const out=[];(blocks||[]).forEach(b=>(b.paragraphs||[]).forEach(p=>(p.lines||[]).forEach(l=>(l.words||[]).forEach(w=>out.push(w)))));return out}
+function makeLines(words){const a=(words||[]).filter(w=>w.text&&w.bbox&&w.confidence>=25).sort((a,b)=>a.bbox.y0-b.bbox.y0||a.bbox.x0-b.bbox.x0),lines=[];for(const w of a){const cy=(w.bbox.y0+w.bbox.y1)/2,h=w.bbox.y1-w.bbox.y0;let l=lines.find(q=>Math.abs(q.y-cy)<Math.max(9,h*.45));if(!l){l={y:cy,words:[]};lines.push(l)}l.words.push(w)}return lines.map(l=>{l.words.sort((a,b)=>a.bbox.x0-b.bbox.x0);l.text=l.words.map(w=>w.text).join(' ');return l}).sort((a,b)=>a.y-b.y)}
+const ROLES=['대표이사','사내이사','기타비상무이사','사외이사','감사'];
+function roleOf(s){const x=(s||'').replace(/\s/g,'');return ROLES.find(r=>x.includes(r))||''}
+function foundedFrom(lines){for(let i=0;i<lines.length;i++){if(/회사성립|성립연월일/.test(lines[i].text)){for(let j=i;j<Math.min(i+4,lines.length);j++){const d=extractDate(lines[j].text);if(d)return d}}}return ''}
+function corpFrom(lines){for(const l of lines){if(/주식회사/.test(l.text)){return l.text.replace(/^.*?(?=주식회사)/,'').trim().slice(0,80)}}return '법인명 인식 필요'}
+function personFromBlock(lines,start,end,role){
+ const reserved=/^(이사|감사|대표이사|사내이사|사외이사|취임|중임|퇴임|사임|해임|연월일|주소|변경|등기)$/;
+ for(let i=start;i<end;i++){
+   let t=lines[i].text.replace(role,' ').replace(/미합중국인?|대한민국인?|외국인/g,' ');
+   const id=t.search(/\d{6}\s*[-–]?\s*[\d*]{1,7}/);if(id>=0)t=t.slice(0,id);
+   const arr=t.match(/[가-힣]{2,4}/g)||[];
+   for(const x of arr){if(!reserved.test(x)&&!/(광역시|특별시|남동구|연수구|미추홀구|부평구|계양구|강화군|옹진군|연월일)/.test(x))return x}
+ }
+ return '성명 확인 필요'
+}
+function termFromBlock(lines,start,end){
+ for(let i=start;i<end;i++){const compact=lines[i].text.replace(/\s/g,'');const m=compact.match(/(취임|중임)/);if(!m)continue;let d=extractDate(lines[i].text);if(!d&&i+1<end)d=extractDate(lines[i+1].text);if(d)return {date:d,kind:m[1]}}
+ return {date:'',kind:''}
+}
+function parsePage(words,pageNo){const lines=makeLines(words),out=[];for(let i=0;i<lines.length;i++){const role=roleOf(lines[i].text);if(!role)continue;let end=Math.min(lines.length,i+12);for(let j=i+1;j<end;j++){if(roleOf(lines[j].text)){end=j;break}}const term=termFromBlock(lines,i,end);out.push({role,name:personFromBlock(lines,i,end,role),explicit:term.date,kind:term.kind,pageNo})}return {lines,out}}
+function parseOCR(text,pages){let allLines=[],officers=[];(pages||[]).forEach((w,i)=>{const p=parsePage(w,i+1);allLines.push(...p.lines);officers.push(...p.out)});const founded=foundedFrom(allLines);officers=officers.map(o=>({...o,date:o.explicit||founded,fallback:!o.explicit})).filter((o,i,a)=>a.findIndex(x=>x.role===o.role&&x.name===o.name&&x.date===o.date)===i).slice(0,12);return {corp:corpFrom(allLines),founded,officers,raw:text}}
 function render(r){
  countEl.textContent=r.officers.length+'명'; statusText.textContent='OCR 분석 완료';
  let h='<div class="corp"><small>법인명</small><b>'+r.corp+'</b>'+(r.founded?'<small style="margin-top:10px">회사성립연월일</small><b style="font-size:14px">'+r.founded+'</b>':'')+'</div>';
@@ -74,8 +84,8 @@ btn.onclick=async()=>{
  try{
   const data=new Uint8Array(await file.files[0].arrayBuffer()); const pdf=await pdfjsLib.getDocument({data}).promise;
   const worker=await Tesseract.createWorker('kor+eng',1,{logger:m=>{if(m.status==='recognizing text'){const p=Math.round((m.progress||0)*100);btn.textContent='글자 인식 중 '+p+'%';statusText.textContent='한글 OCR 분석 중 '+p+'%'}}});
-  let all='',wordPages=[];
-  for(let p=1;p<=pdf.numPages;p++){statusText.textContent='페이지 '+p+'/'+pdf.numPages+' 분석 중';const page=await pdf.getPage(p);const vp=page.getViewport({scale:3});const canvas=document.createElement('canvas');canvas.width=vp.width;canvas.height=vp.height;await page.render({canvasContext:canvas.getContext('2d'),viewport:vp}).promise;const ret=await worker.recognize(canvas,{}, {blocks:true,tsv:true});all+='\n'+ret.data.text;wordPages.push(wordsFromBlocks(ret.data.blocks));}
+  await worker.setParameters({tessedit_pageseg_mode:'3',preserve_interword_spaces:'1'});\n  let all='',wordPages=[];
+  for(let p=1;p<=pdf.numPages;p++){statusText.textContent='페이지 '+p+'/'+pdf.numPages+' 분석 중';const page=await pdf.getPage(p);const vp=page.getViewport({scale:3.25});const canvas=document.createElement('canvas');canvas.width=vp.width;canvas.height=vp.height;await page.render({canvasContext:canvas.getContext('2d'),viewport:vp}).promise;const ret=await worker.recognize(canvas,{}, {text:true,blocks:true});all+='\n'+ret.data.text;wordPages.push(flattenWords(ret.data.blocks));}
   await worker.terminate();render(parseOCR(all,wordPages));document.querySelectorAll('.step').forEach((x,i)=>x.classList.toggle('on',i<3));document.getElementById('result').scrollIntoView({behavior:'smooth',block:'start'});
  }catch(e){console.error(e);statusText.textContent='분석 실패';countEl.textContent='!';out.innerHTML='<div class="warn">PDF 분석 중 오류가 발생했습니다. 새로고침 후 다시 시도해 주세요.<br><small>'+String(e.message||e)+'</small></div>'}
  finally{btn.disabled=false;btn.textContent='PDF 분석'}
