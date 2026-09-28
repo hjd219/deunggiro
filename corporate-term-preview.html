@@ -75,7 +75,24 @@ btn.onclick=async()=>{
   const data=new Uint8Array(await file.files[0].arrayBuffer()); const pdf=await pdfjsLib.getDocument({data}).promise;
   const worker=await Tesseract.createWorker('kor+eng',1,{logger:m=>{if(m.status==='recognizing text'){const p=Math.round((m.progress||0)*100);btn.textContent='글자 인식 중 '+p+'%';statusText.textContent='한글 OCR 분석 중 '+p+'%'}}});
   let all='',wordPages=[];
-  for(let p=1;p<=pdf.numPages;p++){statusText.textContent='페이지 '+p+'/'+pdf.numPages+' 분석 중';const page=await pdf.getPage(p);const vp=page.getViewport({scale:3});const canvas=document.createElement('canvas');canvas.width=vp.width;canvas.height=vp.height;await page.render({canvasContext:canvas.getContext('2d'),viewport:vp}).promise;const ret=await worker.recognize(canvas,{}, {blocks:true,tsv:true});all+='\n'+ret.data.text;wordPages.push(wordsFromBlocks(ret.data.blocks));}
+  for(let p=1;p<=pdf.numPages;p++){statusText.textContent='페이지 '+p+'/'+pdf.numPages+' 분석 중';const page=await pdf.getPage(p);const vp=page.getViewport({scale:3.5});const canvas=document.createElement('canvas');canvas.width=vp.width;canvas.height=vp.height;await page.render({canvasContext:canvas.getContext('2d'),viewport:vp}).promise;const ret=await worker.recognize(canvas,{}, {blocks:true,tsv:true});all+='\n'+ret.data.text;
+  let baseWords=wordsFromBlocks(ret.data.blocks), baseLines=groupLines(baseWords);
+  const roleRows=baseLines.filter(l=>/대표이사|사내이사|기타비상무이사|사외이사|감사/.test(l.text.replace(/\s/g,'')));
+  let refined=[];
+  if(roleRows.length){
+   for(let ri=0;ri<roleRows.length;ri++){
+    const top=Math.max(0,Math.floor(roleRows[ri].y-45));
+    const bottom=Math.min(canvas.height,Math.floor((ri+1<roleRows.length?roleRows[ri+1].y:roleRows[ri].y+330)-18));
+    if(bottom<=top+40)continue;
+    const crop=document.createElement('canvas');crop.width=canvas.width;crop.height=bottom-top;
+    crop.getContext('2d').drawImage(canvas,0,top,canvas.width,bottom-top,0,0,canvas.width,bottom-top);
+    const rr=await worker.recognize(crop,{}, {blocks:true,tsv:true});
+    const rw=wordsFromBlocks(rr.data.blocks);
+    rw.forEach(w=>{if(w.bbox){w.bbox={x0:w.bbox.x0,y0:w.bbox.y0+top,x1:w.bbox.x1,y1:w.bbox.y1+top}}});
+    refined.push(...rw);
+   }
+  }
+  wordPages.push(refined.length?refined:baseWords);}
   await worker.terminate();render(parseOCR(all,wordPages));document.querySelectorAll('.step').forEach((x,i)=>x.classList.toggle('on',i<3));document.getElementById('result').scrollIntoView({behavior:'smooth',block:'start'});
  }catch(e){console.error(e);statusText.textContent='분석 실패';countEl.textContent='!';out.innerHTML='<div class="warn">PDF 분석 중 오류가 발생했습니다. 새로고침 후 다시 시도해 주세요.<br><small>'+String(e.message||e)+'</small></div>'}
  finally{btn.disabled=false;btn.textContent='PDF 분석'}
