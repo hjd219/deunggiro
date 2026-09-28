@@ -59,12 +59,12 @@ async function sendImage(blob,name){
  var fd=new FormData();fd.append('file',blob,name);
  var res=await fetch(OCR_ENDPOINT,{method:'POST',body:fd});
  var data=await res.json().catch(function(){return{}});
- if(!res.ok)throw new Error(data.detail||data.error||('OCR 서버 오류 ('+res.status+')'));
+ if(!res.ok){var d=data.detail||data.error||('OCR 서버 오류 ('+res.status+')');if(Array.isArray(d))d=d.join(' / ');else if(typeof d==='object')d=JSON.stringify(d);throw new Error(String(d))}
  var text=ocrText(data);if(!text.trim())throw new Error('OCR 결과에서 문자를 찾지 못했습니다.');return text;
 }
 async function pageBlob(page){
- var scale=2.0,quality=.82,target=700000,minWidth=720;
- for(var attempt=0;attempt<8;attempt++){
+ var scale=1.8,quality=.78,target=420000,minWidth=620;
+ for(var attempt=0;attempt<10;attempt++){
   var vp=page.getViewport({scale:scale}),canvas=document.createElement('canvas'),ctx=canvas.getContext('2d',{alpha:false});
   canvas.width=Math.ceil(vp.width);canvas.height=Math.ceil(vp.height);
   ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);
@@ -76,7 +76,7 @@ async function pageBlob(page){
   var nextScale=scale*ratio;
   if(vp.width*ratio<minWidth)nextScale=scale*(minWidth/vp.width);
   scale=Math.max(.75,nextScale);
-  quality=Math.max(.48,quality-.07);
+  quality=Math.max(.38,quality-.07);
  }
  throw new Error('페이지 압축에 실패했습니다. 다른 PDF로 다시 시도해 주세요.');
 }
