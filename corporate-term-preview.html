@@ -32,11 +32,11 @@ body>header{position:fixed;top:0;left:0;right:0;z-index:1000;background:linear-g
 <button class="analyze" id="analyze">PDF 분석 미리보기</button>
 </div>
 <aside class="result"><div class="status"><span>인식된 임원</span><strong>3명</strong></div>
-<div class="corp"><small>법인명</small><b>주식회사 ○○○○</b></div>
-<div class="officer"><div class="officer-head"><b>사내이사 · 김○○</b><span class="badge">3년 자동계산</span></div><div class="rows"><div class="r">취임·중임일<strong>2026. 09. 09.</strong></div><div class="r">임기만료<strong>2029. 09. 09.</strong></div><div class="r">3개월 전 안내<strong>2029. 06. 09.</strong></div></div></div>
-<div class="officer"><div class="officer-head"><b>감사 · 이○○</b><span class="badge">정기주총 기준</span></div><div class="rows"><div class="r">취임·중임일<strong>2026. 09. 09.</strong></div><div class="r">관리기한 (12월 결산)<strong>2029. 03. 31.</strong></div><div class="r">3개월 전 안내<strong>2028. 12. 31.</strong></div></div></div>
+<div class="corp"><small>법인명</small><b>주식회사 ○○○○</b><small style="margin-top:10px">회사성립연월일</small><b style="font-size:14px">2026. 09. 09.</b></div>
+<div class="officer"><div class="officer-head"><b>사내이사 · 김○○</b><span class="badge">최초 설립 임원</span></div><div class="rows"><div class="r">취임 기록<strong>없음</strong></div><div class="r">임기 기준일<strong>2026. 09. 09.</strong></div><div class="r">기준<strong>회사성립연월일 자동 적용</strong></div><div class="r">임기만료<strong>2029. 09. 09.</strong></div></div></div>
+<div class="officer"><div class="officer-head"><b>감사 · 이○○</b><span class="badge">최초 설립 임원</span></div><div class="rows"><div class="r">취임 기록<strong>없음</strong></div><div class="r">임기 기준일<strong>2026. 09. 09.</strong></div><div class="r">기준<strong>회사성립연월일 자동 적용</strong></div><div class="r">관리기한 (12월 결산)<strong>2029. 03. 31.</strong></div></div></div>
 <div class="officer"><div class="officer-head"><b>대표이사 · 박○○</b><span class="badge">자동 인식</span></div><div class="rows"><div class="r">등기사항<strong>대표이사</strong></div><div class="r">임기 계산<strong>이사 임기와 연동</strong></div></div></div>
-<div class="reminder"><b>자동 임기 안내</b><span>이메일을 등록하면 임기 관리기한 3개월 전에 안내 메일을 보내는 방식으로 연결할 수 있습니다.</span></div><div class="warn">※ 감사의 실제 임기만료는 해당 정기주주총회 종결 시이며, 12월 결산법인은 관리 편의를 위해 3월 31일을 기준일로 표시합니다.</div>
+<div class="reminder"><b>최초 설립 임원 자동판별</b><span>임원란에 취임·중임일이 없으면 회사성립연월일을 최초 취임 기준일로 자동 적용합니다.</span></div><div class="warn">※ 감사의 실제 임기만료는 해당 정기주주총회 종결 시이며, 12월 결산법인은 관리 편의를 위해 3월 31일을 기준일로 표시합니다.</div>
 <div class="actions"><button class="pdf">결과 PDF</button><button class="mail">이메일로 보내기</button></div>
 </aside></div></div></section></main></div>
 <script>
