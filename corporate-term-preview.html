@@ -84,7 +84,8 @@ btn.onclick=async()=>{
  try{
   const data=new Uint8Array(await file.files[0].arrayBuffer()); const pdf=await pdfjsLib.getDocument({data}).promise;
   const worker=await Tesseract.createWorker('kor+eng',1,{logger:m=>{if(m.status==='recognizing text'){const p=Math.round((m.progress||0)*100);btn.textContent='글자 인식 중 '+p+'%';statusText.textContent='한글 OCR 분석 중 '+p+'%'}}});
-  await worker.setParameters({tessedit_pageseg_mode:'3',preserve_interword_spaces:'1'});\n  let all='',wordPages=[];
+  await worker.setParameters({tessedit_pageseg_mode:'3',preserve_interword_spaces:'1'});
+  let all='',wordPages=[];
   for(let p=1;p<=pdf.numPages;p++){statusText.textContent='페이지 '+p+'/'+pdf.numPages+' 분석 중';const page=await pdf.getPage(p);const vp=page.getViewport({scale:3.25});const canvas=document.createElement('canvas');canvas.width=vp.width;canvas.height=vp.height;await page.render({canvasContext:canvas.getContext('2d'),viewport:vp}).promise;const ret=await worker.recognize(canvas,{}, {text:true,blocks:true});all+='\n'+ret.data.text;wordPages.push(flattenWords(ret.data.blocks));}
   await worker.terminate();render(parseOCR(all,wordPages));document.querySelectorAll('.step').forEach((x,i)=>x.classList.toggle('on',i<3));document.getElementById('result').scrollIntoView({behavior:'smooth',block:'start'});
  }catch(e){console.error(e);statusText.textContent='분석 실패';countEl.textContent='!';out.innerHTML='<div class="warn">PDF 분석 중 오류가 발생했습니다. 새로고침 후 다시 시도해 주세요.<br><small>'+String(e.message||e)+'</small></div>'}
