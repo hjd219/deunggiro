@@ -126,8 +126,8 @@ function parse(rows){
    for(const vr of sameVisual){const vd=dateOf(vr.text);if(vd){ex={date:vd,kind:/중임/.test(r.text)?'중임':'취임'};break}}
    if(ex)break;
   }
-  // 설립 당시 임원: 명확한 중임 기록은 유지. 취임일이 성립일보다 뒤라면 주변 등기일 오인으로 보고 성립일 적용.
-  if(ex&&founded&&ex.kind==='취임'&&ex.date>founded)ex=null;
+  // 좌표상 같은 행에서 확인된 취임·중임일은 직위와 관계없이 우선 적용한다.
+  // 같은 행에서 취임·중임일을 확인하지 못한 경우에만 회사성립연월일을 적용한다.
   officers.push({role,name,date:ex?ex.date:founded,fallback:!ex,kind:ex?ex.kind:''});
  }
  return {corp,founded,officers:officers.filter((o,i,a)=>a.findIndex(x=>x.role===o.role&&x.name===o.name&&x.date===o.date)===i).slice(0,12)};
