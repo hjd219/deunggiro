@@ -90,25 +90,40 @@ function rowsFromOCR(data,pageNo){
 }
 function normalizedRows(rows){
  rows.sort((a,b)=>a.page-b.page||a.top-b.top);
- return rows.map(r=>({...r,words:r.words.slice().sort((a,b)=>a.left-b.left)}));
+ return rows.map((r,index)=>({...r,index,words:r.words.slice().sort((a,b)=>a.left-b.left),compact:String(r.text||'').replace(/\s+/g,'').replace(/[·ㆍ]/g,'')}));
 }
 function compact(s){return String(s||'').replace(/\s+/g,'').replace(/[·ㆍ]/g,'')}
 function eventKind(s){
  const x=compact(s);
- if(/중임/.test(x))return'중임';
- if(/취임/.test(x))return'취임';
- if(/사임/.test(x))return'사임';
- if(/퇴임/.test(x))return'퇴임';
- if(/해임/.test(x))return'해임';
+ if(x.includes('중임'))return'중임';
+ if(x.includes('취임'))return'취임';
+ if(x.includes('사임'))return'사임';
+ if(x.includes('퇴임'))return'퇴임';
+ if(x.includes('해임'))return'해임';
  return'';
 }
-function visualLine(block,anchor){
- const ac=anchor.top+(anchor.height||12)/2,out=[];
- for(const r of block)for(const w of r.words){
-  const wc=w.top+(w.height||12)/2,tol=Math.max(22,(anchor.height||12)*1.8,(w.height||12)*1.8);
-  if(Math.abs(wc-ac)<=tol)out.push(w);
+function idName(text,role){
+ const t=String(text||'').replace(role||'',' ');
+ const m=t.match(/((?:(?:미합중국|미국|일본|중국|캐나다|호주|영국|프랑스|독일)(?:인)?\s*)?[가-힣]{2,4})\s*(?=\d{6}\s*[-–]?\s*[\d*●•Xx]{1,7})/);
+ return m?m[1].trim():'';
+}
+function lineEvent(row){
+ const joined=compact(row.text),kind=eventKind(joined),date=dateOf(joined);
+ return kind&&date?{kind,date,row:row.index}:null;
+}
+function mergeNearbyEvent(rows,idx,from,to){
+ const base=rows[idx];
+ const candidates=[];
+ for(let j=Math.max(from,idx-1);j<=Math.min(to-1,idx+1);j++){
+  if(rows[j].page!==base.page)continue;
+  const dy=Math.abs(((rows[j].top+rows[j].bottom)/2)-((base.top+base.bottom)/2));
+  if(j===idx||dy<=Math.max(16,(base.bottom-base.top)*1.15)){
+   candidates.push(...rows[j].words);
+  }
  }
- return out.sort((a,b)=>a.left-b.left).map(w=>w.text).join(' ');
+ candidates.sort((a,b)=>a.top-b.top||a.left-b.left);
+ const text=compact(candidates.map(w=>w.text).join(' ')),kind=eventKind(text),date=dateOf(text);
+ return kind&&date?{kind,date,row:idx}:null;
 }
 function parse(rows){
  rows=normalizedRows(rows);
@@ -117,43 +132,68 @@ function parse(rows){
   const t=rows[i].text;
   if(corp==='법인명 인식 필요'&&/주식회사/.test(t))corp=t.replace(/^상\s*호\s*/,'').slice(0,120);
   if(/회사\s*성립|성립\s*연월일/.test(t)){
-   const page=rows[i].page,near=rows.filter((r,j)=>r.page===page&&j>=i&&j<=i+4).map(r=>r.text).join(' ');
+   let near=t;
+   for(let j=i+1;j<Math.min(rows.length,i+4)&&rows[j].page===rows[i].page;j++)near+=' '+rows[j].text;
    founded=dateOf(near)||founded;
   }
  }
- const starts=[];
- rows.forEach((r,i)=>{if(roleOf(r.text))starts.push(i)});
- const officers=[];
- for(let si=0;si<starts.length;si++){
-  const i=starts[si],role=roleOf(rows[i].text),end=si+1<starts.length?starts[si+1]:Math.min(rows.length,i+16);
-  const block=rows.slice(i,end).filter(r=>r.page===rows[i].page);
-  let name='성명 확인 필요';
-  for(const r of block){const n=personName(r.text,role);if(n!=='성명 확인 필요'){name=n;break}}
-  const events=[];
-  for(const r of block){
-   for(const w of r.words){
-    const line=visualLine(block,w),kind=eventKind(line);
-    if(!kind)continue;
-    const d=dateOf(line);
-    if(d)events.push({date:d,kind,top:w.top});
-   }
+
+ const records=[];
+ for(let i=0;i<rows.length;i++){
+  const role=roleOf(rows[i].text);
+  if(!role)continue;
+
+  // 한 임원 기록은 현재 직책행부터 다음 직책행 직전까지만 사용한다.
+  // 단, 페이지를 넘기지 않는다.
+  let end=i+1;
+  while(end<rows.length&&rows[end].page===rows[i].page&&!roleOf(rows[end].text)&&end-i<18)end++;
+  const block=rows.slice(i,end);
+
+  // 주민번호/식별번호 바로 앞 성명을 최우선으로 사용한다.
+  let name='';
+  for(const row of block){name=idName(row.text,role);if(name)break}
+  if(!name){
+   for(const row of block){const n=personName(row.text,role);if(n!=='성명 확인 필요'){name=n;break}}
   }
-  const uniq=[];for(const e of events)if(!uniq.some(x=>x.date===e.date&&x.kind===e.kind))uniq.push(e);
-  uniq.sort((a,b)=>a.date.localeCompare(b.date));
-  const lastExit=[...uniq].reverse().find(e=>/사임|퇴임|해임/.test(e.kind));
-  const lastEntry=[...uniq].reverse().find(e=>/취임|중임/.test(e.kind));
-  if(lastExit&&(!lastEntry||lastExit.date>=lastEntry.date))continue;
-  const ex=lastEntry||null;
-  officers.push({role,name,date:ex?ex.date:founded,fallback:!ex,kind:ex?ex.kind:''});
+  if(!name)name='성명 확인 필요';
+
+  // 취임·중임·사임·퇴임·해임만 사건으로 인정한다.
+  // 주소변경·등기일 등 다른 날짜는 여기 들어오지 않는다.
+  const events=[];
+  for(let j=i;j<end;j++){
+   const row=rows[j];
+   if(!eventKind(row.text))continue;
+   let ev=lineEvent(row);
+   if(!ev)ev=mergeNearbyEvent(rows,j,i,end);
+   if(ev&&!events.some(x=>x.kind===ev.kind&&x.date===ev.date))events.push(ev);
+  }
+  events.sort((a,b)=>a.date.localeCompare(b.date)||a.row-b.row);
+
+  const entries=events.filter(e=>e.kind==='취임'||e.kind==='중임');
+  const exits=events.filter(e=>e.kind==='사임'||e.kind==='퇴임'||e.kind==='해임');
+  const lastEntry=entries.length?entries[entries.length-1]:null;
+  const lastExit=exits.length?exits[exits.length-1]:null;
+
+  // 마지막 상태가 사임·퇴임·해임이면 현재 임원에서 제외한다.
+  if(lastExit&&(!lastEntry||lastExit.date>lastEntry.date||(lastExit.date===lastEntry.date&&lastExit.row>=lastEntry.row)))continue;
+
+  records.push({
+   role,name,
+   date:lastEntry?lastEntry.date:founded,
+   fallback:!lastEntry,
+   kind:lastEntry?lastEntry.kind:'',
+   sourceRow:i
+  });
  }
- const dedup=[];
- for(const o of officers){
-  const key=o.role+'|'+o.name;
-  const old=dedup.find(x=>x.key===key);
-  if(!old)dedup.push({key,...o});
-  else if(o.date>old.date)Object.assign(old,o);
+
+ // OCR 중복만 제거한다. 서로 다른 직책은 임의로 합치지 않는다.
+ const officers=[];
+ for(const o of records){
+  const same=officers.find(x=>x.role===o.role&&x.name===o.name);
+  if(!same){officers.push(o);continue}
+  if((o.date||'')>(same.date||''))Object.assign(same,o);
  }
- return {corp,founded,officers:dedup.map(({key,...o})=>o).slice(0,12)};
+ return {corp,founded,officers:officers.map(({sourceRow,...o})=>o).slice(0,12)};
 }
 function render(r){
  countEl.textContent=r.officers.length+'명';statusEl.textContent='OCR 분석 완료';
