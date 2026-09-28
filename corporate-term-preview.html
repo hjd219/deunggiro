@@ -52,11 +52,38 @@ function parse(text){
 }
 function esc(s){return String(s||'').replace(/[&<>"]/g,function(x){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[x]})}
 function render(r){countEl.textContent=r.officers.length+'명';statusEl.textContent='OCR 분석 완료';var h='<div class="box"><small>법인명</small><strong>'+esc(r.corp)+'</strong><small style="margin-top:12px">회사성립연월일</small><strong>'+esc(r.founded||'인식 필요')+'</strong></div>';r.officers.forEach(function(o){var end=o.role==='감사'?auditorEnd(o.date):directorEnd(o.date);h+='<div class="box"><div class="head"><strong>'+esc(o.role)+' · '+esc(o.name)+'</strong><span class="badge">'+(o.fallback?'설립일 적용':esc(o.kind))+'</span></div><div class="rows"><div class="row">임기 기준일<strong>'+esc(o.date||'확인 필요')+'</strong></div><div class="row">기준<strong>'+(o.fallback?'취임·중임 없음 → 회사성립연월일':esc(o.kind)+'일')+'</strong></div><div class="row">임기만료<strong>'+esc(end)+'</strong></div></div></div>'});resultEl.innerHTML=h}
+function loadScript(src){return new Promise(function(resolve,reject){var s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=function(){reject(new Error('PDF 변환 모듈을 불러오지 못했습니다.'))};document.head.appendChild(s)})}
+async function ensurePdf(){if(!window.pdfjsLib)await loadScript('https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js');pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js'}
 function ocrText(data){if(!data||!Array.isArray(data.ParsedResults))return'';return data.ParsedResults.map(function(p){return p&&p.ParsedText?p.ParsedText:''}).join('\n')}
+async function sendImage(blob,name){
+ var fd=new FormData();fd.append('file',blob,name);
+ var res=await fetch(OCR_ENDPOINT,{method:'POST',body:fd});
+ var data=await res.json().catch(function(){return{}});
+ if(!res.ok)throw new Error(data.detail||data.error||('OCR 서버 오류 ('+res.status+')'));
+ var text=ocrText(data);if(!text.trim())throw new Error('OCR 결과에서 문자를 찾지 못했습니다.');return text;
+}
+async function pageBlob(page){
+ var base=page.getViewport({scale:2.2}),canvas=document.createElement('canvas'),ctx=canvas.getContext('2d',{alpha:false});
+ canvas.width=Math.ceil(base.width);canvas.height=Math.ceil(base.height);ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);
+ await page.render({canvasContext:ctx,viewport:base}).promise;
+ var quality=.88,blob=await new Promise(function(ok){canvas.toBlob(ok,'image/jpeg',quality)});
+ while(blob&&blob.size>900000&&quality>.45){quality-=.08;blob=await new Promise(function(ok){canvas.toBlob(ok,'image/jpeg',quality)})}
+ if(blob&&blob.size>900000){var ratio=Math.sqrt(850000/blob.size),w=Math.max(900,Math.floor(canvas.width*ratio)),h=Math.floor(canvas.height*ratio),small=document.createElement('canvas');small.width=w;small.height=h;var sc=small.getContext('2d',{alpha:false});sc.fillStyle='#fff';sc.fillRect(0,0,w,h);sc.drawImage(canvas,0,0,w,h);blob=await new Promise(function(ok){small.toBlob(ok,'image/jpeg',.72)})}
+ if(!blob)throw new Error('PDF 페이지 이미지 변환에 실패했습니다.');return blob;
+}
 analyze.addEventListener('click',async function(){
- if(!selected)return;analyze.disabled=true;statusEl.textContent='OCR.space 분석 중';countEl.textContent='…';
- try{var fd=new FormData();fd.append('file',selected,selected.name);var res=await fetch(OCR_ENDPOINT,{method:'POST',body:fd});var data=await res.json().catch(function(){return{}});if(!res.ok)throw new Error(data.detail||data.error||('OCR 서버 오류 ('+res.status+')'));var text=ocrText(data);if(!text.trim())throw new Error('OCR 결과에서 문자를 찾지 못했습니다.');render(parse(text));document.querySelectorAll('.step').forEach(function(x){x.classList.add('active')})}
- catch(e){console.error(e);statusEl.textContent='분석 실패';countEl.textContent='!';resultEl.innerHTML='<div class="notice">'+esc(e.message||e)+'</div>'}
+ if(!selected)return;analyze.disabled=true;statusEl.textContent='PDF 변환 준비 중';countEl.textContent='…';
+ try{
+  await ensurePdf();
+  var pdf=await pdfjsLib.getDocument({data:new Uint8Array(await selected.arrayBuffer())}).promise,text='';
+  for(var p=1;p<=pdf.numPages;p++){
+   statusEl.textContent='페이지 '+p+'/'+pdf.numPages+' 이미지 변환 중';
+   var page=await pdf.getPage(p),blob=await pageBlob(page);
+   statusEl.textContent='페이지 '+p+'/'+pdf.numPages+' OCR.space 분석 중';
+   text+='\n'+await sendImage(blob,'page-'+p+'.jpg');
+  }
+  render(parse(text));document.querySelectorAll('.step').forEach(function(x){x.classList.add('active')});
+ }catch(e){console.error(e);statusEl.textContent='분석 실패';countEl.textContent='!';resultEl.innerHTML='<div class="notice">'+esc(e.message||e)+'</div>'}
  finally{analyze.disabled=!selected}
 });
 })();
