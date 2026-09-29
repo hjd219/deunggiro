@@ -100,7 +100,7 @@ function parseDocumentAI(j){
  let scanStart=officerHeader>=0?officerHeader+1:0;
  let scanEnd=companyDateIndex>scanStart?companyDateIndex:lines.length;
  let scan=lines.slice(scanStart,scanEnd);
- const officerHead=/^(대표이사|사내이사|사외이사|기타비상무이사|이사|감사)\s+(.+?)(?:\s+\d{6}-[\d*]+)(?:\s+.*)?$/;
+ const officerHead=/^(대표이사|사내이사|사외이사|기타비상무이사|이사|감사)\s+(.+?)(?=\s+\d{6}(?:-?[\d*]+)?(?:\s|$)|\s+20\d{2}\s*년|$)(?:\s+\d{6}(?:-?[\d*]+)?)?(?:\s+.*)?$/;
  if(officerHeader<0){
   const first=lines.findIndex(x=>officerHead.test(x));
   if(first>=0){
