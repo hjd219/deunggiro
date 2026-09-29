@@ -247,7 +247,7 @@ import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, serverTim
 const firebaseConfig={apiKey:"AIzaSyAlXYOrj7V-XtDrK13Cbxw6hWzbfhGf_do",authDomain:"project-b08e5f3c-fa49-4ae6-933.firebaseapp.com",projectId:"project-b08e5f3c-fa49-4ae6-933",storageBucket:"project-b08e5f3c-fa49-4ae6-933.firebasestorage.app",messagingSenderId:"209298170572",appId:"1:209298170572:web:2c47a3779cf4a331039869",measurementId:"G-PGFPK2SJLK"};
 const ADMIN_UID="rd0rLz5gFzWpahHbqOM3q0w4nMm2",app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),COL="officerManagement";
 const $=id=>document.getElementById(id),login=$("adminLogin"),ledger=$("ledger"),loginMsg=$("loginMsg"),adminHeadBtn=$("adminHeadBtn"),adminCloseBtn=$("adminCloseBtn"),ledgerBody=$("ledgerBody"),search=$("ledgerSearch"),filter=$("ledgerFilter"),editModal=$("editModal");
-let rows=[],editingId=null;
+let rows=[],editingId=null,ledgerLoadSeq=0;
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function isAdmin(){return auth.currentUser?.uid===ADMIN_UID}
 function dday(v){if(!v)return"";const n=Math.ceil((new Date(v+"T00:00:00")-new Date())/86400000);return Number.isFinite(n)?(n>=0?"D-"+n:"D+"+Math.abs(n)):""}
@@ -259,7 +259,14 @@ function render(){
  const list=rows.filter(x=>{const hay=(x.company+" "+x.officer+" "+x.position).toLowerCase(),d=dday(x.expiry),future=d.startsWith("D-"),expired=d.startsWith("D+"),days=future?parseInt(d.slice(2),10):NaN;return(!q||hay.includes(q))&&(f==="all"||(f==="customer"&&x.source==="고객신청")||(f==="admin"&&x.source==="기존고객")||(f==="month"&&future&&days<=30)||(f==="week"&&future&&days<=7)||(f==="expired"&&expired))});
  ledgerBody.innerHTML=list.length?list.map(x=>`<tr><td>${esc(String(x.company||"").replace(/\s*\([^()]*[A-Za-z][^()]*\)\s*$/,"").trim())}</td><td>${esc(x.registrationNumber||"-")}</td><td><b>${esc(x.officer)}</b></td><td>${esc(x.position)}</td><td>${esc(x.expiry)}</td><td>${esc(dday(x.expiry))}</td><td>${esc(x.phone||x.email||"-")}</td><td>${esc(x.source)}</td><td><div class="row-actions"><button class="row-btn" data-edit="${x.id}">수정</button><button class="row-btn delete" data-delete="${x.id}">삭제</button></div></td></tr>`).join(""):'<tr><td colspan="9">등록된 관리대장이 없습니다.</td></tr>';
 }
-async function loadLedger(){if(!isAdmin())return;const snap=await getDocs(collection(db,COL));rows=snap.docs.map(d=>({id:d.id,...d.data()}));render()}
+async function loadLedger(){
+ if(!isAdmin())return;
+ const seq=++ledgerLoadSeq;
+ const snap=await getDocs(collection(db,COL));
+ if(seq!==ledgerLoadSeq)return;
+ rows=snap.docs.map(d=>({id:d.id,...d.data()}));
+ render();
+}
 async function saveAnalysis(analysis,phone,email){
  if(!isAdmin())throw Error("관리자 권한이 없습니다.");
  if(!analysis?.officers?.length)throw Error("현재 임원 분석 결과가 없습니다.");
@@ -274,8 +281,11 @@ async function saveAnalysis(analysis,phone,email){
  }
  if(!saved.length)throw Error("이미 같은 임원·직위·임기 기준일이 관리대장에 등록되어 있습니다.");
  await batch.commit();
- // Saving is complete once Firestore confirms the write. Refreshing the ledger
- // must never keep the Save button in a loading state.
+ // The write is complete here. Put the saved rows into the local ledger
+ // immediately so another file can be analyzed/saved without waiting for a
+ // Firestore re-read. A background reload is only for synchronization.
+ rows.push(...saved);
+ render();
  loadLedger().catch(err=>console.error("관리대장 새로고침 실패:",err));
  return {savedCount:saved.length};
 }
@@ -290,6 +300,7 @@ $("adminSaveAnalysis").onclick=async()=>{
  try{
   const saved=await saveAnalysis(analysis,"");
   window.__latestOfficerAnalysis=null;
+  latestAnalysis=null;
   $("file").value="";$("result").style.display="none";$("apply").style.display="none";
   $("status").textContent="저장 완료 · "+saved.savedCount+"명 저장 · 다음 파일을 선택하세요.";
  }catch(e){
