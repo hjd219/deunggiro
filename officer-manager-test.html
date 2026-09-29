@@ -45,7 +45,7 @@ body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:#173b4a;backgrou
         <p class="register-note" id="registerNote"></p>
       </section>
 
-      <div class="admin-modal" id="adminLogin" hidden><div class="admin-dialog"><button class="admin-close" id="adminCloseBtn" type="button" aria-label="닫기">×</button><h3>관리자 로그인</h3><p>관리대장은 관리자 인증 후에만 열립니다.</p><input id="adminEmail" type="email" autocomplete="username" placeholder="관리자 이메일"><input id="adminPassword" type="password" autocomplete="current-password" placeholder="비밀번호"><button class="run admin-login-submit" id="loginBtn" type="button">로그인</button><button class="pick admin-logout" id="logoutBtn" type="button" hidden>로그아웃</button><p class="register-note" id="loginMsg"></p></div></div>
+      <div class="admin-modal" id="adminLogin" hidden><div class="admin-dialog"><button class="admin-close" id="adminCloseBtn" type="button" aria-label="닫기">×</button><h3>관리자 로그인</h3><p>관리대장은 관리자 인증 후에만 열립니다.</p><input id="adminEmail" type="text" autocomplete="username" placeholder="아이디"><input id="adminPassword" type="password" autocomplete="current-password" placeholder="비밀번호"><button class="run admin-login-submit" id="loginBtn" type="button">로그인</button><button class="pick admin-logout" id="logoutBtn" type="button" hidden>로그아웃</button><p class="register-note" id="loginMsg"></p></div></div>
       <section class="ledger" id="ledger" hidden>
         <div class="ledger-head"><div><h3>사무소 관리대장</h3><p>관리자 전용 · 기존 고객은 여기에서 등록합니다.</p></div><button class="admin-register" id="openExistingBtn" type="button">+ 기존 고객 등록</button></div>
         <div class="ledger-toolbar"><input id="ledgerSearch" type="search" placeholder="상호 · 임원명 검색"><select id="ledgerFilter"><option value="all">전체</option><option value="soon">임기 임박</option><option value="customer">고객신청</option><option value="admin">기존고객</option></select></div>
@@ -151,7 +151,7 @@ adminHeadBtn.onclick=()=>{if(auth.currentUser){ledger.hidden=false;ledger.scroll
 adminCloseBtn.onclick=()=>{login.hidden=true;loginMsg.textContent=""};
 login.addEventListener("click",e=>{if(e.target===login)login.hidden=true});
 document.getElementById("adminPassword").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("loginBtn").click()});
-document.getElementById("loginBtn").onclick=async()=>{try{await signInWithEmailAndPassword(auth,document.getElementById("adminEmail").value.trim(),document.getElementById("adminPassword").value);loginMsg.textContent=""}catch(e){loginMsg.textContent="로그인 정보를 확인하세요."}};
+document.getElementById("loginBtn").onclick=async()=>{try{await signInWithEmailAndPassword(auth,document.getElementById("adminEmail").value.trim()+"@deunggiro-admin.local",document.getElementById("adminPassword").value);loginMsg.textContent=""}catch(e){loginMsg.textContent="아이디 또는 비밀번호를 확인하세요."}};
 document.getElementById("logoutBtn").onclick=()=>signOut(auth);
 onAuthStateChanged(auth,user=>{login.hidden=true;ledger.hidden=!user;document.getElementById("logoutBtn").hidden=!user;adminHeadBtn.textContent=user?"관리대장":"관리자 로그인"});
 </script>
