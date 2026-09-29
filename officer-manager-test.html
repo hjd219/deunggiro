@@ -93,7 +93,10 @@ function parseDocumentAI(j){
  let inc="";
  const incIndex=lines.findIndex(x=>x.replace(/\s/g,"").includes("회사성립연월일"));
  if(incIndex>=0){
-  for(let k=incIndex;k<Math.min(lines.length,incIndex+7)&&!inc;k++)inc=iso(lines[k])||"";
+  for(let k=incIndex;k<Math.min(lines.length,incIndex+8)&&!inc;k++){
+   if(k>incIndex&&/^\[인터넷 발급\]/.test(lines[k]))break;
+   inc=iso(lines[k])||"";
+  }
  }
  const officerHeader=lines.findIndex(x=>x.replace(/\s/g,"").includes("임원에관한사항"));
  const companyDateIndex=lines.findIndex((x,i)=>i>officerHeader&&x.replace(/\s/g,"").includes("회사성립연월일"));
@@ -154,7 +157,7 @@ function parseDocumentAI(j){
    events.push({name:o.name,position:o.position,event:"설립취임",event_date:inc,registration_date:inc,raw_text:o.raw});
  }
  return {...j,company:{name,registration_number:reg,incorporation_date:inc},officer_events:events,
-  parse_status:{company:!!name,registration_number:!!reg,incorporation_date:!!inc,officer_section:officerHeader>=0,officer_events:events.length}};
+  parse_status:{company:!!name,registration_number:!!reg,incorporation_date:!!inc,officer_section:officerHeader>=0,officer_events:events.length,officer_headers:officers.length,incorporation_value:inc}};
 }
 function currentOfficers(events){
  const groups=new Map();
