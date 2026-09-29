@@ -46,7 +46,13 @@ body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:#173b4a;backgrou
       </section>
 
       <div class="admin-modal" id="adminLogin" hidden><div class="admin-dialog"><button class="admin-close" id="adminCloseBtn" type="button" aria-label="닫기">×</button><h3>관리자 로그인</h3><p>관리대장은 관리자 인증 후에만 열립니다.</p><input id="adminEmail" type="email" autocomplete="username" placeholder="아이디 (이메일 주소)"><input id="adminPassword" type="password" autocomplete="current-password" placeholder="비밀번호"><button class="run admin-login-submit" id="loginBtn" type="button">로그인</button><button class="pick admin-logout" id="logoutBtn" type="button" hidden>로그아웃</button><p class="register-note" id="loginMsg"></p></div></div>
-      <section class="ledger admin-page" id="ledger" hidden>
+      
+      <div class="admin-modal" id="editModal" hidden><div class="admin-dialog"><button class="admin-close" id="editCloseBtn" type="button" aria-label="닫기">×</button><h3>관리대장 수정</h3><p>선택한 임원 관리정보를 수정합니다.</p><div class="edit-grid"><input id="editCompany" placeholder="상호"><input id="editOfficer" placeholder="임원명"><input id="editPosition" placeholder="직위"><input id="editTermStart" type="date" title="임기 기준일"><input id="editExpiry" type="date" title="예상 만료일"><input id="editPhone" placeholder="휴대전화번호"><input id="editEmail" type="email" placeholder="이메일"></div><button class="run admin-login-submit" id="editSaveBtn" type="button">수정 저장</button><p class="register-note" id="editMsg"></p></div></div>
+
+      <div class="raw"><b>Worker 원본 응답</b><pre id="raw"></pre></div>
+    </section>
+  </div>
+  <section class="ledger admin-page" id="ledger" hidden>
         <div class="ledger-head"><div><h3>사무소 관리대장</h3><p>관리자 전용 · 기존 고객은 여기에서 등록합니다.</p></div><div class="ledger-head-actions"><button class="admin-register" id="openExistingBtn" type="button">+ 기존 고객 등록</button><button class="pick" id="adminLogoutBtn" type="button">로그아웃</button></div></div>
         <div class="ledger-toolbar"><input id="ledgerSearch" type="search" placeholder="상호 · 임원명 검색"><select id="ledgerFilter"><option value="all">전체</option><option value="soon">임기 임박</option><option value="customer">고객신청</option><option value="admin">기존고객</option></select></div>
         <div class="table"><table><thead><tr><th>상호</th><th>임원</th><th>직위</th><th>예상 만료</th><th>D-day</th><th>연락처</th><th>등록경로</th><th>관리</th></tr></thead><tbody id="ledgerBody"><tr><td colspan="8">등록된 관리대장이 없습니다.</td></tr></tbody></table></div>
@@ -58,11 +64,6 @@ body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:#173b4a;backgrou
           <p class="register-note" id="existingNote"></p>
         </div>
       </section>
-      <div class="admin-modal" id="editModal" hidden><div class="admin-dialog"><button class="admin-close" id="editCloseBtn" type="button" aria-label="닫기">×</button><h3>관리대장 수정</h3><p>선택한 임원 관리정보를 수정합니다.</p><div class="edit-grid"><input id="editCompany" placeholder="상호"><input id="editOfficer" placeholder="임원명"><input id="editPosition" placeholder="직위"><input id="editTermStart" type="date" title="임기 기준일"><input id="editExpiry" type="date" title="예상 만료일"><input id="editPhone" placeholder="휴대전화번호"><input id="editEmail" type="email" placeholder="이메일"></div><button class="run admin-login-submit" id="editSaveBtn" type="button">수정 저장</button><p class="register-note" id="editMsg"></p></div></div>
-
-      <div class="raw"><b>Worker 원본 응답</b><pre id="raw"></pre></div>
-    </section>
-  </div>
 </main>
 <script>
 (()=>{
@@ -123,7 +124,7 @@ function buildRecord(source){
  const contact=contactData();
  return {source,company:latestAnalysis?.company||{},officers:latestAnalysis?.officers||[],contact,created_at:new Date().toISOString()}
 }
-openExistingBtn.addEventListener("click",()=>{existingBox.style.display="block";existingNote.textContent="";uploadBox.hidden=false;uploadBox.scrollIntoView({behavior:"smooth",block:"start"})});
+openExistingBtn.addEventListener("click",()=>{existingBox.style.display="block";existingNote.textContent="";uploadBox.hidden=false;document.getElementById("apply").style.display="none";document.getElementById("result").style.display="none";uploadBox.scrollIntoView({behavior:"smooth",block:"start"})});
 closeExistingBtn.addEventListener("click",()=>{existingBox.style.display="none";if(document.getElementById("ledger")&&!document.getElementById("ledger").hidden)uploadBox.hidden=true});
 existingRegisterBtn.addEventListener("click",async()=>{if(!latestAnalysis){existingNote.textContent="먼저 등기사항증명서를 분석하세요.";return}window.dispatchEvent(new CustomEvent("officer-admin-register",{detail:{analysis:latestAnalysis,phone:str($("existingPhone").value),email:str($("existingEmail").value)}}))});
 applyBtn.addEventListener("click",()=>{
