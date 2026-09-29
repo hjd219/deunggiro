@@ -283,7 +283,7 @@ $("adminSaveAnalysis").onclick=async()=>{
  try{
   const saved=await saveAnalysis(analysis,"","");
   completed=true;
-  window.__latestOfficerAnalysis=null;latestAnalysis=null;
+  window.__latestOfficerAnalysis=null;
   $("file").value="";$("result").style.display="none";$("apply").style.display="none";
   $("status").textContent="저장 완료 · "+saved.savedCount+"명 저장 · 다음 파일을 선택하세요.";
  }catch(e){
