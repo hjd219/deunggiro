@@ -189,7 +189,7 @@ analyze.addEventListener("click",async()=>{
   const res=await fetch(WORKER,{method:"POST",body:fd});let j=await res.json();raw.textContent=JSON.stringify(j,null,2);
   if(!res.ok||j.error)throw Error(j.detail||j.error||"분석 실패");
   j=parseDocumentAI(j);
-  const officers=currentOfficers(j.officer_events,j.company?.incorporation_date);
+  const officers=currentOfficers(j.officer_events,j.company?.incorporation_date,j);
   const company={...(j.company||{}),name:koreanCompanyName(j.company?.name||"")};
   const parseOk=!!company.name&&!!(company.registration_number||company.corporate_registration_number||company.registrationNumber)&&!!company.incorporation_date&&(j.officer_events||[]).length>0&&officers.length>0;
   latestAnalysis={company,officers,officer_events:j.officer_events||[],parseOk};window.__latestOfficerAnalysis=latestAnalysis;const adminSave=document.getElementById("adminSaveAnalysis");const adminMode=document.getElementById("ledger")&&!document.getElementById("ledger").hidden;if(adminMode){
