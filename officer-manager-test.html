@@ -8,7 +8,7 @@
 *{box-sizing:border-box}
 body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:#173b4a;background:#fff}
 .wrap{max-width:860px;margin:0 auto;padding:38px 24px}
-.head{margin-bottom:22px;text-align:center}.head h1{margin:0 0 8px;font-size:26px}.head p{margin:0;color:#71838b;font-size:13px}
+.head{margin-bottom:22px;text-align:center}.head-title{display:flex;align-items:center;justify-content:center;gap:10px}.head h1{margin:0;font-size:26px}.head p{margin:8px 0 0;color:#71838b;font-size:13px}.admin-head-btn{padding:7px 11px;border:1px solid #c8e8f7;border-radius:7px;background:#fff;color:#168dca;font-size:12px;font-weight:800;cursor:pointer}.admin-head-btn:hover{background:#f7fbfd}
 .box{border:1px solid #d9e5ea;border-radius:16px;padding:28px}.box.drag{border:2px solid #168dca;background:#f4fbff}
 .top{display:block;text-align:center}.top h3,.apply h3{margin:0 0 8px;font-size:18px}.top p{margin:0;color:#71838b;font-size:13px}
 .actions{display:flex;justify-content:center;gap:8px;margin-top:20px}.file{display:none}.pick,.run{padding:11px 16px;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer}.pick{border:1px solid #c8e8f7;color:#168dca;background:#f7fbfd}.run{border:0;background:#168dca;color:#fff}.run:disabled{opacity:.45}
@@ -22,7 +22,7 @@ body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:#173b4a;backgrou
 </head>
 <body>
 <main class="wrap">
-  <div class="head"><h1>임원 임기관리 테스트</h1><p>실제 www.deunggiro.kr 도메인에서 Gemini Worker 호출을 확인하는 테스트 페이지입니다.</p></div>
+  <div class="head"><div class="head-title"><h1>임원 임기관리 테스트</h1><button class="admin-head-btn" id="adminHeadBtn" type="button">관리자 로그인</button></div><p>실제 www.deunggiro.kr 도메인에서 Gemini Worker 호출을 확인하는 테스트 페이지입니다.</p></div>
   <div class="box" id="uploadBox">
     <div class="top">
       <div><h3>등기사항증명서 등록</h3><p style="margin-top:8px;color:#168dca;font-weight:800">파일을 이곳에 끌어다 놓으세요</p><p style="margin-top:6px">PDF · JPG · PNG / 최대 15MB</p></div>
@@ -45,7 +45,7 @@ body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:#173b4a;backgrou
         <p class="register-note" id="registerNote"></p>
       </section>
 
-      <section class="admin-login" id="adminLogin"><h3>사무소 관리자</h3><p>관리대장은 관리자 로그인 후에만 표시됩니다.</p><div class="contact"><input id="adminEmail" type="email" autocomplete="username" placeholder="관리자 이메일"><input id="adminPassword" type="password" autocomplete="current-password" placeholder="비밀번호"></div><div class="register-actions"><button class="admin-register" id="loginBtn" type="button">관리자 로그인</button><button class="pick" id="logoutBtn" type="button" hidden>로그아웃</button></div><p class="register-note" id="loginMsg"></p></section>
+      <section class="admin-login" id="adminLogin" hidden><h3>사무소 관리자</h3><p>관리대장은 관리자 로그인 후에만 표시됩니다.</p><div class="contact"><input id="adminEmail" type="email" autocomplete="username" placeholder="관리자 이메일"><input id="adminPassword" type="password" autocomplete="current-password" placeholder="비밀번호"></div><div class="register-actions"><button class="admin-register" id="loginBtn" type="button">관리자 로그인</button><button class="pick" id="logoutBtn" type="button" hidden>로그아웃</button></div><p class="register-note" id="loginMsg"></p></section>
       <section class="ledger" id="ledger" hidden>
         <div class="ledger-head"><div><h3>사무소 관리대장</h3><p>관리자 전용 · 기존 고객은 여기에서 등록합니다.</p></div><button class="admin-register" id="openExistingBtn" type="button">+ 기존 고객 등록</button></div>
         <div class="ledger-toolbar"><input id="ledgerSearch" type="search" placeholder="상호 · 임원명 검색"><select id="ledgerFilter"><option value="all">전체</option><option value="soon">임기 임박</option><option value="customer">고객신청</option><option value="admin">기존고객</option></select></div>
@@ -146,9 +146,10 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebas
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 const firebaseConfig={apiKey:"AIzaSyAlXYOrj7V-XtDrK13Cbxw6hWzbfhGf_do",authDomain:"project-b08e5f3c-fa49-4ae6-933.firebaseapp.com",projectId:"project-b08e5f3c-fa49-4ae6-933",storageBucket:"project-b08e5f3c-fa49-4ae6-933.firebasestorage.app",messagingSenderId:"209298170572",appId:"1:209298170572:web:2c47a3779cf4a331039869",measurementId:"G-PGFPK2SJLK"};
 const app=initializeApp(firebaseConfig),auth=getAuth(app);
-const login=document.getElementById("adminLogin"),ledger=document.getElementById("ledger"),loginMsg=document.getElementById("loginMsg");
+const login=document.getElementById("adminLogin"),ledger=document.getElementById("ledger"),loginMsg=document.getElementById("loginMsg"),adminHeadBtn=document.getElementById("adminHeadBtn");
+adminHeadBtn.onclick=()=>{if(auth.currentUser){ledger.hidden=false;ledger.scrollIntoView({behavior:"smooth",block:"start"})}else{login.hidden=false;login.scrollIntoView({behavior:"smooth",block:"center"});document.getElementById("adminEmail").focus()}};
 document.getElementById("loginBtn").onclick=async()=>{try{await signInWithEmailAndPassword(auth,document.getElementById("adminEmail").value.trim(),document.getElementById("adminPassword").value);loginMsg.textContent=""}catch(e){loginMsg.textContent="로그인 정보를 확인하세요."}};
 document.getElementById("logoutBtn").onclick=()=>signOut(auth);
-onAuthStateChanged(auth,user=>{login.hidden=!!user;ledger.hidden=!user;document.getElementById("logoutBtn").hidden=!user});
+onAuthStateChanged(auth,user=>{login.hidden=true;ledger.hidden=!user;document.getElementById("logoutBtn").hidden=!user;adminHeadBtn.textContent=user?"관리대장":"관리자 로그인"});
 </script>
 </body></html>
