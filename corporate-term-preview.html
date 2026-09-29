@@ -82,7 +82,13 @@ function textFromOCR(data){
  return (data&&data.ParsedResults||[]).map(x=>String(x&&x.ParsedText||'')).filter(Boolean).join('\n');
 }
 function normalizeText(s){
- return String(s||'').replace(/\r/g,'\n').replace(/[ \t\f\v]+/g,' ').replace(/\n{2,}/g,'\n').trim();
+ let t=String(s||'').replace(/\r/g,'\n').replace(/[ \t\f\v]+/g,' ').replace(/\n{2,}/g,'\n').trim();
+ const tokens=['임원에관한사항','회사성립연월일','대표이사','사내이사','사외이사','기타비상무이사','감사위원','감사','이사','취임','중임','사임','퇴임','해임','주소변경'];
+ for(const token of tokens){
+  const re=new RegExp(token.split('').join('\\\\s*'),'g');
+  t=t.replace(re,token);
+ }
+ return t;
 }
 function parseTextDocument(text){
  const src=normalizeText(text), lines=src.split('\n').map(x=>x.trim()).filter(Boolean);
@@ -116,7 +122,7 @@ function parseTextDocument(text){
  if(stop>=0)section=section.slice(0,stop);
  const ls=section.split('\n').map(x=>x.trim()).filter(Boolean);
 
- const roleRe=/(대표이사|사내이사|사외이사|기타비상무이사|감사위원|감사|이사)\s+(.+)/;
+ const roleRe=/(대표이사|사내이사|사외이사|기타비상무이사|감사위원|감사|이사)(?:\\s+(.+))?/;
  const eventRe=/(중임|취임|사임|퇴임|해임)/g;
  const groups=[];
  let cur=null;
@@ -136,21 +142,41 @@ function parseTextDocument(text){
  for(let i=0;i<ls.length;i++){
   const line=ls[i], rm=line.match(roleRe);
   if(rm){
-   const role=rm[1], tail=rm[2];
-   // '대표이사 주소변경' 같은 후속 문장은 새 임원으로 만들지 않는다.
+   const role=rm[1];
+   // 직위와 성명이 줄바꿈된 OCR도 처리하되, 다음 직위까지 넘어가지는 않는다.
+   const tail=[rm[2]||'',ls[i+1]||'',ls[i+2]||''].join(' ').trim();
    const n=usableName(tail,role);
-   if(n && !/주소\s*변경|변경\s*등기/.test(tail)){
+   // 주소변경 행은 새 임원이 아니다. 성명이 확인된 실제 직위행만 새 블록으로 연다.
+   if(n && !(/^|\\s)주소변경/.test(String(rm[2]||''))){
     cur={role,name:n,events:[],order:groups.length};
     groups.push(cur);
    }
   }
   if(!cur)continue;
-  // 사건과 날짜가 같은 줄 또는 인접 줄에 분리된 경우를 모두 처리.
-  const window=[line,ls[i+1]||''].join(' ');
-  const kinds=[...line.matchAll(eventRe)].map(m=>m[1]);
+  // 사건일이 다음 줄에 분리되는 Document AI 결과까지 최대 2줄 범위에서 결합한다.
+  const window=[line,ls[i+1]||'',ls[i+2]||''].join(' ');
+  const kinds=[...window.matchAll(eventRe)].map(m=>m[1]);
   for(const kind of kinds){
-   const d=dateOf(line)||dateOf(window);
+   const d=dateOf(window);
    if(d && !cur.events.some(e=>e.kind===kind&&e.date===d))cur.events.push({kind,date:d,order:i});
+  }
+ }
+
+ // 1차에서 임원을 하나도 못 잡은 경우: Document AI가 표를 한 줄로 합친 형태를 직접 스캔한다.
+ if(!groups.length){
+  const flat=section.replace(/\n/g,' ');
+  const rr=/(대표이사|사내이사|사외이사|기타비상무이사|감사위원|감사|이사)\s+((?:(?:미합중국|미국|일본|중국|캐나다|호주|영국|프랑스|독일)(?:인)?\s*)?[가-힣]{2,5})([\s\S]*?)(?=(?:대표이사|사내이사|사외이사|기타비상무이사|감사위원|감사|이사)\s+|$)/g;
+  let m;
+  while((m=rr.exec(flat))){
+   const g={role:m[1],name:m[2].trim(),events:[],order:groups.length};
+   const body=m[3]||'';
+   const er=/((?:19|20)\d{2}\D{0,3}\d{1,2}\D{0,3}\d{1,2})[\s\S]{0,28}?(중임|취임|사임|퇴임|해임)|(중임|취임|사임|퇴임|해임)[\s\S]{0,28}?((?:19|20)\d{2}\D{0,3}\d{1,2}\D{0,3}\d{1,2})/g;
+   let e;
+   while((e=er.exec(body))){
+    const kind=e[2]||e[3],date=dateOf(e[1]||e[4]);
+    if(kind&&date&&!g.events.some(x=>x.kind===kind&&x.date===date))g.events.push({kind,date,order:e.index});
+   }
+   groups.push(g);
   }
  }
 
@@ -180,7 +206,11 @@ function parseTextDocument(text){
 
   officers.push({role:g.role,name:g.name,date,kind,fallback});
  }
- return {corp,founded,officers:officers.slice(0,12)};
+ const out=officers.slice(0,12);
+ if(!out.length&&/(대표이사|사내이사|사외이사|기타비상무이사|감사위원|감사|이사)/.test(section)){
+  console.warn('[임원파서] 직위 문구는 있으나 현재 임원 0명', {founded,section});
+ }
+ return {corp,founded,officers:out};
 }
 function rowsFromOCR(data,pageNo){
  const rows=[];
