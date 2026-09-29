@@ -56,7 +56,7 @@ body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:var(--ink);backg
   </div>
   <section class="ledger admin-page" id="ledger" hidden>
         <div class="ledger-head"><div><h3>사무소 관리대장</h3><p>관리자 전용 · 기존 고객은 여기에서 등록합니다.</p></div><div class="ledger-head-actions"><button class="admin-register" id="openExistingBtn" type="button">+ 기존 고객 등록</button><button class="pick" id="adminLogoutBtn" type="button">로그아웃</button></div></div>
-        <div class="ledger-toolbar"><input id="ledgerSearch" type="search" placeholder="상호 · 임원명 검색"><select id="ledgerFilter"><option value="all">전체</option><option value="soon">임기 임박</option><option value="customer">고객신청</option><option value="admin">기존고객</option></select></div>
+        <div class="ledger-toolbar"><input id="ledgerSearch" type="search" placeholder="상호 · 임원명 검색"><select id="ledgerFilter"><option value="all">전체</option><option value="month">1개월 이내</option><option value="week">1주일 이내</option><option value="expired">만료</option><option value="customer">고객신청</option><option value="admin">기존고객</option></select></div>
         <div class="table"><table><thead><tr><th>상호</th><th>법인등록번호</th><th>임원</th><th>직위</th><th>예상 만료</th><th>D-day</th><th>연락처</th><th>등록경로</th><th>관리</th></tr></thead><tbody id="ledgerBody"><tr><td colspan="9">등록된 관리대장이 없습니다.</td></tr></tbody></table></div>
         </section>
 </main>
@@ -151,7 +151,7 @@ function showAdminPage(){document.querySelector(".head p").hidden=true;document.
 function showCustomerPage(){ledger.hidden=true;$("uploadBox").hidden=false;$("adminSaveAnalysis").hidden=true;document.querySelector(".raw").hidden=false;document.querySelector(".head p").hidden=false;document.querySelector(".head h1").textContent="임원 임기관리 테스트";adminHeadBtn.hidden=false;adminHeadBtn.style.display="inline-flex";window.scrollTo({top:0,behavior:"auto"})}
 function render(){
  const q=search.value.trim().toLowerCase(),f=filter.value;
- const list=rows.filter(x=>{const hay=(x.company+" "+x.officer+" "+x.position).toLowerCase(),days=parseInt(dday(x.expiry).replace("D-",""),10);return(!q||hay.includes(q))&&(f==="all"||(f==="customer"&&x.source==="고객신청")||(f==="admin"&&x.source==="기존고객")||(f==="soon"&&dday(x.expiry).startsWith("D-")&&days<=90))});
+ const list=rows.filter(x=>{const hay=(x.company+" "+x.officer+" "+x.position).toLowerCase(),d=dday(x.expiry),future=d.startsWith("D-"),expired=d.startsWith("D+"),days=future?parseInt(d.slice(2),10):NaN;return(!q||hay.includes(q))&&(f==="all"||(f==="customer"&&x.source==="고객신청")||(f==="admin"&&x.source==="기존고객")||(f==="month"&&future&&days<=30)||(f==="week"&&future&&days<=7)||(f==="expired"&&expired))});
  ledgerBody.innerHTML=list.length?list.map(x=>`<tr><td>${esc(String(x.company||"").replace(/\s*\([^()]*[A-Za-z][^()]*\)\s*$/,"").trim())}</td><td>${esc(x.registrationNumber||"-")}</td><td><b>${esc(x.officer)}</b></td><td>${esc(x.position)}</td><td>${esc(x.expiry)}</td><td>${esc(dday(x.expiry))}</td><td>${esc(x.phone||x.email||"-")}</td><td>${esc(x.source)}</td><td><div class="row-actions"><button class="row-btn" data-edit="${x.id}">수정</button><button class="row-btn delete" data-delete="${x.id}">삭제</button></div></td></tr>`).join(""):'<tr><td colspan="9">등록된 관리대장이 없습니다.</td></tr>';
 }
 async function loadLedger(){if(!isAdmin())return;const snap=await getDocs(collection(db,COL));rows=snap.docs.map(d=>({id:d.id,...d.data()}));render()}
