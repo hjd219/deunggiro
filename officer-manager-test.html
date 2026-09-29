@@ -81,6 +81,8 @@ function resetAnalysisState(message){
  workflow.state="READY";
  if(message)status.textContent=message;
 }
+window.__officerWorkflow=workflow;
+window.__resetOfficerAnalysisState=resetAnalysisState;
 window.__officerAnalysisGeneration=window.__officerAnalysisGeneration||0;
 // 관리대장 표시 여부는 아래 Firebase Authentication 세션에서만 결정
 const str=v=>String(v??"").trim();
@@ -351,23 +353,24 @@ async function saveAnalysis(analysis,phone,email){
 }
 function calcExpiry(o){const base=o.event_date||o.registration_date||"";const m=String(base).match(/^(\d{4})-(\d{2})-(\d{2})$/);if(!m)return"";if(String(o.position).includes("감사"))return(+m[1]+3)+"-03-31";const y=+m[1]+3,mo=+m[2],day=+m[3],last=new Date(y,mo,0).getDate();return y+"-"+String(mo).padStart(2,"0")+"-"+String(Math.min(day,last)).padStart(2,"0")}
 $("adminSaveAnalysis").onclick=async()=>{
- if(workflow.state!=="ANALYZED"){alert("먼저 임원 확인을 실행하세요.");return}
+ const wf=window.__officerWorkflow;
+ if(!wf||wf.state!=="ANALYZED"){alert("먼저 임원 확인을 실행하세요.");return}
  const analysis=window.__latestOfficerAnalysis;
  if(!analysis?.officers?.length){alert("현재 임원 분석 결과가 없습니다.");return}
  if(!isAdmin()){alert("관리자 권한이 없습니다.");return}
- const btn=$("adminSaveAnalysis"),analyzeBtn=$("analyze");
- workflow.state="SAVING";
+ const btn=$("adminSaveAnalysis"),analyzeBtn=$("analyze"),box=$("uploadBox");
+ wf.state="SAVING";
  btn.hidden=false;btn.disabled=true;btn.classList.add("saving");btn.setAttribute("aria-busy","true");btn.textContent="저장 중";
  analyzeBtn.disabled=true;
- uploadBox.classList.add("busy");
+ box.classList.add("busy");
  try{
   const saved=await saveAnalysis(analysis,"");
-  resetAnalysisState("저장 완료 · "+saved.savedCount+"명 저장 · 다음 파일을 선택하세요.");
+  window.__resetOfficerAnalysisState("저장 완료 · "+saved.savedCount+"명 저장 · 다음 파일을 선택하세요.");
  }catch(e){
-  workflow.state="ANALYZED";
+  wf.state="ANALYZED";
   btn.hidden=false;btn.disabled=false;btn.classList.remove("saving");btn.removeAttribute("aria-busy");btn.textContent="관리대장 저장";
   analyzeBtn.disabled=false;
-  uploadBox.classList.remove("busy");
+  box.classList.remove("busy");
   alert("저장 실패 · "+e.message);
  }
 }
