@@ -88,7 +88,7 @@ function normalizeRole(v){
 }
 function normalizeStatus(v){
  const s=str(v).replace(/\s/g,"");
- for(const e of["해임","퇴임","사임","중임","취임"])if(s.includes(e))return e;
+ for(const e of["해임","퇴임","사임","임기만료","중임","취임"])if(s.includes(e))return e;
  if(s.includes("주소기입")||s.includes("주소변경"))return"주소변경";
  return"기타";
 }
@@ -112,7 +112,7 @@ function buildOfficerModel(j){
  const scan=sectionAt>=0?lines.slice(sectionAt+1,sectionEnd>sectionAt?sectionEnd:lines.length):[];
  const roleLine=/^(대표이사|사내이사|사외이사|기타비상무이사|이사|감사)\s+(.+)$/;
  const rrn=/\s+\d{6}(?:-[0-9*]*)?(?:\s|$)/;
- const statusLine=/(20\d{2}\s*년\s*\d{1,2}\s*월\s*\d{1,2}\s*일)\s*(취임|중임|사임|퇴임|해임|주소기입|주소변경)/;
+ const statusLine=/(20\d{2}\s*년\s*\d{1,2}\s*월\s*\d{1,2}\s*일)\s*(취임|중임|사임|퇴임|해임|임기만료|주소기입|주소변경)/;
  const regDateLine=/(20\d{2}\s*년\s*\d{1,2}\s*월\s*\d{1,2}\s*일)\s*등기/;
  const tokens=[];
  for(const line of scan){
@@ -169,12 +169,12 @@ function buildOfficerModel(j){
     continue;
    }
    if(["취임","중임"].includes(x.event)){state="ACTIVE";lastStart=x}
-   else if(["사임","퇴임","해임"].includes(x.event)){state="ENDED";lastStart=null}
+   else if(["사임","퇴임","해임","임기만료"].includes(x.event)){state="ENDED";lastStart=null}
   }
   if(state==="ACTIVE"&&lastStart)current.push(lastStart);
  }
  // 설립일 대체는 문서 전체에 신분변동 이력이 전혀 없는 설립등기에서만 허용한다.
- if(!sourceEvents.some(x=>["취임","중임","사임","퇴임","해임"].includes(x.event))&&incorporationDate){
+ if(!sourceEvents.some(x=>["취임","중임","사임","퇴임","해임","임기만료"].includes(x.event))&&incorporationDate){
   const seen=new Set();
   for(const h of allHeaders){
    const key=h.name+"|"+h.position;if(seen.has(key))continue;seen.add(key);
