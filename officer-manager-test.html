@@ -277,10 +277,8 @@ async function saveAnalysis(analysis,phone,email){
   batch.set(ref,data);saved.push({id:ref.id,...data});
  }
  if(!saved.length)throw Error("이미 같은 임원·직위·임기 기준일이 관리대장에 등록되어 있습니다.");
- const commit=batch.commit();
- const timeout=new Promise((_,reject)=>setTimeout(()=>reject(Error("저장 응답이 지연되고 있습니다. 잠시 후 관리대장을 확인하세요.")),8000));
- await Promise.race([commit,timeout]);
- rows.push(...saved);render();
+ await batch.commit();
+ await loadLedger();
  return {savedCount:saved.length};
 }
 function calcExpiry(o){const base=o.event_date||o.registration_date||"";const m=String(base).match(/^(\d{4})-(\d{2})-(\d{2})$/);if(!m)return"";if(String(o.position).includes("감사"))return(+m[1]+3)+"-03-31";const y=+m[1]+3,mo=+m[2],day=+m[3],last=new Date(y,mo,0).getDate();return y+"-"+String(mo).padStart(2,"0")+"-"+String(Math.min(day,last)).padStart(2,"0")}
