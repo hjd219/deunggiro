@@ -113,7 +113,7 @@ analyze.addEventListener("click",async()=>{
   latestAnalysis={company:j.company||{},officers,officer_events:j.officer_events||[]};window.__latestOfficerAnalysis=latestAnalysis;
   summary.innerHTML="<span>상호 · "+esc(j.company?.name||"확인 필요")+"</span><span>현재 임원 · "+officers.length+"명</span><span>확인 이력 · "+(j.officer_events||[]).length+"건</span>";
   tbody.innerHTML=officers.length?officers.map(o=>"<tr><td>"+esc(o.position)+"</td><td><b>"+esc(o.name)+"</b></td><td class='event'>"+esc(o.event)+"</td><td>"+esc(o.event_date||o.registration_date||"확인 필요")+"</td><td class='expiry'>"+esc(expiry(o))+"</td><td>"+(o.position.includes("감사")?"12월 결산 기준":"3년 기준")+"</td></tr>").join(""):"<tr><td colspan='6'>현재 임원으로 확인된 이력이 없습니다.</td></tr>";
-  result.style.display="block";apply.style.display="block";status.textContent="분석 완료";
+  result.style.display="block";apply.style.display=(document.getElementById("ledger")&&!document.getElementById("ledger").hidden)?"none":"block";status.textContent="분석 완료";
  }catch(e){result.style.display="block";status.textContent="분석 실패 · "+e.message}
  finally{analyze.disabled=false}
 });
@@ -151,8 +151,8 @@ let rows=[],editingId=null;
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function isAdmin(){return auth.currentUser?.uid===ADMIN_UID}
 function dday(v){if(!v)return"";const n=Math.ceil((new Date(v+"T00:00:00")-new Date())/86400000);return Number.isFinite(n)?(n>=0?"D-"+n:"D+"+Math.abs(n)):""}
-function showAdminPage(){document.querySelector(".head p").hidden=true;document.querySelector(".head h1").textContent="임원 임기관리 대장";ledger.hidden=false;$("uploadBox").hidden=false;window.scrollTo({top:0,behavior:"smooth"})}
-function showCustomerPage(){ledger.hidden=true;$("uploadBox").hidden=false;document.querySelector(".head p").hidden=false;document.querySelector(".head h1").textContent="임원 임기관리 테스트";window.scrollTo({top:0,behavior:"smooth"})}
+function showAdminPage(){document.querySelector(".head p").hidden=true;document.querySelector(".head h1").textContent="임원 임기관리 대장";ledger.hidden=false;$("uploadBox").hidden=true;adminHeadBtn.hidden=true;window.scrollTo({top:0,behavior:"auto"})}
+function showCustomerPage(){ledger.hidden=true;$("uploadBox").hidden=false;document.querySelector(".head p").hidden=false;document.querySelector(".head h1").textContent="임원 임기관리 테스트";adminHeadBtn.hidden=false;window.scrollTo({top:0,behavior:"auto"})}
 function render(){
  const q=search.value.trim().toLowerCase(),f=filter.value;
  const list=rows.filter(x=>{const hay=(x.company+" "+x.officer+" "+x.position).toLowerCase(),days=parseInt(dday(x.expiry).replace("D-",""),10);return(!q||hay.includes(q))&&(f==="all"||(f==="customer"&&x.source==="고객신청")||(f==="admin"&&x.source==="기존고객")||(f==="soon"&&dday(x.expiry).startsWith("D-")&&days<=90))});
