@@ -273,7 +273,9 @@ async function saveAnalysis(analysis,phone,email){
   batch.set(ref,data);saved.push({id:ref.id,...data});
  }
  if(!saved.length)throw Error("이미 같은 임원·직위·임기 기준일이 관리대장에 등록되어 있습니다.");
- await batch.commit();
+ const commit=batch.commit();
+ const timeout=new Promise((_,reject)=>setTimeout(()=>reject(Error("저장 응답이 지연되고 있습니다. 잠시 후 관리대장을 확인하세요.")),8000));
+ await Promise.race([commit,timeout]);
  rows.push(...saved);render();
  return {savedCount:saved.length};
 }
@@ -284,7 +286,7 @@ $("adminSaveAnalysis").onclick=async()=>{
  if(!isAdmin()){alert("관리자 권한이 없습니다.");return}
  const btn=$("adminSaveAnalysis"),saveState=$("saveState");
  btn.hidden=false;btn.disabled=true;btn.textContent="저장 중…";
- if(saveState)saveState.textContent="관리대장에 저장 중…";
+ if(saveState)saveState.textContent="저장 중…";
  let completed=false;
  try{
   const saved=await saveAnalysis(analysis,"","");
