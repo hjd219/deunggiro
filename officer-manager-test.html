@@ -24,7 +24,7 @@ body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:var(--ink);backg
 </head>
 <body>
 <main class="wrap">
-  <div class="head"><div class="head-title"><h1>임원 임기관리 테스트</h1><button class="admin-head-btn" id="adminHeadBtn" type="button">관리자 로그인</button></div><p>실제 www.deunggiro.kr 도메인에서 Gemini Worker 호출을 확인하는 테스트 페이지입니다.</p></div>
+  <div class="head"><div class="head-title"><h1>임원 임기관리 테스트</h1><button class="admin-head-btn" id="adminHeadBtn" type="button">관리자 로그인</button></div><p>실제 www.deunggiro.kr 도메인에서 Google Document AI 호출을 확인하는 테스트 페이지입니다.</p></div>
   <div class="box" id="uploadBox">
     <div class="top">
       <div><h3>등기사항증명서 등록</h3><p style="margin-top:8px;color:#168dca;font-weight:800">파일을 이곳에 끌어다 놓으세요</p><p style="margin-top:6px">PDF · JPG · PNG / 최대 15MB</p></div>
@@ -62,7 +62,7 @@ body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:var(--ink);backg
 </main>
 <script>
 (()=>{
-const WORKER="https://deunggiro-ocr.hapuha21.workers.dev/";
+const WORKER="https://deunggiro-ocr-209298170572.asia-northeast3.run.app/";
 const $=id=>document.getElementById(id),file=$("file"),analyze=$("analyze"),status=$("status"),result=$("result"),summary=$("summary"),tbody=$("tbody"),raw=$("raw"),apply=$("apply"),uploadBox=$("uploadBox"),applyBtn=$("applyBtn"),registerNote=$("registerNote") ,openExistingBtn=$("openExistingBtn");
 let latestAnalysis=null;
 // 관리대장 표시 여부는 아래 Firebase Authentication 세션에서만 결정
