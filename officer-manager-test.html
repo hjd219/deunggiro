@@ -157,12 +157,10 @@ function parseDocumentAI(j){
  }
  if(statusRun.length)flush();
 
- const hasExplicitEntry=events.some(e=>["취임","중임"].includes(e.event));
- if(incorporationDate&&!hasExplicitEntry){
-  for(const o of officers){
-   const own=events.filter(e=>e.name===o.name&&e.position===o.position);
-   if(!own.length)events.push({name:o.name,position:o.position,event:"취임",event_date:incorporationDate,registration_date:incorporationDate,raw_text:o.raw+" 설립"});
-  }
+ // Any headers still left after an explicit change block are not founders to be revived.
+ // Incorporation date is used only when the whole officer section has no explicit status history.
+ if(incorporationDate&&events.length===0){
+  for(const o of officers)events.push({name:o.name,position:o.position,event:"취임",event_date:incorporationDate,registration_date:incorporationDate,raw_text:o.raw+" 설립"});
  }
 
  return {...j,company:{name:companyName,registration_number:registrationNumber,incorporation_date:incorporationDate},officer_events:events,
