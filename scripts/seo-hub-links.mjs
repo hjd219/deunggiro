@@ -18,7 +18,12 @@ function pickCore(p){
 }
 
 function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
+function removeLegacyHub(html){
+  // 구형 SEO_HUB_LINK는 현재 SEO_CORE_LINK와 같은 업무 허브를 중복 연결하므로 제거한다.
+  return html.replace(/<!-- SEO_HUB_LINK_START -->[\\s\\S]*?<!-- SEO_HUB_LINK_END -->\\s*/gm,'');
+}
 function replaceMarked(html,block){
+  html=removeLegacyHub(html);
   const start='<!-- SEO_CORE_LINK_START -->',end='<!-- SEO_CORE_LINK_END -->';
   const marked=`${start}\n${block}\n${end}`;
   const re=new RegExp(`${start}[\\s\\S]*?${end}`,'m');
