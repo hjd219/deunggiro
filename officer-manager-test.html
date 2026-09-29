@@ -81,15 +81,13 @@ function cleanOfficerName(v){
 }
 function normalizeRole(v){
  const s=position(v);
- if(s==="대표이사")return"대표이사";
- if(s==="감사")return"감사";
- if(s==="사내이사"||s==="사외이사"||s==="기타비상무이사"||s==="이사")return s;
- return s;
+ return ["대표이사","사내이사","사외이사","기타비상무이사","이사","감사"].includes(s)?s:s;
 }
 function normalizeStatus(v){
  const s=str(v).replace(/\s/g,"");
  for(const e of["해임","퇴임","사임","임기만료","중임","취임"])if(s.includes(e))return e;
  if(s.includes("주소기입")||s.includes("주소변경"))return"주소변경";
+ if(s.includes("착오기재정정"))return"정정";
  return"기타";
 }
 function buildOfficerModel(j){
@@ -104,89 +102,94 @@ function buildOfficerModel(j){
  if(regLabel>=0)for(let d=0;d<=3&&!registrationNumber;d++)for(const i of d?[regLabel-d,regLabel+d]:[regLabel]){const m=(lines[i]||"").match(/\b\d{6}-?\d{7}\b/);if(m)registrationNumber=m[0]}
  if(!registrationNumber){const m=text.match(/\b\d{6}-?\d{7}\b/);if(m)registrationNumber=m[0]}
  if(registrationNumber&&!registrationNumber.includes("-"))registrationNumber=registrationNumber.slice(0,6)+"-"+registrationNumber.slice(6);
+
  let incorporationDate="";
  const incAt=lines.findIndex(v=>compact(v).includes("회사성립연월일"));
  if(incAt>=0)for(let i=incAt;i<Math.min(lines.length,incAt+10)&&!incorporationDate;i++)incorporationDate=iso(lines[i]);
- const sectionAt=lines.findIndex(v=>compact(v).includes("임원에관한사항"));
- const sectionEnd=sectionAt>=0?lines.findIndex((v,i)=>i>sectionAt&&compact(v).includes("회사성립연월일")):-1;
- const scan=sectionAt>=0?lines.slice(sectionAt+1,sectionEnd>sectionAt?sectionEnd:lines.length):[];
+
+ // Do not trust the visual position of the "임원에 관한 사항" label: OCR can emit
+ // officer rows before that label. Read every officer row in the document and attach
+ // only events that physically follow that row until the next officer row.
  const roleLine=/^(대표이사|사내이사|사외이사|기타비상무이사|이사|감사)\s+(.+)$/;
- const rrn=/\s+\d{6}(?:-[0-9*]*)?(?:\s|$)/;
- const statusLine=/(20\d{2}\s*년\s*\d{1,2}\s*월\s*\d{1,2}\s*일)\s*(취임|중임|사임|퇴임|해임|임기만료|주소기입|주소변경)/;
+ const rrnMatch=v=>str(v).match(/\b(\d{6})\s*-/);
+ const statusLine=/(20\d{2}\s*년\s*\d{1,2}\s*월\s*\d{1,2}\s*일)\s*(취임|중임|사임|퇴임|해임|임기만료|주소기입|주소변경|착오기재정정)/;
  const regDateLine=/(20\d{2}\s*년\s*\d{1,2}\s*월\s*\d{1,2}\s*일)\s*등기/;
- const tokens=[];
- for(const line of scan){
-  const rm=line.match(roleLine);
-  if(rm){
-   const tail=rm[2],cut=tail.search(rrn),name=cleanOfficerName(cut>=0?tail.slice(0,cut):tail);
-   if(name){tokens.push({type:"officer",position:normalizeRole(rm[1]),name,raw:line});continue}
-  }
-  const sm=line.match(statusLine);
-  if(sm){tokens.push({type:"status",event:normalizeStatus(sm[2]),date:iso(sm[1]),raw:line});continue}
-  const dm=line.match(regDateLine);
-  if(dm){tokens.push({type:"registration",date:iso(dm[1]),raw:line});continue}
- }
- const events=[],allHeaders=[];
- let headers=[],statuses=[];
- const flush=()=>{
-  if(!headers.length){statuses=[];return}
-  if(!statuses.length){headers=[];return}
-  if(headers.length===1){
-   const h=headers[0];
-   for(const s of statuses)events.push({name:h.name,position:h.position,event:s.event,event_date:s.date,registration_date:s.registration_date||"",raw_text:h.raw+" "+s.raw});
-  }else{
-   const n=Math.min(headers.length,statuses.length);
-   for(let i=0;i<n;i++){const h=headers[i],s=statuses[i];events.push({name:h.name,position:h.position,event:s.event,event_date:s.date,registration_date:s.registration_date||"",raw_text:h.raw+" "+s.raw})}
-  }
-  headers=[];statuses=[];
+ const records=[];
+ let current=null,lastEvent=null;
+
+ const pushOfficer=(line,rm)=>{
+  const tail=rm[2],rr=rrnMatch(tail);
+  let namePart=tail;
+  if(rr)namePart=tail.slice(0,rr.index);
+  const name=cleanOfficerName(namePart);
+  if(!name)return null;
+  const rec={name,personId:rr?rr[1]:"",position:normalizeRole(rm[1]),raw:line,events:[]};
+  records.push(rec);return rec;
  };
- for(const t of tokens){
-  if(t.type==="officer"){
-   if(statuses.length)flush();
-   headers.push(t);allHeaders.push(t);
-  }else if(t.type==="status")statuses.push({...t,registration_date:""});
-  else if(t.type==="registration"&&statuses.length&&!statuses[statuses.length-1].registration_date)statuses[statuses.length-1].registration_date=t.date;
+
+ for(const line of lines){
+  if(compact(line).includes("회사성립연월일")){current=null;lastEvent=null;continue}
+  const rm=line.match(roleLine);
+  if(rm){current=pushOfficer(line,rm);lastEvent=null;continue}
+  if(!current)continue;
+  const sm=line.match(statusLine);
+  if(sm){
+   const ev={event:normalizeStatus(sm[2]),event_date:iso(sm[1]),registration_date:"",raw_text:current.raw+" "+line};
+   current.events.push(ev);lastEvent=ev;continue;
+  }
+  const dm=line.match(regDateLine);
+  if(dm&&lastEvent&&!lastEvent.registration_date){lastEvent.registration_date=iso(dm[1]);continue}
  }
- if(statuses.length)flush();
- const sourceEvents=events.length?events:((j?.officer_events||[]).map(q=>({
-  ...q,name:cleanOfficerName(q.name),position:normalizeRole(q.position),
-  event:normalizeStatus(q.event),event_date:date(q.event_date),registration_date:date(q.registration_date)
- })));
+
+ // Consolidate OCR repetitions of the same person+role. Resident-number prefix is
+ // used when available; otherwise the normalized name is the stable identity.
  const groups=new Map();
- for(const q of sourceEvents){
-  if(!q.name||!q.position)continue;
-  const key=q.name+"|"+q.position;
-  if(!groups.has(key))groups.set(key,[]);
-  groups.get(key).push(q);
+ for(const r of records){
+  const person=r.personId||r.name;
+  const key=person+"|"+r.position;
+  if(!groups.has(key))groups.set(key,{name:r.name,personId:r.personId,position:r.position,records:[],events:[]});
+  const g=groups.get(key);
+  if(!g.personId&&r.personId)g.personId=r.personId;
+  if(r.name.length<g.name.length)g.name=r.name;
+  g.records.push(r);
+  for(const e of r.events)g.events.push({...e,name:g.name,position:g.position});
  }
- const current=[];
- for(const history of groups.values()){
-  history.sort((a,b)=>time(a.event_date||a.registration_date)-time(b.event_date||b.registration_date));
-  let state="UNKNOWN",lastStart=null;
-  for(const x of history){
-   if(x.event==="주소변경"){
-    if(x.position!=="대표이사")continue;
-    continue;
+
+ const currentOfficers=[],allEvents=[];
+ for(const g of groups.values()){
+  const events=g.events.filter(e=>e.event!=="기타"&&e.event!=="정정");
+  events.sort((a,b)=>time(a.event_date||a.registration_date)-time(b.event_date||b.registration_date));
+  allEvents.push(...events);
+
+  // Build independent term cycles. Address entries never open or close a cycle.
+  let activeStart=null;
+  for(const e of events){
+   if(["취임","중임"].includes(e.event)){activeStart=e;continue}
+   if(["사임","퇴임","해임","임기만료"].includes(e.event)){activeStart=null;continue}
+  }
+  if(activeStart){
+   currentOfficers.push({...activeStart,name:g.name,position:g.position});
+   continue;
+  }
+
+  // Incorporation fallback is allowed only for an officer row with no lifecycle
+  // event at all, and only when the entire document contains no later lifecycle
+  // evidence for that same person+role.
+  const hasLifecycle=events.some(e=>["취임","중임","사임","퇴임","해임","임기만료"].includes(e.event));
+  if(!hasLifecycle&&incorporationDate){
+   const hasOnlyAddress=events.length>0&&events.every(e=>e.event==="주소변경");
+   if(!hasOnlyAddress&&g.records.length===1){
+    currentOfficers.push({name:g.name,position:g.position,event:"설립취임",event_date:incorporationDate,registration_date:incorporationDate,raw_text:g.records[0].raw+" 설립"});
    }
-   if(["취임","중임"].includes(x.event)){state="ACTIVE";lastStart=x}
-   else if(["사임","퇴임","해임","임기만료"].includes(x.event)){state="ENDED";lastStart=null}
-  }
-  if(state==="ACTIVE"&&lastStart)current.push(lastStart);
- }
- // 설립일 대체는 문서 전체에 신분변동 이력이 전혀 없는 설립등기에서만 허용한다.
- if(!sourceEvents.some(x=>["취임","중임","사임","퇴임","해임","임기만료"].includes(x.event))&&incorporationDate){
-  const seen=new Set();
-  for(const h of allHeaders){
-   const key=h.name+"|"+h.position;if(seen.has(key))continue;seen.add(key);
-   current.push({name:h.name,position:h.position,event:"설립취임",event_date:incorporationDate,registration_date:incorporationDate,raw_text:h.raw+" 설립"});
   }
  }
+
  return {
   ...j,
   company:{name:companyName||j?.company?.name||"",registration_number:registrationNumber||j?.company?.registration_number||"",incorporation_date:incorporationDate||j?.company?.incorporation_date||""},
-  officer_events:sourceEvents,
-  current_officers:current,
-  parse_status:{company:!!(companyName||j?.company?.name),registration_number:!!(registrationNumber||j?.company?.registration_number),incorporation_date:!!(incorporationDate||j?.company?.incorporation_date),officer_section:sectionAt>=0,officer_headers:allHeaders.length,officer_events:sourceEvents.length}
+  officer_events:allEvents,
+  current_officers:currentOfficers,
+  parse_status:{company:!!(companyName||j?.company?.name),registration_number:!!(registrationNumber||j?.company?.registration_number),incorporation_date:!!(incorporationDate||j?.company?.incorporation_date),officer_records:records.length,officer_groups:groups.size,officer_events:allEvents.length}
  };
 }
 function currentOfficers(events,incorporationDate,model){
