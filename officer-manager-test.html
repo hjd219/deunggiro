@@ -56,19 +56,12 @@ body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:#173b4a;backgrou
         <div class="ledger-head"><div><h3>사무소 관리대장</h3><p>관리자 전용 · 기존 고객은 여기에서 등록합니다.</p></div><div class="ledger-head-actions"><button class="admin-register" id="openExistingBtn" type="button">+ 기존 고객 등록</button><button class="pick" id="adminLogoutBtn" type="button">로그아웃</button></div></div>
         <div class="ledger-toolbar"><input id="ledgerSearch" type="search" placeholder="상호 · 임원명 검색"><select id="ledgerFilter"><option value="all">전체</option><option value="soon">임기 임박</option><option value="customer">고객신청</option><option value="admin">기존고객</option></select></div>
         <div class="table"><table><thead><tr><th>상호</th><th>임원</th><th>직위</th><th>예상 만료</th><th>D-day</th><th>연락처</th><th>등록경로</th><th>관리</th></tr></thead><tbody id="ledgerBody"><tr><td colspan="8">등록된 관리대장이 없습니다.</td></tr></tbody></table></div>
-        <div class="existing" id="existingBox">
-          <h3>기존 고객 등록</h3>
-          <p class="notice">관리대장에서만 사용하는 사무소 직접 등록 영역입니다. 등기사항증명서를 분석한 뒤 연락처를 입력해 등록합니다.</p>
-          <div class="contact"><input id="existingPhone" type="tel" placeholder="휴대전화번호 (선택)"><input id="existingEmail" type="email" placeholder="이메일 (선택)"></div>
-          <div class="register-actions"><button class="admin-register" id="existingRegisterBtn" type="button">현재 분석 결과로 등록</button><button class="pick" id="closeExistingBtn" type="button">닫기</button></div>
-          <p class="register-note" id="existingNote"></p>
-        </div>
-      </section>
+        </section>
 </main>
 <script>
 (()=>{
 const WORKER="https://deunggiro-ocr.hapuha21.workers.dev/";
-const $=id=>document.getElementById(id),file=$("file"),analyze=$("analyze"),status=$("status"),result=$("result"),summary=$("summary"),tbody=$("tbody"),raw=$("raw"),apply=$("apply"),uploadBox=$("uploadBox"),applyBtn=$("applyBtn"),registerNote=$("registerNote"),openExistingBtn=$("openExistingBtn"),existingBox=$("existingBox"),closeExistingBtn=$("closeExistingBtn"),existingRegisterBtn=$("existingRegisterBtn"),existingNote=$("existingNote");
+const $=id=>document.getElementById(id),file=$("file"),analyze=$("analyze"),status=$("status"),result=$("result"),summary=$("summary"),tbody=$("tbody"),raw=$("raw"),apply=$("apply"),uploadBox=$("uploadBox"),applyBtn=$("applyBtn"),registerNote=$("registerNote") ,openExistingBtn=$("openExistingBtn");
 let latestAnalysis=null;
 // 관리대장 표시 여부는 아래 Firebase Authentication 세션에서만 결정
 const str=v=>String(v??"").trim();
@@ -124,9 +117,7 @@ function buildRecord(source){
  const contact=contactData();
  return {source,company:latestAnalysis?.company||{},officers:latestAnalysis?.officers||[],contact,created_at:new Date().toISOString()}
 }
-openExistingBtn.addEventListener("click",()=>{existingBox.style.display="block";existingNote.textContent="";uploadBox.hidden=false;document.getElementById("apply").style.display="none";document.getElementById("result").style.display="none";uploadBox.scrollIntoView({behavior:"smooth",block:"start"})});
-closeExistingBtn.addEventListener("click",()=>{existingBox.style.display="none";if(document.getElementById("ledger")&&!document.getElementById("ledger").hidden)uploadBox.hidden=true});
-existingRegisterBtn.addEventListener("click",async()=>{if(!latestAnalysis){existingNote.textContent="먼저 등기사항증명서를 분석하세요.";return}window.dispatchEvent(new CustomEvent("officer-admin-register",{detail:{analysis:latestAnalysis,phone:str($("existingPhone").value),email:str($("existingEmail").value)}}))});
+openExistingBtn.addEventListener("click",()=>{uploadBox.hidden=false;result.style.display="none";apply.style.display="none";document.getElementById("adminSaveAnalysis").hidden=false;uploadBox.scrollIntoView({behavior:"smooth",block:"start"})});
 applyBtn.addEventListener("click",()=>{
  if(!latestAnalysis){registerNote.textContent="먼저 등기사항증명서를 분석하세요.";return}
  const c=contactData();
@@ -169,8 +160,7 @@ async function saveAnalysis(analysis,phone,email){
  render();
 }
 function calcExpiry(o){const base=o.event_date||o.registration_date||"";const m=String(base).match(/^(\d{4})-(\d{2})-(\d{2})$/);if(!m)return"";if(String(o.position).includes("감사"))return(+m[1]+3)+"-03-31";const d=new Date((+m[1]+3)+"-"+m[2]+"-"+m[3]+"T00:00:00");d.setDate(d.getDate()-1);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
-$("adminSaveAnalysis").onclick=async()=>{const analysis=window.__latestOfficerAnalysis;if(!analysis?.officers?.length){alert("먼저 임원 확인을 실행하세요.");return}if(!isAdmin()){alert("관리자 권한이 없습니다.");return}const btn=$("adminSaveAnalysis");btn.disabled=true;btn.textContent="저장 중…";try{await saveAnalysis(analysis,$("existingPhone")?.value.trim()||"",$("existingEmail")?.value.trim()||"");alert("관리대장에 저장했습니다.");$("uploadBox").hidden=true;$("existingBox").classList.remove("is-open");ledger.scrollIntoView({behavior:"smooth",block:"start"})}catch(e){alert("저장 실패 · "+e.message)}finally{btn.disabled=false;btn.textContent="저장"}};
-window.addEventListener("officer-admin-register",async e=>{const note=$("existingNote");try{note.textContent="저장 중…";await saveAnalysis(e.detail.analysis,e.detail.phone,e.detail.email);note.textContent="관리대장에 등록했습니다.";$("existingBox").classList.remove("is-open");$("uploadBox").hidden=true;$("ledger").scrollIntoView({behavior:"smooth",block:"start"})}catch(err){note.textContent="등록 실패 · "+err.message}});
+$("adminSaveAnalysis").onclick=async()=>{const analysis=window.__latestOfficerAnalysis;if(!analysis?.officers?.length){alert("먼저 임원 확인을 실행하세요.");return}if(!isAdmin()){alert("관리자 권한이 없습니다.");return}const btn=$("adminSaveAnalysis");btn.disabled=true;btn.textContent="저장 중…";try{await saveAnalysis(analysis,"","");alert("관리대장에 저장했습니다.");$("uploadBox").hidden=true;ledger.scrollIntoView({behavior:"smooth",block:"start"})}catch(e){alert("저장 실패 · "+e.message)}finally{btn.disabled=false;btn.textContent="저장"}};
 ledgerBody.addEventListener("click",async e=>{
  const edit=e.target.closest("[data-edit]"),del=e.target.closest("[data-delete]");
  if(edit){const x=rows.find(v=>v.id===edit.dataset.edit);if(!x)return;editingId=x.id;$("editCompany").value=x.company||"";$("editOfficer").value=x.officer||"";$("editPosition").value=x.position||"";$("editTermStart").value=x.termStart||"";$("editExpiry").value=x.expiry||"";$("editPhone").value=x.phone||"";$("editEmail").value=x.email||"";$("editMsg").textContent="";editModal.hidden=false}
