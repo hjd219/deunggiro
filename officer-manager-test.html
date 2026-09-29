@@ -7,17 +7,17 @@
 <style>
 *{box-sizing:border-box}
 body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:#173b4a;background:#fff}
-.wrap{max-width:1100px;margin:0 auto;padding:55px 24px}
-.head{margin-bottom:28px}.head h1{margin:0 0 10px;font-size:28px}.head p{margin:0;color:#71838b;font-size:13px}
-.box{border:1px solid #d9e5ea;border-radius:10px;padding:25px}.box.drag{border-color:#168dca;background:#f7fbfd}
-.top{display:flex;justify-content:space-between;align-items:center;gap:20px}.top h3,.apply h3{margin:0 0 7px;font-size:16px}.top p{margin:0;color:#71838b;font-size:13px}
-.actions{display:flex;gap:8px}.file{display:none}.pick,.run{padding:11px 16px;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer}.pick{border:1px solid #c8e8f7;color:#168dca;background:#f7fbfd}.run{border:0;background:#168dca;color:#fff}.run:disabled{opacity:.45}
-.status{margin-top:14px;color:#71838b;font-size:12px}.result{display:none;margin-top:25px}
+.wrap{max-width:860px;margin:0 auto;padding:38px 24px}
+.head{margin-bottom:22px;text-align:center}.head h1{margin:0 0 8px;font-size:26px}.head p{margin:0;color:#71838b;font-size:13px}
+.box{border:1px solid #d9e5ea;border-radius:16px;padding:28px}.box.drag{border:2px solid #168dca;background:#f4fbff}
+.top{display:block;text-align:center}.top h3,.apply h3{margin:0 0 8px;font-size:18px}.top p{margin:0;color:#71838b;font-size:13px}
+.actions{display:flex;justify-content:center;gap:8px;margin-top:20px}.file{display:none}.pick,.run{padding:11px 16px;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer}.pick{border:1px solid #c8e8f7;color:#168dca;background:#f7fbfd}.run{border:0;background:#168dca;color:#fff}.run:disabled{opacity:.45}
+.status{margin-top:14px;color:#71838b;font-size:12px;text-align:center}.result{display:none;margin-top:25px}
 .summary{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.summary span{padding:7px 10px;background:#f1f8fc;border-radius:999px;font-size:12px}
 .table{overflow:auto;border:1px solid #d9e5ea;border-radius:10px}.table table{width:100%;min-width:780px;border-collapse:collapse;font-size:13px}.table th,.table td{padding:12px;border-bottom:1px solid #e1e9ed;text-align:left}.table th{background:#f7fbfd}.event{color:#168dca;font-weight:800}.expiry{font-weight:800}
 .apply{display:none;margin-top:24px;padding-top:22px;border-top:1px solid #e1e9ed}.contact{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.contact input{padding:12px;border:1px solid #d9e5ea;border-radius:8px}.checks{display:flex;gap:16px;flex-wrap:wrap;margin-top:13px;font-size:13px}.privacy{margin-top:12px;border:1px solid #d9e5ea;border-radius:8px;padding:12px 14px;font-size:12px;color:#536b75}.privacy summary{cursor:pointer;font-weight:800;color:#173b4a}.privacy div{margin-top:10px;line-height:1.75}.notice{margin:10px 0 0;color:#71838b;font-size:12px;line-height:1.6}.apply .run{margin-top:14px}.register-actions{display:flex;gap:8px;flex-wrap:wrap}.admin-register{margin-top:14px;padding:11px 16px;border-radius:8px;border:1px solid #173b4a;background:#fff;color:#173b4a;font-size:13px;font-weight:800;cursor:pointer}.register-note{margin:10px 0 0;font-size:12px;font-weight:700;color:#168dca}
 .raw{margin-top:25px}.raw pre{white-space:pre-wrap;word-break:break-all;background:#f7f9fa;padding:15px;border-radius:8px;font-size:11px;max-height:300px;overflow:auto}
-@media(max-width:700px){.wrap{padding:30px 15px}.top{display:block}.actions{margin-top:18px}.pick,.run{flex:1;text-align:center}.contact{grid-template-columns:1fr}}
+@media(max-width:700px){.wrap{padding:24px 15px}.box{padding:24px 18px}.actions{margin-top:18px}.pick,.run{flex:1;text-align:center}.contact{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -25,7 +25,7 @@ body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:#173b4a;backgrou
   <div class="head"><h1>임원 임기관리 테스트</h1><p>실제 www.deunggiro.kr 도메인에서 Gemini Worker 호출을 확인하는 테스트 페이지입니다.</p></div>
   <div class="box" id="uploadBox">
     <div class="top">
-      <div><h3>등기사항증명서 등록</h3><p>PDF · JPG · PNG / 최대 15MB</p><p style="margin-top:7px;color:#168dca;font-weight:800">↓ 파일을 이 영역에 끌어다 놓거나 파일 선택을 눌러주세요.</p></div>
+      <div><h3>등기사항증명서 등록</h3><p>PDF · JPG · PNG / 최대 15MB</p><p style="margin-top:7px;color:#168dca;font-weight:800">파일을 이곳에 끌어다 놓으세요</p></div>
       <div class="actions"><label class="pick" for="file">파일 선택</label><input class="file" id="file" type="file" accept=".pdf,.jpg,.jpeg,.png"><button class="run" id="analyze">임원 확인</button></div>
     </div>
     <div class="status" id="status">파일을 선택하세요.</div>
