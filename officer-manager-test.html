@@ -127,15 +127,18 @@ function parseDocumentAI(j){
  }
 
  const officers=[],events=[];
- let headerRun=[],statusRun=[],lastEvent=null;
+ let headerRun=[],statusRun=[];
  const flush=()=>{
   if(!headerRun.length||!statusRun.length){statusRun=[];return}
   if(headerRun.length===1){
    const o=headerRun[0];
-   for(const s of statusRun){const ev={name:o.name,position:o.position,event:s.event,event_date:s.date,registration_date:"",raw_text:o.raw+" "+s.raw};events.push(ev);lastEvent=ev}
+   for(const s of statusRun)events.push({name:o.name,position:o.position,event:s.event,event_date:s.date,registration_date:s.registration_date||"",raw_text:o.raw+" "+s.raw});
   }else{
    const count=Math.min(headerRun.length,statusRun.length);
-   for(let i=0;i<count;i++){const o=headerRun[i],s=statusRun[i],ev={name:o.name,position:o.position,event:s.event,event_date:s.date,registration_date:"",raw_text:o.raw+" "+s.raw};events.push(ev);lastEvent=ev}
+   for(let i=0;i<count;i++){
+    const o=headerRun[i],s=statusRun[i];
+    events.push({name:o.name,position:o.position,event:s.event,event_date:s.date,registration_date:s.registration_date||"",raw_text:o.raw+" "+s.raw});
+   }
   }
   headerRun=[];statusRun=[];
  };
@@ -144,12 +147,12 @@ function parseDocumentAI(j){
   if(t.type==="officer"){
    if(statusRun.length)flush();
    const o={name:t.name,position:t.position,raw:t.raw};
-   officers.push(o);headerRun.push(o);lastEvent=null;
+   officers.push(o);headerRun.push(o);
   }else if(t.type==="status"){
-   statusRun.push(t);
-  }else if(t.type==="registration"){
-   if(statusRun.length)flush();
-   if(lastEvent&&!lastEvent.registration_date){lastEvent.registration_date=t.date;lastEvent.raw_text+=" "+t.raw}
+   statusRun.push({...t,registration_date:""});
+  }else if(t.type==="registration"&&statusRun.length){
+   const s=statusRun[statusRun.length-1];
+   if(!s.registration_date)s.registration_date=t.date;
   }
  }
  if(statusRun.length)flush();
