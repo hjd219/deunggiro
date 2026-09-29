@@ -46,7 +46,7 @@ body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:#173b4a;backgrou
       </section>
 
       <div class="admin-modal" id="adminLogin" hidden><div class="admin-dialog"><button class="admin-close" id="adminCloseBtn" type="button" aria-label="닫기">×</button><h3>관리자 로그인</h3><p>관리대장은 관리자 인증 후에만 열립니다.</p><input id="adminEmail" type="email" autocomplete="username" placeholder="아이디 (이메일 주소)"><input id="adminPassword" type="password" autocomplete="current-password" placeholder="비밀번호"><button class="run admin-login-submit" id="loginBtn" type="button">로그인</button><button class="pick admin-logout" id="logoutBtn" type="button" hidden>로그아웃</button><p class="register-note" id="loginMsg"></p></div></div>
-      <section class="ledger" id="ledger" hidden>
+      <section class="ledger admin-page" id="ledger" hidden>
         <div class="ledger-head"><div><h3>사무소 관리대장</h3><p>관리자 전용 · 기존 고객은 여기에서 등록합니다.</p></div><button class="admin-register" id="openExistingBtn" type="button">+ 기존 고객 등록</button></div>
         <div class="ledger-toolbar"><input id="ledgerSearch" type="search" placeholder="상호 · 임원명 검색"><select id="ledgerFilter"><option value="all">전체</option><option value="soon">임기 임박</option><option value="customer">고객신청</option><option value="admin">기존고객</option></select></div>
         <div class="table"><table><thead><tr><th>상호</th><th>임원</th><th>직위</th><th>예상 만료</th><th>D-day</th><th>연락처</th><th>등록경로</th></tr></thead><tbody id="ledgerBody"><tr><td colspan="7">등록된 관리대장이 없습니다.</td></tr></tbody></table></div>
@@ -147,12 +147,14 @@ import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from
 const firebaseConfig={apiKey:"AIzaSyAlXYOrj7V-XtDrK13Cbxw6hWzbfhGf_do",authDomain:"project-b08e5f3c-fa49-4ae6-933.firebaseapp.com",projectId:"project-b08e5f3c-fa49-4ae6-933",storageBucket:"project-b08e5f3c-fa49-4ae6-933.firebasestorage.app",messagingSenderId:"209298170572",appId:"1:209298170572:web:2c47a3779cf4a331039869",measurementId:"G-PGFPK2SJLK"};
 const app=initializeApp(firebaseConfig),auth=getAuth(app);
 const login=document.getElementById("adminLogin"),ledger=document.getElementById("ledger"),loginMsg=document.getElementById("loginMsg"),adminHeadBtn=document.getElementById("adminHeadBtn"),adminCloseBtn=document.getElementById("adminCloseBtn");
-adminHeadBtn.onclick=()=>{if(auth.currentUser){ledger.hidden=false;ledger.scrollIntoView({behavior:"smooth",block:"start"})}else{login.hidden=false;setTimeout(()=>document.getElementById("adminEmail").focus(),0)}};
+adminHeadBtn.onclick=()=>{if(auth.currentUser){showAdminPage()}else{login.hidden=false;setTimeout(()=>document.getElementById("adminEmail").focus(),0)}};
+function showAdminPage(){document.getElementById("uploadBox").hidden=true;document.querySelector(".head p").hidden=true;document.querySelector(".head h1").textContent="임원 임기관리 대장";ledger.hidden=false;window.scrollTo({top:0,behavior:"smooth"})}
+function showCustomerPage(){ledger.hidden=true;document.getElementById("uploadBox").hidden=false;document.querySelector(".head p").hidden=false;document.querySelector(".head h1").textContent="임원 임기관리 테스트";window.scrollTo({top:0,behavior:"smooth"})}
 adminCloseBtn.onclick=()=>{login.hidden=true;loginMsg.textContent=""};
 login.addEventListener("click",e=>{if(e.target===login)login.hidden=true});
 document.getElementById("adminPassword").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("loginBtn").click()});
 document.getElementById("loginBtn").onclick=async()=>{try{await signInWithEmailAndPassword(auth,document.getElementById("adminEmail").value.trim(),document.getElementById("adminPassword").value);loginMsg.textContent=""}catch(e){loginMsg.textContent="아이디 또는 비밀번호를 확인하세요."}};
-document.getElementById("logoutBtn").onclick=()=>signOut(auth);
-onAuthStateChanged(auth,user=>{login.hidden=true;ledger.hidden=!user;document.getElementById("logoutBtn").hidden=!user;adminHeadBtn.textContent="관리자 로그인"});
+document.getElementById("logoutBtn").onclick=async()=>{await signOut(auth);showCustomerPage()};
+onAuthStateChanged(auth,user=>{login.hidden=true;adminHeadBtn.textContent="관리자 로그인";if(user)showAdminPage();else showCustomerPage()});
 </script>
 </body></html>
