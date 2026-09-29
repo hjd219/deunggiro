@@ -122,7 +122,7 @@ function buildRecord(source){
  const contact=contactData();
  return {source,company:latestAnalysis?.company||{},officers:latestAnalysis?.officers||[],contact,created_at:new Date().toISOString()}
 }
-openExistingBtn.addEventListener("click",()=>{uploadBox.hidden=false;result.style.display="none";apply.style.display="none";window.__latestOfficerAnalysis=null;const save=document.getElementById("adminSaveAnalysis");save.hidden=true;save.disabled=true;const analyzeBtn=document.getElementById("analyze");analyzeBtn.hidden=true;uploadBox.scrollIntoView({behavior:"smooth",block:"start"})});
+openExistingBtn.addEventListener("click",()=>{uploadBox.hidden=false;result.style.display="none";apply.style.display="none";window.__latestOfficerAnalysis=null;const save=document.getElementById("adminSaveAnalysis");save.hidden=false;save.disabled=true;save.textContent="자동 저장";const analyzeBtn=document.getElementById("analyze");analyzeBtn.hidden=false;analyzeBtn.textContent="임원 확인";uploadBox.scrollIntoView({behavior:"smooth",block:"start"})});
 applyBtn.addEventListener("click",()=>{
  if(!latestAnalysis){registerNote.textContent="먼저 등기사항증명서를 분석하세요.";return}
  const c=contactData();
