@@ -85,8 +85,11 @@ function parseDocumentAI(j){
   const same=lines[i].match(/^등록번호\s*(\d{6}-?\d{7})/);
   if(same){reg=same[1];break}
   if(/^등록번호\s*$/.test(lines[i])){
-   const m=(lines[i+1]||"").match(/(\d{6}-?\d{7})/);
-   if(m){reg=m[1];break}
+   for(const s of [lines[i+1]||"",lines[i-1]||"",lines[i+2]||""]){
+    const m=s.match(/(\d{6}-?\d{7})/);
+    if(m){reg=m[1];break}
+   }
+   if(reg)break;
   }
  }
  if(reg&&!reg.includes("-"))reg=reg.slice(0,6)+"-"+reg.slice(6);
@@ -114,7 +117,14 @@ function parseDocumentAI(j){
   }else scan=[];
  }
  const events=[],officers=[];
- let cur=null,pending=null,pendingEventName="";
+ let cur=null,pending=null,pendingEventName="",headerRun=[];
+ const pushEvent=(ev)=>{
+  if(["사임","퇴임","해임"].includes(ev.event)&&headerRun.length>1){
+   const assigned=headerRun.shift();
+   ev.name=assigned.name;ev.position=assigned.position;ev.raw_text=assigned.raw+" "+ev.raw_text;
+  }
+  events.push(ev);
+ };
  for(const line of scan){
   let h=line.match(officerHead);
   if(!h){
@@ -123,20 +133,20 @@ function parseDocumentAI(j){
   }
   if(h){
    cur={position:h[1],name:h[2].trim(),raw:line};
-   officers.push(cur);pending=null;pendingEventName="";continue;
+   officers.push(cur);headerRun.push(cur);pending=null;pendingEventName="";continue;
   }
   if(!cur)continue;
   const em=line.match(/(20\d{2}\s*년\s*\d{1,2}\s*월\s*\d{1,2}\s*일)\s*(취임|중임|사임|퇴임|해임|주소기입|주소변경)/);
   if(em){
    const ev={name:cur.name,position:cur.position,event:em[2],event_date:iso(em[1]),registration_date:"",raw_text:cur.raw+" "+line};
-   events.push(ev);pending=ev;pendingEventName="";continue;
+   pushEvent(ev);if(["취임","중임"].includes(ev.event))headerRun=[];pending=ev;pendingEventName="";continue;
   }
   const eventOnly=line.match(/^(취임|중임|사임|퇴임|해임|주소기입|주소변경)$/);
   if(eventOnly){pendingEventName=eventOnly[1];continue}
   const dateOnly=line.match(/^(20\d{2}\s*년\s*\d{1,2}\s*월\s*\d{1,2}\s*일)$/);
   if(dateOnly&&pendingEventName){
    const ev={name:cur.name,position:cur.position,event:pendingEventName,event_date:iso(dateOnly[1]),registration_date:"",raw_text:cur.raw+" "+line+" "+pendingEventName};
-   events.push(ev);pending=ev;pendingEventName="";continue;
+   pushEvent(ev);if(["취임","중임"].includes(ev.event))headerRun=[];pending=ev;pendingEventName="";continue;
   }
   const dateThenNextEvent=line.match(/^(20\d{2}\s*년\s*\d{1,2}\s*월\s*\d{1,2}\s*일)$/);
   if(dateThenNextEvent){
@@ -147,7 +157,7 @@ function parseDocumentAI(j){
    const evOnly=line.match(/^(취임|중임|사임|퇴임|해임|주소기입|주소변경)$/);
    if(evOnly){
     const ev={name:pending.name,position:pending.position,event:evOnly[1],event_date:pending.__dateOnly,registration_date:"",raw_text:pending.raw_text+" "+line};
-    events.push(ev);pending=ev;continue;
+    pushEvent(ev);if(["취임","중임"].includes(ev.event))headerRun=[];pending=ev;continue;
    }
   }
   const rm=line.match(/(20\d{2}\s*년\s*\d{1,2}\s*월\s*\d{1,2}\s*일)\s*등기/);
