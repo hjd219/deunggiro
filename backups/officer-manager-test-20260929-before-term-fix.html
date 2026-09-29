@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>등기로 임원관리 테스트</title>
+<style>
+*{box-sizing:border-box}
+:root{--ink:#173b4a;--blue:#168dca;--line:#d9e5ea;--muted:#71838b;--soft:#f7fbfd}
+body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:var(--ink);background:#fff}
+.wrap{width:min(920px,calc(100% - 32px));margin:0 auto;padding:40px 0 72px}
+.head{position:relative;text-align:center;margin:0 0 28px}.head h1{margin:0;font-size:28px;letter-spacing:-.7px}.head p{margin:9px 0 0;color:var(--muted);font-size:13px}.admin-head-btn{position:absolute;right:0;top:50%;transform:translateY(-50%);height:42px;padding:0 15px;border:1px solid #c8e8f7;border-radius:9px;background:#fff;color:var(--blue);font-size:12px;font-weight:800;cursor:pointer}
+.box,.ledger{width:100%;border:1px solid var(--line);border-radius:16px;background:#fff;padding:28px}.box.drag{border:2px solid var(--blue);background:#f4fbff}
+.top{text-align:center}.top h3,.apply h3{margin:0 0 8px;font-size:18px}.top p{margin:0;color:var(--muted);font-size:13px}
+.actions{display:flex;justify-content:center;gap:8px;margin-top:20px}.file{display:none}.pick,.run,.admin-register{height:44px;padding:0 17px;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;margin:0}.pick{border:1px solid #c8e8f7;color:var(--blue);background:var(--soft)}.run{border:1px solid var(--blue);background:var(--blue);color:#fff}.admin-register{border:1px solid var(--ink);background:#fff;color:var(--ink)}.run:disabled,.admin-register:disabled{opacity:.45}
+.status{margin-top:13px;color:var(--muted);font-size:12px;text-align:center}.result{display:none;margin-top:26px}.summary{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.summary span{padding:7px 10px;background:#f1f8fc;border-radius:999px;font-size:12px}
+.table{width:100%;overflow:auto;border:1px solid var(--line);border-radius:10px}.table table{width:100%;min-width:780px;border-collapse:collapse;font-size:13px}.table th,.table td{padding:13px 12px;border-bottom:1px solid #e1e9ed;text-align:left}.table tr:last-child td{border-bottom:0}.table th{background:var(--soft);font-weight:800}.event{color:var(--blue);font-weight:800}.expiry{font-weight:800}
+.apply{display:none;margin-top:24px;padding-top:22px;border-top:1px solid #e1e9ed}.contact{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.contact input{padding:12px;border:1px solid var(--line);border-radius:8px}.checks{display:flex;gap:16px;flex-wrap:wrap;margin-top:13px;font-size:13px}.privacy{margin-top:12px;border:1px solid var(--line);border-radius:8px;padding:12px 14px;font-size:12px;color:#536b75}.privacy summary{cursor:pointer;font-weight:800;color:var(--ink)}.privacy div{margin-top:10px;line-height:1.75}.notice{margin:10px 0 0;color:var(--muted);font-size:12px;line-height:1.6}.register-actions{display:flex;gap:8px;margin-top:14px}.register-note{margin:10px 0 0;font-size:12px;font-weight:700;color:var(--blue)}
+.ledger{margin-top:0}.ledger-head{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-bottom:20px;border-bottom:1px solid #e7eef2}.ledger-head h3{margin:0 0 5px;font-size:20px}.ledger-head p{margin:0;color:var(--muted);font-size:12px}.ledger-head-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}.ledger-toolbar{display:grid;grid-template-columns:minmax(0,1fr) 110px;gap:8px;margin:18px 0 12px}.ledger-toolbar input,.ledger-toolbar select{width:100%;height:42px;padding:0 12px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}.ledger .table{margin:0}.row-actions{display:flex;gap:6px;white-space:nowrap}.row-btn{padding:7px 10px;border:1px solid #c8e8f7;border-radius:7px;background:#fff;color:var(--blue);font-size:11px;font-weight:800;cursor:pointer}.row-btn.delete{border-color:#efd0d0;color:#b84b4b}
+.admin-page[hidden]{display:none!important}.raw{margin-top:25px}.raw pre{white-space:pre-wrap;word-break:break-all;background:#f7f9fa;padding:15px;border-radius:8px;font-size:11px;max-height:300px;overflow:auto}
+.admin-modal{position:fixed;inset:0;z-index:9999;background:rgba(16,42,53,.38);display:flex;align-items:center;justify-content:center;padding:20px}.admin-modal[hidden]{display:none}.admin-dialog{position:relative;width:min(390px,100%);background:#fff;border-radius:16px;padding:28px;box-shadow:0 18px 55px rgba(0,0,0,.18);text-align:left}.admin-dialog h3{margin:0 0 7px;font-size:20px}.admin-dialog p{margin:0 0 18px;color:var(--muted);font-size:12px}.admin-dialog input{display:block;width:100%;margin-top:9px;padding:12px;border:1px solid var(--line);border-radius:8px;font-size:14px}.admin-login-submit{width:100%;margin-top:14px}.admin-logout{width:100%;margin-top:8px}.admin-close{position:absolute;right:14px;top:12px;border:0;background:transparent;color:var(--muted);font-size:25px;cursor:pointer}.edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.edit-grid input{width:100%}
+@media print{body{background:#fff}.head,#uploadBox,.ledger-head-actions,.ledger-toolbar,.row-actions{display:none!important}.wrap{width:100%;padding:0}.ledger{border:0;padding:0;box-shadow:none}.ledger-head{display:block!important}.ledger-head p{display:none}.table{overflow:visible}.table table{min-width:0;font-size:11px}.table th,.table td{padding:8px 6px}}@media(max-width:700px){.wrap{width:min(100% - 24px,920px);padding:24px 0 50px}.head{padding-top:50px}.admin-head-btn{top:0;right:0;transform:none}.box,.ledger{padding:20px 14px;border-radius:14px}.actions{flex-wrap:wrap}.actions>*{flex:1;min-width:90px}.ledger-head{align-items:stretch;flex-direction:column}.ledger-head-actions{width:100%}.ledger-head-actions>*{flex:1}.ledger-toolbar,.contact,.edit-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="head"><div class="head-title"><h1>임원 임기관리 테스트</h1><button class="admin-head-btn" id="adminHeadBtn" type="button">관리자 로그인</button></div><p>실제 www.deunggiro.kr 도메인에서 Google Document AI 호출을 확인하는 테스트 페이지입니다.</p></div>
+  <div class="box" id="uploadBox">
+    <div class="top">
+      <div><h3>등기사항증명서 등록</h3><p style="margin-top:8px;color:#168dca;font-weight:800">파일을 이곳에 끌어다 놓으세요</p><p style="margin-top:6px">PDF · JPG · PNG / 최대 15MB</p></div>
+      <div class="actions"><label class="pick" for="file">파일 선택</label><input class="file" id="file" type="file" accept=".pdf,.jpg,.jpeg,.png"><button class="run" id="analyze">임원 확인</button><button class="admin-register" id="adminSaveAnalysis" type="button" hidden disabled>분석 후 저장</button></div>
+    </div>
+    <div class="status" id="status">파일을 선택하세요.</div>
+
+    <section class="result" id="result">
+      <div class="summary" id="summary"></div>
+      <div class="table"><table><thead><tr><th>직위</th><th>성명</th><th>최근 이력</th><th>임기 기준일</th><th>예상 만료</th><th>관리</th></tr></thead><tbody id="tbody"></tbody></table></div>
+
+      <section class="apply" id="apply">
+        <h3>임기관리 등록</h3>
+        <p class="notice">분석 결과를 확인한 뒤 임기관리 알림을 신청할 수 있습니다.</p>
+        <div class="contact"><input id="phone" type="tel" placeholder="휴대전화번호"><input id="email" type="email" placeholder="이메일"></div>
+        <div class="checks"><label><input type="checkbox" id="notifyKakao" checked> 카카오 알림톡</label><label><input type="checkbox" id="notifyEmail" checked> 이메일</label><label><input type="checkbox" id="consent"> <b>개인정보 수집·이용 동의 (필수)</b></label></div>
+        <details class="privacy"><summary>개인정보 수집·이용 안내 보기</summary><div><b>수집항목</b> · 휴대전화번호, 이메일<br><b>이용목적</b> · 법인 임원 임기관리, 임기 도래 안내 및 신청내역 관리<br><b>보유기간</b> · 임기관리 서비스 종료 또는 동의 철회 시까지. 관계 법령에 따라 보존이 필요한 경우에는 해당 기간 동안 보관합니다.<br><b>동의 거부</b> · 동의하지 않을 수 있으나, 동의하지 않는 경우 임기관리 알림 서비스를 신청할 수 없습니다.<br><b>등기사항증명서</b> · 임원 현황 및 임기 분석에 일시적으로 사용하며 원본 파일은 별도로 보관하지 않습니다.</div></details>
+        <p class="notice">카카오 알림톡과 이메일의 실제 자동발송은 발송 서비스 연결 후 활성화됩니다.</p>
+        <div class="register-actions"><button class="run" id="applyBtn" type="button">임기관리 신청</button></div>
+        <p class="register-note" id="registerNote"></p>
+      </section>
+
+      <div class="admin-modal" id="adminLogin" hidden><div class="admin-dialog"><button class="admin-close" id="adminCloseBtn" type="button" aria-label="닫기">×</button><h3>관리자 로그인</h3><p>관리대장은 관리자 인증 후에만 열립니다.</p><input id="adminEmail" type="email" autocomplete="username" placeholder="아이디 (이메일 주소)"><input id="adminPassword" type="password" autocomplete="current-password" placeholder="비밀번호"><button class="run admin-login-submit" id="loginBtn" type="button">로그인</button><button class="pick admin-logout" id="logoutBtn" type="button" hidden>로그아웃</button><p class="register-note" id="loginMsg"></p></div></div>
+      
+      <div class="admin-modal" id="editModal" hidden><div class="admin-dialog"><button class="admin-close" id="editCloseBtn" type="button" aria-label="닫기">×</button><h3>관리대장 수정</h3><p>선택한 임원 관리정보를 수정합니다.</p><div class="edit-grid"><input id="editCompany" placeholder="상호"><input id="editOfficer" placeholder="임원명"><input id="editPosition" placeholder="직위"><input id="editTermStart" type="date" title="임기 기준일"><input id="editExpiry" type="date" title="예상 만료일"><input id="editPhone" placeholder="휴대전화번호"><input id="editEmail" type="email" placeholder="이메일"></div><button class="run admin-login-submit" id="editSaveBtn" type="button">수정 저장</button><p class="register-note" id="editMsg"></p></div></div>
+
+      <div class="raw"><b>Worker 원본 응답</b><pre id="raw"></pre></div>
+    </section>
+  </div>
+  <section class="ledger admin-page" id="ledger" hidden>
+        <div class="ledger-head"><div><h3>사무소 관리대장</h3><p>관리자 전용 · 기존 고객은 여기에서 등록합니다.</p></div><div class="ledger-head-actions"><button class="admin-register" id="openExistingBtn" type="button">+ 기존 고객 등록</button><button class="pick" id="printLedgerBtn" type="button">명단 출력</button><button class="pick" id="adminLogoutBtn" type="button">로그아웃</button></div></div>
+        <div class="ledger-toolbar"><input id="ledgerSearch" type="search" placeholder="상호 · 임원명 검색"><select id="ledgerFilter"><option value="all">전체</option><option value="month">1개월 이내</option><option value="week">1주일 이내</option><option value="expired">만료</option><option value="customer">고객신청</option><option value="admin">기존고객</option></select></div>
+        <div class="table"><table><thead><tr><th>상호</th><th>법인등록번호</th><th>임원</th><th>직위</th><th>예상 만료</th><th>D-day</th><th>연락처</th><th>등록경로</th><th>관리</th></tr></thead><tbody id="ledgerBody"><tr><td colspan="9">등록된 관리대장이 없습니다.</td></tr></tbody></table></div>
+        </section>
+</main>
+<script>
+(()=>{
+const WORKER="https://deunggiro-ocr-209298170572.asia-northeast3.run.app/";
+const $=id=>document.getElementById(id),file=$("file"),analyze=$("analyze"),status=$("status"),result=$("result"),summary=$("summary"),tbody=$("tbody"),raw=$("raw"),apply=$("apply"),uploadBox=$("uploadBox"),applyBtn=$("applyBtn"),registerNote=$("registerNote") ,openExistingBtn=$("openExistingBtn");
+let latestAnalysis=null;
+// 관리대장 표시 여부는 아래 Firebase Authentication 세션에서만 결정
+const str=v=>String(v??"").trim();
+const date=v=>{const m=str(v).match(/(\d{4})\D{0,3}(\d{1,2})\D{0,3}(\d{1,2})/);return m?m[1]+"-"+String(m[2]).padStart(2,"0")+"-"+String(m[3]).padStart(2,"0"):str(v)};
+const time=v=>{const d=new Date(date(v)+"T00:00:00");return isNaN(d)?-Infinity:+d};
+const esc=v=>str(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const koreanCompanyName=v=>str(v).replace(/\s*\([^()]*[A-Za-z][^()]*\)\s*$/,"").trim();
+function position(v){const s=str(v).replace(/\s/g,"");for(const p of["감사위원","대표이사","사외이사","기타비상무이사","사내이사","감사"])if(s.includes(p))return p;return s.includes("이사")?"이사":s}
+function eventOf(event,rawText=""){const raw=str(rawText).replace(/\s/g,""),ev=str(event).replace(/\s/g,"");for(const e of["해임","퇴임","사임","중임","취임"])if(raw.includes(e))return e;if(raw.includes("주소기입")||raw.includes("주소변경"))return"주소변경";if(ev.includes("주소"))return"주소변경";for(const e of["해임","퇴임","사임","중임","취임"])if(ev.includes(e))return e;return"기타"}
+function parseDocumentAI(j){
+ if(j?.company||Array.isArray(j?.officer_events))return j;
+ const text=str(j?.text||((j?.pages||[]).map(p=>p.text).join("\n"))).replace(/\r/g,"");
+ const iso=v=>{const m=str(v).match(/(20\d{2})\s*[년.\/-]\s*(\d{1,2})\s*[월.\/-]\s*(\d{1,2})\s*일?/);return m?`${m[1]}-${String(+m[2]).padStart(2,"0")}-${String(+m[3]).padStart(2,"0")}`:""};
+ const lines=text.split(/\n+/).map(x=>x.replace(/\s+/g," ").trim()).filter(Boolean);
+ const nameLine=lines.find(x=>/^상호\s+/.test(x))||"";
+ const name=nameLine.replace(/^상호\s+/,"").trim();
+ let reg="";
+ for(let i=0;i<lines.length;i++){
+  const same=lines[i].match(/^등록번호\s*(\d{6}-?\d{7})/);
+  if(same){reg=same[1];break}
+  if(/^등록번호\s*$/.test(lines[i])){
+   const m=(lines[i+1]||"").match(/(\d{6}-?\d{7})/);
+   if(m){reg=m[1];break}
+  }
+ }
+ if(reg&&!reg.includes("-"))reg=reg.slice(0,6)+"-"+reg.slice(6);
+ let inc="";
+ const incIndex=lines.findIndex(x=>x.replace(/\s/g,"").includes("회사성립연월일"));
+ if(incIndex>=0)inc=iso(lines[incIndex])||iso(lines[incIndex+1]||"")||iso(lines[incIndex+2]||"");
+ const officerHeader=lines.findIndex(x=>x.replace(/\s/g,"").includes("임원에관한사항"));
+ const companyDateIndex=lines.findIndex((x,i)=>i>officerHeader&&x.replace(/\s/g,"").includes("회사성립연월일"));
+ let scanStart=officerHeader>=0?officerHeader+1:0;
+ let scanEnd=companyDateIndex>scanStart?companyDateIndex:lines.length;
+ let scan=lines.slice(scanStart,scanEnd);
+ const officerHead=/^(대표이사|사내이사|사외이사|기타비상무이사|이사|감사)\s+(.+?)(?=\s+\d{6}(?:-?[\d*]+)?(?:\s|$)|\s+20\d{2}\s*년|$)(?:\s+\d{6}(?:-?[\d*]+)?)?(?:\s+.*)?$/;
+ if(officerHeader<0){
+  const first=lines.findIndex(x=>officerHead.test(x));
+  if(first>=0){
+   scanStart=first;
+   const end=lines.findIndex((x,i)=>i>first&&x.replace(/\s/g,"").includes("회사성립연월일"));
+   scanEnd=end>first?end:Math.min(lines.length,first+100);
+   scan=lines.slice(scanStart,scanEnd);
+  }else scan=[];
+ }
+ const events=[],officers=[];
+ let cur=null,pending=null;
+ for(const line of scan){
+  const h=line.match(officerHead);
+  if(h){
+   cur={position:h[1],name:h[2].trim(),raw:line};
+   officers.push(cur);pending=null;continue;
+  }
+  if(!cur)continue;
+  const em=line.match(/(20\d{2}\s*년\s*\d{1,2}\s*월\s*\d{1,2}\s*일)\s*(취임|중임|사임|퇴임|해임|주소기입|주소변경)/);
+  if(em){
+   const ev={name:cur.name,position:cur.position,event:em[2],event_date:iso(em[1]),registration_date:"",raw_text:cur.raw+" "+line};
+   events.push(ev);pending=ev;continue;
+  }
+  const rm=line.match(/(20\d{2}\s*년\s*\d{1,2}\s*월\s*\d{1,2}\s*일)\s*등기/);
+  if(rm&&pending&&!pending.registration_date){
+   pending.registration_date=iso(rm[1]);pending.raw_text+=" "+line;pending=null;
+  }
+ }
+ if(inc)for(const o of officers){
+  if(!events.some(e=>e.name===o.name&&e.position===o.position))
+   events.push({name:o.name,position:o.position,event:"설립취임",event_date:inc,registration_date:inc,raw_text:o.raw});
+ }
+ return {...j,company:{name,registration_number:reg,incorporation_date:inc},officer_events:events,
+  parse_status:{company:!!name,registration_number:!!reg,incorporation_date:!!inc,officer_section:officerHeader>=0,officer_events:events.length}};
+}
+function currentOfficers(events){
+ const groups=new Map();
+ for(const q of events||[]){
+  const x={...q,name:str(q.name),position:position(q.position),event:eventOf(q.event,q.raw_text),event_date:date(q.event_date),registration_date:date(q.registration_date)};
+  if(!x.name||!x.position)continue;
+  const key=x.name+"|"+x.position;
+  if(!groups.has(key))groups.set(key,[]);
+  groups.get(key).push(x);
+ }
+ const out=[];
+ for(const history of groups.values()){
+  history.sort((a,b)=>time(a.event_date||a.registration_date)-time(b.event_date||b.registration_date));
+  let current=null;
+  for(const x of history){
+   if(["취임","중임","설립취임"].includes(x.event))current=x;
+   else if(["사임","퇴임","해임"].includes(x.event))current=null;
+  }
+  if(current)out.push(current);
+ }
+ return out;
+}
+function addYears(v,n){const m=date(v).match(/^(\d{4})-(\d{2})-(\d{2})$/);if(!m)return"확인 필요";const y=+m[1]+n,mo=+m[2],d=+m[3],last=new Date(y,mo,0).getDate();return y+"-"+String(mo).padStart(2,"0")+"-"+String(Math.min(d,last)).padStart(2,"0")}
+function expiry(o){const base=o.event_date||o.registration_date;if(o.position.includes("감사")){const m=date(base).match(/^(\d{4})-/);return m?(+m[1]+3)+"-03-31":"확인 필요"}return addYears(base,3)}
+function setFile(f){if(!f){status.textContent="파일을 선택하세요.";return false}if(!/\.(pdf|jpe?g|png)$/i.test(f.name)){status.textContent="PDF · JPG · PNG 파일만 가능합니다.";return false}if(f.size>15*1024*1024){status.textContent="15MB 이하 파일만 가능합니다.";return false}status.textContent=f.name;return true}
+file.addEventListener("change",()=>{if(setFile(file.files[0]))analyze.click()});
+["dragenter","dragover"].forEach(ev=>uploadBox.addEventListener(ev,e=>{e.preventDefault();uploadBox.classList.add("drag")}));
+["dragleave","drop"].forEach(ev=>uploadBox.addEventListener(ev,e=>{e.preventDefault();uploadBox.classList.remove("drag")}));
+uploadBox.addEventListener("drop",e=>{const f=e.dataTransfer.files?.[0];if(!setFile(f))return;const dt=new DataTransfer();dt.items.add(f);file.files=dt.files;analyze.click()});
+analyze.addEventListener("click",async()=>{
+ if(!file.files[0]){status.textContent="파일을 먼저 선택하세요.";return}
+ analyze.disabled=true;status.textContent="임원정보 분석 중…";result.style.display="none";apply.style.display="none";
+ try{
+  const fd=new FormData();fd.append("file",file.files[0],file.files[0].name);
+  const res=await fetch(WORKER,{method:"POST",body:fd});let j=await res.json();raw.textContent=JSON.stringify(j,null,2);
+  if(!res.ok||j.error)throw Error(j.detail||j.error||"분석 실패");
+  j=parseDocumentAI(j);
+  const officers=currentOfficers(j.officer_events,j.company?.incorporation_date);
+  const company={...(j.company||{}),name:koreanCompanyName(j.company?.name||"")};
+  const parseOk=!!company.name&&!!(company.registration_number||company.corporate_registration_number||company.registrationNumber)&&!!company.incorporation_date&&(j.officer_events||[]).length>0&&officers.length>0;
+  latestAnalysis={company,officers,officer_events:j.officer_events||[],parseOk};window.__latestOfficerAnalysis=latestAnalysis;const adminSave=document.getElementById("adminSaveAnalysis");const adminMode=document.getElementById("ledger")&&!document.getElementById("ledger").hidden;if(adminMode){adminSave.hidden=false;adminSave.disabled=!parseOk;adminSave.textContent="관리대장 저장";if(parseOk)setTimeout(()=>adminSave.click(),0);}
+  const corpNo=company.registration_number||company.corporate_registration_number||company.registrationNumber||"확인 필요";
+  summary.innerHTML="<span>상호 · "+esc(company.name||"확인 필요")+"</span><span>법인등록번호 · "+esc(corpNo)+"</span><span>현재 임원 · "+officers.length+"명</span><span>확인 이력 · "+(j.officer_events||[]).length+"건</span>";
+  tbody.innerHTML=officers.length?officers.map(o=>"<tr><td>"+esc(o.position)+"</td><td><b>"+esc(o.name)+"</b></td><td class='event'>"+esc(o.event)+"</td><td>"+esc(o.event_date||o.registration_date||"확인 필요")+"</td><td class='expiry'>"+esc(expiry(o))+"</td><td>"+(o.position.includes("감사")?"12월 결산 기준":"3년 기준")+"</td></tr>").join(""):"<tr><td colspan='6'>현재 임원으로 확인된 이력이 없습니다.</td></tr>";
+  result.style.display="block";apply.style.display=(document.getElementById("ledger")&&!document.getElementById("ledger").hidden)?"none":"block";status.textContent="분석 완료";
+ }catch(e){result.style.display="block";status.textContent="분석 실패 · "+e.message;analyze.hidden=false;analyze.textContent="다시 분석"}
+ finally{analyze.disabled=false}
+});
+function contactData(){
+ return {phone:str($("phone").value),email:str($("email").value),notifyKakao:$("notifyKakao").checked,notifyEmail:$("notifyEmail").checked}
+}
+function buildRecord(source){
+ const contact=contactData();
+ return {source,company:latestAnalysis?.company||{},officers:latestAnalysis?.officers||[],contact,created_at:new Date().toISOString()}
+}
+openExistingBtn.addEventListener("click",()=>{uploadBox.hidden=false;result.style.display="none";apply.style.display="none";window.__latestOfficerAnalysis=null;const save=document.getElementById("adminSaveAnalysis");save.hidden=false;save.disabled=true;save.textContent="관리대장 저장";const analyzeBtn=document.getElementById("analyze");analyzeBtn.hidden=false;analyzeBtn.textContent="임원 확인";uploadBox.scrollIntoView({behavior:"smooth",block:"start"})});
+applyBtn.addEventListener("click",()=>{
+ if(!latestAnalysis){registerNote.textContent="먼저 등기사항증명서를 분석하세요.";return}
+ const c=contactData();
+ if(!$("consent").checked){registerNote.textContent="고객 신청은 개인정보 수집·이용 동의가 필요합니다.";return}
+ if(!c.notifyKakao&&!c.notifyEmail){registerNote.textContent="알림 방법을 하나 이상 선택하세요.";return}
+ if(c.notifyKakao&&!c.phone){registerNote.textContent="카카오 알림톡을 받으려면 휴대전화번호를 입력하세요.";return}
+ if(c.notifyEmail&&!c.email){registerNote.textContent="이메일 알림을 받으려면 이메일을 입력하세요.";return}
+ window.__officerManagerPendingRecord=buildRecord("고객신청");
+ registerNote.textContent="고객 신청 정보 확인 완료. 관리자 저장 연결은 별도 서버 접수 단계에서 활성화됩니다.";
+});
+
+})();
+</script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, serverTimestamp, writeBatch } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+const firebaseConfig={apiKey:"AIzaSyAlXYOrj7V-XtDrK13Cbxw6hWzbfhGf_do",authDomain:"project-b08e5f3c-fa49-4ae6-933.firebaseapp.com",projectId:"project-b08e5f3c-fa49-4ae6-933",storageBucket:"project-b08e5f3c-fa49-4ae6-933.firebasestorage.app",messagingSenderId:"209298170572",appId:"1:209298170572:web:2c47a3779cf4a331039869",measurementId:"G-PGFPK2SJLK"};
+const ADMIN_UID="rd0rLz5gFzWpahHbqOM3q0w4nMm2",app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),COL="officerManagement";
+const $=id=>document.getElementById(id),login=$("adminLogin"),ledger=$("ledger"),loginMsg=$("loginMsg"),adminHeadBtn=$("adminHeadBtn"),adminCloseBtn=$("adminCloseBtn"),ledgerBody=$("ledgerBody"),search=$("ledgerSearch"),filter=$("ledgerFilter"),editModal=$("editModal");
+let rows=[],editingId=null;
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function isAdmin(){return auth.currentUser?.uid===ADMIN_UID}
+function dday(v){if(!v)return"";const n=Math.ceil((new Date(v+"T00:00:00")-new Date())/86400000);return Number.isFinite(n)?(n>=0?"D-"+n:"D+"+Math.abs(n)):""}
+function showAdminPage(){document.querySelector(".head p").hidden=true;document.querySelector(".head h1").textContent="임원 임기관리 대장";ledger.hidden=false;$("uploadBox").hidden=true;$("adminSaveAnalysis").hidden=true;document.querySelector(".raw").hidden=false;adminHeadBtn.hidden=true;adminHeadBtn.style.display="none";window.scrollTo({top:0,behavior:"auto"})}
+function showCustomerPage(){ledger.hidden=true;$("uploadBox").hidden=false;$("adminSaveAnalysis").hidden=true;$("analyze").hidden=false;document.querySelector(".raw").hidden=true;document.querySelector(".head p").hidden=false;document.querySelector(".head h1").textContent="임원 임기관리 테스트";adminHeadBtn.hidden=false;adminHeadBtn.style.display="inline-flex";window.scrollTo({top:0,behavior:"auto"})}
+$("printLedgerBtn").onclick=()=>{if(!isAdmin()){alert("관리자 권한이 없습니다.");return}window.print()};
+function render(){
+ const q=search.value.trim().toLowerCase(),f=filter.value;
+ const list=rows.filter(x=>{const hay=(x.company+" "+x.officer+" "+x.position).toLowerCase(),d=dday(x.expiry),future=d.startsWith("D-"),expired=d.startsWith("D+"),days=future?parseInt(d.slice(2),10):NaN;return(!q||hay.includes(q))&&(f==="all"||(f==="customer"&&x.source==="고객신청")||(f==="admin"&&x.source==="기존고객")||(f==="month"&&future&&days<=30)||(f==="week"&&future&&days<=7)||(f==="expired"&&expired))});
+ ledgerBody.innerHTML=list.length?list.map(x=>`<tr><td>${esc(String(x.company||"").replace(/\s*\([^()]*[A-Za-z][^()]*\)\s*$/,"").trim())}</td><td>${esc(x.registrationNumber||"-")}</td><td><b>${esc(x.officer)}</b></td><td>${esc(x.position)}</td><td>${esc(x.expiry)}</td><td>${esc(dday(x.expiry))}</td><td>${esc(x.phone||x.email||"-")}</td><td>${esc(x.source)}</td><td><div class="row-actions"><button class="row-btn" data-edit="${x.id}">수정</button><button class="row-btn delete" data-delete="${x.id}">삭제</button></div></td></tr>`).join(""):'<tr><td colspan="9">등록된 관리대장이 없습니다.</td></tr>';
+}
+async function loadLedger(){if(!isAdmin())return;const snap=await getDocs(collection(db,COL));rows=snap.docs.map(d=>({id:d.id,...d.data()}));render()}
+async function saveAnalysis(analysis,phone,email){
+ if(!isAdmin())throw Error("관리자 권한이 없습니다.");
+ if(!analysis?.officers?.length)throw Error("현재 임원 분석 결과가 없습니다.");
+ const company=String(analysis.company?.name||"확인 필요").replace(/\s*\([^()]*[A-Za-z][^()]*\)\s*$/,"").trim(),registrationNumber=analysis.company?.registration_number||analysis.company?.corporate_registration_number||analysis.company?.registrationNumber||"",batch=writeBatch(db),saved=[];
+ for(const o of analysis.officers){
+  const termStart=o.event_date||o.registration_date||"";
+  const duplicate=rows.some(x=>String(x.registrationNumber||"")===String(registrationNumber||"")&&String(x.officer||"")===String(o.name||"")&&String(x.position||"")===String(o.position||"")&&String(x.termStart||"")===String(termStart));
+  if(duplicate)continue;
+  const ref=doc(collection(db,COL));
+  const data={company,registrationNumber,officer:o.name||"",position:o.position||"",termStart,expiry:calcExpiry(o),phone:phone||"",email:email||"",source:"기존고객",createdAt:serverTimestamp(),updatedAt:serverTimestamp()};
+  batch.set(ref,data);saved.push({id:ref.id,...data});
+ }
+ if(!saved.length)throw Error("이미 같은 임원·직위·임기 기준일이 관리대장에 등록되어 있습니다.");
+ await batch.commit();
+ rows.push(...saved);render();
+}
+function calcExpiry(o){const base=o.event_date||o.registration_date||"";const m=String(base).match(/^(\d{4})-(\d{2})-(\d{2})$/);if(!m)return"";if(String(o.position).includes("감사"))return(+m[1]+3)+"-03-31";const y=+m[1]+3,mo=+m[2],day=+m[3],last=new Date(y,mo,0).getDate();return y+"-"+String(mo).padStart(2,"0")+"-"+String(Math.min(day,last)).padStart(2,"0")}
+$("adminSaveAnalysis").onclick=async()=>{const analysis=window.__latestOfficerAnalysis;if(!analysis?.officers?.length){alert("먼저 임원 확인을 실행하세요.");return}if(!isAdmin()){alert("관리자 권한이 없습니다.");return}const btn=$("adminSaveAnalysis");btn.disabled=true;btn.textContent="저장 중…";try{await saveAnalysis(analysis,"","");window.__latestOfficerAnalysis=null;$("file").value="";$("result").style.display="none";$("apply").style.display="none";$("status").textContent="저장 완료 · 다음 파일을 선택하세요.";btn.hidden=false;btn.disabled=false;btn.textContent="관리대장 저장";const analyzeBtn=$("analyze");analyzeBtn.hidden=false;analyzeBtn.disabled=false;analyzeBtn.textContent="임원 확인";$("uploadBox").hidden=false;}catch(e){btn.disabled=false;btn.textContent="관리대장 저장";alert("저장 실패 · "+e.message)}};
+ledgerBody.addEventListener("click",async e=>{
+ const edit=e.target.closest("[data-edit]"),del=e.target.closest("[data-delete]");
+ if(edit){const x=rows.find(v=>v.id===edit.dataset.edit);if(!x)return;editingId=x.id;$("editCompany").value=x.company||"";$("editOfficer").value=x.officer||"";$("editPosition").value=x.position||"";$("editTermStart").value=x.termStart||"";$("editExpiry").value=x.expiry||"";$("editPhone").value=x.phone||"";$("editEmail").value=x.email||"";$("editMsg").textContent="";editModal.hidden=false}
+ if(del){const x=rows.find(v=>v.id===del.dataset.delete);if(!x||!confirm(`${x.company} / ${x.officer} 관리정보를 삭제할까요?`))return;try{await deleteDoc(doc(db,COL,x.id));await loadLedger()}catch(err){alert("삭제 실패 · "+err.message)}}
+});
+function recalcEditedExpiry(){const base=$("editTermStart").value,pos=$("editPosition").value.trim();if(!base)return;const m=base.match(/^(\d{4})-(\d{2})-(\d{2})$/);if(!m)return;if(pos.includes("감사")){$("editExpiry").value=(+m[1]+3)+"-03-31";return}const y=+m[1]+3,mo=+m[2],day=+m[3],last=new Date(y,mo,0).getDate();$("editExpiry").value=y+"-"+String(mo).padStart(2,"0")+"-"+String(Math.min(day,last)).padStart(2,"0")}
+$("editTermStart").addEventListener("change",recalcEditedExpiry);$("editPosition").addEventListener("change",recalcEditedExpiry);
+$("editSaveBtn").onclick=async()=>{if(!editingId)return;try{await updateDoc(doc(db,COL,editingId),{company:$("editCompany").value.trim(),officer:$("editOfficer").value.trim(),position:$("editPosition").value.trim(),termStart:$("editTermStart").value,expiry:$("editExpiry").value,phone:$("editPhone").value.trim(),email:$("editEmail").value.trim(),updatedAt:serverTimestamp()});editModal.hidden=true;await loadLedger()}catch(err){$("editMsg").textContent="수정 실패 · "+err.message}};
+$("editCloseBtn").onclick=()=>editModal.hidden=true;editModal.addEventListener("click",e=>{if(e.target===editModal)editModal.hidden=true});search.oninput=render;filter.onchange=render;
+adminHeadBtn.onclick=()=>{if(isAdmin()){showAdminPage();loadLedger()}else{login.hidden=false;setTimeout(()=>$("adminEmail").focus(),0)}};
+adminCloseBtn.onclick=()=>{login.hidden=true;loginMsg.textContent=""};login.addEventListener("click",e=>{if(e.target===login)login.hidden=true});$("adminPassword").addEventListener("keydown",e=>{if(e.key==="Enter")$("loginBtn").click()});
+$("loginBtn").onclick=async()=>{try{const cred=await signInWithEmailAndPassword(auth,$("adminEmail").value.trim(),$("adminPassword").value);if(cred.user.uid!==ADMIN_UID){await signOut(auth);throw Error("관리자 권한 없음")}loginMsg.textContent=""}catch(e){loginMsg.textContent="아이디 또는 비밀번호를 확인하세요."}};
+async function logout(){await signOut(auth);showCustomerPage()}$("logoutBtn").onclick=logout;$("adminLogoutBtn").onclick=logout;
+onAuthStateChanged(auth,async user=>{login.hidden=true;adminHeadBtn.textContent="관리자 로그인";if(user?.uid===ADMIN_UID){showAdminPage();try{await loadLedger()}catch(e){ledgerBody.innerHTML='<tr><td colspan="9">관리대장을 불러오지 못했습니다.</td></tr>'}}else{showCustomerPage()}});
+</script>
+</body></html>
