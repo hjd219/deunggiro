@@ -123,7 +123,22 @@ function buildOfficerModel(j){
   const rm=line.match(roleLine);
   if(rm){
    const tail=rm[2],m=tail.match(rrn),name=cleanOfficerName(m?tail.slice(0,m.index):tail);
-   if(name){current={name,personId:m?m[1]:"",position:normalizeRole(rm[1]),raw:line,events:[]};blocks.push(current);}
+   if(name){
+    const role=normalizeRole(rm[1]), pid=m?m[1]:"";
+    // A repeated officer heading with the same role/person is usually an OCR
+    // repetition of the same registration block (especially address changes).
+    // Start a new block only after the previous block has a terminal status.
+    const terminal=current && current.events.some(e=>["사임","퇴임","임기만료","해임"].includes(e.event));
+    const same=current && current.position===role && (
+      (pid && current.personId===pid) || (!pid && current.name===name)
+    );
+    if(same && !terminal){
+      current.raw += " " + line;
+    }else{
+      current={name,personId:pid,position:role,raw:line,events:[]};
+      blocks.push(current);
+    }
+   }
    continue;
   }
   if(!current)continue;
