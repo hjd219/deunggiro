@@ -74,9 +74,21 @@ const esc=v=>str(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"
 const koreanCompanyName=v=>str(v).replace(/\s*\([^()]*[A-Za-z][^()]*\)\s*$/,"").trim();
 function position(v){const s=str(v).replace(/\s/g,"");for(const p of["감사위원","대표이사","사외이사","기타비상무이사","사내이사","감사"])if(s.includes(p))return p;return s.includes("이사")?"이사":s}
 function eventOf(event,rawText=""){const raw=str(rawText).replace(/\s/g,""),ev=str(event).replace(/\s/g,"");for(const e of["해임","퇴임","사임","중임","취임"])if(raw.includes(e))return e;if(raw.includes("주소기입")||raw.includes("주소변경"))return"주소변경";if(ev.includes("주소"))return"주소변경";for(const e of["해임","퇴임","사임","중임","취임"])if(ev.includes(e))return e;return"기타"}
+function cleanOfficerName(v){
+ let s=str(v).replace(/\s+/g," ").trim();
+ // OCR may append all or part of a Korean resident number to the officer name.
+ s=s.replace(/\s*\d{6}\s*-\s*(?:\d{0,7}|\*{1,7})\s*$/,"").trim();
+ return s;
+}
 function currentOfficers(events,incorporationDate){
  const groups=new Map(),inc=date(incorporationDate);
- for(const q of events||[]){const x={...q,name:str(q.name),position:position(q.position),event:eventOf(q.event,q.raw_text),event_date:date(q.event_date),registration_date:date(q.registration_date)};if(!x.name||!x.position)continue;const key=x.name+"|"+x.position;if(!groups.has(key))groups.set(key,[]);groups.get(key).push(x)}
+ for(const q of events||[]){
+  const x={...q,name:cleanOfficerName(q.name),position:position(q.position),event:eventOf(q.event,q.raw_text),event_date:date(q.event_date),registration_date:date(q.registration_date)};
+  if(!x.name||!x.position)continue;
+  const key=x.name+"|"+x.position;
+  if(!groups.has(key))groups.set(key,[]);
+  groups.get(key).push(x);
+ }
  const out=[];
  for(const history of groups.values()){
   history.sort((a,b)=>time(a.event_date||a.registration_date)-time(b.event_date||b.registration_date));
@@ -131,7 +143,7 @@ function parseDocumentAI(j){
  for(const line of scan){
   const rm=line.match(roleLine);
   if(rm){
-   const tail=rm[2],cut=tail.search(rrn),officerName=(cut>=0?tail.slice(0,cut):tail).trim();
+   const tail=rm[2],cut=tail.search(rrn),officerName=cleanOfficerName(cut>=0?tail.slice(0,cut):tail);
    if(officerName){tokens.push({type:"officer",position:rm[1],name:officerName,raw:line});continue}
   }
   const sm=line.match(statusLine);
