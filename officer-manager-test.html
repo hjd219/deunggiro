@@ -107,7 +107,7 @@ analyze.addEventListener("click",async()=>{
   if(!res.ok||j.error)throw Error(j.detail||j.error||"분석 실패");
   const officers=currentOfficers(j.officer_events,j.company?.incorporation_date);
   const company={...(j.company||{}),name:koreanCompanyName(j.company?.name||"")};
-  latestAnalysis={company,officers,officer_events:j.officer_events||[]};window.__latestOfficerAnalysis=latestAnalysis;const adminSave=document.getElementById("adminSaveAnalysis");if(adminSave&&!adminSave.hidden){adminSave.disabled=false;adminSave.textContent="관리대장 저장";setTimeout(()=>adminSave.click(),0);}
+  latestAnalysis={company,officers,officer_events:j.officer_events||[]};window.__latestOfficerAnalysis=latestAnalysis;const adminSave=document.getElementById("adminSaveAnalysis");if(isAdmin()){setTimeout(()=>adminSave.click(),0);}
   const corpNo=company.registration_number||company.corporate_registration_number||company.registrationNumber||"확인 필요";
   summary.innerHTML="<span>상호 · "+esc(company.name||"확인 필요")+"</span><span>법인등록번호 · "+esc(corpNo)+"</span><span>현재 임원 · "+officers.length+"명</span><span>확인 이력 · "+(j.officer_events||[]).length+"건</span>";
   tbody.innerHTML=officers.length?officers.map(o=>"<tr><td>"+esc(o.position)+"</td><td><b>"+esc(o.name)+"</b></td><td class='event'>"+esc(o.event)+"</td><td>"+esc(o.event_date||o.registration_date||"확인 필요")+"</td><td class='expiry'>"+esc(expiry(o))+"</td><td>"+(o.position.includes("감사")?"12월 결산 기준":"3년 기준")+"</td></tr>").join(""):"<tr><td colspan='6'>현재 임원으로 확인된 이력이 없습니다.</td></tr>";
@@ -122,7 +122,7 @@ function buildRecord(source){
  const contact=contactData();
  return {source,company:latestAnalysis?.company||{},officers:latestAnalysis?.officers||[],contact,created_at:new Date().toISOString()}
 }
-openExistingBtn.addEventListener("click",()=>{uploadBox.hidden=false;result.style.display="none";apply.style.display="none";window.__latestOfficerAnalysis=null;const save=document.getElementById("adminSaveAnalysis");save.hidden=false;save.disabled=true;save.textContent="분석 후 저장";uploadBox.scrollIntoView({behavior:"smooth",block:"start"})});
+openExistingBtn.addEventListener("click",()=>{uploadBox.hidden=false;result.style.display="none";apply.style.display="none";window.__latestOfficerAnalysis=null;const save=document.getElementById("adminSaveAnalysis");save.hidden=true;save.disabled=true;const analyzeBtn=document.getElementById("analyze");analyzeBtn.hidden=true;uploadBox.scrollIntoView({behavior:"smooth",block:"start"})});
 applyBtn.addEventListener("click",()=>{
  if(!latestAnalysis){registerNote.textContent="먼저 등기사항증명서를 분석하세요.";return}
  const c=contactData();
@@ -148,7 +148,7 @@ const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&
 function isAdmin(){return auth.currentUser?.uid===ADMIN_UID}
 function dday(v){if(!v)return"";const n=Math.ceil((new Date(v+"T00:00:00")-new Date())/86400000);return Number.isFinite(n)?(n>=0?"D-"+n:"D+"+Math.abs(n)):""}
 function showAdminPage(){document.querySelector(".head p").hidden=true;document.querySelector(".head h1").textContent="임원 임기관리 대장";ledger.hidden=false;$("uploadBox").hidden=true;$("adminSaveAnalysis").hidden=true;document.querySelector(".raw").hidden=true;adminHeadBtn.hidden=true;adminHeadBtn.style.display="none";window.scrollTo({top:0,behavior:"auto"})}
-function showCustomerPage(){ledger.hidden=true;$("uploadBox").hidden=false;$("adminSaveAnalysis").hidden=true;document.querySelector(".raw").hidden=false;document.querySelector(".head p").hidden=false;document.querySelector(".head h1").textContent="임원 임기관리 테스트";adminHeadBtn.hidden=false;adminHeadBtn.style.display="inline-flex";window.scrollTo({top:0,behavior:"auto"})}
+function showCustomerPage(){ledger.hidden=true;$("uploadBox").hidden=false;$("adminSaveAnalysis").hidden=true;$("analyze").hidden=false;document.querySelector(".raw").hidden=false;document.querySelector(".head p").hidden=false;document.querySelector(".head h1").textContent="임원 임기관리 테스트";adminHeadBtn.hidden=false;adminHeadBtn.style.display="inline-flex";window.scrollTo({top:0,behavior:"auto"})}
 function render(){
  const q=search.value.trim().toLowerCase(),f=filter.value;
  const list=rows.filter(x=>{const hay=(x.company+" "+x.officer+" "+x.position).toLowerCase(),d=dday(x.expiry),future=d.startsWith("D-"),expired=d.startsWith("D+"),days=future?parseInt(d.slice(2),10):NaN;return(!q||hay.includes(q))&&(f==="all"||(f==="customer"&&x.source==="고객신청")||(f==="admin"&&x.source==="기존고객")||(f==="month"&&future&&days<=30)||(f==="week"&&future&&days<=7)||(f==="expired"&&expired))});
