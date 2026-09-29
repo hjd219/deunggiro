@@ -103,7 +103,7 @@ function parseDocumentAI(j){
  let scanStart=officerHeader>=0?officerHeader+1:0;
  let scanEnd=companyDateIndex>scanStart?companyDateIndex:lines.length;
  let scan=lines.slice(scanStart,scanEnd);
- const officerHead=/^(대표이사|사내이사|사외이사|기타비상무이사|이사|감사)\s+(.+?)(?=\s+\d{6}(?:-?[\d*]+)?(?:\s|$)|\s+20\d{2}\s*년|$)(?:\s+\d{6}(?:-?[\d*]+)?)?(?:\s+.*)?$/;
+ const officerHead=/^(대표이사|사내이사|사외이사|기타비상무이사|이사|감사)\s+(.+?)(?=\s+\d{6}(?:-[0-9*]+)?(?:\s|$)|\s+20\d{2}\s*년|$)(?:\s+\d{6}(?:-[0-9*]+)?)?(?:\s+.*)?$/;
  if(officerHeader<0){
   const first=lines.findIndex(x=>officerHead.test(x));
   if(first>=0){
@@ -116,10 +116,14 @@ function parseDocumentAI(j){
  const events=[],officers=[];
  let cur=null,pending=null,pendingEventName="";
  for(const line of scan){
-  const h=line.match(officerHead);
+  let h=line.match(officerHead);
+  if(!h){
+   const hm=line.match(/^(대표이사|사내이사|사외이사|기타비상무이사|이사|감사)\s+(.+?)\s+\d{6}(?:-[0-9*]+)?(?:\s|$)/);
+   if(hm)h=hm;
+  }
   if(h){
    cur={position:h[1],name:h[2].trim(),raw:line};
-   officers.push(cur);pending=null;continue;
+   officers.push(cur);pending=null;pendingEventName="";continue;
   }
   if(!cur)continue;
   const em=line.match(/(20\d{2}\s*년\s*\d{1,2}\s*월\s*\d{1,2}\s*일)\s*(취임|중임|사임|퇴임|해임|주소기입|주소변경)/);
