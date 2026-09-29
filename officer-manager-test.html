@@ -45,7 +45,7 @@ body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:#173b4a;backgrou
         <p class="register-note" id="registerNote"></p>
       </section>
 
-      <section class="ledger" id="ledger">
+      <section class="ledger" id="ledger" hidden>
         <div class="ledger-head"><div><h3>사무소 관리대장</h3><p>관리자 전용 · 기존 고객은 여기에서 등록합니다.</p></div><button class="admin-register" id="openExistingBtn" type="button">+ 기존 고객 등록</button></div>
         <div class="ledger-toolbar"><input id="ledgerSearch" type="search" placeholder="상호 · 임원명 검색"><select id="ledgerFilter"><option value="all">전체</option><option value="soon">임기 임박</option><option value="customer">고객신청</option><option value="admin">기존고객</option></select></div>
         <div class="table"><table><thead><tr><th>상호</th><th>임원</th><th>직위</th><th>예상 만료</th><th>D-day</th><th>연락처</th><th>등록경로</th></tr></thead><tbody id="ledgerBody"><tr><td colspan="7">등록된 관리대장이 없습니다.</td></tr></tbody></table></div>
@@ -67,6 +67,9 @@ body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:#173b4a;backgrou
 const WORKER="https://deunggiro-ocr.hapuha21.workers.dev/";
 const $=id=>document.getElementById(id),file=$("file"),analyze=$("analyze"),status=$("status"),result=$("result"),summary=$("summary"),tbody=$("tbody"),raw=$("raw"),apply=$("apply"),uploadBox=$("uploadBox"),applyBtn=$("applyBtn"),registerNote=$("registerNote"),openExistingBtn=$("openExistingBtn"),existingBox=$("existingBox"),closeExistingBtn=$("closeExistingBtn"),existingRegisterBtn=$("existingRegisterBtn"),existingNote=$("existingNote");
 let latestAnalysis=null;
+const ADMIN_AUTHENTICATED=false; // 실제 Firebase Auth 세션 검증 연결 전에는 절대 true로 바꾸지 않음
+const ledger=$("ledger");
+if(ledger) ledger.hidden=!ADMIN_AUTHENTICATED;
 const str=v=>String(v??"").trim();
 const date=v=>{const m=str(v).match(/(\d{4})\D{0,3}(\d{1,2})\D{0,3}(\d{1,2})/);return m?m[1]+"-"+String(m[2]).padStart(2,"0")+"-"+String(m[3]).padStart(2,"0"):str(v)};
 const time=v=>{const d=new Date(date(v)+"T00:00:00");return isNaN(d)?-Infinity:+d};
