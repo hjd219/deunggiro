@@ -1,11 +1,16 @@
 {
-  "generatedAt": "2026-09-28T12:37:25.518Z",
-  "totalPosts": 382,
-  "ok": 382,
+  "generatedAt": "2026-09-29T05:54:41.232Z",
+  "totalPosts": 383,
+  "ok": 383,
   "warnings": 0,
-  "canonicalFixed": 382,
+  "canonicalFixed": 383,
   "missingFiles": 0,
   "items": [
+    {
+      "slug": "corporate-naver-224425670405",
+      "status": "ok",
+      "issues": []
+    },
     {
       "slug": "inheritance-naver-224424475718",
       "status": "ok",
