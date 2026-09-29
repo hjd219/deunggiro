@@ -92,7 +92,9 @@ function parseDocumentAI(j){
  if(reg&&!reg.includes("-"))reg=reg.slice(0,6)+"-"+reg.slice(6);
  let inc="";
  const incIndex=lines.findIndex(x=>x.replace(/\s/g,"").includes("회사성립연월일"));
- if(incIndex>=0)inc=iso(lines[incIndex])||iso(lines[incIndex+1]||"")||iso(lines[incIndex+2]||"");
+ if(incIndex>=0){
+  for(let k=incIndex;k<Math.min(lines.length,incIndex+7)&&!inc;k++)inc=iso(lines[k])||"";
+ }
  const officerHeader=lines.findIndex(x=>x.replace(/\s/g,"").includes("임원에관한사항"));
  const companyDateIndex=lines.findIndex((x,i)=>i>officerHeader&&x.replace(/\s/g,"").includes("회사성립연월일"));
  let scanStart=officerHeader>=0?officerHeader+1:0;
