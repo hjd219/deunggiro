@@ -299,7 +299,7 @@ $("adminSaveAnalysis").onclick=async()=>{
  }catch(e){
   alert("저장 실패 · "+e.message);
  }finally{
-  btn.hidden=false;btn.classList.remove("saving");if(completed&&saveGeneration===window.__officerAnalysisGeneration)btn.disabled=true;btn.textContent="관리대장 저장";
+  btn.hidden=false;btn.classList.remove("saving");btn.disabled=false;btn.textContent="관리대장 저장";
   const analyzeBtn=$("analyze");analyzeBtn.hidden=false;analyzeBtn.disabled=false;analyzeBtn.textContent="임원 확인";
   $("uploadBox").hidden=false;
  }
