@@ -220,7 +220,7 @@ const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&
 function isAdmin(){return auth.currentUser?.uid===ADMIN_UID}
 function dday(v){if(!v)return"";const n=Math.ceil((new Date(v+"T00:00:00")-new Date())/86400000);return Number.isFinite(n)?(n>=0?"D-"+n:"D+"+Math.abs(n)):""}
 function showAdminPage(){document.querySelector(".head p").hidden=true;document.querySelector(".head h1").textContent="임원 임기관리 대장";ledger.hidden=false;$("uploadBox").hidden=true;$("adminSaveAnalysis").hidden=true;document.querySelector(".raw").hidden=false;adminHeadBtn.hidden=true;adminHeadBtn.style.display="none";window.scrollTo({top:0,behavior:"auto"})}
-function showCustomerPage(){ledger.hidden=true;$("uploadBox").hidden=false;$("adminSaveAnalysis").hidden=true;$("analyze").hidden=false;document.querySelector(".raw").hidden=false;document.querySelector(".head p").hidden=false;document.querySelector(".head h1").textContent="임원 임기관리 테스트";adminHeadBtn.hidden=false;adminHeadBtn.style.display="inline-flex";window.scrollTo({top:0,behavior:"auto"})}
+function showCustomerPage(){ledger.hidden=true;$("uploadBox").hidden=false;$("adminSaveAnalysis").hidden=true;$("analyze").hidden=false;document.querySelector(".raw").hidden=true;document.querySelector(".head p").hidden=false;document.querySelector(".head h1").textContent="임원 임기관리 테스트";adminHeadBtn.hidden=false;adminHeadBtn.style.display="inline-flex";window.scrollTo({top:0,behavior:"auto"})}
 $("printLedgerBtn").onclick=()=>{if(!isAdmin()){alert("관리자 권한이 없습니다.");return}window.print()};
 function render(){
  const q=search.value.trim().toLowerCase(),f=filter.value;
