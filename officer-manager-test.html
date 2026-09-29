@@ -194,7 +194,7 @@ file.addEventListener("change",()=>{if(setFile(file.files[0]))analyze.click()});
 ["dragenter","dragover"].forEach(ev=>uploadBox.addEventListener(ev,e=>{e.preventDefault();uploadBox.classList.add("drag")}));
 ["dragleave","drop"].forEach(ev=>uploadBox.addEventListener(ev,e=>{e.preventDefault();uploadBox.classList.remove("drag")}));
 uploadBox.addEventListener("drop",e=>{const f=e.dataTransfer.files?.[0];if(!setFile(f))return;const dt=new DataTransfer();dt.items.add(f);file.files=dt.files;analyze.click()});
-analyze.addEventListener("click",async()=>{
+analyze.addEventListener("click",async()=>{\n const generation=++analysisGeneration;
  if(!file.files[0]){status.textContent="파일을 먼저 선택하세요.";return}
  analyze.disabled=true;status.textContent="임원정보 분석 중…";result.style.display="none";apply.style.display="none";
  try{
@@ -247,7 +247,7 @@ import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, serverTim
 const firebaseConfig={apiKey:"AIzaSyAlXYOrj7V-XtDrK13Cbxw6hWzbfhGf_do",authDomain:"project-b08e5f3c-fa49-4ae6-933.firebaseapp.com",projectId:"project-b08e5f3c-fa49-4ae6-933",storageBucket:"project-b08e5f3c-fa49-4ae6-933.firebasestorage.app",messagingSenderId:"209298170572",appId:"1:209298170572:web:2c47a3779cf4a331039869",measurementId:"G-PGFPK2SJLK"};
 const ADMIN_UID="rd0rLz5gFzWpahHbqOM3q0w4nMm2",app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),COL="officerManagement";
 const $=id=>document.getElementById(id),login=$("adminLogin"),ledger=$("ledger"),loginMsg=$("loginMsg"),adminHeadBtn=$("adminHeadBtn"),adminCloseBtn=$("adminCloseBtn"),ledgerBody=$("ledgerBody"),search=$("ledgerSearch"),filter=$("ledgerFilter"),editModal=$("editModal");
-let rows=[],editingId=null;
+let rows=[],editingId=null,analysisGeneration=0;
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function isAdmin(){return auth.currentUser?.uid===ADMIN_UID}
 function dday(v){if(!v)return"";const n=Math.ceil((new Date(v+"T00:00:00")-new Date())/86400000);return Number.isFinite(n)?(n>=0?"D-"+n:"D+"+Math.abs(n)):""}
@@ -280,7 +280,7 @@ async function saveAnalysis(analysis,phone,email){
  return {savedCount:saved.length};
 }
 function calcExpiry(o){const base=o.event_date||o.registration_date||"";const m=String(base).match(/^(\d{4})-(\d{2})-(\d{2})$/);if(!m)return"";if(String(o.position).includes("감사"))return(+m[1]+3)+"-03-31";const y=+m[1]+3,mo=+m[2],day=+m[3],last=new Date(y,mo,0).getDate();return y+"-"+String(mo).padStart(2,"0")+"-"+String(Math.min(day,last)).padStart(2,"0")}
-$("adminSaveAnalysis").onclick=async()=>{
+$("adminSaveAnalysis").onclick=async()=>{\n const saveGeneration=analysisGeneration;
  const analysis=window.__latestOfficerAnalysis;
  if(!analysis?.officers?.length){alert("먼저 임원 확인을 실행하세요.");return}
  if(!isAdmin()){alert("관리자 권한이 없습니다.");return}
@@ -299,7 +299,7 @@ $("adminSaveAnalysis").onclick=async()=>{
   if(saveState)saveState.textContent="⚠ 저장 실패 · 다시 저장하세요.";
   alert("저장 실패 · "+e.message);
  }finally{
-  btn.hidden=false;btn.disabled=completed;btn.textContent="관리대장 저장";
+  btn.hidden=false;if(completed&&saveGeneration===analysisGeneration)btn.disabled=true;btn.textContent="관리대장 저장";
   const analyzeBtn=$("analyze");analyzeBtn.hidden=false;analyzeBtn.disabled=false;analyzeBtn.textContent="임원 확인";
   $("uploadBox").hidden=false;
  }
