@@ -16,7 +16,7 @@ body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:#173b4a;backgrou
 .summary{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.summary span{padding:7px 10px;background:#f1f8fc;border-radius:999px;font-size:12px}
 .table{overflow:auto;border:1px solid #d9e5ea;border-radius:10px}.table table{width:100%;min-width:780px;border-collapse:collapse;font-size:13px}.table th,.table td{padding:12px;border-bottom:1px solid #e1e9ed;text-align:left}.table th{background:#f7fbfd}.event{color:#168dca;font-weight:800}.expiry{font-weight:800}
 .apply{display:none;margin-top:24px;padding-top:22px;border-top:1px solid #e1e9ed}.contact{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.contact input{padding:12px;border:1px solid #d9e5ea;border-radius:8px}.checks{display:flex;gap:16px;flex-wrap:wrap;margin-top:13px;font-size:13px}.privacy{margin-top:12px;border:1px solid #d9e5ea;border-radius:8px;padding:12px 14px;font-size:12px;color:#536b75}.privacy summary{cursor:pointer;font-weight:800;color:#173b4a}.privacy div{margin-top:10px;line-height:1.75}.notice{margin:10px 0 0;color:#71838b;font-size:12px;line-height:1.6}.apply .run{margin-top:14px}.register-actions{display:flex;gap:8px;flex-wrap:wrap}.admin-register{margin-top:14px;padding:11px 16px;border-radius:8px;border:1px solid #173b4a;background:#fff;color:#173b4a;font-size:13px;font-weight:800;cursor:pointer}.register-note{margin:10px 0 0;font-size:12px;font-weight:700;color:#168dca}
-.ledger{margin-top:28px;padding-top:24px;border-top:1px solid #e1e9ed}.ledger-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.ledger-head h3{margin:0 0 6px;font-size:18px}.ledger-head p{margin:0;color:#71838b;font-size:12px}.ledger-toolbar{display:flex;gap:8px;margin:14px 0 10px}.ledger-toolbar input,.ledger-toolbar select{padding:10px 12px;border:1px solid #d9e5ea;border-radius:8px;background:#fff}.ledger-toolbar input{flex:1}.existing{display:none;margin-top:14px;padding:16px;border:1px solid #c8e8f7;border-radius:10px;background:#f7fbfd}.existing h3{margin:0 0 6px;font-size:15px}.raw{margin-top:25px}.raw pre{white-space:pre-wrap;word-break:break-all;background:#f7f9fa;padding:15px;border-radius:8px;font-size:11px;max-height:300px;overflow:auto}
+.admin-login{margin-top:28px;padding-top:24px;border-top:1px solid #e1e9ed}.admin-login h3{margin:0 0 6px;font-size:18px}.admin-login p{margin:0;color:#71838b;font-size:12px}.ledger{margin-top:28px;padding-top:24px;border-top:1px solid #e1e9ed}.ledger-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.ledger-head h3{margin:0 0 6px;font-size:18px}.ledger-head p{margin:0;color:#71838b;font-size:12px}.ledger-toolbar{display:flex;gap:8px;margin:14px 0 10px}.ledger-toolbar input,.ledger-toolbar select{padding:10px 12px;border:1px solid #d9e5ea;border-radius:8px;background:#fff}.ledger-toolbar input{flex:1}.existing{display:none;margin-top:14px;padding:16px;border:1px solid #c8e8f7;border-radius:10px;background:#f7fbfd}.existing h3{margin:0 0 6px;font-size:15px}.raw{margin-top:25px}.raw pre{white-space:pre-wrap;word-break:break-all;background:#f7f9fa;padding:15px;border-radius:8px;font-size:11px;max-height:300px;overflow:auto}
 @media(max-width:700px){.wrap{padding:24px 15px}.box{padding:24px 18px}.actions{margin-top:18px}.pick,.run{flex:1;text-align:center}.contact{grid-template-columns:1fr}}
 </style>
 </head>
@@ -45,6 +45,7 @@ body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:#173b4a;backgrou
         <p class="register-note" id="registerNote"></p>
       </section>
 
+      <section class="admin-login" id="adminLogin"><h3>사무소 관리자</h3><p>관리대장은 관리자 로그인 후에만 표시됩니다.</p><div class="contact"><input id="adminEmail" type="email" autocomplete="username" placeholder="관리자 이메일"><input id="adminPassword" type="password" autocomplete="current-password" placeholder="비밀번호"></div><div class="register-actions"><button class="admin-register" id="loginBtn" type="button">관리자 로그인</button><button class="pick" id="logoutBtn" type="button" hidden>로그아웃</button></div><p class="register-note" id="loginMsg"></p></section>
       <section class="ledger" id="ledger" hidden>
         <div class="ledger-head"><div><h3>사무소 관리대장</h3><p>관리자 전용 · 기존 고객은 여기에서 등록합니다.</p></div><button class="admin-register" id="openExistingBtn" type="button">+ 기존 고객 등록</button></div>
         <div class="ledger-toolbar"><input id="ledgerSearch" type="search" placeholder="상호 · 임원명 검색"><select id="ledgerFilter"><option value="all">전체</option><option value="soon">임기 임박</option><option value="customer">고객신청</option><option value="admin">기존고객</option></select></div>
@@ -67,9 +68,7 @@ body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:#173b4a;backgrou
 const WORKER="https://deunggiro-ocr.hapuha21.workers.dev/";
 const $=id=>document.getElementById(id),file=$("file"),analyze=$("analyze"),status=$("status"),result=$("result"),summary=$("summary"),tbody=$("tbody"),raw=$("raw"),apply=$("apply"),uploadBox=$("uploadBox"),applyBtn=$("applyBtn"),registerNote=$("registerNote"),openExistingBtn=$("openExistingBtn"),existingBox=$("existingBox"),closeExistingBtn=$("closeExistingBtn"),existingRegisterBtn=$("existingRegisterBtn"),existingNote=$("existingNote");
 let latestAnalysis=null;
-const ADMIN_AUTHENTICATED=false; // 실제 Firebase Auth 세션 검증 연결 전에는 절대 true로 바꾸지 않음
-const ledger=$("ledger");
-if(ledger) ledger.hidden=!ADMIN_AUTHENTICATED;
+// 관리대장 표시 여부는 아래 Firebase Authentication 세션에서만 결정
 const str=v=>String(v??"").trim();
 const date=v=>{const m=str(v).match(/(\d{4})\D{0,3}(\d{1,2})\D{0,3}(\d{1,2})/);return m?m[1]+"-"+String(m[2]).padStart(2,"0")+"-"+String(m[3]).padStart(2,"0"):str(v)};
 const time=v=>{const d=new Date(date(v)+"T00:00:00");return isNaN(d)?-Infinity:+d};
@@ -141,5 +140,15 @@ applyBtn.addEventListener("click",()=>{
 });
 
 })();
+</script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+const firebaseConfig={apiKey:"AIzaSyAlXYOrj7V-XtDrK13Cbxw6hWzbfhGf_do",authDomain:"project-b08e5f3c-fa49-4ae6-933.firebaseapp.com",projectId:"project-b08e5f3c-fa49-4ae6-933",storageBucket:"project-b08e5f3c-fa49-4ae6-933.firebasestorage.app",messagingSenderId:"209298170572",appId:"1:209298170572:web:2c47a3779cf4a331039869",measurementId:"G-PGFPK2SJLK"};
+const app=initializeApp(firebaseConfig),auth=getAuth(app);
+const login=document.getElementById("adminLogin"),ledger=document.getElementById("ledger"),loginMsg=document.getElementById("loginMsg");
+document.getElementById("loginBtn").onclick=async()=>{try{await signInWithEmailAndPassword(auth,document.getElementById("adminEmail").value.trim(),document.getElementById("adminPassword").value);loginMsg.textContent=""}catch(e){loginMsg.textContent="로그인 정보를 확인하세요."}};
+document.getElementById("logoutBtn").onclick=()=>signOut(auth);
+onAuthStateChanged(auth,user=>{login.hidden=!!user;ledger.hidden=!user;document.getElementById("logoutBtn").hidden=!user});
 </script>
 </body></html>
