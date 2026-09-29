@@ -153,6 +153,6 @@ login.addEventListener("click",e=>{if(e.target===login)login.hidden=true});
 document.getElementById("adminPassword").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("loginBtn").click()});
 document.getElementById("loginBtn").onclick=async()=>{try{await signInWithEmailAndPassword(auth,document.getElementById("adminEmail").value.trim(),document.getElementById("adminPassword").value);loginMsg.textContent=""}catch(e){loginMsg.textContent="아이디 또는 비밀번호를 확인하세요."}};
 document.getElementById("logoutBtn").onclick=()=>signOut(auth);
-onAuthStateChanged(auth,user=>{login.hidden=true;ledger.hidden=!user;document.getElementById("logoutBtn").hidden=!user;adminHeadBtn.textContent=user?"관리대장":"관리자 로그인"});
+onAuthStateChanged(auth,user=>{login.hidden=true;ledger.hidden=!user;document.getElementById("logoutBtn").hidden=!user;adminHeadBtn.textContent="관리자 로그인"});
 </script>
 </body></html>
