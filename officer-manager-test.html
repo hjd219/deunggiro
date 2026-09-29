@@ -126,7 +126,7 @@ analyze.addEventListener("click",async()=>{
  analyze.disabled=true;status.textContent="임원정보 분석 중…";result.style.display="none";apply.style.display="none";
  try{
   const fd=new FormData();fd.append("file",file.files[0],file.files[0].name);
-  const res=await fetch(WORKER,{method:"POST",body:fd}),j=await res.json();raw.textContent=JSON.stringify(j,null,2);
+  const res=await fetch(WORKER,{method:"POST",body:fd});let j=await res.json();raw.textContent=JSON.stringify(j,null,2);
   if(!res.ok||j.error)throw Error(j.detail||j.error||"분석 실패");
   j=parseDocumentAI(j);
   const officers=currentOfficers(j.officer_events,j.company?.incorporation_date);
