@@ -199,10 +199,10 @@ analyze.addEventListener("click",async()=>{\n const generation=++analysisGenerat
   const parseOk=!!company.name&&!!(company.registration_number||company.corporate_registration_number||company.registrationNumber)&&!!company.incorporation_date&&(j.officer_events||[]).length>0&&officers.length>0;
   latestAnalysis={company,officers,officer_events:j.officer_events||[],parseOk};window.__latestOfficerAnalysis=latestAnalysis;const adminSave=document.getElementById("adminSaveAnalysis");const adminMode=document.getElementById("ledger")&&!document.getElementById("ledger").hidden;if(adminMode){
    adminSave.hidden=false;
-   adminSave.disabled=!parseOk;
+   adminSave.disabled=officers.length===0;
    adminSave.textContent="관리대장 저장";
    const saveState=document.getElementById("saveState");
-   if(saveState)saveState.textContent=parseOk?"분석 완료 · 저장 버튼을 눌러주세요.":"저장 불가 · 분석 결과 확인";
+   if(saveState)saveState.textContent=officers.length?"분석 완료 · 저장 버튼을 눌러주세요.":"저장 불가 · 현재 임원 확인";
   }
   const corpNo=company.registration_number||company.corporate_registration_number||company.registrationNumber||"확인 필요";
   summary.innerHTML="<span>상호 · "+esc(company.name||"확인 필요")+"</span><span>법인등록번호 · "+esc(corpNo)+"</span><span>현재 임원 · "+officers.length+"명</span><span>확인 이력 · "+(j.officer_events||[]).length+"건</span>";
