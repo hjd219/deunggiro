@@ -36,12 +36,12 @@ body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:#173b4a;backgrou
 
       <section class="apply" id="apply">
         <h3>임기관리 등록</h3>
-        <p class="notice">고객이 직접 신청하거나, 기존 고객은 같은 화면에서 사무소 관리대장에 바로 등록할 수 있습니다.</p>
+        <p class="notice">분석 결과를 확인한 뒤 임기관리 알림을 신청할 수 있습니다.</p>
         <div class="contact"><input id="phone" type="tel" placeholder="휴대전화번호"><input id="email" type="email" placeholder="이메일"></div>
         <div class="checks"><label><input type="checkbox" id="notifyKakao" checked> 카카오 알림톡</label><label><input type="checkbox" id="notifyEmail" checked> 이메일</label><label><input type="checkbox" id="consent"> <b>개인정보 수집·이용 동의 (필수)</b></label></div>
         <details class="privacy"><summary>개인정보 수집·이용 안내 보기</summary><div><b>수집항목</b> · 휴대전화번호, 이메일<br><b>이용목적</b> · 법인 임원 임기관리, 임기 도래 안내 및 신청내역 관리<br><b>보유기간</b> · 임기관리 서비스 종료 또는 동의 철회 시까지. 관계 법령에 따라 보존이 필요한 경우에는 해당 기간 동안 보관합니다.<br><b>동의 거부</b> · 동의하지 않을 수 있으나, 동의하지 않는 경우 임기관리 알림 서비스를 신청할 수 없습니다.<br><b>등기사항증명서</b> · 임원 현황 및 임기 분석에 일시적으로 사용하며 원본 파일은 별도로 보관하지 않습니다.</div></details>
         <p class="notice">카카오 알림톡과 이메일의 실제 자동발송은 발송 서비스 연결 후 활성화됩니다.</p>
-        <div class="register-actions"><button class="run" id="applyBtn" type="button">고객 임기관리 신청</button><button class="admin-register" id="adminRegisterBtn" type="button">기존 고객 관리대장 등록</button></div>
+        <div class="register-actions"><button class="run" id="applyBtn" type="button">임기관리 신청</button></div>
         <p class="register-note" id="registerNote"></p>
       </section>
 
@@ -52,7 +52,7 @@ body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:#173b4a;backgrou
 <script>
 (()=>{
 const WORKER="https://deunggiro-ocr.hapuha21.workers.dev/";
-const $=id=>document.getElementById(id),file=$("file"),analyze=$("analyze"),status=$("status"),result=$("result"),summary=$("summary"),tbody=$("tbody"),raw=$("raw"),apply=$("apply"),uploadBox=$("uploadBox"),applyBtn=$("applyBtn"),adminRegisterBtn=$("adminRegisterBtn"),registerNote=$("registerNote");
+const $=id=>document.getElementById(id),file=$("file"),analyze=$("analyze"),status=$("status"),result=$("result"),summary=$("summary"),tbody=$("tbody"),raw=$("raw"),apply=$("apply"),uploadBox=$("uploadBox"),applyBtn=$("applyBtn"),registerNote=$("registerNote");
 let latestAnalysis=null;
 const str=v=>String(v??"").trim();
 const date=v=>{const m=str(v).match(/(\d{4})\D{0,3}(\d{1,2})\D{0,3}(\d{1,2})/);return m?m[1]+"-"+String(m[2]).padStart(2,"0")+"-"+String(m[3]).padStart(2,"0"):str(v)};
@@ -117,11 +117,7 @@ applyBtn.addEventListener("click",()=>{
  window.__officerManagerPendingRecord=buildRecord("고객신청");
  registerNote.textContent="고객 신청 정보 확인 완료 · 관리대장 저장 연결 전 테스트 상태입니다.";
 });
-adminRegisterBtn.addEventListener("click",()=>{
- if(!latestAnalysis){registerNote.textContent="먼저 등기사항증명서를 분석하세요.";return}
- window.__officerManagerPendingRecord=buildRecord("관리자등록");
- registerNote.textContent="기존 고객 등록 정보 확인 완료 · 개인정보 동의 없이 관리자등록 경로로 처리됩니다. 관리대장 저장 연결 전 테스트 상태입니다.";
-});
+
 })();
 </script>
 </body></html>
