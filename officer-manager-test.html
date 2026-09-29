@@ -16,7 +16,7 @@ body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:#173b4a;backgrou
 .summary{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.summary span{padding:7px 10px;background:#f1f8fc;border-radius:999px;font-size:12px}
 .table{overflow:auto;border:1px solid #d9e5ea;border-radius:10px}.table table{width:100%;min-width:780px;border-collapse:collapse;font-size:13px}.table th,.table td{padding:12px;border-bottom:1px solid #e1e9ed;text-align:left}.table th{background:#f7fbfd}.event{color:#168dca;font-weight:800}.expiry{font-weight:800}
 .apply{display:none;margin-top:24px;padding-top:22px;border-top:1px solid #e1e9ed}.contact{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.contact input{padding:12px;border:1px solid #d9e5ea;border-radius:8px}.checks{display:flex;gap:16px;flex-wrap:wrap;margin-top:13px;font-size:13px}.privacy{margin-top:12px;border:1px solid #d9e5ea;border-radius:8px;padding:12px 14px;font-size:12px;color:#536b75}.privacy summary{cursor:pointer;font-weight:800;color:#173b4a}.privacy div{margin-top:10px;line-height:1.75}.notice{margin:10px 0 0;color:#71838b;font-size:12px;line-height:1.6}.apply .run{margin-top:14px}.register-actions{display:flex;gap:8px;flex-wrap:wrap}.admin-register{margin-top:14px;padding:11px 16px;border-radius:8px;border:1px solid #173b4a;background:#fff;color:#173b4a;font-size:13px;font-weight:800;cursor:pointer}.register-note{margin:10px 0 0;font-size:12px;font-weight:700;color:#168dca}
-.raw{margin-top:25px}.raw pre{white-space:pre-wrap;word-break:break-all;background:#f7f9fa;padding:15px;border-radius:8px;font-size:11px;max-height:300px;overflow:auto}
+.ledger{margin-top:28px;padding-top:24px;border-top:1px solid #e1e9ed}.ledger-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.ledger-head h3{margin:0 0 6px;font-size:18px}.ledger-head p{margin:0;color:#71838b;font-size:12px}.ledger-toolbar{display:flex;gap:8px;margin:14px 0 10px}.ledger-toolbar input,.ledger-toolbar select{padding:10px 12px;border:1px solid #d9e5ea;border-radius:8px;background:#fff}.ledger-toolbar input{flex:1}.existing{display:none;margin-top:14px;padding:16px;border:1px solid #c8e8f7;border-radius:10px;background:#f7fbfd}.existing h3{margin:0 0 6px;font-size:15px}.raw{margin-top:25px}.raw pre{white-space:pre-wrap;word-break:break-all;background:#f7f9fa;padding:15px;border-radius:8px;font-size:11px;max-height:300px;overflow:auto}
 @media(max-width:700px){.wrap{padding:24px 15px}.box{padding:24px 18px}.actions{margin-top:18px}.pick,.run{flex:1;text-align:center}.contact{grid-template-columns:1fr}}
 </style>
 </head>
@@ -45,6 +45,19 @@ body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:#173b4a;backgrou
         <p class="register-note" id="registerNote"></p>
       </section>
 
+      <section class="ledger" id="ledger">
+        <div class="ledger-head"><div><h3>사무소 관리대장</h3><p>관리자 전용 · 기존 고객은 여기에서 등록합니다.</p></div><button class="admin-register" id="openExistingBtn" type="button">+ 기존 고객 등록</button></div>
+        <div class="ledger-toolbar"><input id="ledgerSearch" type="search" placeholder="상호 · 임원명 검색"><select id="ledgerFilter"><option value="all">전체</option><option value="soon">임기 임박</option><option value="customer">고객신청</option><option value="admin">기존고객</option></select></div>
+        <div class="table"><table><thead><tr><th>상호</th><th>임원</th><th>직위</th><th>예상 만료</th><th>D-day</th><th>연락처</th><th>등록경로</th></tr></thead><tbody id="ledgerBody"><tr><td colspan="7">등록된 관리대장이 없습니다.</td></tr></tbody></table></div>
+        <div class="existing" id="existingBox">
+          <h3>기존 고객 등록</h3>
+          <p class="notice">관리대장에서만 사용하는 사무소 직접 등록 영역입니다. 등기사항증명서를 분석한 뒤 연락처를 입력해 등록합니다.</p>
+          <div class="contact"><input id="existingPhone" type="tel" placeholder="휴대전화번호 (선택)"><input id="existingEmail" type="email" placeholder="이메일 (선택)"></div>
+          <div class="register-actions"><button class="admin-register" id="existingRegisterBtn" type="button">현재 분석 결과로 등록</button><button class="pick" id="closeExistingBtn" type="button">닫기</button></div>
+          <p class="register-note" id="existingNote"></p>
+        </div>
+      </section>
+
       <div class="raw"><b>Worker 원본 응답</b><pre id="raw"></pre></div>
     </section>
   </div>
@@ -52,7 +65,7 @@ body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:#173b4a;backgrou
 <script>
 (()=>{
 const WORKER="https://deunggiro-ocr.hapuha21.workers.dev/";
-const $=id=>document.getElementById(id),file=$("file"),analyze=$("analyze"),status=$("status"),result=$("result"),summary=$("summary"),tbody=$("tbody"),raw=$("raw"),apply=$("apply"),uploadBox=$("uploadBox"),applyBtn=$("applyBtn"),registerNote=$("registerNote");
+const $=id=>document.getElementById(id),file=$("file"),analyze=$("analyze"),status=$("status"),result=$("result"),summary=$("summary"),tbody=$("tbody"),raw=$("raw"),apply=$("apply"),uploadBox=$("uploadBox"),applyBtn=$("applyBtn"),registerNote=$("registerNote"),openExistingBtn=$("openExistingBtn"),existingBox=$("existingBox"),closeExistingBtn=$("closeExistingBtn"),existingRegisterBtn=$("existingRegisterBtn"),existingNote=$("existingNote");
 let latestAnalysis=null;
 const str=v=>String(v??"").trim();
 const date=v=>{const m=str(v).match(/(\d{4})\D{0,3}(\d{1,2})\D{0,3}(\d{1,2})/);return m?m[1]+"-"+String(m[2]).padStart(2,"0")+"-"+String(m[3]).padStart(2,"0"):str(v)};
@@ -107,6 +120,12 @@ function buildRecord(source){
  const contact=contactData();
  return {source,company:latestAnalysis?.company||{},officers:latestAnalysis?.officers||[],contact,created_at:new Date().toISOString()}
 }
+openExistingBtn.addEventListener("click",()=>{existingBox.style.display="block";existingNote.textContent=""});
+closeExistingBtn.addEventListener("click",()=>{existingBox.style.display="none"});
+existingRegisterBtn.addEventListener("click",()=>{
+ if(!latestAnalysis){existingNote.textContent="먼저 위에서 기존 고객의 등기사항증명서를 분석하세요.";return}
+ existingNote.textContent="관리대장 저장 연결 전 테스트 상태입니다. 실제 저장은 관리자 인증과 Firestore 연결 후 활성화됩니다.";
+});
 applyBtn.addEventListener("click",()=>{
  if(!latestAnalysis){registerNote.textContent="먼저 등기사항증명서를 분석하세요.";return}
  const c=contactData();
