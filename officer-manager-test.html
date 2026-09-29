@@ -153,6 +153,7 @@ function buildOfficerModel(j){
 
  const officerEvents=[];
  const currentOfficers=[];
+ const endedKeys=new Set();
  for(const block of blocks){
   const events=block.events.slice().sort((a,b)=>time(a.event_date||a.registration_date)-time(b.event_date||b.registration_date));
   officerEvents.push(...events.map(e=>({...e,name:block.name,position:block.position})));
@@ -163,8 +164,9 @@ function buildOfficerModel(j){
 
   // No lifecycle event at all: this is the only case where an original
   // incorporation officer may use the company incorporation date.
+  const key=(block.personId||block.name)+"|"+block.position;
   if(!last){
-   if(incorporationDate){
+   if(incorporationDate&&!endedKeys.has(key)){
     currentOfficers.push({name:block.name,position:block.position,event:"설립취임",event_date:incorporationDate,registration_date:incorporationDate,raw_text:block.raw+" 설립"});
    }
    continue;
@@ -172,6 +174,8 @@ function buildOfficerModel(j){
 
   if(["취임","중임"].includes(last.event)){
    currentOfficers.push({...last,name:block.name,position:block.position});
+  }else{
+   endedKeys.add(key);
   }
   // Last lifecycle event is 사임/퇴임/임기만료/해임 => this block is excluded.
  }
