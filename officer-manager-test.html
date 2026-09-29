@@ -57,7 +57,7 @@ body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:var(--ink);backg
   <section class="ledger admin-page" id="ledger" hidden>
         <div class="ledger-head"><div><h3>사무소 관리대장</h3><p>관리자 전용 · 기존 고객은 여기에서 등록합니다.</p></div><div class="ledger-head-actions"><button class="admin-register" id="openExistingBtn" type="button">+ 기존 고객 등록</button><button class="pick" id="adminLogoutBtn" type="button">로그아웃</button></div></div>
         <div class="ledger-toolbar"><input id="ledgerSearch" type="search" placeholder="상호 · 임원명 검색"><select id="ledgerFilter"><option value="all">전체</option><option value="soon">임기 임박</option><option value="customer">고객신청</option><option value="admin">기존고객</option></select></div>
-        <div class="table"><table><thead><tr><th>상호</th><th>임원</th><th>직위</th><th>예상 만료</th><th>D-day</th><th>연락처</th><th>등록경로</th><th>관리</th></tr></thead><tbody id="ledgerBody"><tr><td colspan="8">등록된 관리대장이 없습니다.</td></tr></tbody></table></div>
+        <div class="table"><table><thead><tr><th>상호</th><th>법인등록번호</th><th>임원</th><th>직위</th><th>예상 만료</th><th>D-day</th><th>연락처</th><th>등록경로</th><th>관리</th></tr></thead><tbody id="ledgerBody"><tr><td colspan="9">등록된 관리대장이 없습니다.</td></tr></tbody></table></div>
         </section>
 </main>
 <script>
@@ -70,6 +70,7 @@ const str=v=>String(v??"").trim();
 const date=v=>{const m=str(v).match(/(\d{4})\D{0,3}(\d{1,2})\D{0,3}(\d{1,2})/);return m?m[1]+"-"+String(m[2]).padStart(2,"0")+"-"+String(m[3]).padStart(2,"0"):str(v)};
 const time=v=>{const d=new Date(date(v)+"T00:00:00");return isNaN(d)?-Infinity:+d};
 const esc=v=>str(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const koreanCompanyName=v=>str(v).replace(/\s*\([^()]*[A-Za-z][^()]*\)\s*$/,"").trim();
 function position(v){const s=str(v).replace(/\s/g,"");for(const p of["감사위원","대표이사","사외이사","기타비상무이사","사내이사","감사"])if(s.includes(p))return p;return s.includes("이사")?"이사":s}
 function eventOf(event,rawText=""){const raw=str(rawText).replace(/\s/g,""),ev=str(event).replace(/\s/g,"");for(const e of["해임","퇴임","사임","중임","취임"])if(raw.includes(e))return e;if(raw.includes("주소기입")||raw.includes("주소변경"))return"주소변경";if(ev.includes("주소"))return"주소변경";for(const e of["해임","퇴임","사임","중임","취임"])if(ev.includes(e))return e;return"기타"}
 function currentOfficers(events,incorporationDate){
@@ -105,8 +106,10 @@ analyze.addEventListener("click",async()=>{
   const res=await fetch(WORKER,{method:"POST",body:fd}),j=await res.json();raw.textContent=JSON.stringify(j,null,2);
   if(!res.ok||j.error)throw Error(j.detail||j.error||"분석 실패");
   const officers=currentOfficers(j.officer_events,j.company?.incorporation_date);
-  latestAnalysis={company:j.company||{},officers,officer_events:j.officer_events||[]};window.__latestOfficerAnalysis=latestAnalysis;
-  summary.innerHTML="<span>상호 · "+esc(j.company?.name||"확인 필요")+"</span><span>현재 임원 · "+officers.length+"명</span><span>확인 이력 · "+(j.officer_events||[]).length+"건</span>";
+  const company={...(j.company||{}),name:koreanCompanyName(j.company?.name||"")};
+  latestAnalysis={company,officers,officer_events:j.officer_events||[]};window.__latestOfficerAnalysis=latestAnalysis;
+  const corpNo=company.registration_number||company.corporate_registration_number||company.registrationNumber||"확인 필요";
+  summary.innerHTML="<span>상호 · "+esc(company.name||"확인 필요")+"</span><span>법인등록번호 · "+esc(corpNo)+"</span><span>현재 임원 · "+officers.length+"명</span><span>확인 이력 · "+(j.officer_events||[]).length+"건</span>";
   tbody.innerHTML=officers.length?officers.map(o=>"<tr><td>"+esc(o.position)+"</td><td><b>"+esc(o.name)+"</b></td><td class='event'>"+esc(o.event)+"</td><td>"+esc(o.event_date||o.registration_date||"확인 필요")+"</td><td class='expiry'>"+esc(expiry(o))+"</td><td>"+(o.position.includes("감사")?"12월 결산 기준":"3년 기준")+"</td></tr>").join(""):"<tr><td colspan='6'>현재 임원으로 확인된 이력이 없습니다.</td></tr>";
   result.style.display="block";apply.style.display=(document.getElementById("ledger")&&!document.getElementById("ledger").hidden)?"none":"block";status.textContent="분석 완료";
  }catch(e){result.style.display="block";status.textContent="분석 실패 · "+e.message}
@@ -149,16 +152,16 @@ function showCustomerPage(){ledger.hidden=true;$("uploadBox").hidden=false;$("ad
 function render(){
  const q=search.value.trim().toLowerCase(),f=filter.value;
  const list=rows.filter(x=>{const hay=(x.company+" "+x.officer+" "+x.position).toLowerCase(),days=parseInt(dday(x.expiry).replace("D-",""),10);return(!q||hay.includes(q))&&(f==="all"||(f==="customer"&&x.source==="고객신청")||(f==="admin"&&x.source==="기존고객")||(f==="soon"&&dday(x.expiry).startsWith("D-")&&days<=90))});
- ledgerBody.innerHTML=list.length?list.map(x=>`<tr><td>${esc(x.company)}</td><td><b>${esc(x.officer)}</b></td><td>${esc(x.position)}</td><td>${esc(x.expiry)}</td><td>${esc(dday(x.expiry))}</td><td>${esc(x.phone||x.email||"-")}</td><td>${esc(x.source)}</td><td><div class="row-actions"><button class="row-btn" data-edit="${x.id}">수정</button><button class="row-btn delete" data-delete="${x.id}">삭제</button></div></td></tr>`).join(""):'<tr><td colspan="8">등록된 관리대장이 없습니다.</td></tr>';
+ ledgerBody.innerHTML=list.length?list.map(x=>`<tr><td>${esc(String(x.company||"").replace(/\s*\([^()]*[A-Za-z][^()]*\)\s*$/,"").trim())}</td><td>${esc(x.registrationNumber||"-")}</td><td><b>${esc(x.officer)}</b></td><td>${esc(x.position)}</td><td>${esc(x.expiry)}</td><td>${esc(dday(x.expiry))}</td><td>${esc(x.phone||x.email||"-")}</td><td>${esc(x.source)}</td><td><div class="row-actions"><button class="row-btn" data-edit="${x.id}">수정</button><button class="row-btn delete" data-delete="${x.id}">삭제</button></div></td></tr>`).join(""):'<tr><td colspan="9">등록된 관리대장이 없습니다.</td></tr>';
 }
 async function loadLedger(){if(!isAdmin())return;const snap=await getDocs(collection(db,COL));rows=snap.docs.map(d=>({id:d.id,...d.data()}));render()}
 async function saveAnalysis(analysis,phone,email){
  if(!isAdmin())throw Error("관리자 권한이 없습니다.");
  if(!analysis?.officers?.length)throw Error("현재 임원 분석 결과가 없습니다.");
- const company=analysis.company?.name||"확인 필요",batch=writeBatch(db),saved=[];
+ const company=String(analysis.company?.name||"확인 필요").replace(/\s*\([^()]*[A-Za-z][^()]*\)\s*$/,"").trim(),registrationNumber=analysis.company?.registration_number||analysis.company?.corporate_registration_number||analysis.company?.registrationNumber||"",batch=writeBatch(db),saved=[];
  for(const o of analysis.officers){
   const ref=doc(collection(db,COL));
-  const data={company,officer:o.name||"",position:o.position||"",termStart:o.event_date||o.registration_date||"",expiry:calcExpiry(o),phone:phone||"",email:email||"",source:"기존고객",createdAt:serverTimestamp(),updatedAt:serverTimestamp()};
+  const data={company,registrationNumber,officer:o.name||"",position:o.position||"",termStart:o.event_date||o.registration_date||"",expiry:calcExpiry(o),phone:phone||"",email:email||"",source:"기존고객",createdAt:serverTimestamp(),updatedAt:serverTimestamp()};
   batch.set(ref,data);saved.push({id:ref.id,...data});
  }
  await batch.commit();
@@ -179,6 +182,6 @@ adminHeadBtn.onclick=()=>{if(isAdmin()){showAdminPage();loadLedger()}else{login.
 adminCloseBtn.onclick=()=>{login.hidden=true;loginMsg.textContent=""};login.addEventListener("click",e=>{if(e.target===login)login.hidden=true});$("adminPassword").addEventListener("keydown",e=>{if(e.key==="Enter")$("loginBtn").click()});
 $("loginBtn").onclick=async()=>{try{const cred=await signInWithEmailAndPassword(auth,$("adminEmail").value.trim(),$("adminPassword").value);if(cred.user.uid!==ADMIN_UID){await signOut(auth);throw Error("관리자 권한 없음")}loginMsg.textContent=""}catch(e){loginMsg.textContent="아이디 또는 비밀번호를 확인하세요."}};
 async function logout(){await signOut(auth);showCustomerPage()}$("logoutBtn").onclick=logout;$("adminLogoutBtn").onclick=logout;
-onAuthStateChanged(auth,async user=>{login.hidden=true;adminHeadBtn.textContent="관리자 로그인";if(user?.uid===ADMIN_UID){showAdminPage();try{await loadLedger()}catch(e){ledgerBody.innerHTML='<tr><td colspan="8">관리대장을 불러오지 못했습니다.</td></tr>'}}else{showCustomerPage()}});
+onAuthStateChanged(auth,async user=>{login.hidden=true;adminHeadBtn.textContent="관리자 로그인";if(user?.uid===ADMIN_UID){showAdminPage();try{await loadLedger()}catch(e){ledgerBody.innerHTML='<tr><td colspan="9">관리대장을 불러오지 못했습니다.</td></tr>'}}else{showCustomerPage()}});
 </script>
 </body></html>
