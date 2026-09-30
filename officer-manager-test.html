@@ -338,8 +338,8 @@ function showCustomerPage(){
 }
 
 const API="https://deunggiro-ocr-209298170572.asia-northeast3.run.app";
-let adminToken=sessionStorage.getItem("dgOfficerAdminToken")||"";
-function headers(){return {"Content-Type":"application/json",...(adminToken?{"Authorization":"Bearer "+adminToken}:{})}}
+let adminToken="TEST";
+function headers(){return {"Content-Type":"application/json"}}
 async function api(path,options={}){
  const controller=new AbortController();
  const timer=setTimeout(()=>controller.abort(),12000);
@@ -398,8 +398,8 @@ $("adminSaveAnalysis").onclick=async()=>{
  }
 };
 
-// 테스트 단계: 로그인은 임시 우회하고 관리대장 화면부터 검증한다.
+// 테스트 단계: 로그인 우회 후 Cloud Run 저장/조회 API 직접 검증
 showAdminPage();
-$("ledgerBody").innerHTML='<tr><td colspan="9">새 관리 API 연결 후 저장된 임원이 표시됩니다.</td></tr>';
+loadLedger().catch(e=>{$("ledgerBody").innerHTML=`<tr><td colspan="9">조회 실패 · ${esc(e.message)}</td></tr>`});
 </script>
 </body></html>
