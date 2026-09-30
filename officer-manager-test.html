@@ -49,7 +49,7 @@ body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:var(--ink);backg
 
       <div class="admin-modal" id="adminLogin" hidden><div class="admin-dialog"><button class="admin-close" id="adminCloseBtn" type="button" aria-label="닫기">×</button><h3>관리자 로그인</h3><p>관리대장은 관리자 인증 후에만 열립니다.</p><input id="adminEmail" type="email" autocomplete="username" placeholder="아이디 (이메일 주소)"><input id="adminPassword" type="password" autocomplete="current-password" placeholder="비밀번호"><button class="run admin-login-submit" id="loginBtn" type="button">로그인</button><button class="pick admin-logout" id="logoutBtn" type="button" hidden>로그아웃</button><p class="register-note" id="loginMsg"></p></div></div>
       
-      <div class="admin-modal" id="editModal" hidden><div class="admin-dialog"><button class="admin-close" id="editCloseBtn" type="button" aria-label="닫기">×</button><h3>관리대장 수정</h3><p>선택한 임원 관리정보를 수정합니다.</p><div class="edit-grid"><input id="editCompany" placeholder="상호"><input id="editOfficer" placeholder="임원명"><input id="editPosition" placeholder="직위"><input id="editTermStart" type="date" title="임기 기준일"><input id="editExpiry" type="date" title="예상 만료일"><input id="editPhone" placeholder="휴대전화번호"><input id="editEmail" type="email" placeholder="이메일"></div><button class="run admin-login-submit" id="editSaveBtn" type="button">수정 저장</button><p class="register-note" id="editMsg"></p></div></div>
+      <div class="admin-modal" id="editModal" hidden><div class="admin-dialog"><button class="admin-close" id="editCloseBtn" type="button" aria-label="닫기">×</button><h3>관리대장 수정</h3><p>선택한 임원 관리정보를 수정합니다.</p><div class="edit-grid"><input id="editCompany" placeholder="상호"><input id="editRegistrationNumber" placeholder="법인등록번호"><input id="editOfficer" placeholder="임원명"><input id="editPosition" placeholder="직위"><input id="editTermStart" type="date" title="임기 기준일"><input id="editExpiry" type="date" title="예상 만료일"><input id="editPhone" placeholder="휴대전화번호"><input id="editEmail" type="email" placeholder="이메일"></div><button class="run admin-login-submit" id="editSaveBtn" type="button">수정 저장</button><p class="register-note" id="editMsg"></p></div></div>
 
       <div class="raw"><b>Worker 원본 응답</b><pre id="raw"></pre></div>
     </section>
@@ -355,11 +355,74 @@ async function api(path,options={}){
 }
 function dday(v){if(!v)return"";const n=Math.ceil((new Date(v+"T00:00:00")-new Date())/86400000);return Number.isFinite(n)?(n>=0?"D-"+n:"D+"+Math.abs(n)):""}
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+let ledgerRows=[];
+let editingId="";
+function renderLedger(){
+ const q=$("ledgerSearch").value.trim().toLowerCase();
+ const filter=$("ledgerFilter").value;
+ const now=new Date();now.setHours(0,0,0,0);
+ const rows=ledgerRows.filter(x=>{
+  const hay=(String(x.company||"")+" "+String(x.officer||"")+" "+String(x.registrationNumber||"")).toLowerCase();
+  if(q&&!hay.includes(q))return false;
+  const ex=x.expiry?new Date(x.expiry+"T00:00:00"):null;
+  const days=ex?Math.ceil((ex-now)/86400000):Infinity;
+  if(filter==="month"&&!(days>=0&&days<=30))return false;
+  if(filter==="week"&&!(days>=0&&days<=7))return false;
+  if(filter==="expired"&&!(days<0))return false;
+  if(filter==="customer"&&String(x.source||"").includes("기존고객"))return false;
+  if(filter==="admin"&&!String(x.source||"").includes("기존고객"))return false;
+  return true;
+ });
+ $("ledgerBody").innerHTML=rows.length?rows.map(x=>`<tr><td>${esc(x.company)}</td><td>${esc(x.registrationNumber||"-")}</td><td><b>${esc(x.officer)}</b></td><td>${esc(x.position)}</td><td>${esc(x.expiry)}</td><td>${esc(dday(x.expiry))}</td><td>${esc(x.phone||x.email||"-")}</td><td>${esc(x.source||"기존고객")}</td><td><div class="row-actions"><button class="row-btn" data-edit="${esc(x.id)}" type="button">수정</button><button class="row-btn delete" data-delete="${esc(x.id)}" type="button">삭제</button></div></td></tr>`).join(""):'<tr><td colspan="9">등록된 관리대장이 없습니다.</td></tr>';
+}
 async function loadLedger(){
  const data=await api("/officers",{method:"GET"});
- const rows=Array.isArray(data.items)?data.items:[];
- $("ledgerBody").innerHTML=rows.length?rows.map(x=>`<tr><td>${esc(x.company)}</td><td>${esc(x.registrationNumber||"-")}</td><td><b>${esc(x.officer)}</b></td><td>${esc(x.position)}</td><td>${esc(x.expiry)}</td><td>${esc(dday(x.expiry))}</td><td>${esc(x.phone||x.email||"-")}</td><td>${esc(x.source||"기존고객")}</td><td>-</td></tr>`).join(""):'<tr><td colspan="9">등록된 관리대장이 없습니다.</td></tr>';
+ ledgerRows=Array.isArray(data.items)?data.items:[];
+ renderLedger();
 }
+$("ledgerSearch").oninput=renderLedger;
+$("ledgerFilter").onchange=renderLedger;
+$("ledgerBody").onclick=async e=>{
+ const edit=e.target.closest("[data-edit]");
+ const del=e.target.closest("[data-delete]");
+ if(edit){
+  const x=ledgerRows.find(v=>String(v.id)===edit.dataset.edit);if(!x)return;
+  editingId=x.id;
+  $("editCompany").value=x.company||"";
+  $("editRegistrationNumber").value=x.registrationNumber||"";
+  $("editOfficer").value=x.officer||"";
+  $("editPosition").value=x.position||"";
+  $("editTermStart").value=x.termStart||"";
+  $("editExpiry").value=x.expiry||"";
+  $("editPhone").value=x.phone||"";
+  $("editEmail").value=x.email||"";
+  $("editMsg").textContent="";
+  $("editModal").hidden=false;
+  return;
+ }
+ if(del){
+  const x=ledgerRows.find(v=>String(v.id)===del.dataset.delete);if(!x)return;
+  if(!confirm((x.company||"")+" · "+(x.officer||"")+" 정보를 정말 삭제하시겠습니까?"))return;
+  del.disabled=true;
+  try{await api("/officers/"+encodeURIComponent(x.id),{method:"DELETE"});await loadLedger();}
+  catch(err){alert("삭제 실패 · "+err.message);del.disabled=false;}
+ }
+};
+$("editCloseBtn").onclick=()=>{$("editModal").hidden=true;editingId=""};
+$("editSaveBtn").onclick=async()=>{
+ if(!editingId)return;
+ const btn=$("editSaveBtn");btn.disabled=true;$("editMsg").textContent="저장 중…";
+ try{
+  await api("/officers/"+encodeURIComponent(editingId),{method:"PATCH",body:JSON.stringify({
+   company:$("editCompany").value.trim(),registrationNumber:$("editRegistrationNumber").value.trim(),
+   officer:$("editOfficer").value.trim(),position:$("editPosition").value.trim(),
+   termStart:$("editTermStart").value,expiry:$("editExpiry").value,
+   phone:$("editPhone").value.trim(),email:$("editEmail").value.trim()
+  })});
+  $("editModal").hidden=true;editingId="";await loadLedger();
+ }catch(err){$("editMsg").textContent="수정 실패 · "+err.message;}
+ finally{btn.disabled=false;}
+};
 adminHeadBtn.onclick=()=>{login.hidden=false;loginMsg.textContent=""};
 adminCloseBtn.onclick=()=>login.hidden=true;
 $("loginBtn").onclick=async()=>{
