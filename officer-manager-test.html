@@ -310,7 +310,7 @@ import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, serverTim
 const firebaseConfig={apiKey:"AIzaSyAlXYOrj7V-XtDrK13Cbxw6hWzbfhGf_do",authDomain:"project-b08e5f3c-fa49-4ae6-933.firebaseapp.com",projectId:"project-b08e5f3c-fa49-4ae6-933",storageBucket:"project-b08e5f3c-fa49-4ae6-933.firebasestorage.app",messagingSenderId:"209298170572",appId:"1:209298170572:web:2c47a3779cf4a331039869",measurementId:"G-PGFPK2SJLK"};
 const ADMIN_UID="rd0rLz5gFzWpahHbqOM3q0w4nMm2",app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),COL="officerManagement";
 const $=id=>document.getElementById(id),login=$("adminLogin"),ledger=$("ledger"),loginMsg=$("loginMsg"),adminHeadBtn=$("adminHeadBtn"),adminCloseBtn=$("adminCloseBtn"),ledgerBody=$("ledgerBody"),search=$("ledgerSearch"),filter=$("ledgerFilter"),editModal=$("editModal");
-let rows=[],editingId=null,ledgerLoadSeq=0,saveQueue=Promise.resolve();
+let rows=[],editingId=null,ledgerLoadSeq=0;
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function isAdmin(){return auth.currentUser?.uid===ADMIN_UID}
 function dday(v){if(!v)return"";const n=Math.ceil((new Date(v+"T00:00:00")-new Date())/86400000);return Number.isFinite(n)?(n>=0?"D-"+n:"D+"+Math.abs(n)):""}
@@ -368,10 +368,10 @@ $("adminSaveAnalysis").onclick=async()=>{
  btn.hidden=false;btn.disabled=true;btn.classList.add("saving");btn.setAttribute("aria-busy","true");btn.textContent="저장 중…";
  status.textContent="관리대장 저장 중…";
  try{
+  const started=performance.now();
   const saved=await saveAnalysis(snapshot,"","");
-  status.textContent="저장 완료 · "+saved.savedCount+"명";
-  await new Promise(resolve=>setTimeout(resolve,350));
-  window.__resetOfficerAnalysisState("저장 완료 · "+saved.savedCount+"명 · 다음 파일을 선택하세요.");
+  const elapsed=((performance.now()-started)/1000).toFixed(1);
+  window.__resetOfficerAnalysisState("저장 완료 · "+saved.savedCount+"명 · "+elapsed+"초 · 다음 파일을 선택하세요.");
  }catch(err){
   wf.state="ANALYZED";
   btn.hidden=false;btn.disabled=false;btn.classList.remove("saving");btn.removeAttribute("aria-busy");btn.textContent="관리대장 저장";
