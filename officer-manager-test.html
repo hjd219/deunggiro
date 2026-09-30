@@ -338,7 +338,7 @@ function showCustomerPage(){
 }
 
 const API="https://deunggiro-ocr-209298170572.asia-northeast3.run.app";
-let adminToken="TEST";
+let adminToken="TEST"; // 테스트 페이지는 인증 우회
 function headers(){return {"Content-Type":"application/json"}}
 async function api(path,options={}){
  const controller=new AbortController();
@@ -356,7 +356,6 @@ async function api(path,options={}){
 function dday(v){if(!v)return"";const n=Math.ceil((new Date(v+"T00:00:00")-new Date())/86400000);return Number.isFinite(n)?(n>=0?"D-"+n:"D+"+Math.abs(n)):""}
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 async function loadLedger(){
- if(!adminToken)return;
  const data=await api("/officers",{method:"GET"});
  const rows=Array.isArray(data.items)?data.items:[];
  $("ledgerBody").innerHTML=rows.length?rows.map(x=>`<tr><td>${esc(x.company)}</td><td>${esc(x.registrationNumber||"-")}</td><td><b>${esc(x.officer)}</b></td><td>${esc(x.position)}</td><td>${esc(x.expiry)}</td><td>${esc(dday(x.expiry))}</td><td>${esc(x.phone||x.email||"-")}</td><td>${esc(x.source||"기존고객")}</td><td>-</td></tr>`).join(""):'<tr><td colspan="9">등록된 관리대장이 없습니다.</td></tr>';
@@ -381,7 +380,6 @@ $("printLedgerBtn").onclick=()=>window.print();
 $("adminSaveAnalysis").onclick=async()=>{
  const analysis=window.__latestOfficerAnalysis;
  if(!analysis?.officers?.length){alert("먼저 임원 확인을 실행하세요.");return}
- if(!adminToken){alert("관리자 로그인이 필요합니다.");return}
  const btn=$("adminSaveAnalysis");
  btn.disabled=true;btn.classList.add("saving");btn.textContent="저장 중…";
  try{
