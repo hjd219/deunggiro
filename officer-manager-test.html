@@ -376,6 +376,15 @@ $("loginBtn").onclick=async()=>{
 };
 $("logoutBtn").onclick=$("adminLogoutBtn").onclick=()=>{adminToken="";sessionStorage.removeItem("dgOfficerAdminToken");login.hidden=true;showCustomerPage()};
 $("printLedgerBtn").onclick=()=>window.print();
+$("adminRegisterBtn").onclick=()=>{
+ ledger.hidden=true;
+ $("uploadBox").hidden=false;
+ $("analyze").hidden=false;
+ $("adminSaveAnalysis").hidden=true;
+ document.querySelector(".raw").hidden=false;
+ document.querySelector(".head h1").textContent="기존 고객 등록";
+ window.scrollTo({top:0,behavior:"auto"});
+};
 
 $("adminSaveAnalysis").onclick=async()=>{
  const analysis=window.__latestOfficerAnalysis;
