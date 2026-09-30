@@ -10,7 +10,7 @@
 .corporate-support-row{display:grid;grid-template-columns:1fr 1fr;gap:42px;align-items:start;border-top:1px solid #c8e8f7}
 .corporate-tool-row{display:grid;grid-template-columns:1fr 1fr;gap:42px;align-items:start;border-top:1px solid #c8e8f7}
 .corporate-tool-row>.simple-docs{border-top:0;margin-top:0;padding-top:56px;min-width:0}\n.corporate-support-row>.simple-docs,.corporate-tool-row>.simple-docs{box-sizing:border-box}\n.corporate-support-row h2,.corporate-tool-row h2{margin-top:0}\n.corporate-support-row .story-qa-title{margin-top:0}\n.corporate-support-row .story-qa-title h2{margin-top:0}\n.corporate-support-row .story-qa-list{margin-top:24px}
-.term-alert-card{display:block;margin-top:28px;color:#173b4a;text-decoration:none;cursor:pointer;transition:transform .22s ease,box-shadow .22s ease}\n@media(hover:hover) and (pointer:fine){.term-alert-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(15,23,42,.10)}}\n@media(hover:none),(pointer:coarse){.term-alert-card:active{transform:scale(.985);box-shadow:0 5px 14px rgba(15,23,42,.08)}}
+.term-alert-card{display:block;margin-top:28px;padding:0 0 14px;color:#173b4a;text-decoration:none;cursor:pointer;border-radius:10px;transition:transform .22s ease,box-shadow .22s ease,background-color .22s ease}\n@media(hover:hover) and (pointer:fine){.term-alert-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(15,23,42,.10);background:rgba(255,255,255,.72)}}\n@media(hover:none),(pointer:coarse){.term-alert-card:active{transform:scale(.985);box-shadow:0 5px 14px rgba(15,23,42,.08)}}
 .term-alert-card h3{margin:0 0 28px!important;font-size:17px;font-weight:900;line-height:20px;color:#173b4a}
 .term-alert-card h3 i{margin-left:6px;color:#2aa9df;font-size:14px;font-style:normal}
 .term-alert-body{border-left:2px solid #37aee4;padding-left:18px}
@@ -19,7 +19,6 @@
 .term-alert-item:last-child{margin-bottom:0}
 .term-alert-item>strong{display:block;margin:0 0 9px;color:#596f78;font-size:13px;line-height:1.4}
 .term-alert-item>p{margin:0;color:#596f78;font-size:13px;line-height:1.7}
-.term-alert-action{display:inline-block;margin-top:22px;color:#168dca;font-size:13px;font-weight:900}
 .corporate-support-row>.simple-docs{border-top:0;margin-top:0;padding-top:56px;min-width:0}
 .corporate-fine-table{max-width:720px;margin-top:24px;overflow:hidden;border:1px solid #d9e5ea;border-radius:10px}
 .corporate-support-row .corporate-fine-table{max-width:none}
@@ -110,14 +109,13 @@
 </section>
 <section class="simple-docs corporate-support" id="officer-term-alert">
  <h2>임원 임기 자동관리 서비스</h2>
- <div class="term-alert-card">
+ <div class="term-alert-card" role="button" tabindex="0" aria-label="임원 임기 자동알림 받기">
   <h3>임원 임기 자동알림 받기 <i>→</i></h3>
   <div class="term-alert-body">
    <p>등기사항증명서만 등록하면 현재 임원과 임기를 확인하여 <strong>임기 도래 전에 안내</strong>해드립니다.</p>
    <div class="term-alert-item"><strong>등기사항증명서 업로드</strong><p>법인명·법인등록번호·현재 임원정보를 별도로 입력할 필요가 없습니다.</p></div>
    <div class="term-alert-item"><strong>최소 정보만 입력</strong><p>휴대전화와 이메일만 입력하고 개인정보 수집·이용에 동의하면 신청할 수 있습니다.</p></div>
    <div class="term-alert-item"><strong>자동 임기관리</strong><p>신청된 정보는 임기관리대장에 등록하여 임기 도래 전 안내합니다.</p></div>
-   <span class="term-alert-action">자동알림 신청하기 →</span>
   </div>
  </div>
 </section>
