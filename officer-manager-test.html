@@ -20,6 +20,12 @@ body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:var(--ink);backg
 .admin-page[hidden]{display:none!important}.raw{margin-top:25px}.raw pre{white-space:pre-wrap;word-break:break-all;background:#f7f9fa;padding:15px;border-radius:8px;font-size:11px;max-height:300px;overflow:auto}
 .admin-modal{position:fixed;inset:0;z-index:9999;background:rgba(16,42,53,.38);display:flex;align-items:center;justify-content:center;padding:20px}.admin-modal[hidden]{display:none}.admin-dialog{position:relative;width:min(390px,100%);background:#fff;border-radius:16px;padding:28px;box-shadow:0 18px 55px rgba(0,0,0,.18);text-align:left}.admin-dialog h3{margin:0 0 7px;font-size:20px}.admin-dialog p{margin:0 0 18px;color:var(--muted);font-size:12px}.admin-dialog input{display:block;width:100%;margin-top:9px;padding:12px;border:1px solid var(--line);border-radius:8px;font-size:14px}.admin-login-submit{width:100%;margin-top:14px}.admin-logout{width:100%;margin-top:8px}.admin-close{position:absolute;right:14px;top:12px;border:0;background:transparent;color:var(--muted);font-size:25px;cursor:pointer}.edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.edit-grid input{width:100%}
 @media print{body{background:#fff}.head,#uploadBox,.ledger-head-actions,.ledger-toolbar,.row-actions{display:none!important}.wrap{width:100%;padding:0}.ledger{border:0;padding:0;box-shadow:none}.ledger-head{display:block!important}.ledger-head p{display:none}.table{overflow:visible}.table table{min-width:0;font-size:11px}.table th,.table td{padding:8px 6px}}@media(max-width:700px){.wrap{width:min(100% - 24px,920px);padding:24px 0 50px}.head{padding-top:50px}.admin-head-btn{top:0;right:0;transform:none}.box,.ledger{padding:20px 14px;border-radius:14px}.actions{flex-wrap:wrap}.actions>*{flex:1;min-width:90px}.ledger-head{align-items:stretch;flex-direction:column}.ledger-head-actions{width:100%}.ledger-head-actions>*{flex:1}.ledger-toolbar,.contact,.edit-grid{grid-template-columns:1fr}}
+.ledger-inline-register{margin:22px 0 24px;padding:22px;border:1px solid var(--line);border-radius:14px;background:#fff}
+.ledger-inline-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:16px}
+.ledger-inline-head h3{margin:0;color:var(--ink)}
+.ledger-inline-head p{margin:6px 0 0;color:var(--muted);font-size:13px}
+.ledger-inline-register #uploadBox{margin:0;padding:0;border:0;box-shadow:none;background:transparent}
+@media(max-width:700px){.ledger-inline-head{align-items:stretch;flex-direction:column}.ledger-inline-head .pick{align-self:flex-start}}
 </style>
 </head>
 <body>
@@ -56,6 +62,10 @@ body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:var(--ink);backg
   </div>
   <section class="ledger admin-page" id="ledger" hidden>
         <div class="ledger-head"><div><h3>사무소 관리대장</h3><p>관리자 전용 · 기존 고객은 여기에서 등록합니다.</p></div><div class="ledger-head-actions"><button class="admin-register" id="testEmailBtn" type="button">테스트 메일</button><button class="admin-register" id="companyTestEmailBtn" type="button">3개월 안내 테스트</button><button class="admin-register" id="manualEmailBtn" type="button">수동 발송</button><button class="admin-register" id="openExistingBtn" type="button">+ 기존 고객 등록</button><button class="pick" id="printLedgerBtn" type="button">명단 출력</button><button class="pick" id="adminLogoutBtn" type="button">로그아웃</button></div></div>
+        <div class="ledger-inline-register" id="ledgerInlineRegister" hidden>
+          <div class="ledger-inline-head"><div><h3>기존 고객 등록</h3><p>관리대장을 벗어나지 않고 등기사항증명서를 분석해 바로 등록합니다.</p></div><button class="pick" id="closeExistingBtn" type="button">닫기</button></div>
+          <div id="ledgerUploadSlot"></div>
+        </div>
         <div class="ledger-toolbar"><input id="ledgerSearch" type="search" placeholder="상호 · 임원명 검색"><select id="ledgerFilter"><option value="all">전체</option><option value="month">1개월 이내</option><option value="week">1주일 이내</option><option value="expired">만료</option><option value="customer">고객신청</option><option value="admin">기존고객</option></select></div>
         <div class="table"><table><thead><tr><th>상호</th><th>법인등록번호</th><th>임원</th><th>직위</th><th>예상 만료</th><th>D-day</th><th>연락처</th><th>등록경로</th><th>관리</th></tr></thead><tbody id="ledgerBody"><tr><td colspan="9">등록된 관리대장이 없습니다.</td></tr></tbody></table></div>
         </section>
@@ -292,7 +302,7 @@ function buildRecord(source){
  const contact=contactData();
  return {source,company:latestAnalysis?.company||{},officers:latestAnalysis?.officers||[],contact,created_at:new Date().toISOString()}
 }
-openExistingBtn.addEventListener("click",()=>{resetAnalysisState();uploadBox.hidden=false;uploadBox.scrollIntoView({behavior:"smooth",block:"start"})});
+// 기존 고객 등록은 아래 관리자 모듈에서 관리대장 내부 인라인 영역으로 제어
 applyBtn.addEventListener("click",()=>{
  if(!latestAnalysis){registerNote.textContent="먼저 등기사항증명서를 분석하세요.";return}
  const c=contactData();
@@ -476,7 +486,28 @@ $("manualEmailBtn").onclick=async()=>{
  finally{btn.disabled=false;btn.textContent="수동 발송";}
 };
 $("printLedgerBtn").onclick=()=>window.print();
-$("openExistingBtn").onclick=()=>{ledger.hidden=true;$("uploadBox").hidden=false;$("analyze").hidden=false;$("adminSaveAnalysis").hidden=true;document.querySelector(".raw").hidden=false;document.querySelector(".head h1").textContent="기존 고객 등록";window.scrollTo({top:0,behavior:"auto"});};
+const originalUploadParent=$("uploadBox").parentElement;
+const originalUploadNext=$("uploadBox").nextElementSibling;
+function openExistingInline(){
+ window.__resetOfficerAnalysisState?.("파일을 선택하세요.");
+ const panel=$("ledgerInlineRegister"),slot=$("ledgerUploadSlot"),box=$("uploadBox");
+ panel.hidden=false;
+ slot.appendChild(box);
+ box.hidden=false;
+ $("analyze").hidden=false;
+ $("adminSaveAnalysis").hidden=true;
+ document.querySelector(".raw").hidden=true;
+ panel.scrollIntoView({behavior:"smooth",block:"start"});
+}
+function closeExistingInline(){
+ const panel=$("ledgerInlineRegister"),box=$("uploadBox");
+ panel.hidden=true;
+ box.hidden=true;
+ if(originalUploadNext&&originalUploadNext.parentElement===originalUploadParent)originalUploadParent.insertBefore(box,originalUploadNext);
+ else originalUploadParent.appendChild(box);
+}
+$("openExistingBtn").onclick=openExistingInline;
+$("closeExistingBtn").onclick=closeExistingInline;
 $("adminSaveAnalysis").onclick=async()=>{
  const analysis=window.__latestOfficerAnalysis;
  if(!analysis?.officers?.length){alert("먼저 임원 확인을 실행하세요.");return}
@@ -489,6 +520,7 @@ $("adminSaveAnalysis").onclick=async()=>{
   const saved=await api("/officers/save",{method:"POST",body:JSON.stringify({items})});
   window.__resetOfficerAnalysisState("저장 완료 · "+(saved.savedCount??items.length)+"명 · 다음 파일을 선택하세요.");
   await loadLedger();
+  closeExistingInline();
  }catch(e){
   btn.disabled=false;btn.classList.remove("saving");btn.textContent="관리대장 저장";
   $("status").textContent="저장 실패 · "+e.message;
