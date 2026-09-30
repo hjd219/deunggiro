@@ -306,7 +306,7 @@ applyBtn.addEventListener("click",()=>{
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
-import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, serverTimestamp, writeBatch } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 const firebaseConfig={apiKey:"AIzaSyAlXYOrj7V-XtDrK13Cbxw6hWzbfhGf_do",authDomain:"project-b08e5f3c-fa49-4ae6-933.firebaseapp.com",projectId:"project-b08e5f3c-fa49-4ae6-933",storageBucket:"project-b08e5f3c-fa49-4ae6-933.firebasestorage.app",messagingSenderId:"209298170572",appId:"1:209298170572:web:2c47a3779cf4a331039869",measurementId:"G-PGFPK2SJLK"};
 const ADMIN_UID="rd0rLz5gFzWpahHbqOM3q0w4nMm2",app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),COL="officerManagement";
 const $=id=>document.getElementById(id),login=$("adminLogin"),ledger=$("ledger"),loginMsg=$("loginMsg"),adminHeadBtn=$("adminHeadBtn"),adminCloseBtn=$("adminCloseBtn"),ledgerBody=$("ledgerBody"),search=$("ledgerSearch"),filter=$("ledgerFilter"),editModal=$("editModal");
@@ -333,20 +333,21 @@ async function loadLedger(){
 async function saveAnalysis(analysis,phone,email){
  if(!isAdmin())throw Error("관리자 권한이 없습니다.");
  if(!analysis?.officers?.length)throw Error("현재 임원 분석 결과가 없습니다.");
- const company=String(analysis.company?.name||"확인 필요").replace(/\s*\([^()]*[A-Za-z][^()]*\)\s*$/,"").trim(),registrationNumber=analysis.company?.registration_number||analysis.company?.corporate_registration_number||analysis.company?.registrationNumber||"",batch=writeBatch(db),saved=[];
+ const company=String(analysis.company?.name||"확인 필요").replace(/\s*\([^()]*[A-Za-z][^()]*\)\s*$/,"").trim(),registrationNumber=analysis.company?.registration_number||analysis.company?.corporate_registration_number||analysis.company?.registrationNumber||"",pending=[];
  for(const o of analysis.officers){
   const termStart=o.event_date||o.registration_date||"";
   const duplicate=rows.some(x=>String(x.registrationNumber||"")===String(registrationNumber||"")&&String(x.officer||"")===String(o.name||"")&&String(x.position||"")===String(o.position||"")&&String(x.termStart||"")===String(termStart));
   if(duplicate)continue;
   const ref=doc(collection(db,COL));
   const data={company,registrationNumber,officer:o.name||"",position:o.position||"",termStart,expiry:calcExpiry(o),phone:phone||"",email:email||"",source:"기존고객",createdAt:serverTimestamp(),updatedAt:serverTimestamp()};
-  batch.set(ref,data);saved.push({id:ref.id,...data});
+  pending.push({ref,data});
  }
- if(!saved.length)throw Error("이미 같은 임원·직위·임기 기준일이 관리대장에 등록되어 있습니다.");
- await batch.commit();
- // The write is complete here. Put the saved rows into the local ledger
- // immediately so another file can be analyzed/saved without waiting for a
- // Firestore re-read. A background reload is only for synchronization.
+ if(!pending.length)throw Error("이미 같은 임원·직위·임기 기준일이 관리대장에 등록되어 있습니다.");
+ const saved=[];
+ for(const item of pending){
+  await setDoc(item.ref,item.data);
+  saved.push({id:item.ref.id,...item.data});
+ }
  rows.push(...saved);
  render();
  return {savedCount:saved.length};
