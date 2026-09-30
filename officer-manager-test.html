@@ -306,7 +306,7 @@ applyBtn.addEventListener("click",()=>{
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
-import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, serverTimestamp, writeBatch } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, serverTimestamp, writeBatch } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore-lite.js";
 const firebaseConfig={apiKey:"AIzaSyAlXYOrj7V-XtDrK13Cbxw6hWzbfhGf_do",authDomain:"project-b08e5f3c-fa49-4ae6-933.firebaseapp.com",projectId:"project-b08e5f3c-fa49-4ae6-933",storageBucket:"project-b08e5f3c-fa49-4ae6-933.firebasestorage.app",messagingSenderId:"209298170572",appId:"1:209298170572:web:2c47a3779cf4a331039869",measurementId:"G-PGFPK2SJLK"};
 const ADMIN_UID="rd0rLz5gFzWpahHbqOM3q0w4nMm2",app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),COL="officerManagement";
 const $=id=>document.getElementById(id),login=$("adminLogin"),ledger=$("ledger"),loginMsg=$("loginMsg"),adminHeadBtn=$("adminHeadBtn"),adminCloseBtn=$("adminCloseBtn"),ledgerBody=$("ledgerBody"),search=$("ledgerSearch"),filter=$("ledgerFilter"),editModal=$("editModal");
