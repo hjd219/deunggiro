@@ -55,7 +55,7 @@ body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:var(--ink);backg
     </section>
   </div>
   <section class="ledger admin-page" id="ledger" hidden>
-        <div class="ledger-head"><div><h3>사무소 관리대장</h3><p>관리자 전용 · 기존 고객은 여기에서 등록합니다.</p></div><div class="ledger-head-actions"><button class="admin-register" id="testEmailBtn" type="button">테스트 메일</button><button class="admin-register" id="companyTestEmailBtn" type="button">3개월 안내 테스트</button><button class="admin-register" id="openExistingBtn" type="button">+ 기존 고객 등록</button><button class="pick" id="printLedgerBtn" type="button">명단 출력</button><button class="pick" id="adminLogoutBtn" type="button">로그아웃</button></div></div>
+        <div class="ledger-head"><div><h3>사무소 관리대장</h3><p>관리자 전용 · 기존 고객은 여기에서 등록합니다.</p></div><div class="ledger-head-actions"><button class="admin-register" id="testEmailBtn" type="button">테스트 메일</button><button class="admin-register" id="companyTestEmailBtn" type="button">3개월 안내 테스트</button><button class="admin-register" id="manualEmailBtn" type="button">수동 발송</button><button class="admin-register" id="openExistingBtn" type="button">+ 기존 고객 등록</button><button class="pick" id="printLedgerBtn" type="button">명단 출력</button><button class="pick" id="adminLogoutBtn" type="button">로그아웃</button></div></div>
         <div class="ledger-toolbar"><input id="ledgerSearch" type="search" placeholder="상호 · 임원명 검색"><select id="ledgerFilter"><option value="all">전체</option><option value="month">1개월 이내</option><option value="week">1주일 이내</option><option value="expired">만료</option><option value="customer">고객신청</option><option value="admin">기존고객</option></select></div>
         <div class="table"><table><thead><tr><th>상호</th><th>법인등록번호</th><th>임원</th><th>직위</th><th>예상 만료</th><th>D-day</th><th>연락처</th><th>등록경로</th><th>관리</th></tr></thead><tbody id="ledgerBody"><tr><td colspan="9">등록된 관리대장이 없습니다.</td></tr></tbody></table></div>
         </section>
@@ -458,6 +458,22 @@ $("companyTestEmailBtn").onclick=async()=>{
   alert("회사별 3개월 안내 테스트 발송 완료\n"+(r.company||x.company)+" · "+(r.officerCount||0)+"명");
  }catch(err){alert("3개월 안내 테스트 실패 · "+err.message);}
  finally{btn.disabled=false;btn.textContent="3개월 안내 테스트";}
+};
+$("manualEmailBtn").onclick=async()=>{
+ const companies=[...new Map(ledgerRows.map(x=>[(x.registrationNumber||"name:"+x.company),x])).values()];
+ if(!companies.length){alert("관리대장에 등록된 법인이 없습니다.");return;}
+ const names=companies.map((x,i)=>(i+1)+". "+x.company+" · "+(x.email||"이메일 미등록")).join("\n");
+ const pick=prompt("수동 발송할 법인 번호를 입력하세요.\n\n"+names,"1");
+ if(!pick)return;
+ const x=companies[Number(pick)-1];
+ if(!x){alert("법인 번호를 확인하세요.");return;}
+ if(!confirm((x.company||"")+"에 등록된 이메일로 임기 안내 메일을 발송할까요?"))return;
+ const btn=$("manualEmailBtn");btn.disabled=true;btn.textContent="발송 중…";
+ try{
+  const r=await api("/email/company-send",{method:"POST",body:JSON.stringify({registrationNumber:x.registrationNumber||"",company:x.company||""})});
+  alert("수동 발송 완료\n"+(r.company||x.company)+"\n수신: "+(r.to||"")+"\n임원 "+(r.officerCount||0)+"명");
+ }catch(err){alert("수동 발송 실패 · "+err.message);}
+ finally{btn.disabled=false;btn.textContent="수동 발송";}
 };
 $("printLedgerBtn").onclick=()=>window.print();
 $("openExistingBtn").onclick=()=>{ledger.hidden=true;$("uploadBox").hidden=false;$("analyze").hidden=false;$("adminSaveAnalysis").hidden=true;document.querySelector(".raw").hidden=false;document.querySelector(".head h1").textContent="기존 고객 등록";window.scrollTo({top:0,behavior:"auto"});};
