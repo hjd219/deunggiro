@@ -337,19 +337,68 @@ function showCustomerPage(){
  window.scrollTo({top:0,behavior:"auto"});
 }
 
-adminHeadBtn.onclick=()=>{login.hidden=false;loginMsg.textContent="새 관리 API 연결 전입니다."};
+const API="https://deunggiro-ocr-209298170572.asia-northeast3.run.app";
+let adminToken=sessionStorage.getItem("dgOfficerAdminToken")||"";
+function headers(){return {"Content-Type":"application/json",...(adminToken?{"Authorization":"Bearer "+adminToken}:{})}}
+async function api(path,options={}){
+ const controller=new AbortController();
+ const timer=setTimeout(()=>controller.abort(),12000);
+ try{
+  const res=await fetch(API+path,{...options,headers:{...headers(),...(options.headers||{})},signal:controller.signal});
+  const body=await res.json().catch(()=>({}));
+  if(!res.ok)throw Error(body.detail||body.error||("HTTP "+res.status));
+  return body;
+ }catch(e){
+  if(e.name==="AbortError")throw Error("서버 응답 시간이 초과되었습니다.");
+  throw e;
+ }finally{clearTimeout(timer)}
+}
+function dday(v){if(!v)return"";const n=Math.ceil((new Date(v+"T00:00:00")-new Date())/86400000);return Number.isFinite(n)?(n>=0?"D-"+n:"D+"+Math.abs(n)):""}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+async function loadLedger(){
+ if(!adminToken)return;
+ const data=await api("/officers",{method:"GET"});
+ const rows=Array.isArray(data.items)?data.items:[];
+ $("ledgerBody").innerHTML=rows.length?rows.map(x=>`<tr><td>${esc(x.company)}</td><td>${esc(x.registrationNumber||"-")}</td><td><b>${esc(x.officer)}</b></td><td>${esc(x.position)}</td><td>${esc(x.expiry)}</td><td>${esc(dday(x.expiry))}</td><td>${esc(x.phone||x.email||"-")}</td><td>${esc(x.source||"기존고객")}</td><td>-</td></tr>`).join(""):'<tr><td colspan="9">등록된 관리대장이 없습니다.</td></tr>';
+}
+adminHeadBtn.onclick=()=>{login.hidden=false;loginMsg.textContent=""};
 adminCloseBtn.onclick=()=>login.hidden=true;
-$("loginBtn").onclick=()=>{loginMsg.textContent="저장·관리 기능은 새 Google Cloud API로 재구축 중입니다."};
-$("logoutBtn").onclick=()=>{login.hidden=true;showCustomerPage()};
-$("adminLogoutBtn").onclick=()=>showCustomerPage();
+$("loginBtn").onclick=async()=>{
+ const email=$("adminEmail").value.trim(),password=$("adminPassword").value;
+ if(!email||!password){loginMsg.textContent="아이디와 비밀번호를 입력하세요.";return}
+ loginMsg.textContent="로그인 중…";
+ try{
+  const data=await api("/officers/login",{method:"POST",body:JSON.stringify({email,password})});
+  adminToken=data.token||"";
+  if(!adminToken)throw Error("로그인 토큰이 없습니다.");
+  sessionStorage.setItem("dgOfficerAdminToken",adminToken);
+  login.hidden=true;showAdminPage();await loadLedger();
+ }catch(e){loginMsg.textContent="로그인 실패 · "+e.message}
+};
+$("logoutBtn").onclick=$("adminLogoutBtn").onclick=()=>{adminToken="";sessionStorage.removeItem("dgOfficerAdminToken");login.hidden=true;showCustomerPage()};
 $("printLedgerBtn").onclick=()=>window.print();
 
-$("adminSaveAnalysis").onclick=()=>{
+$("adminSaveAnalysis").onclick=async()=>{
  const analysis=window.__latestOfficerAnalysis;
  if(!analysis?.officers?.length){alert("먼저 임원 확인을 실행하세요.");return}
- alert("OCR 분석은 정상 유지됩니다. 저장 기능은 새 Google Cloud API로 교체 중입니다.");
+ if(!adminToken){alert("관리자 로그인이 필요합니다.");return}
+ const btn=$("adminSaveAnalysis");
+ btn.disabled=true;btn.classList.add("saving");btn.textContent="저장 중…";
+ try{
+  const company=String(analysis.company?.name||"").replace(/\s*\([^()]*[A-Za-z][^()]*\)\s*$/,"").trim();
+  const registrationNumber=analysis.company?.registration_number||analysis.company?.corporate_registration_number||analysis.company?.registrationNumber||"";
+  const items=analysis.officers.map(o=>({company,registrationNumber,officer:o.name||"",position:o.position||"",termStart:o.event_date||o.registration_date||"",expiry:(String(o.position||"").includes("감사")?((+(String(o.event_date||o.registration_date).slice(0,4))+3)+"-03-31"):(()=>{const d=String(o.event_date||o.registration_date||"");const m=d.match(/^(\d{4})-(\d{2})-(\d{2})$/);if(!m)return"";const y=+m[1]+3,mo=+m[2],day=+m[3],last=new Date(y,mo,0).getDate();return y+"-"+String(mo).padStart(2,"0")+"-"+String(Math.min(day,last)).padStart(2,"0")})()),source:"기존고객"}));
+  const saved=await api("/officers/save",{method:"POST",body:JSON.stringify({items})});
+  window.__resetOfficerAnalysisState("저장 완료 · "+(saved.savedCount??items.length)+"명 · 다음 파일을 선택하세요.");
+  await loadLedger();
+ }catch(e){
+  btn.disabled=false;btn.classList.remove("saving");btn.textContent="관리대장 저장";
+  $("status").textContent="저장 실패 · "+e.message;
+  alert("저장 실패 · "+e.message);
+ }
 };
 
-$("ledgerBody").innerHTML='<tr><td colspan="9">새 관리 API 연결 전입니다.</td></tr>';
+if(adminToken){showAdminPage();loadLedger().catch(()=>{adminToken="";sessionStorage.removeItem("dgOfficerAdminToken");showCustomerPage()})}
+else $("ledgerBody").innerHTML='<tr><td colspan="9">관리자 로그인 후 불러옵니다.</td></tr>';
 </script>
 </body></html>
