@@ -11,33 +11,38 @@
 @media(min-width:801px){.simple-docs-grid.corporate-docs-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.simple-docs-grid.corporate-docs-grid article{padding:0 22px}.simple-docs-grid.corporate-docs-grid article:first-child{padding-left:0}.simple-docs-grid.corporate-docs-grid article:last-child{padding-right:0}.simple-docs-grid.corporate-docs-grid article+article{border-left:1px solid #d9e5ea}}
 @media(max-width:800px){.simple-docs-grid.corporate-docs-grid article{padding-bottom:32px}}
 
-/* CORPORATE_PREVIEW_LAYOUT_FINAL_V2 */
-.corporate-docs-grid article{display:flex!important;flex-direction:column!important;min-width:0!important;border:0!important;padding-top:0!important;position:relative!important}.corporate-docs-grid article:before{content:"";position:absolute;left:0;top:36px;bottom:0;width:2px;background:#37aee4}
-.corporate-docs-grid .corp-card-title{display:flex;align-items:center;gap:10px;margin:0 0 18px 0;padding-left:0;text-align:left}
-.corporate-docs-grid .corp-card-title>b{display:inline-flex!important;align-items:center;justify-content:center;flex:0 0 18px;width:18px;height:18px;margin:0!important;border:1.5px solid #18a7e0;border-radius:50%;color:#18a7e0;font-size:10px;line-height:1;background:#fff}
-.corporate-docs-grid .corp-card-title>h3{margin:0!important;padding:0!important;min-height:0!important;text-align:left!important}
-.corporate-docs-grid article>ul{display:flex!important;flex-direction:column!important;flex:1!important;margin-top:0!important;border-left:0!important;padding-left:20px!important}
-.corporate-docs-grid article>ul>li:last-child{margin-top:auto!important;padding-top:18px!important}
-.corporate-docs-grid article>ul>li:last-child>a{color:#168dca;text-decoration:none;font-weight:850}
+
+/* REALESTATE_SUPPORT_LAYOUT */
+.corporate-docs-grid article{display:flex!important;flex-direction:column!important;min-width:0!important}
+.corporate-docs-grid .corp-card-title{display:flex;align-items:center;gap:10px;margin:0 0 18px;padding:0}
+.corporate-docs-grid .corp-card-title>b{display:flex;align-items:center;justify-content:center;width:14px;height:14px;flex:0 0 14px;border:1.2px solid #2aa9df;border-radius:50%;color:#2aa9df;font-size:7px;font-weight:900;line-height:14px}
+.corporate-docs-grid .corp-card-title>h3{margin:0;padding:0}
+.corporate-docs-grid article>ul{flex:1;margin-top:0!important;border-left:2px solid #37aee4!important;padding-left:18px!important}
+.corporate-docs-grid article>ul>li:last-child{margin-top:auto;padding-top:12px}
 .corporate-support-row{display:grid;grid-template-columns:1fr 1fr;gap:42px;align-items:start;border-top:1px solid #c8e8f7}
-.corporate-support-row>.simple-docs{border-top:0!important;margin-top:0!important;padding-top:56px!important;min-width:0}
-.corporate-support-row .corporate-fine-table{max-width:none}
+.corporate-support-row>.simple-docs,.corporate-support-row>.story-qa{border-top:0!important;margin-top:0!important;padding-top:56px!important;min-width:0}
+.realestate-support .story-qa-title p{margin:10px 0 28px;color:#71838b;font-size:13px;line-height:1.6}
+.realestate-support-body{border-left:2px solid #37aee4;padding-left:18px}
+.realestate-support-item{margin:0 0 20px}
+.realestate-support-item:last-child{margin-bottom:0}
+.realestate-support-title{display:flex;align-items:center;gap:9px;margin-bottom:6px}
+.realestate-support-title>b{display:flex;align-items:center;justify-content:center;width:14px;height:14px;flex:0 0 14px;border:1.2px solid #2aa9df;border-radius:50%;color:#2aa9df;font-size:7px;font-weight:900;line-height:14px}
+.realestate-support-title>strong{color:#173b4a;font-size:14px;font-weight:900;line-height:1.4}
+.realestate-support-item>p{margin:0;color:#596f78;font-size:12px;line-height:1.55}
+.realestate-faq-column .story-qa-list{max-width:none}
 @media(min-width:801px){
  .simple-docs-grid.corporate-docs-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
- .simple-docs-grid.corporate-docs-grid article{padding:0 22px!important;border:0!important}
- .simple-docs-grid.corporate-docs-grid article:first-child{padding-left:0!important}
- .simple-docs-grid.corporate-docs-grid article:last-child{padding-right:0!important}
+ .simple-docs-grid.corporate-docs-grid article{padding:0 22px}
+ .simple-docs-grid.corporate-docs-grid article:first-child{padding-left:0}
+ .simple-docs-grid.corporate-docs-grid article:last-child{padding-right:0}
+ .simple-docs-grid.corporate-docs-grid article+article{border-left:1px solid #d9e5ea}
 }
 @media(max-width:800px){
  .corporate-support-row{grid-template-columns:1fr;gap:0}
- .corporate-support-row>.simple-docs+.simple-docs{border-top:1px solid #c8e8f7!important}
- .corporate-docs-grid article{padding-bottom:32px!important}
+ .corporate-support-row>*+*{border-top:1px solid #c8e8f7!important}
+ .corporate-support-row>.story-qa{margin-left:20px!important;margin-right:20px!important}
+ .simple-docs-grid.corporate-docs-grid article{padding-bottom:32px}
 }
-/* CORPORATE_TITLE_LEFT_EDGE_FIX */
-.corporate-docs-grid .corp-card-title{width:100%!important;box-sizing:border-box!important;margin:0 0 18px 0!important;padding:0!important;justify-content:flex-start!important;align-self:stretch!important;text-align:left!important}
-.corporate-docs-grid .corp-card-title>h3{margin:0!important;padding:0!important;text-align:left!important}
-
-.corporate-support-row .corp-auth-grid strong{display:flex!important;align-items:center!important;gap:8px!important}.corporate-support-row .support-circle-num{display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 18px!important;width:18px!important;height:18px!important;min-width:18px!important;box-sizing:border-box!important;border:1.5px solid #18a7e0!important;border-radius:50%!important;background:#fff!important;color:#18a7e0!important;font-size:10px!important;font-weight:900!important;line-height:1!important}.corporate-docs-grid article>ul{display:flex;flex-direction:column;flex:1}.corporate-docs-grid article>ul>li:last-child{margin-top:auto;padding-top:12px}
 </style><link rel="stylesheet" href="/assets/home-v56-a.css?v=20260926-scroll2"><link rel="stylesheet" href="/assets/home-v56-b.css?v=20260917-4"><link rel="stylesheet" href="/assets/home-v56-scroll.css?v=20260923-service-restore1"><link rel="stylesheet" href="/assets/mobile-menu.css?v=20260917-home1"><script src="/assets/analytics.js" defer></script><link rel="stylesheet" href="/assets/service-renewal-core.css?v=20260923-3">
 
 <link rel="preload" as="image" href="/images/cheongna-realestate-hero-mobile.webp" media="(max-width:800px)" fetchpriority="high"><link rel="preload" as="image" href="/images/cheongna-realestate-hero.webp" media="(min-width:801px)" fetchpriority="high"></head>
@@ -46,26 +51,38 @@
 <section class="hero"><div class="dg-photo-credit" style="position:absolute;right:10px;bottom:8px;z-index:5;color:rgba(255,255,255,.78);font-size:7px;line-height:1.25;text-shadow:0 1px 3px rgba(0,0,0,.6);white-space:nowrap">사진 출처: IFEZ · 공공누리 제1유형</div><picture><source media="(max-width:800px)" srcset="/images/cheongna-realestate-hero-mobile.webp"><source media="(min-width:801px)" srcset="/images/cheongna-realestate-hero.webp"><img src="/images/cheongna-realestate-hero.webp" alt="청라국제도시 중앙호수공원 전경" fetchpriority="high" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center"></picture><div class="shade"></div><div class="wrap heroin"><div class="hero-copy-v22"><h1>부동산등기는 <span>등기로</span></h1><p>부동산등기 절차 · 비용 · 필요서류부터 매매, 증여, 상속, 이혼 재산분할, 근저당권 설정·말소까지 안내합니다.</p></div><div class="hero-ai inheritance-finder-inline"><div class="hero-ai-label">어떤 부동산등기 업무가 궁금하세요?</div><div class="hero-ai-box"><span class="hero-ai-icon">⌕</span><div class="inheritance-combo"><input id="inheritance-query" class="inheritance-query" type="search" placeholder="검색하거나 화살표를 눌러 선택하세요" autocomplete="off" aria-controls="inheritance-results" aria-expanded="false"><span id="inheritance-toggle" class="inheritance-toggle" role="button" tabindex="0" aria-label="선택항 펼치기">▼</span><ul id="inheritance-results" class="inheritance-results"></ul></div><button id="inheritance-search-button" type="button">찾아보기</button></div><div class="inheritance-search-status" aria-live="polite"></div></div></div><a class="hero-scroll" href="#dg-intro" aria-label="아래 내용 보기"><span class="hero-scroll-mouse"></span><span class="hero-scroll-arrow" aria-hidden="true">↓</span></a></section>
 <div class="v53-stage" id="dg-intro"><div class="v53-window"><main class="v53-track"><section class="person" style="padding:0!important"><div class="story">
 <section class="simple-docs corporate-guide" id="documents">
-<div class="story-qa-title"><h2>부동산등기 한눈에 보기</h2><p>매매·증여·이혼 재산분할·신탁에 필요한 핵심 내용을 업무별로 확인하세요.</p></div>
+<div class="story-qa-title"><h2>부동산등기 한눈에 보기</h2><p>매매·증여·상속·이혼 재산분할에 필요한 핵심 내용을 업무별로 확인하세요.</p></div>
 <div class="simple-docs-grid corporate-docs-grid">
 <article id="service-1"><div class="corp-card-title"><b>1</b><h3>매매등기</h3></div><ul><li><strong>매도인</strong> · 등기필정보(권리증) · 인감증명서 · 인감도장 · 주민등록초본(주소변동 포함)</li><li><strong>매수인</strong> · 주민등록등본 또는 초본</li><li><strong>공통</strong> · 매매계약서 · 거래신고필증 · 위임 관련 서류</li><li><a href="/acquisition-calculator.html?mode=sale&v=20260910-accountfix">매매 취득세 계산하기 →</a></li></ul></article>
 <article id="service-2"><div class="corp-card-title"><b>2</b><h3>증여등기</h3></div><ul><li><strong>증여자</strong> · 등기필정보(권리증) · 인감증명서 · 인감도장 · 주민등록초본(주소변동 포함)</li><li><strong>수증자</strong> · 주민등록등본 또는 초본</li><li><strong>공통</strong> · 증여계약서 · 가족관계 확인서류 등</li><li><a href="/acquisition-calculator.html?mode=gift&v=20260910-accountfix">증여 취득세 계산하기 →</a></li></ul></article>
 <article id="service-3"><div class="corp-card-title"><b>3</b><h3>상속등기</h3></div><ul><li><strong>피상속인</strong> · 기본증명서(상세) · 가족관계증명서(상세) · 혼인관계증명서(상세) · 제적등본 · 말소자 주민등록초본 등</li><li><strong>상속인</strong> · 기본증명서(상세) · 가족관계증명서(상세) · 주민등록등본 또는 초본</li><li><strong>협의분할</strong> · 상속재산분할협의서 · 상속인 전원의 인감증명서 · 인감도장</li><li><a href="/inheritance.html">상속등기 상세안내 →</a></li></ul></article>
 <article id="service-4"><div class="corp-card-title"><b>4</b><h3>이혼 재산분할등기</h3></div><ul><li><strong>이전자</strong> · 등기필정보(권리증) · 인감증명서 · 인감도장 · 주민등록초본(주소변동 포함)</li><li><strong>취득자</strong> · 주민등록등본 또는 초본</li><li><strong>협의이혼</strong> · 재산분할협의서 등 원인서류</li><li><strong>재판이혼</strong> · 판결문 · 조정조서 · 확정증명 등</li><li><a href="/acquisition-calculator.html?mode=divorce&v=20260910-accountfix">재산분할 취득세 계산하기 →</a></li></ul></article></div></section>
 <section class="corporate-support-row">
-<section class="simple-docs" id="mortgage-guide"><div class="story-qa-title"><h2>근저당권 설정·말소</h2><p>근저당권 설정과 말소에 필요한 핵심서류를 확인하세요.</p></div><div class="corp-auth-grid"><div><strong><b class="support-circle-num">1</b>설정</strong><p>등기필정보(권리증) · 인감증명서 · 인감도장 · 주민등록초본 등</p></div><div><strong><b class="support-circle-num">2</b>말소</strong><p>해지증서 · 위임장 · 근저당권 등기필정보(또는 등기필증) 등</p></div><div><strong><b class="support-circle-num">3</b>공통</strong><p>채권최고액 · 채무자 · 근저당권자 정보와 위임 관련 서류를 확인합니다.</p></div></div></section>
+<section class="simple-docs realestate-support" id="trust-guide"><div class="story-qa-title"><h2>신탁등기</h2><p>신탁 유형과 위탁자·수탁자의 기본서류를 확인하세요.</p></div><div class="realestate-support-body">
+<div class="realestate-support-item"><div class="realestate-support-title"><b>1</b><strong>신탁 유형</strong></div><p>처분신탁 · 관리신탁 · 담보신탁 · 유언대용신탁</p></div>
+<div class="realestate-support-item"><div class="realestate-support-title"><b>2</b><strong>위탁자</strong></div><p>등기권리증 · 인감도장 · 인감증명서 · 지방세완납증명서(신탁용) · 후견사항부존재증명서(전부) · 주민등록초본</p></div>
+<div class="realestate-support-item"><div class="realestate-support-title"><b>3</b><strong>수탁자</strong></div><p>도장 · 주민등록등본</p></div>
+</div></section>
+<section class="simple-docs realestate-support" id="mortgage-guide"><div class="story-qa-title"><h2>근저당권 설정·말소</h2><p>근저당권 설정과 말소에 필요한 핵심서류를 확인하세요.</p></div><div class="realestate-support-body">
+<div class="realestate-support-item"><div class="realestate-support-title"><b>1</b><strong>설정</strong></div><p>등기필정보(권리증) · 인감증명서 · 인감도장 · 주민등록초본 등</p></div>
+<div class="realestate-support-item"><div class="realestate-support-title"><b>2</b><strong>말소</strong></div><p>해지증서 · 위임장 · 근저당권 등기필정보(또는 등기필증) 등</p></div>
+<div class="realestate-support-item"><div class="realestate-support-title"><b>3</b><strong>공통</strong></div><p>채권최고액 · 채무자 · 근저당권자 정보와 위임 관련 서류를 확인합니다.</p></div>
+</div></section>
 </section>
-<section class="corporate-support-row" id="trust-and-caution">
-<section class="simple-docs"><div class="story-qa-title"><h2>등기 접수 전 주의사항</h2><p>부동산등기 접수 전에 기본서류를 먼저 점검하세요.</p></div><div class="corp-auth-grid"><div><strong><b class="support-circle-num">1</b>등기권리증</strong><p>등기필정보(권리증) 보유 여부를 확인하세요.</p></div><div><strong><b class="support-circle-num">2</b>인감증명서</strong><p>인터넷 발급본은 부동산등기에 사용할 수 없습니다.</p></div><div><strong><b class="support-circle-num">3</b>인감도장</strong><p>인감증명서의 인감과 실제 인감도장이 일치하는지 확인하세요.</p></div><div><strong><b class="support-circle-num">4</b>서류 유효기간</strong><p>일부 증명서류는 발행일로부터 3개월 이내인지 확인하세요.</p></div></div></section>
-<section class="simple-docs" id="trust-guide"><div class="story-qa-title"><h2>신탁등기</h2><p>신탁 유형과 위탁자·수탁자의 기본서류를 확인하세요.</p></div><div class="corp-auth-grid"><div><strong><b class="support-circle-num">1</b>신탁 유형</strong><p>처분신탁 · 관리신탁 · 담보신탁 · 유언대용신탁</p></div><div><strong><b class="support-circle-num">2</b>위탁자</strong><p>등기권리증 · 인감도장 · 인감증명서 · 지방세완납증명서(신탁용) · 후견사항부존재증명서(전부) · 주민등록초본</p></div><div><strong><b class="support-circle-num">3</b>수탁자</strong><p>도장 · 주민등록등본</p></div></div></section>
-</section>
-<section class="story-qa" id="realestate-faq"><div class="story-qa-title"><h2>자주 묻는 질문</h2></div><div class="story-qa-list">
+<section class="corporate-support-row">
+<section class="simple-docs realestate-support" id="filing-caution"><div class="story-qa-title"><h2>등기 접수 전 주의사항</h2><p>부동산등기 접수 전에 기본서류를 먼저 점검하세요.</p></div><div class="realestate-support-body">
+<div class="realestate-support-item"><div class="realestate-support-title"><b>1</b><strong>등기권리증</strong></div><p>등기필정보(권리증) 보유 여부를 확인하세요.</p></div>
+<div class="realestate-support-item"><div class="realestate-support-title"><b>2</b><strong>인감증명서</strong></div><p>인터넷 발급본은 부동산등기에 사용할 수 없습니다.</p></div>
+<div class="realestate-support-item"><div class="realestate-support-title"><b>3</b><strong>인감도장</strong></div><p>인감증명서의 인감과 실제 인감도장이 일치하는지 확인하세요.</p></div>
+<div class="realestate-support-item"><div class="realestate-support-title"><b>4</b><strong>서류 유효기간</strong></div><p>일부 증명서류는 발행일로부터 3개월 이내인지 확인하세요.</p></div>
+</div></section>
+<section class="story-qa realestate-faq-column" id="realestate-faq"><div class="story-qa-title"><h2>자주 묻는 질문</h2></div><div class="story-qa-list">
 <details><summary><i>1</i><span>등기권리증을 분실했는데 이전등기가 가능한가요?</span><b>+</b></summary><p><strong>가능합니다.</strong> 등기필정보가 없는 경우 <strong>별도의 본인확인 절차</strong>를 거쳐 진행할 수 있습니다.</p></details>
 <details><summary><i>2</i><span>취득세는 신고하고 3개월 내 납부하면 되나요?</span><b>+</b></summary><p><strong>아닙니다.</strong> 소유권이전등기를 접수하려면 <strong>등기접수 전에 취득세를 신고·납부</strong>해야 하며, 납부 확인 후 등기신청을 진행합니다.</p></details>
 <details><summary><i>3</i><span>가족 간 부동산 매매도 가능한가요?</span><b>+</b></summary><p><strong>가능합니다.</strong> 다만 <strong>실제 매매대금 지급 여부와 자금 흐름</strong> 등 거래의 실질을 확인하는 것이 중요합니다.</p></details>
 <details><summary><i>4</i><span>증여와 매매 중 어떤 방식이 유리한가요?</span><b>+</b></summary><p><strong>취득세·증여세·양도소득세</strong>와 <strong>실제 대금 지급 여부</strong> 등에 따라 달라질 수 있어 개별 검토가 필요합니다.</p></details>
 </div></section>
-
+</section>
 <section class="story-cases dg-services"><div class="cases-head"><h2>부동산등기 실제 처리사례</h2><p>실제로 진행한 부동산등기 처리사례를 바로 확인하세요.</p></div><div class="cases-list">
 <a href="/posts/naver-224413365255.html"><b>1</b><div><h3>이혼 재산분할 아파트 이전</h3><p>이혼 재산분할을 원인으로 소유권이전등기를 진행한 사례</p></div><i>↗</i></a>
 <a href="/posts/naver-224413471424.html"><b>2</b><div><h3>전세권자 직접 경매·낙찰</h3><p>보증금을 받지 못해 직접 경매신청 후 낙찰받은 사례</p></div><i>↗</i></a>
