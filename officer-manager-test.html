@@ -312,6 +312,8 @@ applyBtn.addEventListener("click",()=>{
 */
 const $=id=>document.getElementById(id);
 const ledger=$("ledger"),login=$("adminLogin"),adminHeadBtn=$("adminHeadBtn"),adminCloseBtn=$("adminCloseBtn"),loginMsg=$("loginMsg");
+// 모달은 OCR 결과 영역의 display:none 영향을 받지 않도록 body 직속으로 이동
+for(const id of ["adminLogin","editModal"]){const el=$(id);if(el&&el.parentElement!==document.body)document.body.appendChild(el);}
 
 function showAdminPage(){
  document.querySelector(".head p").hidden=true;
