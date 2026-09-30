@@ -398,7 +398,8 @@ $("adminSaveAnalysis").onclick=async()=>{
  }
 };
 
-if(adminToken){showAdminPage();loadLedger().catch(()=>{adminToken="";sessionStorage.removeItem("dgOfficerAdminToken");showCustomerPage()})}
-else $("ledgerBody").innerHTML='<tr><td colspan="9">관리자 로그인 후 불러옵니다.</td></tr>';
+// 테스트 단계: 로그인은 임시 우회하고 관리대장 화면부터 검증한다.
+showAdminPage();
+$("ledgerBody").innerHTML='<tr><td colspan="9">새 관리 API 연결 후 저장된 임원이 표시됩니다.</td></tr>';
 </script>
 </body></html>
