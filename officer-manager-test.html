@@ -428,6 +428,7 @@ adminCloseBtn.onclick=()=>login.hidden=true;
 $("loginBtn").onclick=async()=>{login.hidden=true;showAdminPage();await loadLedger();};
 $("logoutBtn").onclick=$("adminLogoutBtn").onclick=()=>{login.hidden=true;showAdminPage();loadLedger()};
 $("printLedgerBtn").onclick=()=>window.print();
+$("openExistingBtn").onclick=()=>{ledger.hidden=true;$("uploadBox").hidden=false;$("analyze").hidden=false;$("adminSaveAnalysis").hidden=true;document.querySelector(".raw").hidden=false;document.querySelector(".head h1").textContent="기존 고객 등록";window.scrollTo({top:0,behavior:"auto"});};
 $("adminRegisterBtn").onclick=()=>{
  ledger.hidden=true;
  $("uploadBox").hidden=false;
