@@ -16,7 +16,9 @@ body.dg-search-open .inheritance-results{z-index:300!important;pointer-events:au
 .story-aftercare h2{margin:0 0 10px;font-size:clamp(26px,2.8vw,38px);line-height:1.15;letter-spacing:-.05em;color:#12374a}
 .aftercare-lead{margin:0 0 30px;color:#66808c;font-size:14px;font-weight:700;line-height:1.6}
 .aftercare-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:34px}
-.aftercare-card{display:block;padding:0;color:inherit;text-decoration:none}
+.aftercare-card{display:block;padding:0;color:inherit;text-decoration:none;transition:transform .22s ease,box-shadow .22s ease}
+@media(hover:hover) and (pointer:fine){.aftercare-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(15,23,42,.10)}}
+@media(hover:none),(pointer:coarse){.aftercare-card:active{transform:scale(.985);box-shadow:0 5px 14px rgba(15,23,42,.08)}}
 .aftercare-tag{display:flex;align-items:center;justify-content:space-between;margin:0 0 14px;padding:0;color:#173b4c;font-size:16px;font-weight:900;letter-spacing:-.035em}
 .aftercare-tag i{font-style:normal;color:#13a7e8;font-size:17px;font-weight:700;line-height:1}
 .aftercare-card p{margin:0;padding:2px 18px 6px;border-left:2px solid #24aee9;color:#5a707b;font-size:13px;line-height:1.9;word-break:keep-all}
