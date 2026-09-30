@@ -95,6 +95,9 @@ function eventOf(event,rawText=""){const raw=str(rawText).replace(/\s/g,""),ev=s
 function cleanOfficerName(v){
  let s=str(v).replace(/\s+/g," ").trim();
  s=s.replace(/\s*\d{6}\s*-\s*(?:\d{0,7}|\*{1,7})\s*$/,"").trim();
+ // 외국인 임원: 등기부의 한글 성명은 유지하고 뒤에 병기된 영문명만 제거
+ s=s.replace(/\s*[（(][A-Za-z][A-Za-z .,'’\-]*[）)]\s*$/,"").trim();
+ s=s.replace(/\s+[A-Za-z][A-Za-z .,'’\-]{2,}\s*$/,"").trim();
  return s;
 }
 function normalizeRole(v){return position(v)}
