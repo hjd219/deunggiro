@@ -306,9 +306,9 @@ applyBtn.addEventListener("click",()=>{
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
-import { initializeFirestore, collection, getDocs, doc, updateDoc, deleteDoc, serverTimestamp, writeBatch } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, serverTimestamp, writeBatch } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 const firebaseConfig={apiKey:"AIzaSyAlXYOrj7V-XtDrK13Cbxw6hWzbfhGf_do",authDomain:"project-b08e5f3c-fa49-4ae6-933.firebaseapp.com",projectId:"project-b08e5f3c-fa49-4ae6-933",storageBucket:"project-b08e5f3c-fa49-4ae6-933.firebasestorage.app",messagingSenderId:"209298170572",appId:"1:209298170572:web:2c47a3779cf4a331039869",measurementId:"G-PGFPK2SJLK"};
-const ADMIN_UID="rd0rLz5gFzWpahHbqOM3q0w4nMm2",app=initializeApp(firebaseConfig),auth=getAuth(app),db=initializeFirestore(app,{experimentalAutoDetectLongPolling:true}),COL="officerManagement";
+const ADMIN_UID="rd0rLz5gFzWpahHbqOM3q0w4nMm2",app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),COL="officerManagement";
 const $=id=>document.getElementById(id),login=$("adminLogin"),ledger=$("ledger"),loginMsg=$("loginMsg"),adminHeadBtn=$("adminHeadBtn"),adminCloseBtn=$("adminCloseBtn"),ledgerBody=$("ledgerBody"),search=$("ledgerSearch"),filter=$("ledgerFilter"),editModal=$("editModal");
 let rows=[],editingId=null,ledgerLoadSeq=0;
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -374,8 +374,10 @@ $("adminSaveAnalysis").onclick=async()=>{
   console.error("관리대장 저장 실패",err);
   wf.state="ANALYZED";
   btn.hidden=false;btn.disabled=false;btn.classList.remove("saving");btn.removeAttribute("aria-busy");btn.textContent="관리대장 저장";
-  status.textContent="저장 실패 · 분석 결과는 유지됩니다.";
-  alert("저장 실패 · "+err.message);
+  const code=err?.code||"unknown";
+  const msg=err?.message||String(err);
+  status.textContent="저장 실패 · "+code+" · "+msg;
+  alert("저장 실패 · "+code+" · "+msg);
  }
 }
 ledgerBody.addEventListener("click",async e=>{
@@ -391,6 +393,6 @@ adminHeadBtn.onclick=()=>{if(isAdmin()){showAdminPage();loadLedger()}else{login.
 adminCloseBtn.onclick=()=>{login.hidden=true;loginMsg.textContent=""};login.addEventListener("click",e=>{if(e.target===login)login.hidden=true});$("adminPassword").addEventListener("keydown",e=>{if(e.key==="Enter")$("loginBtn").click()});
 $("loginBtn").onclick=async()=>{try{const cred=await signInWithEmailAndPassword(auth,$("adminEmail").value.trim(),$("adminPassword").value);if(cred.user.uid!==ADMIN_UID){await signOut(auth);throw Error("관리자 권한 없음")}loginMsg.textContent=""}catch(e){loginMsg.textContent="아이디 또는 비밀번호를 확인하세요."}};
 async function logout(){await signOut(auth);showCustomerPage()}$("logoutBtn").onclick=logout;$("adminLogoutBtn").onclick=logout;
-onAuthStateChanged(auth,async user=>{login.hidden=true;adminHeadBtn.textContent="관리자 로그인";if(user?.uid===ADMIN_UID){showAdminPage();try{await loadLedger()}catch(e){ledgerBody.innerHTML='<tr><td colspan="9">관리대장을 불러오지 못했습니다.</td></tr>'}}else{showCustomerPage()}});
+onAuthStateChanged(auth,async user=>{login.hidden=true;adminHeadBtn.textContent="관리자 로그인";if(user?.uid===ADMIN_UID){showAdminPage();try{await loadLedger()}catch(e){console.error("관리대장 불러오기 실패",e);const code=e?.code||"unknown";const msg=e?.message||String(e);ledgerBody.innerHTML='<tr><td colspan="9">관리대장 불러오기 실패 · '+esc(code)+' · '+esc(msg)+'</td></tr>'}}else{showCustomerPage()}});
 </script>
 </body></html>
