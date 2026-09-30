@@ -352,32 +352,32 @@ async function saveAnalysis(analysis,phone,email){
  return {savedCount:saved.length};
 }
 function calcExpiry(o){const base=o.event_date||o.registration_date||"";const m=String(base).match(/^(\d{4})-(\d{2})-(\d{2})$/);if(!m)return"";if(String(o.position).includes("감사"))return(+m[1]+3)+"-03-31";const y=+m[1]+3,mo=+m[2],day=+m[3],last=new Date(y,mo,0).getDate();return y+"-"+String(mo).padStart(2,"0")+"-"+String(Math.min(day,last)).padStart(2,"0")}
-$("adminSaveAnalysis").onclick=()=>{
+$("adminSaveAnalysis").onclick=async()=>{
  const wf=window.__officerWorkflow;
  if(!wf||wf.state!=="ANALYZED"){alert("먼저 임원 확인을 실행하세요.");return}
  const analysis=window.__latestOfficerAnalysis;
  if(!analysis?.officers?.length){alert("현재 임원 분석 결과가 없습니다.");return}
  if(!isAdmin()){alert("관리자 권한이 없습니다.");return}
-
- // Freeze this file's analysis before clearing the screen. The actual
- // Firestore writes are serialized, so repeated files cannot overlap writes.
  const snapshot={
   company:{...(analysis.company||{})},
   officers:(analysis.officers||[]).map(o=>({...o})),
   officer_events:(analysis.officer_events||[]).map(o=>({...o}))
  };
- const count=snapshot.officers.length;
- wf.state="SAVING";
  const btn=$("adminSaveAnalysis");
- btn.hidden=false;btn.disabled=true;btn.classList.add("saving");btn.setAttribute("aria-busy","true");btn.textContent="저장 중";
-
- saveQueue=saveQueue
-  .then(()=>saveAnalysis(snapshot,""))
-  .catch(err=>{alert("저장 실패 · "+err.message)});
-
- // The next-file workflow is independent of Firestore network latency.
- // The frozen snapshot above remains in the queue even after analysis state resets.
- window.__resetOfficerAnalysisState("저장 요청 완료 · "+count+"명 · 다음 파일을 선택하세요.");
+ wf.state="SAVING";
+ btn.hidden=false;btn.disabled=true;btn.classList.add("saving");btn.setAttribute("aria-busy","true");btn.textContent="저장 중…";
+ status.textContent="관리대장 저장 중…";
+ try{
+  const saved=await saveAnalysis(snapshot,"","");
+  status.textContent="저장 완료 · "+saved.savedCount+"명";
+  await new Promise(resolve=>setTimeout(resolve,350));
+  window.__resetOfficerAnalysisState("저장 완료 · "+saved.savedCount+"명 · 다음 파일을 선택하세요.");
+ }catch(err){
+  wf.state="ANALYZED";
+  btn.hidden=false;btn.disabled=false;btn.classList.remove("saving");btn.removeAttribute("aria-busy");btn.textContent="관리대장 저장";
+  status.textContent="저장 실패 · 다시 저장할 수 있습니다.";
+  alert("저장 실패 · "+err.message);
+ }
 }
 
 ledgerBody.addEventListener("click",async e=>{
