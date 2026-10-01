@@ -416,7 +416,8 @@ $("loginBtn").onclick=async()=>{
 };
 $("logoutBtn").onclick=$("adminLogoutBtn").onclick=()=>{
  adminToken="";sessionStorage.removeItem("dgOfficerAdminToken");
- login.hidden=true;showCustomerPage();
+ login.hidden=true;
+ if(history.length>1){history.back();}else{location.href="/corporate.html";}
 };
 $("testEmailBtn").onclick=async()=>{
  const email=prompt("테스트 메일을 받을 이메일 주소를 입력하세요.");
