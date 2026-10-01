@@ -50,9 +50,9 @@ body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:var(--ink);backg
         <h3>임기관리 등록</h3>
         <p class="notice">분석 결과를 확인한 뒤 임기관리 알림을 신청할 수 있습니다.</p>
         <div class="contact"><input id="phone" type="tel" placeholder="휴대전화번호"><input id="email" type="email" placeholder="이메일"></div>
-        <div class="checks"><label><input type="checkbox" id="notifyKakao" checked> 카카오 알림톡</label><label><input type="checkbox" id="notifyEmail" checked> 이메일</label><label><input type="checkbox" id="consent"> <b>개인정보 수집·이용 동의 (필수)</b></label></div>
+        <div class="checks"><label><input type="checkbox" id="consent"> <b>개인정보 수집·이용 동의 (필수)</b></label></div>
         <details class="privacy"><summary>개인정보 수집·이용 안내 보기</summary><div><b>수집항목</b> · 휴대전화번호, 이메일<br><b>이용목적</b> · 법인 임원 임기관리, 임기 도래 안내 및 신청내역 관리<br><b>보유기간</b> · 임기관리 서비스 종료 또는 동의 철회 시까지. 관계 법령에 따라 보존이 필요한 경우에는 해당 기간 동안 보관합니다.<br><b>동의 거부</b> · 동의하지 않을 수 있으나, 동의하지 않는 경우 임기관리 알림 서비스를 신청할 수 없습니다.<br><b>등기사항증명서</b> · 임원 현황 및 임기 분석에 일시적으로 사용하며 원본 파일은 별도로 보관하지 않습니다.</div></details>
-        <p class="notice">카카오 알림톡과 이메일의 실제 자동발송은 발송 서비스 연결 후 활성화됩니다.</p>
+        <p class="notice">임기 도래 안내는 등록한 이메일로 발송됩니다.</p>
         <div class="register-actions"><button class="run" id="applyBtn" type="button">임기관리 신청</button></div>
         <p class="register-note" id="registerNote"></p>
       </section>
@@ -177,22 +177,33 @@ analyze.addEventListener("click",async()=>{
  }
 });
 function contactData(){
- return {phone:str($("phone").value),email:str($("email").value),notifyKakao:$("notifyKakao").checked,notifyEmail:$("notifyEmail").checked}
+ return {phone:str($("phone").value),email:str($("email").value)}
 }
 function buildRecord(source){
  const contact=contactData();
  return {source,company:latestAnalysis?.company||{},officers:latestAnalysis?.officers||[],contact,created_at:new Date().toISOString()}
 }
 // 기존 고객 등록은 아래 관리자 모듈에서 관리대장 내부 인라인 영역으로 제어
-applyBtn.addEventListener("click",()=>{
- if(!latestAnalysis){registerNote.textContent="먼저 등기사항증명서를 분석하세요.";return}
- const c=contactData();
- if(!$("consent").checked){registerNote.textContent="고객 신청은 개인정보 수집·이용 동의가 필요합니다.";return}
- if(!c.notifyKakao&&!c.notifyEmail){registerNote.textContent="알림 방법을 하나 이상 선택하세요.";return}
- if(c.notifyKakao&&!c.phone){registerNote.textContent="카카오 알림톡을 받으려면 휴대전화번호를 입력하세요.";return}
- if(c.notifyEmail&&!c.email){registerNote.textContent="이메일 알림을 받으려면 이메일을 입력하세요.";return}
- window.__officerManagerPendingRecord=buildRecord("고객신청");
- registerNote.textContent="고객 신청 정보 확인 완료. 관리자 저장 연결은 별도 서버 접수 단계에서 활성화됩니다.";
+applyBtn.addEventListener("click",async()=>{
+ if(!latestAnalysis?.officers?.length){registerNote.textContent="먼저 등기사항증명서를 분석하세요.";return}
+ const contact=contactData();
+ if(!$("consent").checked){registerNote.textContent="개인정보 수집·이용 동의가 필요합니다.";return}
+ if(!contact.phone){registerNote.textContent="휴대전화번호를 입력하세요.";return}
+ if(!contact.email){registerNote.textContent="이메일을 입력하세요.";return}
+ const company=String(latestAnalysis.company?.name||"").replace(/\\s*\\([^()]*[A-Za-z][^()]*\\)\\s*$/,"").trim();
+ const registrationNumber=latestAnalysis.company?.registration_number||latestAnalysis.company?.corporate_registration_number||latestAnalysis.company?.registrationNumber||"";
+ const items=latestAnalysis.officers.map(o=>({company,registrationNumber,officer:o.name||"",position:o.position||"",termStart:o.event_date||o.registration_date||"",phone:contact.phone,email:contact.email,expiry:o.expiry||"",source:"고객신청"}));
+ applyBtn.disabled=true;applyBtn.textContent="신청 중…";registerNote.textContent="";
+ try{
+  const res=await fetch("https://deunggiro-ocr-209298170572.asia-northeast3.run.app/officers/save",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({items})});
+  const body=await res.json().catch(()=>({}));
+  if(!res.ok)throw Error(body.detail||body.error||("HTTP "+res.status));
+  result.style.display="none";apply.style.display="none";file.value="";
+  status.textContent="신청이 완료되었습니다. 임기 도래 전에 등록하신 이메일로 안내해드립니다.";
+  registerNote.textContent="";
+ }catch(e){
+  registerNote.textContent="신청 실패 · "+e.message;
+ }finally{applyBtn.disabled=false;applyBtn.textContent="임기관리 신청"}
 });
 
 })();
@@ -424,8 +435,16 @@ $("adminSaveAnalysis").onclick=async()=>{
  }
 };
 
-// 테스트 단계: 로그인 우회 후 Cloud Run 저장/조회 API 직접 검증
-showAdminPage();
-loadLedger().catch(e=>{$("ledgerBody").innerHTML=`<tr><td colspan="9">조회 실패 · ${esc(e.message)}</td></tr>`});
+// 신청 링크에서는 고객 신청 화면, 그 외에는 기존 관리자 테스트 대장
+const customerApply=new URLSearchParams(location.search).get("apply")==="1";
+if(customerApply){
+ showCustomerPage();
+ document.querySelector(".head h1").textContent="임원 임기 자동알림 신청";
+ document.querySelector(".head p").textContent="등기사항증명서를 등록하고 연락처를 입력하면 임기 도래 전에 이메일로 안내해드립니다.";
+ adminHeadBtn.hidden=true;adminHeadBtn.style.display="none";
+}else{
+ showAdminPage();
+ loadLedger().catch(e=>{$("ledgerBody").innerHTML=`<tr><td colspan="9">조회 실패 · ${esc(e.message)}</td></tr>`});
+}
 </script>
 </body></html>
