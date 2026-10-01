@@ -32,7 +32,7 @@
 .term-alert-item>p{margin:0;color:#596f78;font-size:13px;line-height:1.7}
 .term-inline-apply{display:none;margin-top:28px;padding-top:0;border-top:0}
 .term-inline-apply.open{display:block}
-.term-inline-apply iframe{display:block;width:100%;height:1px;border:0;background:#fff;overflow:hidden}
+.term-inline-apply iframe{display:block;width:100%;height:430px;border:0;background:#fff;overflow:hidden}
 .corporate-support-row>.simple-docs{border-top:0;margin-top:0;padding-top:56px;min-width:0}
 .corporate-fine-table{max-width:720px;margin-top:24px;overflow:hidden;border:1px solid #d9e5ea;border-radius:10px}
 .corporate-support-row .corporate-fine-table{max-width:none}
@@ -126,7 +126,7 @@
  
  <div class="term-inline-apply open" id="term-inline-apply" aria-hidden="false"><iframe id="term-apply-frame" src="/officer-manager-test.html?apply=1&embed=1" title="임원 임기 자동관리 신청" loading="eager"></iframe></div>
  <script>
- (()=>{const f=document.getElementById('term-apply-frame');if(!f)return;const fit=()=>{try{const d=f.contentDocument;if(!d)return;const h=Math.max(d.body?.scrollHeight||0,d.documentElement?.scrollHeight||0);if(h)f.style.height=h+'px'}catch(e){}};f.addEventListener('load',()=>{fit();try{new ResizeObserver(fit).observe(f.contentDocument.documentElement)}catch(e){};setTimeout(fit,100);setTimeout(fit,500)});})();
+ (()=>{const f=document.getElementById('term-apply-frame');if(!f)return;window.addEventListener('message',e=>{if(e.source!==f.contentWindow||!e.data||e.data.type!=='term-apply-height')return;const h=Number(e.data.height);if(h>100&&h<2000)f.style.height=h+'px'});})();
  </script>
 </section>
 </div>
