@@ -201,7 +201,7 @@ analyze.addEventListener("click",async()=>{
    const cleanCompany=String(company.name||"").replace(/\\s*\\([^()]*[A-Za-z][^()]*\\)\\s*$/,"").trim();
    const registrationNumber=company.registration_number||company.corporate_registration_number||company.registrationNumber||"";
    const items=officers.map(o=>({company:cleanCompany,registrationNumber,officer:o.name||"",position:o.position||"",termStart:o.event_date||o.registration_date||"",phone:contact.phone,email:contact.email,expiry:o.expiry||"",source:"고객신청"}));
-   const saveRes=await fetch("https://deunggiro-ocr-209298170572.asia-northeast3.run.app/officers/save",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({items})});
+   const saveRes=await fetch("https://deunggiro-ocr-209298170572.asia-northeast3.run.app/officers/save",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({items,saveToken:j.save_token||""})});
    const saveBody=await saveRes.json().catch(()=>({}));
    if(!saveRes.ok)throw Error(saveBody.detail||saveBody.error||("저장 실패 HTTP "+saveRes.status));
    result.style.display="none";
