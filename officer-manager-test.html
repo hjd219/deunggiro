@@ -209,7 +209,7 @@ analyze.addEventListener("click",async()=>{
    const top=document.getElementById("uploadTop");if(top)top.hidden=true;
    file.value="";
    let remain=5;
-   status.innerHTML="<strong style=\"color:#173b4a;font-size:15px\">신청이 완료되었습니다.</strong><br><strong id=\"resetCount\" style=\"display:inline-block;margin-top:8px;color:#168dca;font-size:18px\">"+remain+"</strong>";
+   status.innerHTML="<strong style=\"color:#173b4a;font-size:15px\">신청이 완료되었습니다.</strong> <strong id=\"resetCount\" style=\"color:#168dca;font-size:15px\">"+remain+"</strong>";
    const resetTimer=setInterval(()=>{
     remain--;
     const count=document.getElementById("resetCount");
