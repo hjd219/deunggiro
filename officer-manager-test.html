@@ -100,7 +100,7 @@ body.customer-apply #status{text-align:left;margin:14px 0 0 18px;color:#596f78}
 
       <div class="admin-modal" id="adminLogin" hidden><div class="admin-dialog"><button class="admin-close" id="adminCloseBtn" type="button" aria-label="닫기">×</button><h3>관리자 로그인</h3><p>관리대장은 관리자 인증 후에만 열립니다.</p><input id="adminEmail" type="email" autocomplete="username" placeholder="아이디 (이메일 주소)"><input id="adminPassword" type="password" autocomplete="current-password" placeholder="비밀번호"><button class="run admin-login-submit" id="loginBtn" type="button">로그인</button><button class="pick admin-logout" id="logoutBtn" type="button" hidden>로그아웃</button><p class="register-note" id="loginMsg"></p></div></div>
       
-      <div class="admin-modal" id="preSaveEditModal" hidden><div class="admin-dialog"><button class="admin-close" id="preSaveEditCloseBtn" type="button" aria-label="닫기">×</button><h3>저장 전 수정</h3><p>분석된 법인 및 임원 정보를 저장 전에 수정합니다.</p><div class="edit-grid"><input id="preEditCompany" placeholder="상호"><input id="preEditRegistrationNumber" placeholder="법인등록번호"><input id="preEditOfficer" placeholder="임원명"><input id="preEditPosition" placeholder="직위"><input id="preEditTermStart" type="date" title="임기 기준일"><input id="preEditExpiry" type="date" title="예상 만료일"><input id="preEditPhone" placeholder="휴대전화번호"><input id="preEditEmail" type="email" placeholder="이메일"></div><div class="register-actions"><button class="pick" id="preEditPrevBtn" type="button">이전 임원</button><button class="pick" id="preEditNextBtn" type="button">다음 임원</button><button class="pick" id="preEditAddBtn" type="button">+ 임원 추가</button><button class="run" id="preEditApplyBtn" type="button">수정 적용</button></div><p class="register-note" id="preEditMsg"></p></div></div>
+      <div class="admin-modal" id="preSaveEditModal" hidden><div class="admin-dialog"><button class="admin-close" id="preSaveEditCloseBtn" type="button" aria-label="닫기">×</button><h3>저장 전 수정</h3><p>분석된 법인 및 임원 정보를 저장 전에 수정합니다.</p><div class="edit-grid"><input id="preEditCompany" placeholder="상호"><input id="preEditRegistrationNumber" placeholder="법인등록번호"><input id="preEditOfficer" placeholder="임원명"><input id="preEditPosition" placeholder="직위"><input id="preEditTermStart" type="date" title="임기 기준일"><input id="preEditExpiry" type="date" title="예상 만료일"><input id="preEditPhone" placeholder="휴대전화번호"><input id="preEditEmail" type="email" placeholder="이메일"></div><div class="register-actions"><button class="pick" id="preEditPrevBtn" type="button">이전 임원</button><button class="pick" id="preEditNextBtn" type="button">다음 임원</button><button class="run" id="preEditApplyBtn" type="button">수정 적용</button></div><p class="register-note" id="preEditMsg"></p></div></div>
       
       <div class="admin-modal" id="editModal" hidden><div class="admin-dialog"><button class="admin-close" id="editCloseBtn" type="button" aria-label="닫기">×</button><h3>관리대장 수정</h3><p>선택한 임원 관리정보를 수정합니다.</p><div class="edit-grid"><input id="editCompany" placeholder="상호"><input id="editRegistrationNumber" placeholder="법인등록번호"><input id="editOfficer" placeholder="임원명"><input id="editPosition" placeholder="직위"><input id="editTermStart" type="date" title="임기 기준일"><input id="editExpiry" type="date" title="예상 만료일"><input id="editPhone" placeholder="휴대전화번호"><input id="editEmail" type="email" placeholder="이메일"></div><button class="run admin-login-submit" id="editSaveBtn" type="button">수정 저장</button><p class="register-note" id="editMsg"></p></div></div>
 
@@ -603,16 +603,6 @@ window.addEventListener("dg:preSaveEdit",e=>{
 $("preSaveEditCloseBtn").onclick=()=>{$("preSaveEditModal").hidden=true};
 $("preEditPrevBtn").onclick=()=>{preSaveApplyCurrent();preSaveFill(preSaveEditIndex-1)};
 $("preEditNextBtn").onclick=()=>{preSaveApplyCurrent();preSaveFill(preSaveEditIndex+1)};
-$("preEditAddBtn").onclick=()=>{
- preSaveApplyCurrent();
- const a=preSaveAnalysis();if(!a)return;
- a.officers=a.officers||[];
- a.officers.push({name:"",position:"",event:"취임",event_date:"",registration_date:"",expiry:""});
- window.__latestOfficerAnalysis=a;
- preSaveFill(a.officers.length-1);
- $("preEditMsg").textContent=(a.officers.length)+" / "+a.officers.length+" 임원 · 새 임원 정보를 입력하세요.";
- const save=$("adminSaveAnalysis");if(save)save.disabled=false;
-};
 $("preEditApplyBtn").onclick=()=>{if(preSaveApplyCurrent()){$("preSaveEditModal").hidden=true;$("status").textContent="수정 내용을 반영했습니다. 관리대장 저장을 눌러주세요.";}};
 
 $("adminSaveAnalysis").onclick=async()=>{
