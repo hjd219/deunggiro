@@ -248,7 +248,7 @@ analyze.addEventListener("click",async()=>{
   }else{
    summary.innerHTML="<span>상호 · "+esc(company.name||"확인 필요")+"</span><span>법인등록번호 · "+esc(corpNo)+"</span><span>현재 임원 · "+officers.length+"명</span><span>확인 이력 · "+(j.officer_events||[]).length+"건</span>";
    if(adminMode){
-   tbody.innerHTML=officers.length?officers.map((o,i)=>"<tr data-analysis-row='"+i+"'><td><input class='analysis-edit' data-field='position' value='"+esc(o.position||"")+"'></td><td><input class='analysis-edit' data-field='name' value='"+esc(str(o.name).replace(/\\s*\\([A-Za-z][A-Za-z .-]*\\)\\s*$/,"").trim())+"'></td><td><input class='analysis-edit' data-field='event' value='"+esc(o.event||"")+"'></td><td><input class='analysis-edit' data-field='event_date' type='date' value='"+esc(o.event_date||o.registration_date||"")+"'></td><td><input class='analysis-edit' data-field='expiry' type='date' value='"+esc(o.expiry||"")+"'></td><td><button class='analysis-delete' data-remove-officer='"+i+"' type='button'>삭제</button></td></tr>").join(""):"<tr><td colspan='6'>현재 임원으로 확인된 이력이 없습니다.</td></tr>";
+   tbody.innerHTML=officers.length?officers.map((o,i)=>"<tr data-analysis-row='"+i+"'><td><input class='analysis-edit' data-field='position' value='"+esc(o.position||"")+"'></td><td><input class='analysis-edit' data-field='name' value='"+esc(str(o.name).replace(/\\s*\\([A-Za-z][A-Za-z .-]*\\)\\s*$/,"").trim())+"'></td><td><input class='analysis-edit' data-field='event' value='"+esc(o.event||"")+"'></td><td><input class='analysis-edit' data-field='event_date' type='date' value='"+esc(o.event_date||o.registration_date||"")+"'></td><td><input class='analysis-edit' data-field='expiry' type='date' value='"+esc(o.expiry||"")+"'></td><td><div class='row-actions'><button class='row-btn' data-edit-analysis='"+i+"' type='button'>수정</button><button class='analysis-delete' data-remove-officer='"+i+"' type='button'>삭제</button></div></td></tr>").join(""):"<tr><td colspan='6'>현재 임원으로 확인된 이력이 없습니다.</td></tr>";
   }else{
    tbody.innerHTML=officers.length?officers.map(o=>"<tr><td>"+esc(o.position)+"</td><td><b>"+esc(str(o.name).replace(/\\s*\\([A-Za-z][A-Za-z .-]*\\)\\s*$/,"").trim())+"</b></td><td class='event'>"+esc(o.event)+"</td><td>"+esc(o.event_date||o.registration_date||"확인 필요")+"</td><td class='expiry'>"+esc(o.expiry||"확인 필요")+"</td><td>"+(o.position.includes("감사")?"정기주주총회 기준":"3년 기준")+"</td></tr>").join(""):"<tr><td colspan='6'>현재 임원으로 확인된 이력이 없습니다.</td></tr>";
   }
@@ -279,6 +279,12 @@ tbody.addEventListener("input",e=>{
  window.__latestOfficerAnalysis=latestAnalysis;
 });
 tbody.addEventListener("click",e=>{
+ const editBtn=e.target.closest("[data-edit-analysis]");
+ if(editBtn&&latestAnalysis){
+  const i=Number(editBtn.dataset.editAnalysis);
+  if(Number.isInteger(i)&&i>=0&&i<latestAnalysis.officers.length)window.dispatchEvent(new CustomEvent("dg:preSaveEdit",{detail:{index:i}}));
+  return;
+ }
  const btn=e.target.closest("[data-remove-officer]");if(!btn||!latestAnalysis)return;
  const i=Number(btn.dataset.removeOfficer);
  if(!Number.isInteger(i)||i<0||i>=latestAnalysis.officers.length)return;
@@ -286,7 +292,7 @@ tbody.addEventListener("click",e=>{
  window.__latestOfficerAnalysis=latestAnalysis;
  const rows=[...tbody.querySelectorAll("[data-analysis-row]")];
  if(rows[i])rows[i].remove();
- [...tbody.querySelectorAll("[data-analysis-row]")].forEach((tr,n)=>{tr.dataset.analysisRow=n;const b=tr.querySelector("[data-remove-officer]");if(b)b.dataset.removeOfficer=n;});
+ [...tbody.querySelectorAll("[data-analysis-row]")].forEach((tr,n)=>{tr.dataset.analysisRow=n;const b=tr.querySelector("[data-remove-officer]");if(b)b.dataset.removeOfficer=n;const e=tr.querySelector("[data-edit-analysis]");if(e)e.dataset.editAnalysis=n;});
  const save=document.getElementById("adminSaveAnalysis");if(save)save.disabled=latestAnalysis.officers.length===0;
  if(!latestAnalysis.officers.length)tbody.innerHTML="<tr><td colspan='6'>저장할 임원이 없습니다.</td></tr>";
 });
@@ -576,9 +582,10 @@ function preSaveApplyCurrent(){
  }
  return true;
 }
-window.addEventListener("dg:preSaveEdit",()=>{
+window.addEventListener("dg:preSaveEdit",e=>{
  const a=preSaveAnalysis();if(!a?.officers?.length){alert("먼저 임원 확인을 실행하세요.");return}
- preSaveFill(0);$("preSaveEditModal").hidden=false;
+ const index=Number.isInteger(e.detail?.index)?e.detail.index:0;
+ preSaveFill(index);$("preSaveEditModal").hidden=false;
 });
 $("preSaveEditCloseBtn").onclick=()=>{$("preSaveEditModal").hidden=true};
 $("preEditPrevBtn").onclick=()=>{preSaveApplyCurrent();preSaveFill(preSaveEditIndex-1)};
