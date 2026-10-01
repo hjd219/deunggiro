@@ -31,7 +31,7 @@ body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:var(--ink);backg
 @media(max-width:700px){.ledger-inline-head{align-items:stretch;flex-direction:column}.ledger-inline-head .pick{align-self:flex-start}}
 .existing-contact{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:16px}
 .existing-contact input{width:100%;box-sizing:border-box}
-.existing-save-actions{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:12px}
+.existing-save-actions{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:12px}.ledger-pagination{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px}.ledger-pagination button{height:38px;padding:0 16px;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer}.ledger-pagination button:disabled{opacity:.4;cursor:default}.ledger-pagination span{min-width:58px;text-align:center;font-size:12px;font-weight:800;color:var(--muted)}
 @media(max-width:700px){.existing-contact{grid-template-columns:1fr}}
 /* 고객 신청 화면: 법인페이지 임원 임기 자동관리 서비스와 동일한 톤 */
 body.customer-apply{background:#fff}
@@ -122,7 +122,7 @@ body.customer-apply #status{text-align:left;margin:14px 0 0 18px;color:#596f78}
           </div>
         </div>
         <div class="ledger-toolbar"><input id="ledgerSearch" type="search" placeholder="상호 · 임원명 검색"><select id="ledgerFilter"><option value="all">전체</option><option value="month">1개월 이내</option><option value="week">1주일 이내</option><option value="expired">만료</option><option value="customer">고객신청</option><option value="admin">기존고객</option></select></div>
-        <div class="table"><table><thead><tr><th>상호</th><th>법인등록번호</th><th>임원</th><th>직위</th><th>예상 만료</th><th>D-day</th><th>연락처</th><th>등록경로</th><th>관리</th></tr></thead><tbody id="ledgerBody"><tr><td colspan="9">등록된 관리대장이 없습니다.</td></tr></tbody></table></div>
+        <div class="table"><table><thead><tr><th>상호</th><th>법인등록번호</th><th>임원</th><th>직위</th><th>예상 만료</th><th>D-day</th><th>연락처</th><th>등록경로</th><th>관리</th></tr></thead><tbody id="ledgerBody"><tr><td colspan="9">등록된 관리대장이 없습니다.</td></tr></tbody></table></div><div class="ledger-pagination" id="ledgerPagination" hidden><button class="pick" id="ledgerPrev" type="button">이전</button><span id="ledgerPageInfo">1 / 1</span><button class="pick" id="ledgerNext" type="button">다음</button></div>
         </section>
 </main>
 <script>
@@ -388,7 +388,9 @@ function dday(v){if(!v)return"";const n=Math.ceil((new Date(v+"T00:00:00")-new D
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 let ledgerRows=[];
 let editingId="";
-function renderLedger(){
+let ledgerPage=1;
+const LEDGER_PAGE_SIZE=10;
+function renderLedger(resetPage=false){
  const q=$("ledgerSearch").value.trim().toLowerCase();
  const filter=$("ledgerFilter").value;
  const now=new Date();now.setHours(0,0,0,0);
@@ -404,15 +406,26 @@ function renderLedger(){
   if(filter==="admin"&&!String(x.source||"").includes("기존고객"))return false;
   return true;
  });
- $("ledgerBody").innerHTML=rows.length?rows.map(x=>`<tr><td>${esc(x.company)}</td><td>${esc(x.registrationNumber||"-")}</td><td><b>${esc(x.officer)}</b></td><td>${esc(x.position)}</td><td>${esc(x.expiry)}</td><td>${esc(dday(x.expiry))}</td><td>${esc(x.phone||x.email||"-")}</td><td>${esc(x.source||"기존고객")}</td><td><div class="row-actions"><button class="row-btn" data-edit="${esc(x.id)}" type="button">수정</button><button class="row-btn delete" data-delete="${esc(x.id)}" type="button">삭제</button></div></td></tr>`).join(""):'<tr><td colspan="9">등록된 관리대장이 없습니다.</td></tr>';
+ if(resetPage)ledgerPage=1;
+ const totalPages=Math.max(1,Math.ceil(rows.length/LEDGER_PAGE_SIZE));
+ if(ledgerPage>totalPages)ledgerPage=totalPages;
+ const pageRows=rows.slice((ledgerPage-1)*LEDGER_PAGE_SIZE,ledgerPage*LEDGER_PAGE_SIZE);
+ $("ledgerBody").innerHTML=pageRows.length?pageRows.map(x=>`<tr><td>${esc(x.company)}</td><td>${esc(x.registrationNumber||"-")}</td><td><b>${esc(x.officer)}</b></td><td>${esc(x.position)}</td><td>${esc(x.expiry)}</td><td>${esc(dday(x.expiry))}</td><td>${esc(x.phone||x.email||"-")}</td><td>${esc(x.source||"기존고객")}</td><td><div class="row-actions"><button class="row-btn" data-edit="${esc(x.id)}" type="button">수정</button><button class="row-btn delete" data-delete="${esc(x.id)}" type="button">삭제</button></div></td></tr>`).join(""):'<tr><td colspan="9">등록된 관리대장이 없습니다.</td></tr>';
+ const pager=$("ledgerPagination");
+ pager.hidden=rows.length<=LEDGER_PAGE_SIZE;
+ $("ledgerPageInfo").textContent=ledgerPage+" / "+totalPages;
+ $("ledgerPrev").disabled=ledgerPage<=1;
+ $("ledgerNext").disabled=ledgerPage>=totalPages;
 }
 async function loadLedger(){
  const data=await api("/officers",{method:"GET"});
  ledgerRows=Array.isArray(data.items)?data.items:[];
  renderLedger();
 }
-$("ledgerSearch").oninput=renderLedger;
-$("ledgerFilter").onchange=renderLedger;
+$("ledgerSearch").oninput=()=>renderLedger(true);
+$("ledgerFilter").onchange=()=>renderLedger(true);
+$("ledgerPrev").onclick=()=>{if(ledgerPage>1){ledgerPage--;renderLedger();}};
+$("ledgerNext").onclick=()=>{ledgerPage++;renderLedger();};
 $("ledgerBody").onclick=async e=>{
  const edit=e.target.closest("[data-edit]");
  const del=e.target.closest("[data-delete]");
