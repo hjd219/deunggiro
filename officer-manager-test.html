@@ -149,6 +149,35 @@ window.__officerAnalysisGeneration=window.__officerAnalysisGeneration||0;
 // 관리대장 표시 여부는 아래 Firebase Authentication 세션에서만 결정
 const str=v=>String(v??"").trim();
 const esc=v=>String(v??"").replace(/[&<>"\']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","\'":"&#39;"}[ch]));
+const normDate=v=>{const m=String(v??"").match(/(\d{4})\D{0,3}(\d{1,2})\D{0,3}(\d{1,2})/);return m?m[1]+"-"+String(m[2]).padStart(2,"0")+"-"+String(m[3]).padStart(2,"0"):String(v??"").trim()};
+const eventTime=v=>{const d=new Date(normDate(v)+"T00:00:00");return isNaN(d)?-Infinity:+d};
+const normPosition=v=>{const s=String(v??"").replace(/\s/g,"");for(const p of["감사위원","대표이사","사외이사","기타비상무이사","사내이사","감사"])if(s.includes(p))return p;return s.includes("이사")?"이사":s};
+const normEvent=(event,rawText="")=>{const raw=String(rawText??"").replace(/\s/g,""),ev=String(event??"").replace(/\s/g,"");for(const e of["해임","퇴임","사임","중임","취임"])if(raw.includes(e))return e;if(raw.includes("주소기입")||raw.includes("주소변경"))return"주소변경";if(ev.includes("주소"))return"주소변경";if(ev.includes("설립")&&ev.includes("취임"))return"설립취임";for(const e of["해임","퇴임","사임","중임","취임"])if(ev.includes(e))return e;return"기타"};
+function currentOfficers(events,fallback=[]){
+ const groups=new Map();
+ for(const q of events||[]){
+  const x={...q,name:String(q.name??"").trim(),position:normPosition(q.position),event:normEvent(q.event,q.raw_text),event_date:normDate(q.event_date),registration_date:normDate(q.registration_date)};
+  if(!x.name||!x.position)continue;
+  const key=x.name+"|"+x.position;
+  if(!groups.has(key))groups.set(key,[]);
+  groups.get(key).push(x);
+ }
+ const out=[];
+ for(const history of groups.values()){
+  history.sort((a,b)=>eventTime(a.event_date||a.registration_date)-eventTime(b.event_date||b.registration_date));
+  let current=null;
+  for(const x of history){
+   if(["취임","중임","설립취임"].includes(x.event))current=x;
+   else if(["사임","퇴임","해임"].includes(x.event))current=null;
+  }
+  if(current){
+   const server=(fallback||[]).find(o=>String(o.name??"").trim()===current.name&&normPosition(o.position)===current.position);
+   out.push(server?{...current,...server,name:current.name,position:current.position,event:current.event,event_date:current.event_date||server.event_date,registration_date:current.registration_date||server.registration_date}:current);
+  }
+ }
+ return out;
+}
+
 function setFile(f){
  if(workflow.state==="SAVING"){status.textContent="저장 완료 후 다음 파일을 선택하세요.";return false}
  if(!f){status.textContent="파일을 선택하세요.";return false}
@@ -192,7 +221,7 @@ analyze.addEventListener("click",async()=>{
   raw.textContent=JSON.stringify(j,null,2);
   if(!res.ok||j.error)throw Error(j.detail||j.error||"분석 실패");
   if(generation!==workflow.generation)return;
-  const officers=Array.isArray(j.current_officers)?j.current_officers:[];
+  const serverOfficers=Array.isArray(j.current_officers)?j.current_officers:[];\n  const officers=Array.isArray(j.officer_events)&&j.officer_events.length?currentOfficers(j.officer_events,serverOfficers):serverOfficers;
   const company=j.company||{};
   const parseOk=!!company.name&&!!(company.registration_number||company.corporate_registration_number||company.registrationNumber)&&!!company.incorporation_date&&(j.officer_events||[]).length>0&&officers.length>0;
   latestAnalysis={company,officers,officer_events:j.officer_events||[],parseOk,generation};
