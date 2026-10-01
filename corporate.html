@@ -8,6 +8,32 @@
 .corporate-docs-grid article>ul>li:last-child{margin-top:auto;padding-top:18px}
 .corporate-docs-grid article>ul>li:last-child>a{display:block;color:#168dca;text-decoration:none;font-size:12px;font-weight:850;letter-spacing:-.45px;white-space:nowrap}
 .corporate-support-row{display:grid;grid-template-columns:1fr 1fr;gap:42px;align-items:start;border-top:1px solid #c8e8f7}
+.corporate-tool-row{display:grid;grid-template-columns:1fr 1fr;gap:42px;align-items:start;border-top:1px solid #c8e8f7}
+.corporate-tool-row>.simple-docs{border-top:0;margin-top:0;padding-top:56px;min-width:0}
+.corporate-support-row>.simple-docs,.corporate-tool-row>.simple-docs{box-sizing:border-box}
+.corporate-support-row h2,.corporate-tool-row h2{margin-top:0}
+.corporate-support-row .story-qa-title{margin-top:0}
+.corporate-support-row .story-qa-title h2{margin-top:0}
+.corporate-support-row .story-qa-list{margin-top:24px}
+.term-alert-title{display:flex;align-items:center;gap:8px}
+.term-admin-link{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;color:#168dca;text-decoration:none;border-radius:50%;transition:background-color .2s ease,color .2s ease}
+.term-admin-link:hover{background:rgba(22,141,202,.10)}
+.term-admin-link svg{width:17px;height:17px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.term-alert-card{display:block;margin-top:28px;padding:0 0 14px;color:#173b4a;text-decoration:none;cursor:pointer;border-radius:10px;transition:transform .22s ease,box-shadow .22s ease,background-color .22s ease}
+@media(hover:hover) and (pointer:fine){.term-alert-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(15,23,42,.10);background:rgba(255,255,255,.72)}}
+@media(hover:none),(pointer:coarse){.term-alert-card:active{transform:scale(.985);box-shadow:0 5px 14px rgba(15,23,42,.08)}}
+.term-alert-card h3{margin:0 0 28px!important;font-size:17px;font-weight:900;line-height:20px;color:#173b4a}
+.term-alert-card h3 i{margin-left:6px;color:#2aa9df;font-size:14px;font-style:normal}
+.term-alert-body{border-left:2px solid #37aee4;padding-left:18px}
+.term-alert-body>p{margin:0 0 24px!important;color:#596f78;font-size:13px;line-height:1.7}
+.term-alert-item{margin:0 0 24px}
+.term-alert-item:last-child{margin-bottom:0}
+.term-alert-item>strong{display:block;margin:0 0 9px;color:#596f78;font-size:13px;line-height:1.4}
+.term-alert-item>p{margin:0;color:#596f78;font-size:13px;line-height:1.7}
+.term-inline-apply{display:none;margin-top:28px;padding-top:0;border-top:0}
+.term-inline-apply.open{display:block}
+.term-inline-apply iframe{display:block;width:100%;height:500px;border:0;background:#fff;overflow:hidden}
+@media(max-width:800px){.term-inline-apply iframe{height:650px}}
 .corporate-support-row>.simple-docs{border-top:0;margin-top:0;padding-top:56px;min-width:0}
 .corporate-fine-table{max-width:720px;margin-top:24px;overflow:hidden;border:1px solid #d9e5ea;border-radius:10px}
 .corporate-support-row .corporate-fine-table{max-width:none}
@@ -33,8 +59,8 @@
  .simple-docs-grid.corporate-docs-grid article:last-child{padding-right:0}
 }
 @media(max-width:800px){
- .corporate-support-row{grid-template-columns:1fr;gap:0}
- .corporate-support-row>.simple-docs+.simple-docs{border-top:1px solid #c8e8f7}
+ .corporate-support-row,.corporate-tool-row{grid-template-columns:1fr;gap:0}
+ .corporate-support-row>.simple-docs+.simple-docs,.corporate-tool-row>.simple-docs+.simple-docs{border-top:1px solid #c8e8f7}
  .corporate-docs-grid article{padding-bottom:32px}
  .corporate-docs-grid article>ul>li:last-child>a{white-space:normal}
 }
@@ -82,7 +108,8 @@
 </section>
 
 
-<div class="corporate-support-row"><section class="simple-docs corporate-support" id="corporate-cost-calculator">
+<div class="corporate-tool-row">
+<section class="simple-docs corporate-support" id="corporate-cost-calculator">
  <h2>법인등기 비용 계산기</h2>
  <a class="corporate-calculator-link" href="/corporate-calculator.html">
   <h3>법인등기 비용 계산 <i>→</i></h3>
@@ -94,13 +121,20 @@
    <div class="corporate-calculator-item"><strong>증자·해산·청산</strong><p>업무별 예상비용을 확인할 수 있습니다.</p></div>
   </div>
  </a>
-</section><section class="simple-docs corporate-support" id="penalty-guide">
+</section>
+<section class="simple-docs corporate-support" id="officer-term-alert">
+ <div class="term-alert-title"><h2>임원 임기 자동관리 서비스</h2><a class="term-admin-link" href="/officer-manager-test.html" aria-label="관리자 로그인" title="관리자"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21h-4v-.09a1.7 1.7 0 0 0-1.1-1.57 1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H3v-4h.09A1.7 1.7 0 0 0 4.66 8.5a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1.1V3h4v.09A1.7 1.7 0 0 0 15.5 4.66a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 9a1.7 1.7 0 0 0 .6 1 1.7 1.7 0 0 0 1.1.4h.09v4h-.09A1.7 1.7 0 0 0 19.4 15Z"/></svg></a></div>
+ <div class="term-inline-apply open" id="term-inline-apply" aria-hidden="false"><iframe src="/officer-manager-test.html?apply=1&embed=1" title="임원 임기 자동관리 신청" loading="eager"></iframe></div>
+</section>
+</div>
+<div class="corporate-support-row">
+<section class="simple-docs corporate-support" id="penalty-guide">
  <h2>과태료 예상기준표</h2>
  <p class="story-note">임원변경 등기 지연 시 참고할 수 있는 실무상 예상기준입니다.</p>
  <div class="corporate-fine-table"><table><tr><th>지연기간</th><th>실무상 예상 범위</th></tr><tr><td>1개월 이내</td><td>약 5~10만원</td></tr><tr><td>1~3개월</td><td>약 10~20만원</td></tr><tr><td>3~6개월</td><td>약 20~30만원</td></tr><tr><td>6개월~1년</td><td>약 30~50만원</td></tr><tr><td>1~2년</td><td>약 50~100만원</td></tr><tr><td>2년 이상</td><td>100만원 이상 가능</td></tr></table></div>
  <p class="story-note">※ 위 금액은 예상 기준이며 실제 과태료는 사건 내용과 법원의 판단에 따라 달라질 수 있습니다.</p>
-</section></div>
-<section class="story-qa" id="corp-faq">
+</section>
+<section class="story-qa simple-docs corporate-support" id="corp-faq">
  <div class="story-qa-title"><h2>법인등기 자주 묻는 질문</h2></div>
  <div class="story-qa-list">
   <details><summary><i>1</i>법인 변경등기는 언제까지 해야 하나요?<b>＋</b></summary><p>변경등기는 등기사항별로 법정기간이 정해져 있습니다. 특히 임원변경 등은 변경일 또는 취임·퇴임일을 기준으로 기간을 확인해야 합니다.</p></details>
@@ -109,8 +143,7 @@
   <details><summary><i>4</i>해산간주된 법인을 다시 운영할 수 있나요?<b>＋</b></summary><p>해산간주 상태라면 요건을 확인해 회사계속등기를 검토할 수 있습니다. 청산종결간주까지 진행된 경우에는 별도 검토가 필요합니다.</p></details>
  </div>
 </section>
-
-
+</div>
 
 <section class="story-cases dg-services">
  <div class="cases-head"><h2>법인등기 실제 처리사례</h2><p>법인등기 진행 시 자주 발생하는 특수한 상황에 대한 처리사례를 확인할 수 있습니다.</p></div>
