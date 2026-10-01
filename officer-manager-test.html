@@ -520,7 +520,7 @@ $("adminSaveAnalysis").onclick=async()=>{
  }
 };
 
-// 신청 링크에서는 고객 신청 화면, 그 외에는 기존 관리자 테스트 대장
+// 신청 링크에서는 고객 신청 화면, 그 외에는 관리자 로그인/관리대장만 표시
 const customerApply=new URLSearchParams(location.search).get("apply")==="1";
 if(customerApply){
  document.body.classList.add("customer-apply");
@@ -536,15 +536,21 @@ if(customerApply){
  $("result").style.display="block";
  $("apply").style.display="block";
 }else{
+ // 관리자 진입 시 개발용 테스트/업로드 화면은 노출하지 않는다.
+ $("uploadBox").hidden=true;
+ $("result").style.display="none";
+ document.querySelector(".head").hidden=true;
+ adminHeadBtn.hidden=true;adminHeadBtn.style.display="none";
  if(adminToken){
   showAdminPage();
   loadLedger().catch(e=>{
    adminToken="";sessionStorage.removeItem("dgOfficerAdminToken");
-   showCustomerPage();login.hidden=false;
+   ledger.hidden=true;
+   login.hidden=false;
    loginMsg.textContent="로그인이 만료되었습니다. 다시 로그인해 주세요.";
   });
  }else{
-  showCustomerPage();
+  ledger.hidden=true;
   login.hidden=false;
   loginMsg.textContent="";
  }
