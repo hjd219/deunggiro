@@ -221,7 +221,8 @@ analyze.addEventListener("click",async()=>{
   raw.textContent=JSON.stringify(j,null,2);
   if(!res.ok||j.error)throw Error(j.detail||j.error||"분석 실패");
   if(generation!==workflow.generation)return;
-  const serverOfficers=Array.isArray(j.current_officers)?j.current_officers:[];\n  const officers=Array.isArray(j.officer_events)&&j.officer_events.length?currentOfficers(j.officer_events,serverOfficers):serverOfficers;
+  const serverOfficers=Array.isArray(j.current_officers)?j.current_officers:[];
+  const officers=Array.isArray(j.officer_events)&&j.officer_events.length?currentOfficers(j.officer_events,serverOfficers):serverOfficers;
   const company=j.company||{};
   const parseOk=!!company.name&&!!(company.registration_number||company.corporate_registration_number||company.registrationNumber)&&!!company.incorporation_date&&(j.officer_events||[]).length>0&&officers.length>0;
   latestAnalysis={company,officers,officer_events:j.officer_events||[],parseOk,generation};
