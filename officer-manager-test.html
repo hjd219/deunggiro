@@ -73,7 +73,7 @@ body.customer-apply #status{text-align:left;margin:14px 0 0 18px;color:#596f78}
 
     <section class="result" id="result">
       <div class="summary" id="summary"></div>
-      <div class="table"><table><thead><tr><th>직위</th><th>성명</th><th>최근 이력</th><th>임기 기준일</th><th>예상 만료</th><th>관리</th></tr></thead><tbody id="tbody"></tbody></table></div>
+      <div class="table" id="analysisTable"><table><thead><tr><th>직위</th><th>성명</th><th>최근 이력</th><th>임기 기준일</th><th>예상 만료</th><th>관리</th></tr></thead><tbody id="tbody"></tbody></table></div>
 
       <section class="apply" id="apply">
         <h3>임기관리 등록</h3>
@@ -486,6 +486,8 @@ if(customerApply){
  document.querySelector(".head p").textContent="휴대전화번호와 이메일을 입력하고 개인정보 수집·이용에 동의해 주세요.";
  adminHeadBtn.hidden=true;adminHeadBtn.style.display="none";
  const top=document.getElementById("uploadTop");if(top)top.hidden=true;
+ const analysisTable=document.getElementById("analysisTable");if(analysisTable)analysisTable.remove();
+ $("summary").remove();
  $("status").textContent="";
  $("result").style.display="block";
  $("apply").style.display="block";
