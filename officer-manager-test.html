@@ -59,6 +59,15 @@ body.customer-apply #status{text-align:left;margin:14px 0 0 18px;color:#596f78}
  body.customer-apply .head h1{font-size:22px}
  body.customer-apply .contact{grid-template-columns:1fr}
 }
+.customer-embed .wrap{width:100%!important;padding:0!important}
+.customer-embed .head{margin:0!important;padding:0!important}
+.customer-embed .head h1{font-size:17px!important;line-height:20px!important;margin:0 0 28px!important;letter-spacing:-.45px!important}
+.customer-embed .head p{display:none!important}
+.customer-embed .box{padding:0!important}
+.customer-embed .apply{padding-left:18px!important}
+.customer-embed .apply h3{display:none!important}
+.customer-embed .admin-head-btn{display:none!important}
+.customer-embed{overflow:hidden!important}
 </style>
 </head>
 <body>
@@ -113,7 +122,9 @@ body.customer-apply #status{text-align:left;margin:14px 0 0 18px;color:#596f78}
 <script>
 (()=>{
 const WORKER="https://deunggiro-ocr-209298170572.asia-northeast3.run.app/";
-const CUSTOMER_APPLY_MODE=new URLSearchParams(location.search).get("apply")==="1";
+const qs=new URLSearchParams(location.search);
+const CUSTOMER_APPLY_MODE=qs.get("apply")==="1";
+const EMBED_MODE=qs.get("embed")==="1";
 const $=id=>document.getElementById(id),file=$("file"),analyze=$("analyze"),status=$("status"),result=$("result"),summary=$("summary"),tbody=$("tbody"),raw=$("raw"),apply=$("apply"),uploadBox=$("uploadBox"),applyBtn=$("applyBtn"),registerNote=$("registerNote") ,openExistingBtn=$("openExistingBtn");
 let latestAnalysis=null;
 const workflow={state:"READY",generation:0};
@@ -512,6 +523,7 @@ $("adminSaveAnalysis").onclick=async()=>{
 const customerApply=new URLSearchParams(location.search).get("apply")==="1";
 if(customerApply){
  document.body.classList.add("customer-apply");
+ if(new URLSearchParams(location.search).get("embed")==="1")document.body.classList.add("customer-embed");
  showCustomerPage();
  document.querySelector(".head h1").textContent="임원 임기 자동관리 신청";
  document.querySelector(".head p").textContent="휴대전화번호와 이메일을 입력하고 개인정보 수집·이용에 동의해 주세요.";
