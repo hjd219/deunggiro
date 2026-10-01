@@ -1,5 +1,0 @@
-functions-framework==3.*
-Flask==3.*
-google-cloud-documentai>=2.20.0
-google-cloud-firestore>=2.16.0
-google-auth>=2.29.0
