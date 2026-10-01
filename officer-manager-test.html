@@ -386,6 +386,7 @@ async function api(path,options={}){
 }
 function dday(v){if(!v)return"";const n=Math.ceil((new Date(v+"T00:00:00")-new Date())/86400000);return Number.isFinite(n)?(n>=0?"D-"+n:"D+"+Math.abs(n)):""}
 function formatLedgerDate(v){if(!v)return"";const d=new Date(v);if(Number.isNaN(d.getTime()))return"";return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,"0")}.${String(d.getDate()).padStart(2,"0")}`;}
+function formatCompanyName(v){return String(v??"").replace(/주식회사/g,"(주)");}
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 let ledgerRows=[];
 let editingId="";
@@ -411,7 +412,7 @@ function renderLedger(resetPage=false){
  const totalPages=Math.max(1,Math.ceil(rows.length/LEDGER_PAGE_SIZE));
  if(ledgerPage>totalPages)ledgerPage=totalPages;
  const pageRows=rows.slice((ledgerPage-1)*LEDGER_PAGE_SIZE,ledgerPage*LEDGER_PAGE_SIZE);
- $("ledgerBody").innerHTML=pageRows.length?pageRows.map(x=>`<tr><td><span class="ledger-date">${esc(formatLedgerDate(x.created_at||x.createdAt||x.created||x.registered_at||x.registeredAt||""))}</span>${esc(x.company)}</td><td>${esc(x.registrationNumber||"-")}</td><td><b>${esc(x.officer)}</b></td><td>${esc(x.position)}</td><td>${esc(x.expiry)}</td><td>${esc(dday(x.expiry))}</td><td>${esc(x.phone||x.email||"-")}</td><td>${esc(x.source||"기존고객")}</td><td><div class="row-actions"><button class="row-btn" data-edit="${esc(x.id)}" type="button">수정</button><button class="row-btn delete" data-delete="${esc(x.id)}" type="button">삭제</button></div></td></tr>`).join(""):'<tr><td colspan="9">등록된 관리대장이 없습니다.</td></tr>';
+ $("ledgerBody").innerHTML=pageRows.length?pageRows.map(x=>`<tr><td><span class="ledger-date">${esc(formatLedgerDate(x.created_at||x.createdAt||x.created||x.registered_at||x.registeredAt||""))}</span>${esc(formatCompanyName(x.company))}</td><td>${esc(x.registrationNumber||"-")}</td><td><b>${esc(x.officer)}</b></td><td>${esc(x.position)}</td><td>${esc(x.expiry)}</td><td>${esc(dday(x.expiry))}</td><td>${esc(x.phone||x.email||"-")}</td><td>${esc(x.source||"기존고객")}</td><td><div class="row-actions"><button class="row-btn" data-edit="${esc(x.id)}" type="button">수정</button><button class="row-btn delete" data-delete="${esc(x.id)}" type="button">삭제</button></div></td></tr>`).join(""):'<tr><td colspan="9">등록된 관리대장이 없습니다.</td></tr>';
  const pager=$("ledgerPagination");
  pager.hidden=rows.length<=LEDGER_PAGE_SIZE;
  $("ledgerPageInfo").textContent=ledgerPage+" / "+totalPages;
