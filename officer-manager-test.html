@@ -17,7 +17,7 @@ body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:var(--ink);backg
 .top{text-align:center}.top h3,.apply h3{margin:0 0 8px;font-size:18px}.top p{margin:0;color:var(--muted);font-size:13px}
 .actions{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:20px;flex-wrap:wrap}.file{display:none}.pick,.run,.admin-register{height:44px;padding:0 17px;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;margin:0}.pick{border:1px solid #c8e8f7;color:var(--blue);background:var(--soft)}.run{border:1px solid var(--blue);background:var(--blue);color:#fff}.admin-register{border:1px solid var(--ink);background:#fff;color:var(--ink)}.admin-register.saving::before{content:"";width:14px;height:14px;margin-right:7px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:saveSpin .7s linear infinite}@keyframes saveSpin{to{transform:rotate(360deg)}}.run:disabled,.admin-register:disabled{opacity:.45}
 .status{margin-top:13px;color:var(--muted);font-size:12px;text-align:center}.result{display:none;margin-top:26px}.summary{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.summary span{padding:7px 10px;background:#f1f8fc;border-radius:999px;font-size:12px}
-.table{width:100%;overflow:auto;border:1px solid var(--line);border-radius:10px}.table table{width:100%;min-width:720px;border-collapse:collapse;font-size:13px}.table th,.table td{padding:11px 9px;border-bottom:1px solid #e1e9ed;text-align:left}.table tr:last-child td{border-bottom:0}.table th{background:var(--soft);font-weight:800}.event{color:var(--blue);font-weight:800}.expiry{font-weight:800}.analysis-edit{width:100%;min-width:92px;padding:7px 8px;border:1px solid #d9e5ea;border-radius:6px;background:#fff;color:#173b4a;font:inherit}.analysis-edit:focus{outline:none;border-color:#168dca;box-shadow:0 0 0 2px rgba(22,141,202,.08)}.analysis-delete{padding:7px 9px;border:1px solid #efd0d0;border-radius:6px;background:#fff;color:#b84b4b;font-size:11px;font-weight:800;cursor:pointer}
+.table{width:100%;overflow:auto;border:1px solid var(--line);border-radius:10px}.table table{width:100%;min-width:720px;border-collapse:collapse;font-size:13px}.table th,.table td{padding:11px 9px;border-bottom:1px solid #e1e9ed;text-align:left}.table tr:last-child td{border-bottom:0}.table th{background:var(--soft);font-weight:800}.event{color:var(--blue);font-weight:800}.expiry{font-weight:800}.analysis-edit{width:100%;min-width:92px;padding:7px 8px;border:1px solid #d9e5ea;border-radius:6px;background:#fff;color:#173b4a;font:inherit}.analysis-edit:focus{outline:none;border-color:#168dca;box-shadow:0 0 0 2px rgba(22,141,202,.08)}.analysis-delete{padding:7px 9px;border:1px solid #efd0d0;border-radius:6px;background:#fff;color:#b84b4b;font-size:11px;font-weight:800;cursor:pointer}.analysis-add-wrap{margin-top:10px;text-align:right}
 .apply{display:none;margin-top:24px;padding-top:22px;border-top:1px solid #e1e9ed}.contact{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.contact input{padding:12px;border:1px solid var(--line);border-radius:8px}.checks{display:flex;gap:16px;flex-wrap:wrap;margin-top:13px;font-size:13px}.privacy{margin-top:12px;border:1px solid var(--line);border-radius:8px;padding:12px 14px;font-size:12px;color:#536b75}.privacy summary{cursor:pointer;font-weight:800;color:var(--ink)}.privacy div{margin-top:10px;line-height:1.75}.notice{margin:10px 0 0;color:var(--muted);font-size:12px;line-height:1.6}.pdf-emphasis{color:var(--blue);font-weight:800}.register-actions{display:flex;gap:8px;margin-top:14px}.register-note{margin:10px 0 0;font-size:12px;font-weight:700;color:var(--blue)}
 .ledger{margin-top:0}.ledger-head{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-bottom:20px;border-bottom:1px solid #e7eef2}.ledger-head h3{margin:0 0 5px;font-size:20px}.ledger-head p{margin:0;color:var(--muted);font-size:12px}.ledger-head-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}.ledger-toolbar{display:grid;grid-template-columns:minmax(0,1fr) 110px;gap:8px;margin:18px 0 12px}.ledger-toolbar input,.ledger-toolbar select{width:100%;height:42px;padding:0 12px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}.ledger .table{margin:0}.row-actions{display:flex;gap:6px;white-space:nowrap}.row-btn{padding:7px 10px;border:1px solid #c8e8f7;border-radius:7px;background:#fff;color:var(--blue);font-size:11px;font-weight:800;cursor:pointer}.row-btn.delete{border-color:#efd0d0;color:#b84b4b}
 .admin-page[hidden]{display:none!important}.raw{margin-top:25px}.raw pre{white-space:pre-wrap;word-break:break-all;background:#f7f9fa;padding:15px;border-radius:8px;font-size:11px;max-height:300px;overflow:auto}
@@ -85,7 +85,7 @@ body.customer-apply #status{text-align:left;margin:14px 0 0 18px;color:#596f78}
 
     <section class="result" id="result">
       <div class="summary" id="summary"></div>
-      <div class="table" id="analysisTable"><table><thead><tr><th>직위</th><th>성명</th><th>최근 이력</th><th>임기 기준일</th><th>예상 만료</th><th>관리</th></tr></thead><tbody id="tbody"></tbody></table></div>
+      <div class="table" id="analysisTable"><table><thead><tr><th>직위</th><th>성명</th><th>최근 이력</th><th>임기 기준일</th><th>예상 만료</th><th>관리</th></tr></thead><tbody id="tbody"></tbody></table></div><div class="analysis-add-wrap" id="analysisAddWrap" hidden><button class="pick" id="analysisAddOfficer" type="button">+ 임원 추가</button></div>
 
       <section class="apply" id="apply">
         <h3>임기관리 등록</h3>
@@ -140,6 +140,7 @@ function resetAnalysisState(message){
  file.value="";
  result.style.display="none";
  apply.style.display="none";
+ const addWrap=document.getElementById("analysisAddWrap");if(addWrap)addWrap.hidden=true;
  analyze.disabled=false;
  analyze.hidden=false;
  analyze.textContent="임원 확인";
@@ -208,7 +209,7 @@ analyze.addEventListener("click",async()=>{
   workflow.state="ANALYZED";
   const adminSave=document.getElementById("adminSaveAnalysis");
   const adminMode=document.getElementById("ledger")&&!document.getElementById("ledger").hidden;
-  if(adminMode){adminSave.hidden=false;adminSave.disabled=officers.length===0;adminSave.textContent="관리대장 저장"}
+  if(adminMode){adminSave.hidden=false;adminSave.disabled=officers.length===0;adminSave.textContent="관리대장 저장";const addWrap=document.getElementById("analysisAddWrap");if(addWrap)addWrap.hidden=false}
   const corpNo=company.registration_number||company.corporate_registration_number||company.registrationNumber||"확인 필요";
   if(CUSTOMER_APPLY_MODE){
    summary.innerHTML="";
@@ -269,6 +270,21 @@ analyze.addEventListener("click",async()=>{
 });
 const adminEditAnalysis=document.getElementById("adminEditAnalysis");
 if(adminEditAnalysis)adminEditAnalysis.addEventListener("click",()=>window.dispatchEvent(new CustomEvent("dg:preSaveEdit")));
+
+const analysisAddOfficer=document.getElementById("analysisAddOfficer");
+if(analysisAddOfficer)analysisAddOfficer.addEventListener("click",()=>{
+ if(!latestAnalysis)return;
+ latestAnalysis.officers=latestAnalysis.officers||[];
+ const i=latestAnalysis.officers.length;
+ latestAnalysis.officers.push({name:"",position:"",event:"취임",event_date:"",registration_date:"",expiry:""});
+ window.__latestOfficerAnalysis=latestAnalysis;
+ if(tbody.querySelector("td[colspan='6']"))tbody.innerHTML="";
+ tbody.insertAdjacentHTML("beforeend","<tr data-analysis-row='"+i+"'><td><input class='analysis-edit' data-field='position' value='' placeholder='직위'></td><td><input class='analysis-edit' data-field='name' value='' placeholder='성명'></td><td><input class='analysis-edit' data-field='event' value='취임' placeholder='최근 이력'></td><td><input class='analysis-edit' data-field='event_date' type='date' value=''></td><td><input class='analysis-edit' data-field='expiry' type='date' value=''></td><td><div class='row-actions'><button class='row-btn' data-edit-analysis='"+i+"' type='button'>수정</button><button class='analysis-delete' data-remove-officer='"+i+"' type='button'>삭제</button></div></td></tr>");
+ const row=tbody.querySelector("[data-analysis-row='"+i+"']");
+ row?.querySelector("[data-field='position']")?.focus();
+ const save=document.getElementById("adminSaveAnalysis");if(save)save.disabled=false;
+ status.textContent="새 임원 정보를 입력한 뒤 관리대장 저장을 눌러주세요.";
+});
 
 tbody.addEventListener("input",e=>{
  const input=e.target.closest(".analysis-edit");if(!input||!latestAnalysis)return;
