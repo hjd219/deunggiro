@@ -115,6 +115,7 @@ body.customer-apply #status{text-align:left;margin:14px 0 0 18px;color:#596f78}
             <input id="existingEmail" type="email" placeholder="이메일">
           </div>
           <div class="existing-save-actions" id="existingSaveActions" hidden>
+            <button class="pick" id="adminEditAnalysis" type="button" disabled>수정</button>
             <button class="admin-register" id="adminSaveAnalysis" type="button" disabled>관리대장 저장</button>
           </div>
         </div>
@@ -141,7 +142,7 @@ function resetAnalysisState(message){
  analyze.hidden=false;
  analyze.textContent="임원 확인";
  const save=document.getElementById("adminSaveAnalysis");
- if(save){save.hidden=false;save.disabled=true;save.classList.remove("saving");save.removeAttribute("aria-busy");save.textContent="관리대장 저장";}
+ if(save){save.hidden=false;save.disabled=true;save.classList.remove("saving");save.removeAttribute("aria-busy");save.textContent="관리대장 저장";} const edit=document.getElementById("adminEditAnalysis");if(edit)edit.disabled=true;
  uploadBox.classList.remove("busy");
  workflow.state="READY";
  if(message)status.textContent=message;
@@ -264,6 +265,16 @@ analyze.addEventListener("click",async()=>{
   if(generation===workflow.generation&&workflow.state!=="SAVING")analyze.disabled=false;
  }
 });
+const adminEditAnalysis=document.getElementById("adminEditAnalysis");
+if(adminEditAnalysis){
+ adminEditAnalysis.addEventListener("click",()=>{
+  if(!latestAnalysis?.officers?.length)return;
+  const first=tbody.querySelector(".analysis-edit");
+  if(first){first.focus();first.select?.();}
+  status.textContent="분석 결과를 수정한 뒤 관리대장 저장을 눌러주세요.";
+ });
+}
+
 tbody.addEventListener("input",e=>{
  const input=e.target.closest(".analysis-edit");if(!input||!latestAnalysis)return;
  const row=input.closest("[data-analysis-row]");if(!row)return;
