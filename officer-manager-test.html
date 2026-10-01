@@ -14,7 +14,7 @@ body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:var(--ink);backg
 .top{text-align:center}.top h3,.apply h3{margin:0 0 8px;font-size:18px}.top p{margin:0;color:var(--muted);font-size:13px}
 .actions{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:20px;flex-wrap:wrap}.file{display:none}.pick,.run,.admin-register{height:44px;padding:0 17px;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;margin:0}.pick{border:1px solid #c8e8f7;color:var(--blue);background:var(--soft)}.run{border:1px solid var(--blue);background:var(--blue);color:#fff}.admin-register{border:1px solid var(--ink);background:#fff;color:var(--ink)}.admin-register.saving::before{content:"";width:14px;height:14px;margin-right:7px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:saveSpin .7s linear infinite}@keyframes saveSpin{to{transform:rotate(360deg)}}.run:disabled,.admin-register:disabled{opacity:.45}
 .status{margin-top:13px;color:var(--muted);font-size:12px;text-align:center}.result{display:none;margin-top:26px}.summary{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.summary span{padding:7px 10px;background:#f1f8fc;border-radius:999px;font-size:12px}
-.table{width:100%;overflow:auto;border:1px solid var(--line);border-radius:10px}.table table{width:100%;min-width:720px;border-collapse:collapse;font-size:13px}.table th,.table td{padding:11px 9px;border-bottom:1px solid #e1e9ed;text-align:left}.table tr:last-child td{border-bottom:0}.table th{background:var(--soft);font-weight:800}.event{color:var(--blue);font-weight:800}.expiry{font-weight:800}
+.table{width:100%;overflow:auto;border:1px solid var(--line);border-radius:10px}.table table{width:100%;min-width:720px;border-collapse:collapse;font-size:13px}.table th,.table td{padding:11px 9px;border-bottom:1px solid #e1e9ed;text-align:left}.table tr:last-child td{border-bottom:0}.table th{background:var(--soft);font-weight:800}.event{color:var(--blue);font-weight:800}.expiry{font-weight:800}.analysis-edit{width:100%;min-width:92px;padding:7px 8px;border:1px solid #d9e5ea;border-radius:6px;background:#fff;color:#173b4a;font:inherit}.analysis-edit:focus{outline:none;border-color:#168dca;box-shadow:0 0 0 2px rgba(22,141,202,.08)}.analysis-delete{padding:7px 9px;border:1px solid #efd0d0;border-radius:6px;background:#fff;color:#b84b4b;font-size:11px;font-weight:800;cursor:pointer}
 .apply{display:none;margin-top:24px;padding-top:22px;border-top:1px solid #e1e9ed}.contact{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.contact input{padding:12px;border:1px solid var(--line);border-radius:8px}.checks{display:flex;gap:16px;flex-wrap:wrap;margin-top:13px;font-size:13px}.privacy{margin-top:12px;border:1px solid var(--line);border-radius:8px;padding:12px 14px;font-size:12px;color:#536b75}.privacy summary{cursor:pointer;font-weight:800;color:var(--ink)}.privacy div{margin-top:10px;line-height:1.75}.notice{margin:10px 0 0;color:var(--muted);font-size:12px;line-height:1.6}.register-actions{display:flex;gap:8px;margin-top:14px}.register-note{margin:10px 0 0;font-size:12px;font-weight:700;color:var(--blue)}
 .ledger{margin-top:0}.ledger-head{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-bottom:20px;border-bottom:1px solid #e7eef2}.ledger-head h3{margin:0 0 5px;font-size:20px}.ledger-head p{margin:0;color:var(--muted);font-size:12px}.ledger-head-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}.ledger-toolbar{display:grid;grid-template-columns:minmax(0,1fr) 110px;gap:8px;margin:18px 0 12px}.ledger-toolbar input,.ledger-toolbar select{width:100%;height:42px;padding:0 12px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}.ledger .table{margin:0}.row-actions{display:flex;gap:6px;white-space:nowrap}.row-btn{padding:7px 10px;border:1px solid #c8e8f7;border-radius:7px;background:#fff;color:var(--blue);font-size:11px;font-weight:800;cursor:pointer}.row-btn.delete{border-color:#efd0d0;color:#b84b4b}
 .admin-page[hidden]{display:none!important}.raw{margin-top:25px}.raw pre{white-space:pre-wrap;word-break:break-all;background:#f7f9fa;padding:15px;border-radius:8px;font-size:11px;max-height:300px;overflow:auto}
@@ -241,7 +241,11 @@ analyze.addEventListener("click",async()=>{
    },1000);
   }else{
    summary.innerHTML="<span>상호 · "+esc(company.name||"확인 필요")+"</span><span>법인등록번호 · "+esc(corpNo)+"</span><span>현재 임원 · "+officers.length+"명</span><span>확인 이력 · "+(j.officer_events||[]).length+"건</span>";
+   if(adminMode){
+   tbody.innerHTML=officers.length?officers.map((o,i)=>"<tr data-analysis-row='"+i+"'><td><input class='analysis-edit' data-field='position' value='"+esc(o.position||"")+"'></td><td><input class='analysis-edit' data-field='name' value='"+esc(str(o.name).replace(/\\s*\\([A-Za-z][A-Za-z .-]*\\)\\s*$/,"").trim())+"'></td><td><input class='analysis-edit' data-field='event' value='"+esc(o.event||"")+"'></td><td><input class='analysis-edit' data-field='event_date' type='date' value='"+esc(o.event_date||o.registration_date||"")+"'></td><td><input class='analysis-edit' data-field='expiry' type='date' value='"+esc(o.expiry||"")+"'></td><td><button class='analysis-delete' data-remove-officer='"+i+"' type='button'>삭제</button></td></tr>").join(""):"<tr><td colspan='6'>현재 임원으로 확인된 이력이 없습니다.</td></tr>";
+  }else{
    tbody.innerHTML=officers.length?officers.map(o=>"<tr><td>"+esc(o.position)+"</td><td><b>"+esc(str(o.name).replace(/\\s*\\([A-Za-z][A-Za-z .-]*\\)\\s*$/,"").trim())+"</b></td><td class='event'>"+esc(o.event)+"</td><td>"+esc(o.event_date||o.registration_date||"확인 필요")+"</td><td class='expiry'>"+esc(o.expiry||"확인 필요")+"</td><td>"+(o.position.includes("감사")?"정기주주총회 기준":"3년 기준")+"</td></tr>").join(""):"<tr><td colspan='6'>현재 임원으로 확인된 이력이 없습니다.</td></tr>";
+  }
    result.style.display="block";
    apply.style.display=adminMode?"none":"block";
    status.textContent="분석 완료";
@@ -257,6 +261,27 @@ analyze.addEventListener("click",async()=>{
   if(generation===workflow.generation&&workflow.state!=="SAVING")analyze.disabled=false;
  }
 });
+tbody.addEventListener("input",e=>{
+ const input=e.target.closest(".analysis-edit");if(!input||!latestAnalysis)return;
+ const row=input.closest("[data-analysis-row]");if(!row)return;
+ const i=Number(row.dataset.analysisRow),o=latestAnalysis.officers?.[i];if(!o)return;
+ o[input.dataset.field]=input.value;
+ if(input.dataset.field==="event_date")o.registration_date=input.value;
+ window.__latestOfficerAnalysis=latestAnalysis;
+});
+tbody.addEventListener("click",e=>{
+ const btn=e.target.closest("[data-remove-officer]");if(!btn||!latestAnalysis)return;
+ const i=Number(btn.dataset.removeOfficer);
+ if(!Number.isInteger(i)||i<0||i>=latestAnalysis.officers.length)return;
+ latestAnalysis.officers.splice(i,1);
+ window.__latestOfficerAnalysis=latestAnalysis;
+ const rows=[...tbody.querySelectorAll("[data-analysis-row]")];
+ if(rows[i])rows[i].remove();
+ [...tbody.querySelectorAll("[data-analysis-row]")].forEach((tr,n)=>{tr.dataset.analysisRow=n;const b=tr.querySelector("[data-remove-officer]");if(b)b.dataset.removeOfficer=n;});
+ const save=document.getElementById("adminSaveAnalysis");if(save)save.disabled=latestAnalysis.officers.length===0;
+ if(!latestAnalysis.officers.length)tbody.innerHTML="<tr><td colspan='6'>저장할 임원이 없습니다.</td></tr>";
+});
+
 function contactData(){
  return {phone:str($("phone").value),email:str($("email").value)}
 }
