@@ -31,7 +31,7 @@ body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:var(--ink);backg
 @media(max-width:700px){.ledger-inline-head{align-items:stretch;flex-direction:column}.ledger-inline-head .pick{align-self:flex-start}}
 .existing-contact{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:16px}
 .existing-contact input{width:100%;box-sizing:border-box}
-.existing-save-actions{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:12px}.ledger-pagination{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px}.ledger-pagination button{height:38px;padding:0 16px;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer}.ledger-pagination button:disabled{opacity:.4;cursor:default}.ledger-pagination span{min-width:58px;text-align:center;font-size:12px;font-weight:800;color:var(--muted)}
+.existing-save-actions{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:12px}.ledger-date{display:block;margin-bottom:3px;color:var(--muted);font-size:10px;font-weight:700;line-height:1.2;white-space:nowrap}.ledger-pagination{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px}.ledger-pagination button{height:38px;padding:0 16px;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer}.ledger-pagination button:disabled{opacity:.4;cursor:default}.ledger-pagination span{min-width:58px;text-align:center;font-size:12px;font-weight:800;color:var(--muted)}
 @media(max-width:700px){.existing-contact{grid-template-columns:1fr}}
 /* 고객 신청 화면: 법인페이지 임원 임기 자동관리 서비스와 동일한 톤 */
 body.customer-apply{background:#fff}
@@ -385,6 +385,7 @@ async function api(path,options={}){
  }finally{clearTimeout(timer)}
 }
 function dday(v){if(!v)return"";const n=Math.ceil((new Date(v+"T00:00:00")-new Date())/86400000);return Number.isFinite(n)?(n>=0?"D-"+n:"D+"+Math.abs(n)):""}
+function formatLedgerDate(v){if(!v)return"";const d=new Date(v);if(Number.isNaN(d.getTime()))return"";return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,"0")}.${String(d.getDate()).padStart(2,"0")}`;}
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 let ledgerRows=[];
 let editingId="";
@@ -410,7 +411,7 @@ function renderLedger(resetPage=false){
  const totalPages=Math.max(1,Math.ceil(rows.length/LEDGER_PAGE_SIZE));
  if(ledgerPage>totalPages)ledgerPage=totalPages;
  const pageRows=rows.slice((ledgerPage-1)*LEDGER_PAGE_SIZE,ledgerPage*LEDGER_PAGE_SIZE);
- $("ledgerBody").innerHTML=pageRows.length?pageRows.map(x=>`<tr><td>${esc(x.company)}</td><td>${esc(x.registrationNumber||"-")}</td><td><b>${esc(x.officer)}</b></td><td>${esc(x.position)}</td><td>${esc(x.expiry)}</td><td>${esc(dday(x.expiry))}</td><td>${esc(x.phone||x.email||"-")}</td><td>${esc(x.source||"기존고객")}</td><td><div class="row-actions"><button class="row-btn" data-edit="${esc(x.id)}" type="button">수정</button><button class="row-btn delete" data-delete="${esc(x.id)}" type="button">삭제</button></div></td></tr>`).join(""):'<tr><td colspan="9">등록된 관리대장이 없습니다.</td></tr>';
+ $("ledgerBody").innerHTML=pageRows.length?pageRows.map(x=>`<tr><td><span class="ledger-date">${esc(formatLedgerDate(x.created_at||x.createdAt||x.created||x.registered_at||x.registeredAt||""))}</span>${esc(x.company)}</td><td>${esc(x.registrationNumber||"-")}</td><td><b>${esc(x.officer)}</b></td><td>${esc(x.position)}</td><td>${esc(x.expiry)}</td><td>${esc(dday(x.expiry))}</td><td>${esc(x.phone||x.email||"-")}</td><td>${esc(x.source||"기존고객")}</td><td><div class="row-actions"><button class="row-btn" data-edit="${esc(x.id)}" type="button">수정</button><button class="row-btn delete" data-delete="${esc(x.id)}" type="button">삭제</button></div></td></tr>`).join(""):'<tr><td colspan="9">등록된 관리대장이 없습니다.</td></tr>';
  const pager=$("ledgerPagination");
  pager.hidden=rows.length<=LEDGER_PAGE_SIZE;
  $("ledgerPageInfo").textContent=ledgerPage+" / "+totalPages;
