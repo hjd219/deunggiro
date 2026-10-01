@@ -10,6 +10,10 @@
 .corporate-support-row{display:grid;grid-template-columns:1fr 1fr;gap:42px;align-items:start;border-top:1px solid #c8e8f7}
 .corporate-tool-row{display:grid;grid-template-columns:1fr 1fr;gap:42px;align-items:start;border-top:1px solid #c8e8f7}
 .corporate-tool-row>.simple-docs{border-top:0;margin-top:0;padding-top:56px;min-width:0}\n.corporate-support-row>.simple-docs,.corporate-tool-row>.simple-docs{box-sizing:border-box}\n.corporate-support-row h2,.corporate-tool-row h2{margin-top:0}\n.corporate-support-row .story-qa-title{margin-top:0}\n.corporate-support-row .story-qa-title h2{margin-top:0}\n.corporate-support-row .story-qa-list{margin-top:24px}
+.term-alert-title{display:flex;align-items:center;gap:8px}
+.term-admin-link{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;color:#168dca;text-decoration:none;border-radius:50%;transition:background-color .2s ease,color .2s ease}
+.term-admin-link:hover{background:rgba(22,141,202,.10)}
+.term-admin-link svg{width:17px;height:17px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .term-alert-card{display:block;margin-top:28px;padding:0 0 14px;color:#173b4a;text-decoration:none;cursor:pointer;border-radius:10px;transition:transform .22s ease,box-shadow .22s ease,background-color .22s ease}\n@media(hover:hover) and (pointer:fine){.term-alert-card:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(15,23,42,.10);background:rgba(255,255,255,.72)}}\n@media(hover:none),(pointer:coarse){.term-alert-card:active{transform:scale(.985);box-shadow:0 5px 14px rgba(15,23,42,.08)}}
 .term-alert-card h3{margin:0 0 28px!important;font-size:17px;font-weight:900;line-height:20px;color:#173b4a}
 .term-alert-card h3 i{margin-left:6px;color:#2aa9df;font-size:14px;font-style:normal}
@@ -108,7 +112,7 @@
  </a>
 </section>
 <section class="simple-docs corporate-support" id="officer-term-alert">
- <h2>임원 임기 자동관리 서비스</h2>
+ <div class="term-alert-title"><h2>임원 임기 자동관리 서비스</h2><a class="term-admin-link" href="/officer-manager-test.html" aria-label="관리자 로그인" title="관리자"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21h-4v-.09a1.7 1.7 0 0 0-1.1-1.57 1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H3v-4h.09A1.7 1.7 0 0 0 4.66 8.5a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1.1V3h4v.09A1.7 1.7 0 0 0 15.5 4.66a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 9a1.7 1.7 0 0 0 .6 1 1.7 1.7 0 0 0 1.1.4h.09v4h-.09A1.7 1.7 0 0 0 19.4 15Z"/></svg></a></div>
  <div class="term-alert-card" role="button" tabindex="0" aria-label="임원 임기 자동알림 받기">
   <h3>임원 임기 자동알림 받기 <i>→</i></h3>
   <div class="term-alert-body">
