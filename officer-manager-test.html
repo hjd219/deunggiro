@@ -513,7 +513,7 @@ const customerApply=new URLSearchParams(location.search).get("apply")==="1";
 if(customerApply){
  document.body.classList.add("customer-apply");
  showCustomerPage();
- document.querySelector(".head h1").textContent="임원 임기 자동관리 서비스";
+ document.querySelector(".head h1").textContent="임원 임기 자동관리 신청";
  document.querySelector(".head p").textContent="휴대전화번호와 이메일을 입력하고 개인정보 수집·이용에 동의해 주세요.";
  adminHeadBtn.hidden=true;adminHeadBtn.style.display="none";
  const top=document.getElementById("uploadTop");if(top)top.hidden=true;
