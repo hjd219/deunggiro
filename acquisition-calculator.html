@@ -120,10 +120,12 @@ async function printEstimate(){if(window.DGCounter) await window.DGCounter.count
  try{sessionStorage.setItem('deunggiroEstimatePreview',JSON.stringify({version:3,type:'acquisition-v3',title:'등기로 '+modeName+' 예상 견적서',html}));sessionStorage.setItem('deunggiroEstimateSource',location.pathname+location.search);location.href='/estimate-preview-v2.html?v=20260922-26'}catch(e){window.print()}
 }
 property();syncLabels();calc();
-$('add').addEventListener('click',()=>property());
-document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',async()=>{if(window.DGCounter) await window.DGCounter.countOnce('calculator');document.querySelectorAll('[data-mode]').forEach(x=>x.classList.toggle('active',x===b));mode=b.dataset.mode;syncLabels();calc()}));
-document.addEventListener('input',e=>{if(e.target.matches('input'))calc()});
-document.addEventListener('change',e=>{if(e.target.matches('select'))calc()});
+let calculatorUsageCounted=false;
+async function countCalculatorUsageOnce(){if(calculatorUsageCounted)return;calculatorUsageCounted=true;if(window.DGCounter)await window.DGCounter.countOnce('calculator')}
+$('add').addEventListener('click',()=>{countCalculatorUsageOnce();property()});
+document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{countCalculatorUsageOnce();document.querySelectorAll('[data-mode]').forEach(x=>x.classList.toggle('active',x===b));mode=b.dataset.mode;syncLabels();calc()}));
+document.addEventListener('input',e=>{if(e.target.matches('input')){countCalculatorUsageOnce();calc()}});
+document.addEventListener('change',e=>{if(e.target.matches('select')){countCalculatorUsageOnce();calc()}});
 document.getElementById('mobileTotal').addEventListener('click',()=>document.getElementById('resultPanel').scrollIntoView({behavior:'smooth'}));</script><script src="/assets/firestore-counter-public.js?v=10"></script><!-- DG_COUNTER_DEPLOY_SYNC_V6 -->
 <script src="/assets/home-mobile-menu.js?v=20260917-1"></script><script src="/assets/site-footer.js?v=20260917-v6"></script>
 <script id="calculator-tutorial-preview-js">
