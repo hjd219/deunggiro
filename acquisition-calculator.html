@@ -121,7 +121,7 @@ async function printEstimate(){if(window.DGCounter) await window.DGCounter.count
 }
 property();syncLabels();calc();
 $('add').addEventListener('click',()=>property());
-document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-mode]').forEach(x=>x.classList.toggle('active',x===b));mode=b.dataset.mode;syncLabels();calc()}));
+document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',async()=>{if(window.DGCounter) await window.DGCounter.countOnce('calculator');document.querySelectorAll('[data-mode]').forEach(x=>x.classList.toggle('active',x===b));mode=b.dataset.mode;syncLabels();calc()}));
 document.addEventListener('input',e=>{if(e.target.matches('input'))calc()});
 document.addEventListener('change',e=>{if(e.target.matches('select'))calc()});
 document.getElementById('mobileTotal').addEventListener('click',()=>document.getElementById('resultPanel').scrollIntoView({behavior:'smooth'}));</script><script src="/assets/firestore-counter-public.js?v=10"></script><!-- DG_COUNTER_DEPLOY_SYNC_V6 -->
