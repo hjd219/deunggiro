@@ -211,7 +211,7 @@ analyze.addEventListener("click",async()=>{
    summary.innerHTML="";
    tbody.innerHTML="";
    const table=result.querySelector(".table");if(table)table.remove();
-   const rawBox=result.querySelector(".raw");if(rawBox)rawBox.remove();
+
    const contact=window.__customerContact||{};
    if(!contact.phone||!contact.email)throw Error("신청자 연락처 정보가 없습니다.");
    const cleanCompany=String(company.name||"").replace(/\\s*\\([^()]*[A-Za-z][^()]*\\)\\s*$/,"").trim();
@@ -350,7 +350,7 @@ function showCustomerPage(){
  $("analyze").hidden=false;
  
  document.querySelector(".head p").hidden=false;
- document.querySelector(".head h1").textContent="임원 임기관리 테스트";
+ document.querySelector(".head h1").textContent="임원 임기관리";
  adminHeadBtn.hidden=false;
  adminHeadBtn.style.display="inline-flex";
  window.scrollTo({top:0,behavior:"auto"});
