@@ -148,9 +148,7 @@ function resetAnalysisState(message){
  workflow.state="READY";
  if(message)status.textContent=message;
 }
-window.__officerWorkflow=workflow;
 window.__resetOfficerAnalysisState=resetAnalysisState;
-window.__officerAnalysisGeneration=window.__officerAnalysisGeneration||0;
 const str=v=>String(v??"").trim();
 const esc=v=>String(v??"").replace(/[&<>"\']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","\'":"&#39;"}[ch]));
 
@@ -184,7 +182,6 @@ analyze.addEventListener("click",async()=>{
  const selected=file.files[0];
  if(!selected){status.textContent="파일을 먼저 선택하세요.";return}
  const generation=++workflow.generation;
- window.__officerAnalysisGeneration=generation;
  workflow.state="ANALYZING";
  analyze.disabled=true;
  status.textContent="임원정보 분석 중…";
