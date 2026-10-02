@@ -129,6 +129,7 @@ const WORKER="https://deunggiro-ocr-209298170572.asia-northeast3.run.app/";
 const qs=new URLSearchParams(location.search);
 const CUSTOMER_APPLY_MODE=qs.get("apply")==="1";
 const EMBED_MODE=qs.get("embed")==="1";
+const file=document.getElementById("file"),result=document.getElementById("result"),apply=document.getElementById("apply"),analyze=document.getElementById("analyze"),uploadBox=document.getElementById("uploadBox"),status=document.getElementById("status"),summary=document.getElementById("summary"),tbody=document.getElementById("tbody"),applyBtn=document.getElementById("applyBtn"),registerNote=document.getElementById("registerNote");
 let latestAnalysis=null;
 const workflow={state:"READY",generation:0};
 function resetAnalysisState(message){
@@ -194,7 +195,7 @@ analyze.addEventListener("click",async()=>{
   const res=await fetch(WORKER,{method:"POST",body:fd});
   let j=await res.json();
   if(generation!==workflow.generation)return;
-  raw.textContent=JSON.stringify(j,null,2);
+
   if(!res.ok||j.error)throw Error(j.detail||j.error||"분석 실패");
   if(generation!==workflow.generation)return;
   const officers=Array.isArray(j.current_officers)?j.current_officers:[];
