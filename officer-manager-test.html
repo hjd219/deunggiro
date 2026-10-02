@@ -153,7 +153,6 @@ function resetAnalysisState(message){
 window.__officerWorkflow=workflow;
 window.__resetOfficerAnalysisState=resetAnalysisState;
 window.__officerAnalysisGeneration=window.__officerAnalysisGeneration||0;
-// 관리대장 표시 여부는 아래 Cloud Run 관리자 인증 세션에서만 결정
 const str=v=>String(v??"").trim();
 const esc=v=>String(v??"").replace(/[&<>"\']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","\'":"&#39;"}[ch]));
 
@@ -316,7 +315,6 @@ function buildRecord(source){
  const contact=contactData();
  return {source,company:latestAnalysis?.company||{},officers:latestAnalysis?.officers||[],contact,created_at:new Date().toISOString()}
 }
-// 기존 고객 등록은 아래 관리자 모듈에서 관리대장 내부 인라인 영역으로 제어
 applyBtn.addEventListener("click",()=>{
  const contact=contactData();
  if(!contact.phone){registerNote.textContent="휴대전화번호를 입력해 주세요.";return}
@@ -333,15 +331,8 @@ applyBtn.addEventListener("click",()=>{
 })();
 </script>
 <script type="module">
-/*
- 새 임원관리 저장 구조
- - 기존 OCR/Document AI 분석부는 그대로 유지한다.
- - 브라우저 Firestore 저장/조회/수정/삭제 코드는 전부 제거한다.
- - Google Cloud Run 관리 API만 사용한다.
-*/
 const $=id=>document.getElementById(id);
 const ledger=$("ledger"),login=$("adminLogin"),adminHeadBtn=$("adminHeadBtn"),adminCloseBtn=$("adminCloseBtn"),loginMsg=$("loginMsg");
-// 모달은 OCR 결과 영역의 display:none 영향을 받지 않도록 body 직속으로 이동
 for(const id of ["adminLogin","editModal","preSaveEditModal"]){const el=$(id);if(el&&el.parentElement!==document.body)document.body.appendChild(el);}
 
 function showAdminPage(){
@@ -647,7 +638,6 @@ $("adminSaveAnalysis").onclick=async()=>{
  }
 };
 
-// 신청 링크에서는 고객 신청 화면, 그 외에는 관리자 로그인/관리대장만 표시
 const customerApply=new URLSearchParams(location.search).get("apply")==="1";
 if(customerApply){
  document.body.classList.add("customer-apply");
@@ -669,8 +659,7 @@ if(customerApply){
  $("result").style.display="block";
  $("apply").style.display="block";
 }else{
- // 관리자 진입 시 개발용 테스트/업로드 화면은 노출하지 않는다.
- $("uploadBox").hidden=true;
+  $("uploadBox").hidden=true;
  $("result").style.display="none";
  document.querySelector(".head").hidden=true;
  adminHeadBtn.hidden=true;adminHeadBtn.style.display="none";
