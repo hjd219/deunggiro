@@ -1,0 +1,34 @@
+/* Shared calculator shell styles. Keep page-specific calculator UI in each page. */
+
+/* Calculator shell follows the existing legal-info page flow: fixed blurred header, image background, normal document scroll. */
+body{background:#fff!important}
+.calculator-page-bg{position:relative;min-height:100vh;padding:150px 0 88px;background:url("/images/songdo-hero.webp") center/cover fixed no-repeat}
+.calculator-page-bg:before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,25,35,.20),rgba(7,25,35,.12) 52%,rgba(7,25,35,.04))}
+.calculator-page-bg>.dg-photo-credit{position:absolute;right:10px;bottom:8px;z-index:2;color:rgba(255,255,255,.78);font-size:9px;line-height:1.25;text-shadow:0 1px 3px rgba(0,0,0,.6);white-space:nowrap}
+.calc-page-intro,.calculator-flow{position:relative;z-index:3;width:min(1180px,calc(100% - 44px));margin-left:auto;margin-right:auto}
+.calc-page-intro{padding:0 0 28px;color:#fff}
+.calc-page-intro h1{margin:0 0 10px;color:#fff;font-size:36px;line-height:1.3;letter-spacing:-2px;font-weight:900;text-shadow:0 2px 8px rgba(0,0,0,.25)}
+.calc-page-intro h1 span{color:#37aee4}
+.calc-page-intro p{max-width:850px;margin:0;color:rgba(255,255,255,.92);font-size:15px;line-height:1.7;text-shadow:0 1px 5px rgba(0,0,0,.28)}
+.calculator-flow{display:block}
+.calculator-page-bg .calc-page-shell{width:100%!important;margin:0!important;border-radius:26px!important;overflow:hidden!important;box-shadow:0 18px 55px rgba(5,28,43,.16)!important}
+.calculator-page-bg .calc-wrap-current{padding-top:34px!important}
+.calculator-page-bg .hero-usage-counter{display:block;margin:0 0 22px;color:#667982;font-size:13px;font-weight:700;line-height:1.6;text-shadow:none}
+.calculator-page-bg .hero-usage-counter[hidden]{display:none}
+.calculator-page-bg .hero-usage-counter strong{margin-left:4px;color:#37aee4;font-size:14px;font-weight:900}
+.calculator-page-bg .hero-usage-counter .usage-unit{color:#667982;text-shadow:none}
+@media(max-width:800px){
+ .calculator-page-bg{padding:94px 0 52px;background-image:url("/images/songdo-hero-mobile.webp");background-attachment:scroll}
+ .calc-page-intro,.calculator-flow{width:calc(100% - 24px)}
+ .calc-page-intro{padding:0 8px 22px}
+ .calc-page-intro h1{font-size:34px;line-height:1.18;letter-spacing:-1.7px;margin-bottom:8px}
+ .calc-page-intro p{font-size:15px;line-height:1.65}
+ .calculator-page-bg .calc-page-shell{border-radius:20px!important}
+ .calculator-page-bg .calc-wrap-current{padding-top:28px!important}
+ .calculator-page-bg>.dg-photo-credit{right:8px;bottom:6px;font-size:8px}
+}
+
+body>header{position:fixed!important;top:0!important;left:0!important;right:0!important;z-index:1000!important;background:linear-gradient(180deg,rgba(7,25,35,.20),rgba(7,25,35,.15) 55%,rgba(7,25,35,0))!important;backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important}
+
+.fixed-total,.mobile-total,.sticky-total,.bottom-total,[class*="fixed-total"],[class*="mobile-total"],[class*="sticky-total"],[id*="fixed-total"],[id*="mobile-total"],[id*="sticky-total"]{display:none!important}
+
