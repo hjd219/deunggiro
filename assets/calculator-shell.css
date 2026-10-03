@@ -18,7 +18,7 @@ body{background:#fff!important}
 .calculator-page-bg .hero-usage-counter strong{margin-left:4px;color:#37aee4;font-size:14px;font-weight:900}
 .calculator-page-bg .hero-usage-counter .usage-unit{color:#667982;text-shadow:none}
 @media(max-width:800px){
- .calculator-page-bg{padding:94px 0 52px;background-image:url("/images/songdo-hero-mobile.webp");background-attachment:scroll}
+ .calculator-page-bg{padding:94px 0 52px;background-color:#071923;background-image:url("/images/songdo-hero-mobile.webp");background-size:auto 100svh;background-position:center top;background-repeat:no-repeat;background-attachment:scroll}
  .calc-page-intro,.calculator-flow{width:calc(100% - 24px)}
  .calc-page-intro{padding:0 8px 22px}
  .calc-page-intro h1{font-size:34px;line-height:1.18;letter-spacing:-1.7px;margin-bottom:8px}
