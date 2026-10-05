@@ -1,6 +1,6 @@
 /* Google Analytics 4 - site-wide */
 (() => {
-  const measurementId = 'G-PT7C1DC63L';
+  const measurementId = 'G-PGFPK2SJLK';
 
   if (window.__deunggiroGa4Loaded) return;
   window.__deunggiroGa4Loaded = true;
