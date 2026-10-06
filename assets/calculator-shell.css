@@ -28,7 +28,7 @@ body{background:#fff!important}
  .calculator-page-bg>.dg-photo-credit{right:8px;bottom:6px;font-size:8px}
 }
 
-body>header{position:fixed!important;top:0!important;left:0!important;right:0!important;z-index:1000!important;background:linear-gradient(180deg,rgba(7,25,35,.20),rgba(7,25,35,.15) 55%,rgba(7,25,35,0))!important;backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important}
+body>header{position:fixed!important;top:0!important;left:0!important;right:0!important;z-index:1000!important;background:linear-gradient(180deg,rgba(7,25,35,.20),rgba(7,25,35,.15) 55%,rgba(7,25,35,0))!important}
 
 .fixed-total,.mobile-total,.sticky-total,.bottom-total,[class*="fixed-total"],[class*="mobile-total"],[class*="sticky-total"],[id*="fixed-total"],[id*="mobile-total"],[id*="sticky-total"]{display:none!important}
 
