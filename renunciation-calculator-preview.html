@@ -50,13 +50,20 @@ $('basic').textContent=won(basic);$('answerFee').textContent=won(answer);$('liqu
 function printEstimate(){
  const text=id=>$(id)?.textContent||'0원';
  const r=+$('renounce').value,l=+$('limited').value,s=+$('special').value,a=+$('answer').value,c=+$('creditors').value,liq=$('liquidation').checked;
- const rows=[
- ['상속포기',r+'명'],['한정승인',l+'명'],['특별한정승인',s+'명'],['답변서 제출',a+'명'],['채권자',c+'명'],['임의청산',liq?'진행':'미진행']
+ const applicants=r+l+s;
+ const applicationRows=[
+  ['상속포기',r+'명'],['한정승인',l+'명'],['특별한정승인',s+'명'],['답변서 제출',a+'명'],['채권자',c+'명'],['임의청산',liq?'진행':'미진행']
  ].map(x=>'<div class="cost-row"><span>'+x[0]+'</span><b>'+x[1]+'</b></div>').join('');
- const costs=[
- ['상속포기·한정승인 보수',text('basic')],['답변서 제출',text('answerFee')],['임의청산 보수',text('liquidationFee')],['부가가치세 10%',text('vat')],
- ['인지대',text('stamp')],['송달료',text('delivery')],['신문공고',text('newspaper')],['내용증명',text('mail')]
+ const legalRows=[
+  ['상속포기·한정승인 보수',text('basic')],['답변서 제출',text('answerFee')],['임의청산 보수',text('liquidationFee')],['부가가치세 10%',text('vat')]
  ].map(x=>'<div class="cost-row"><span>'+x[0]+'</span><b>'+x[1]+'</b></div>').join('');
+ const expenseRows=[
+  ['인지대',text('stamp')],['송달료',text('delivery')],['신문공고',text('newspaper')],['내용증명',text('mail')]
+ ].map(x=>'<div class="cost-row"><span>'+x[0]+'</span><b>'+x[1]+'</b></div>').join('');
+ const won=v=>Number(String(v||'0').replace(/[^0-9]/g,''))||0;
+ const legalTotal=won(text('basic'))+won(text('answerFee'))+won(text('liquidationFee'))+won(text('vat'));
+ const expenseTotal=won(text('stamp'))+won(text('delivery'))+won(text('newspaper'))+won(text('mail'));
+ const money=n=>n.toLocaleString('ko-KR')+'원';
  let docs=[];
  if(r>0)docs.push('<div class="doc-item"><b>상속포기</b><br>상속인: 기본증명서(상세) · 가족관계증명서(상세) · 주민등록등본 또는 초본 · 인감증명서 · 인감도장 · 신분증<br>피상속인: 기본증명서(상세) · 가족관계증명서(상세) · 말소자 주민등록초본</div>');
  if(l>0)docs.push('<div class="doc-item"><b>한정승인</b><br>상속인: 기본증명서(상세) · 가족관계증명서(상세) · 주민등록등본 또는 초본 · 인감증명서 · 인감도장 · 신분증<br>피상속인: 기본증명서(상세) · 가족관계증명서(상세) · 말소자 주민등록초본<br>재산·채무 확인자료: 예금·보험·주식·부동산·자동차 등 재산자료와 대출·카드·세금 등 채무자료</div>');
@@ -65,14 +72,17 @@ function printEstimate(){
  if(l>0||s>0)docs.push('<div class="doc-item"><b>채권자 통지·신문공고</b><br>알고 있는 채권자의 상호·성명 · 주소 · 연락처 · 채권금액 및 채무 확인자료</div>');
  if(liq)docs.push('<div class="doc-item"><b>임의청산</b><br>상속재산 및 채무 전체 자료 · 채권자 목록 · 예금잔액 및 거래내역 · 부동산·자동차 등 환가대상 재산자료 · 장례비 등 상속재산에서 지출한 비용자료</div>');
  const docsHtml=docs.length?docs.join(''):'<div class="doc-item">선택한 업무가 없습니다.</div>';
- const html='<article class="quote"><header class="quote-head"><div class="brand">등기로<small>현재두 법무사 사무소</small></div><div class="quote-title"><b>상속포기·한정승인 예상 견적서</b></div><div class="quote-date">'+new Date().toLocaleDateString('ko-KR')+'</div></header>'+
- '<section class="grand"><span>예상 합계금액</span><strong>'+text('grand')+'</strong><small>입력한 조건을 기준으로 계산한 예상금액입니다.</small></section>'+
- '<div class="cost-grid"><section class="block"><h2>신청 내용</h2>'+rows+'</section><section class="block"><h2>예상 비용</h2>'+costs+'</section></div>'+
- '<section class="block docs"><h2>준비서류</h2>'+docsHtml+'</section>'+
+ const html='<article class="quote">'+
+ '<header class="quote-head"><div class="brand">등기로<small>현재두 법무사 사무소</small></div><div class="quote-title"><b>상속포기·한정승인 예상 견적서</b></div><div class="quote-date">'+new Date().toLocaleDateString('ko-KR')+'</div></header>'+
+ '<section class="grand"><span>예상 합계금액</span><strong>'+text('grand')+'</strong><small>법무사 보수와 법원비용·실비를 합산한 예상금액입니다.</small></section>'+
+ '<section class="block"><h2>계산 기준</h2>'+applicationRows+'</section>'+
+ '<div class="cost-grid"><section class="block"><h2>법원비용·실비</h2>'+expenseRows+'<div class="sum-row"><span>법원비용·실비 합계</span><strong>'+money(expenseTotal)+'</strong></div></section>'+
+ '<section class="block"><h2>법무사 보수</h2>'+legalRows+'<div class="sum-row"><span>법무사 보수 합계</span><strong>'+money(legalTotal)+'</strong></div></section></div>'+
+ '<section class="block docs"><div class="docs-split"><div class="docs-list"><h2>준비서류</h2>'+docsHtml+'</div><div class="docs-account"><h2>입금계좌</h2><span>신한은행<br><strong>110-482-692656</strong><small>현재두법무사사무소</small></span><span>카카오뱅크<br><strong>3333-07-6560416</strong><small>현재두법무사사무소</small></span></div></div></section>'+
  '<section class="notice"><b>서류 안내</b><span>위 서류는 선택한 업무를 기준으로 한 기본 준비서류입니다. 가족관계, 후순위 상속, 미성년자, 해외거주자, 재산·채무 내용 등에 따라 추가서류가 필요할 수 있습니다.</span></section>'+
  '<section class="notice"><b>안내</b><span>본 견적은 입력한 조건을 기준으로 산출한 예상금액이며 실제 사건 내용과 법원 비용 등에 따라 달라질 수 있습니다.</span></section>'+
  '<footer class="quote-footer"><div><b>등기로 | 현재두 법무사 사무소</b><span>인천 미추홀구 경원대로 873, 201호</span></div><div><span>032-425-1500</span><span>hjd21@naver.com</span><span>www.deunggiro.kr</span></div></footer></article>';
- try{sessionStorage.setItem('deunggiroEstimatePreview',JSON.stringify({version:3,type:'renunciation-v1',title:'등기로 상속포기·한정승인 예상 견적서',html}));sessionStorage.setItem('deunggiroEstimateSource',location.pathname+location.search);location.href='/estimate-preview-v2.html?v=20260922-26'}catch(e){window.print()}
+ try{sessionStorage.setItem('deunggiroEstimatePreview',JSON.stringify({version:3,type:'renunciation-v2',title:'등기로 상속포기·한정승인 예상 견적서',html}));sessionStorage.setItem('deunggiroEstimateSource',location.pathname+location.search);location.href='/estimate-preview-v2.html?v=20260922-26'}catch(e){window.print()}
 }
 $('pdfButton').addEventListener('click',printEstimate);
 document.querySelectorAll('select,input').forEach(x=>x.addEventListener('change',calc));$('mobileTotal').addEventListener('click',()=>$('resultPanel').scrollIntoView({behavior:'smooth'}));calc();
