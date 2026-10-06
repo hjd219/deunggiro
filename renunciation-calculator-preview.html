@@ -51,9 +51,14 @@ async function printEstimate(){if(window.DGCounter) await window.DGCounter.count
  const text=id=>$(id)?.textContent||'0원';
  const r=+$('renounce').value,l=+$('limited').value,s=+$('special').value,a=+$('answer').value,c=+$('creditors').value,liq=$('liquidation').checked;
  const applicants=r+l+s;
- const applicationRows=[
-  ['상속포기',r+'명'],['한정승인',l+'명'],['특별한정승인',s+'명'],['답변서 제출',a+'명'],['채권자',c+'명'],['임의청산',liq?'진행':'미진행']
- ].map(x=>'<div class="cost-row"><span>'+x[0]+'</span><b>'+x[1]+'</b></div>').join('');
+ const criteria=[];
+ if(r>0)criteria.push('상속포기 '+r+'명');
+ if(l>0)criteria.push('한정승인 '+l+'명');
+ if(s>0)criteria.push('특별한정승인 '+s+'명');
+ if(a>0)criteria.push('답변서 제출 '+a+'명');
+ if((l>0||s>0)&&c>0)criteria.push('채권자 '+c+'명');
+ if(liq)criteria.push('임의청산 진행');
+ const criteriaText=criteria.length?criteria.join(' · '):'선택한 업무 없음';
  const legalRows=[
   ['상속포기·한정승인 보수',text('basic')],['답변서 제출',text('answerFee')],['임의청산 보수',text('liquidationFee')],['부가가치세 10%',text('vat')]
  ].map(x=>'<div class="cost-row"><span>'+x[0]+'</span><b>'+x[1]+'</b></div>').join('');
@@ -75,7 +80,7 @@ async function printEstimate(){if(window.DGCounter) await window.DGCounter.count
  const html='<article class="quote">'+
  '<header class="quote-head"><div class="brand">등기로<small>현재두 법무사 사무소</small></div><div class="quote-title"><b>상속포기·한정승인 예상 견적서</b></div><div class="quote-date">'+new Date().toLocaleDateString('ko-KR')+'</div></header>'+
  '<section class="grand"><span>예상 합계금액</span><strong>'+text('grand')+'</strong><small>법무사 보수와 법원비용·실비를 합산한 예상금액입니다.</small></section>'+
- '<section class="block"><h2>계산 기준</h2>'+applicationRows+'</section>'+
+ '<section class="block"><h2>계산 기준</h2><div class="doc-item">'+criteriaText+'</div></section>'+
  '<div class="cost-grid"><section class="block"><h2>법원비용·실비</h2>'+expenseRows+'<div class="sum-row"><span>법원비용·실비 합계</span><strong>'+money(expenseTotal)+'</strong></div></section>'+
  '<section class="block"><h2>법무사 보수</h2>'+legalRows+'<div class="sum-row"><span>법무사 보수 합계</span><strong>'+money(legalTotal)+'</strong></div></section></div>'+
  '<section class="block docs"><div class="docs-split"><div class="docs-list"><h2>준비서류</h2>'+docsHtml+'</div><div class="docs-account"><h2>입금계좌</h2><span>신한은행<br><strong>110-482-692656</strong><small>현재두법무사사무소</small></span><span>카카오뱅크<br><strong>3333-07-6560416</strong><small>현재두법무사사무소</small></span></div></div></section>'+
