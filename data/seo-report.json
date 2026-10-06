@@ -1,11 +1,16 @@
 {
-  "generatedAt": "2026-10-06T05:53:58.254Z",
-  "totalPosts": 383,
-  "ok": 383,
+  "generatedAt": "2026-10-06T06:34:15.034Z",
+  "totalPosts": 384,
+  "ok": 384,
   "warnings": 0,
-  "canonicalFixed": 0,
+  "canonicalFixed": 384,
   "missingFiles": 0,
   "items": [
+    {
+      "slug": "renunciation-naver-224432746077",
+      "status": "ok",
+      "issues": []
+    },
     {
       "slug": "corporate-naver-224425670405",
       "status": "ok",
