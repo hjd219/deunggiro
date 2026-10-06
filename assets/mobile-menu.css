@@ -47,6 +47,7 @@
   .dg-mm-calc-split{display:grid;grid-template-columns:1fr 1fr;gap:0;min-width:0;border:1px solid #36a9e1;border-radius:15px;overflow:hidden;background:#f4f8fb}
   .dg-mm-calc-split .dg-mm-calc-btn{min-width:0;min-height:52px;padding:0 7px;border:0;border-radius:0;background:transparent;color:#344250!important;white-space:nowrap;font-size:13px;box-shadow:none}
   .dg-mm-calc-split .dg-mm-calc-btn+.dg-mm-calc-btn{border-left:1px solid #cfe6f1}
+  .dg-mm-renunciation-calc-btn{border:1px solid #36a9e1!important;background:transparent!important;color:#344250!important;box-shadow:none!important}
   .dg-mm-call-btn{border:1px solid #35a8df;background:#35a8df;color:#fff!important}
   .dg-mm-footer{margin-top:25px;text-align:center;color:#4f5d69;font-size:15px;font-weight:750;letter-spacing:-.2px}
   .dg-mm-footer .dg-mm-footer-brand{color:#35a8df;font-weight:900}
