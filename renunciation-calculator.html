@@ -22,24 +22,24 @@
 @media(max-width:800px){}
 @media(prefers-reduced-motion:reduce){}
 
-/* Applicant selection guide: fresh implementation */
-.applicant-guide{display:flex;align-items:center;gap:9px;width:max-content;max-width:100%;margin:0 0 14px;padding:8px 12px;border:1px solid #bfe6f5;border-radius:999px;background:#f2fbff;color:#426472;font-size:12px;font-weight:850;line-height:1.3;box-shadow:0 5px 16px rgba(26,126,169,.08)}
-.applicant-guide-hand{display:inline-flex;align-items:center;justify-content:center;flex:0 0 27px;width:27px;height:29px;color:#37aee4}.applicant-guide-hand svg{width:25px;height:25px;transform:rotate(180deg);animation:applicantGuideTap 1.05s ease-in-out infinite}
-.applicant-choice-area{padding:3px;border-radius:10px;box-shadow:0 0 0 3px rgba(55,174,228,.16)}
-.applicant-choice-area select{cursor:pointer}
-@keyframes applicantGuideTap{0%,100%{transform:rotate(180deg) translateY(2px)}50%{transform:rotate(180deg) translateY(-2px)}}
-@media(max-width:850px){.applicant-guide{max-width:100%;padding:7px 10px;margin-bottom:12px;font-size:11px;white-space:normal}.applicant-guide-hand{flex-basis:25px;width:25px;height:27px}.applicant-guide-hand svg{width:23px;height:23px}.applicant-choice-area{padding:3px;border-radius:10px}.applicant-choice-area .field{min-width:0}}
-@media(prefers-reduced-motion:reduce){.applicant-guide-hand svg{animation:none;transform:rotate(180deg)}}
 </style>
 <script src="/assets/analytics.js?v=20261005-1" defer></script>
 <link rel="preload" as="image" href="/images/songdo-cherry-hero-mobile.webp" media="(max-width:800px)" fetchpriority="high"><link rel="preload" as="image" href="/images/songdo-cherry-hero.webp" media="(min-width:801px)" fetchpriority="high">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"홈","item":"https://www.deunggiro.kr/"},{"@type":"ListItem","position":2,"name":"상속포기·한정승인","item":"https://www.deunggiro.kr/renunciation.html"},{"@type":"ListItem","position":3,"name":"비용 계산기","item":"https://www.deunggiro.kr/renunciation-calculator.html"}]}
-</script></head><body>
+</script><style id="calculator-tutorial-preview">
+.dg-guide-tip{display:flex;align-items:center;gap:9px;width:max-content;max-width:calc(100% - 8px);margin:0 0 13px;padding:8px 12px;border:1px solid #bfe6f5;border-radius:999px;background:#f2fbff;color:#426472;font-size:12px;font-weight:850;line-height:1.3;box-shadow:0 5px 16px rgba(26,126,169,.08);transition:.2s}
+.dg-guide-pointer{position:relative;display:inline-flex;align-items:center;justify-content:center;flex:0 0 27px;width:27px;height:29px;color:#37aee4}
+.dg-guide-hand-svg{width:25px;height:25px;transform:rotate(180deg);animation:dgGuideTap 1.05s ease-in-out infinite}
+.dg-guide-target{position:relative;z-index:2;border-radius:10px;box-shadow:0 0 0 3px rgba(55,174,228,.16)}
+.dg-guide-result-tip{margin-top:10px;margin-left:auto}@keyframes dgGuideTap{0%,100%{transform:rotate(180deg) translateY(2px)}50%{transform:rotate(180deg) translateY(-2px)}}
+#renounce,#limited,#special{cursor:pointer}
+@media(max-width:800px){.dg-guide-tip{padding:7px 10px;font-size:11px;margin-bottom:11px}.dg-guide-pointer{flex-basis:25px;width:25px;height:27px}.dg-guide-hand-svg{width:23px;height:23px}}
+</style></head><body>
 <header><div class="wrap nav"><a class="logo" href="/" style="color:inherit;text-decoration:none">등기로<small>현재두 법무사 사무소 · 인천</small></a><nav class="menu"><a href="/">홈</a><a href="/inheritance.html">상속등기</a><a href="/renunciation.html">상속포기·한정승인</a><a href="/corporate.html">법인등기</a><a href="/realestate.html">부동산등기</a><a href="/family.html">가사</a><a href="/posts.html">법률정보</a></nav></div></header>
 <div class="calculator-page-bg" id="dg-intro"><div class="dg-photo-credit">사진 출처: IFEZ · 공공누리 제1유형</div><div class="calc-page-intro"><h1>상속포기·한정승인 비용 <span>계산</span></h1><p>상속포기·한정승인·특별한정승인의 법무사 보수와 법원비용, 신문공고·내용증명·임의청산 비용을 간편하게 계산합니다.</p></div>
 <main class="calculator-flow"><section class="calc-page-shell"><div class="calc-wrap-current"><div id="dg-calculator-usage" class="hero-usage-counter" hidden>누적 계산기 이용자 <strong data-count></strong></div><div class="workspace"><div class="input-side">
-<section class="section"><div class="applicant-guide"><span class="applicant-guide-hand" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 25V9a4 4 0 0 1 8 0v12-5a4 4 0 0 1 8 0v6-3a4 4 0 0 1 8 0v11c0 10-6 15-15 15h-3c-6 0-10-3-13-8l-6-9a4 4 0 0 1 6-5l7 7"/></svg></span><span>신청할 유형을 선택하세요 · 복수 선택 가능</span></div><div class="section-head"><h2>신청인 선택</h2><span class="section-no">동일 피상속인 기준</span></div><div class="conditions applicant-choice-area">
+<section class="section"><div class="section-head"><h2>신청인 선택</h2><span class="section-no">동일 피상속인 기준</span></div><div class="conditions">
 <div class="field"><label>상속포기</label><select id="renounce"><option value="0">선택 안함</option><option value="1">1명</option><option value="2">2명</option><option value="3">3명</option><option value="4">4명</option><option value="5">5명</option><option value="6">6명</option><option value="7">7명</option><option value="8">8명</option><option value="9">9명</option><option value="10">10명</option></select></div>
 <div class="field"><label>한정승인</label><select id="limited"><option value="0">선택 안함</option><option value="1">1명</option><option value="2">2명</option><option value="3">3명</option><option value="4">4명</option><option value="5">5명</option></select></div>
 <div class="field"><label>특별한정승인</label><select id="special"><option value="0">선택 안함</option><option value="1">1명</option><option value="2">2명</option><option value="3">3명</option><option value="4">4명</option><option value="5">5명</option></select></div>
@@ -115,4 +115,21 @@ document.querySelectorAll('select,input').forEach(x=>{
 </script>
 <script src="/assets/firestore-counter-public.js?v=10"></script><!-- DG_COUNTER_DEPLOY_SYNC_V6 -->
 <script src="/assets/home-mobile-menu.js?v=20260917-1"></script><script src="/assets/site-footer.js?v=20260917-v6"></script>
-</body></html>
+<script id="calculator-tutorial-preview-js">
+(function(){
+ var target=document.querySelector('.section .conditions');
+ if(!target)return;
+ var tip=document.createElement('div');
+ tip.className='dg-guide-tip';
+ tip.innerHTML='<span class="dg-guide-pointer" aria-hidden="true"><svg class="dg-guide-hand-svg" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 25V9a4 4 0 0 1 8 0v12-5a4 4 0 0 1 8 0v6-3a4 4 0 0 1 8 0v11c0 10-6 15-15 15h-3c-6 0-10-3-13-8l-6-9a4 4 0 0 1 6-5l7 7"/></svg></span><span>신청할 유형을 선택하세요 · 복수 선택 가능</span>';
+ target.classList.add('dg-guide-target');
+ target.parentNode.insertBefore(tip,target);
+ function finish(e){
+  if(!e.target.closest('#renounce,#limited,#special'))return;
+  target.removeEventListener('change',finish);
+  target.classList.remove('dg-guide-target');
+  if(tip.parentNode)tip.parentNode.removeChild(tip);
+ }
+ target.addEventListener('change',finish);
+})();
+</script></body></html>
