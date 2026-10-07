@@ -1,11 +1,16 @@
 {
-  "generatedAt": "2026-10-07T00:49:10.721Z",
-  "totalPosts": 384,
-  "ok": 384,
+  "generatedAt": "2026-10-07T06:13:02.380Z",
+  "totalPosts": 385,
+  "ok": 385,
   "warnings": 0,
-  "canonicalFixed": 384,
+  "canonicalFixed": 385,
   "missingFiles": 0,
   "items": [
+    {
+      "slug": "realestate-naver-224434164221",
+      "status": "ok",
+      "issues": []
+    },
     {
       "slug": "renunciation-naver-224432746077",
       "status": "ok",
