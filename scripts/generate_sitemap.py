@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import re
+import subprocess
 from datetime import date
 from pathlib import Path
 from xml.sax.saxutils import escape
@@ -10,6 +12,24 @@ POSTS_JSON = ROOT / 'data' / 'posts.json'
 SITEMAP = ROOT / 'sitemap.xml'
 BASE = 'https://www.deunggiro.kr'
 TODAY = date.today().isoformat()
+
+
+def git_lastmod(path: Path, fallback: str = '') -> str:
+    """Use the file's actual last Git modification date; never stamp unchanged URLs with today."""
+    try:
+        rel = path.relative_to(ROOT).as_posix()
+        out = subprocess.check_output(
+            ['git', 'log', '-1', '--format=%ad', '--date=short', '--', rel],
+            cwd=ROOT,
+            text=True,
+            stderr=subprocess.DEVNULL,
+        ).strip()
+        if re.fullmatch(r'\d{4}-\d{2}-\d{2}', out):
+            return out
+    except Exception:
+        pass
+    value = str(fallback or '').strip()
+    return value if re.fullmatch(r'\d{4}-\d{2}-\d{2}', value) else TODAY
 
 STATIC = [
     ('/', 'weekly', '1.0'),
@@ -46,7 +66,10 @@ def url_block(loc: str, lastmod: str, changefreq: str, priority: str) -> str:
 
 def main() -> None:
     posts = json.loads(POSTS_JSON.read_text(encoding='utf-8'))
-    blocks = [url_block(BASE + path, TODAY, freq, priority) for path, freq, priority in STATIC]
+    blocks = [
+        url_block(BASE + path, git_lastmod(ROOT / ('index.html' if path == '/' else path.lstrip('/'))), freq, priority)
+        for path, freq, priority in STATIC
+    ]
     seen = set()
     added = 0
     for post in posts:
@@ -57,7 +80,8 @@ def main() -> None:
         if not page.exists():
             continue
         seen.add(slug)
-        lastmod = str(post.get('date') or post.get('website_date') or TODAY).strip() or TODAY
+        stored_date = str(post.get('website_date') or post.get('date') or '').strip()
+        lastmod = git_lastmod(page, stored_date)
         blocks.append(url_block(f'{BASE}/posts/{slug}.html', lastmod, 'monthly', '0.7'))
         added += 1
     xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + '\n'.join(blocks) + '\n</urlset>\n'
