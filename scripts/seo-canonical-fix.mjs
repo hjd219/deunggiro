@@ -8,6 +8,8 @@ const reportPath = path.join(root, 'data', 'seo-report.json');
 
 const posts = JSON.parse(fs.readFileSync(postsPath, 'utf8'));
 
+// Only touch files whose canonical is missing or incorrect. Never normalize already-correct post HTML.
+
 function hasCanonical(html) {
   return /<link\b(?=[^>]*\brel=["'][^"']*\bcanonical\b[^"']*["'])(?=[^>]*\bhref=["'][^"']+["'])[^>]*>/i.test(html);
 }
