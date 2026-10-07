@@ -49,6 +49,7 @@ STATIC = [
     ('/family.html', 'monthly', '0.9'),
     ('/acquisition-calculator.html', 'monthly', '0.8'),
     ('/corporate-calculator.html', 'monthly', '0.8'),
+    ('/renunciation-calculator.html', 'monthly', '0.8'),
     ('/posts.html', 'weekly', '0.8'),
 ]
 
