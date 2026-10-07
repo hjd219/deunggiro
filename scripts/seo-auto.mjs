@@ -76,7 +76,7 @@ function coreScore(p){const text=`${p.title||''} ${p.keywords||''} ${p.summary||
 function buildCoreSlugs(){const core=new Set();for(const [category,quota] of Object.entries(CORE_QUOTAS)){posts.filter(p=>String(p.category||'').trim()===category).sort((a,b)=>coreScore(b)-coreScore(a)||String(b.date||'').localeCompare(String(a.date||''))).slice(0,quota).forEach(p=>core.add(String(p.slug||'').replace(/\\.html$/,'')))}return core}
 const CORE_SLUGS=buildCoreSlugs();
 function relatedPosts(p){return []}
-function gitModifiedDate(relPath,fallback){try{const out=execFileSync('git',['log','-1','--format=%cs','--',relPath],{cwd:root,encoding:'utf8'}).trim();return /^\d{4}-\d{2}-\d{2}$/.test(out)?out:fallback}catch{return fallback}}
+function contentModifiedDate(p){const candidates=[p.website_date,p.date];for(const v of candidates){const s=clean(v);if(/^\d{4}-\d{2}-\d{2}$/.test(s))return s}return todayKST()}
 function plainTextFromArticle(html){const m=html.match(/<div class="article-body">([\s\S]*?)<\/div>\s*<!-- SEO_RELATED_POSTS_START -->/i)||html.match(/<div class="article-body">([\s\S]*?)<\/div>\s*<div class="related">/i);if(!m)return '';return m[1].replace(/<script[\s\S]*?<\/script>/gi,' ').replace(/<style[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&nbsp;/gi,' ').replace(/&amp;/gi,'&').replace(/\s+/g,' ').trim()}
 function optimizedDescription(p,html){const summary=clean(p.summary);if(summary.length>=50&&summary.length<=165)return summary;const source=plainTextFromArticle(html)||summary||p.title;const out=source.slice(0,160).trim();return out.length<30?`${p.title} 관련 절차와 핵심 내용을 정리한 등기로 법률정보입니다.`.slice(0,160):out}
 function replaceSingleMeta(html,attr,key,value){
@@ -99,7 +99,7 @@ for(const p of posts){
   const relFile=`posts/${p.slug}.html`,file=path.join(root,relFile);
   if(!fs.existsSync(file)){audit.push({slug:p.slug,status:'warning',issues:['HTML 파일 없음']});continue}
   let html=sanitizeSeoArtifacts(fs.readFileSync(file,'utf8'));
-  const url=`${BASE}/posts/${p.slug}.html`,image=abs(p.thumbnail),modified=gitModifiedDate(relFile,p.date||todayKST()),description=optimizedDescription(p,html),hub=categoryHub(p.category);
+  const url=`${BASE}/posts/${p.slug}.html`,image=abs(p.thumbnail),modified=contentModifiedDate(p),description=optimizedDescription(p,html),hub=categoryHub(p.category);
   html=replaceMeta(html,'description',description);html=replaceOg(html,'og:description',description);html=replaceOg(html,'og:url',url);html=enhanceImages(html,p);
   const articleLd={'@context':'https://schema.org','@type':'Article',headline:p.title,description,datePublished:p.date,dateModified:modified,mainEntityOfPage:{'@type':'WebPage','@id':url},author:{'@type':'Person',name:'현재두'},publisher:{'@type':'Organization',name:'현재두 법무사 사무소',url:BASE},...(image?{image:[image]}:{})};
   const breadcrumbLd={'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'홈',item:BASE+'/'},{'@type':'ListItem',position:2,name:hub.name,item:BASE+hub.path},{'@type':'ListItem',position:3,name:p.title,item:url}]};
