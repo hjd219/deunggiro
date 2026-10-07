@@ -95,6 +95,7 @@ function updateSitemapLastmod(p,modified){const sitemap=path.join(root,'sitemap.
 function writeIfChanged(file,next){const current=fs.readFileSync(file,'utf8');if(current!==next)fs.writeFileSync(file,next)}
 
 const audit=[];
+// Existing posts are audited but are not rewritten unless the generated SEO output actually differs.
 for(const p of posts){
   const relFile=`posts/${p.slug}.html`,file=path.join(root,relFile);
   if(!fs.existsSync(file)){audit.push({slug:p.slug,status:'warning',issues:['HTML 파일 없음']});continue}
@@ -121,6 +122,9 @@ for(const p of posts){
   if(/SEO_(?:STRUCTURED_DATA|BREADCRUMB)_(?:START|END)(?!\s*-->)/.test(html))issues.push('SEO 마커 노출 위험');
   writeIfChanged(file,html);updateSitemapLastmod(p,modified);audit.push({slug:p.slug,status:issues.length?'warning':'ok',issues,modified,related:rel.map(x=>x.slug)});
 }
-const report={generatedAt:new Date().toISOString(),totalPosts:posts.length,ok:audit.filter(x=>x.status==='ok').length,warnings:audit.filter(x=>x.status!=='ok').length,items:audit};
-fs.writeFileSync(path.join(root,'data','seo-report.json'),JSON.stringify(report,null,2)+'\n');
+const report={totalPosts:posts.length,ok:audit.filter(x=>x.status==='ok').length,warnings:audit.filter(x=>x.status!=='ok').length,items:audit};
+const reportPath=path.join(root,'data','seo-report.json');
+const previous=fs.existsSync(reportPath)?JSON.parse(fs.readFileSync(reportPath,'utf8')):{};
+const previousStable={totalPosts:previous.totalPosts,ok:previous.ok,warnings:previous.warnings,items:previous.items};
+if(JSON.stringify(previousStable)!==JSON.stringify(report)) fs.writeFileSync(reportPath,JSON.stringify(report,null,2)+'\n');
 console.log(`SEO 자동화 완료: ${posts.length}개 글 / 정상 ${report.ok} / 경고 ${report.warnings}`);
