@@ -81,7 +81,8 @@ def main() -> None:
             continue
         seen.add(slug)
         stored_date = str(post.get('website_date') or post.get('date') or '').strip()
-        lastmod = git_lastmod(page, stored_date)
+        # Post HTML is routinely rewritten by SEO/link automation; Git mtime is therefore not a content-modified signal.
+        lastmod = stored_date if re.fullmatch(r'\d{4}-\d{2}-\d{2}', stored_date) else git_lastmod(page)
         blocks.append(url_block(f'{BASE}/posts/{slug}.html', lastmod, 'monthly', '0.7'))
         added += 1
     xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + '\n'.join(blocks) + '\n</urlset>\n'
