@@ -20,7 +20,7 @@ if(!Array.isArray(raw)) throw new Error('data/posts.json 형식이 올바르지 
 const posts=raw
   .filter(p=>p && p.slug && p.title && /^\d{4}-\d{2}-\d{2}$/.test(String(p.date||'')))
   .sort((a,b)=>String(b.date).localeCompare(String(a.date)))
-  .slice(0,30);
+  .slice(0,100);
 
 if(!posts.length) throw new Error('RSS에 넣을 게시글이 없습니다.');
 
