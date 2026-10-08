@@ -63,6 +63,18 @@ jobs:
           exit $status
       - name: Preserve Naver body formatting
         run: timeout 420s python -u scripts/refresh_naver_format.py
+      - name: Build SEO for new posts only
+        shell: bash
+        run: |
+          set -euo pipefail
+          # Process generated SEO on new articles; existing tracked articles are restored afterward.
+          # Existing article HTML must not be rewritten by scheduled imports.
+          timeout 90s python -u scripts/inject_internal_links.py
+          timeout 60s node scripts/seo-hub-links.mjs
+          timeout 90s node scripts/seo-auto.mjs
+          git restore --worktree -- posts
+          echo "EXISTING_POSTS_RESTORED; new untracked posts retain generated SEO"
+          git status --short -- posts | head -20 || true
       - name: Generate new thumbnails, sitemap and RSS (no legacy HTML rewrites)
         run: |
           timeout 150s python -u scripts/generate_thumbnails.py
