@@ -63,18 +63,9 @@ jobs:
           exit $status
       - name: Preserve Naver body formatting
         run: timeout 420s python -u scripts/refresh_naver_format.py
-      - name: Safe postprocess
+      - name: Generate new thumbnails, sitemap and RSS (no legacy HTML rewrites)
         run: |
-          timeout 90s python -u scripts/strip_naver_nonnumber_emoji.py
-          timeout 90s python -u scripts/strip_naver_consultation_footer.py
-          timeout 90s python -u scripts/ensure_section_dividers.py
-          timeout 90s python -u scripts/fix_divorce_categories.py
-          timeout 90s python -u scripts/cleanup_duplicate_posts.py
-          timeout 90s python -u scripts/site_maintenance.py
-          timeout 90s python -u scripts/inject_internal_links.py
-          timeout 60s node scripts/seo-hub-links.mjs
           timeout 150s python -u scripts/generate_thumbnails.py
-          timeout 90s python -u scripts/fix_thumbnail_logo.py
           timeout 90s python -u scripts/generate_sitemap.py
           # 사이트맵 누락 방지: posts.json에 등록되어 실제 HTML이 존재하는 모든 글이 sitemap.xml에 포함됐는지 검증
           python - <<'PY'
@@ -103,7 +94,6 @@ jobs:
               print('SITEMAP_MISSING_LIST', ','.join(missing))
               raise SystemExit(1)
           PY
-          timeout 60s node scripts/seo-canonical-fix.mjs
           timeout 60s node scripts/rss-auto.mjs
           timeout 90s python -u scripts/seo_quality_gate.py
       - name: Final body quality gate
