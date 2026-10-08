@@ -107,9 +107,22 @@ def patch_article(post,thumb):
  p.write_text(s,encoding='utf-8')
 def main():
  posts=json.loads(POSTS_JSON.read_text(encoding='utf-8'))
+ created=0
+ changed=False
  for post in posts:
   slug=post.get('slug')
   if not slug:continue
-  out=OUT_DIR/f'{slug}-thumbnail.png';create_thumbnail(post,out);post['thumbnail']='/assets/posts/'+out.name;patch_article(post,out.relative_to(ROOT))
- POSTS_JSON.write_text(json.dumps(posts,ensure_ascii=False,indent=2)+'\n',encoding='utf-8');print('generated',len(posts),'thumbnails with automatic highlights and case badges')
+  out=OUT_DIR/f'{slug}-thumbnail.png'
+  # Existing thumbnails and articles are immutable during routine imports.
+  if out.exists():continue
+  create_thumbnail(post,out)
+  rel='/assets/posts/'+out.name
+  if post.get('thumbnail')!=rel:
+   post['thumbnail']=rel
+   changed=True
+  patch_article(post,out.relative_to(ROOT))
+  created+=1
+ if changed:
+  POSTS_JSON.write_text(json.dumps(posts,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+ print('new thumbnails generated:',created,'existing posts skipped')
 if __name__=='__main__':main()
