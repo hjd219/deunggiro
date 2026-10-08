@@ -49,7 +49,7 @@
 #dg-inherit-agreement .dg-agr-note{font-size:12px;color:#6b808a;line-height:1.7;margin-top:16px}
 #dg-inherit-agreement .dg-agr-error{color:#b33434;font-size:13px;margin:10px 0}
 @media(max-width:800px){.dg-inherit-docs-agreement-row{grid-template-columns:1fr;gap:12px}.dg-inherit-docs-agreement-row #documents,#dg-inherit-agreement{padding-top:28px}#dg-inherit-agreement .dg-agr-heading h2{font-size:30px}#dg-inherit-agreement .dg-agr-panel{padding:15px}#dg-inherit-agreement .dg-agr-grid{grid-template-columns:1fr}}
-@media print{body *{visibility:hidden!important}#dg-inherit-agreement .dg-agr-paper,#dg-inherit-agreement .dg-agr-paper *{visibility:visible!important}#dg-inherit-agreement .dg-agr-paper{position:absolute;left:0;top:0;width:100%;max-height:none;overflow:visible;border:0;padding:0;box-sizing:border-box} @page{size:A4;margin:18mm}}
+
 </style></head>
 <body>
 <header><div class="wrap nav"><a class="logo" href="/" style="color:inherit;text-decoration:none">등기로<small>현재두 법무사 사무소 · 인천</small></a><nav class="menu"><a href="/">홈</a><a href="/inheritance.html">상속등기</a><a href="/renunciation.html">상속포기·한정승인</a><a href="/corporate.html">법인등기</a><a href="/realestate.html">부동산등기</a><a href="/family.html">가사</a><a href="/posts.html">법률정보</a></nav></div></header>
@@ -144,7 +144,7 @@ fields.addEventListener('change',e=>{const el=e.target;if(el.tagName==='SELECT')
 fields.addEventListener('click',e=>{const el=e.target;if(el.dataset.add){if(el.dataset.add==='heirs')data.heirs.push({name:'',relation:'',address:''});else data.assets.push({type:'부동산',description:'',recipient:'',details:''});render()}if(el.dataset.remove){data[el.dataset.remove].splice(Number(el.dataset.index),1);render()}});
 prev.addEventListener('click',()=>{if(step>0){step--;render()}});
 next.addEventListener('click',()=>{if(step===0&&!data.deceased.name.trim()){error.textContent='피상속인 성명을 입력하세요.';return}if(step===1&&data.heirs.some(h=>!h.name.trim())){error.textContent='모든 상속인의 성명을 입력하세요.';return}if(step===2&&data.assets.some(a=>!a.description.trim()||!a.recipient.trim())){error.textContent='재산 표시와 귀속 상속인을 입력하세요.';return}if(step<3){step++;render()}});
-print.addEventListener('click',()=>{if(!data.date.trim()){error.textContent='협의 날짜를 입력하세요.';return}window.print()});
+print.addEventListener('click',()=>{if(!data.date.trim()){error.textContent='협의 날짜를 입력하세요.';return}updatePaper();const win=window.open('','_blank');if(!win){error.textContent='PDF 창이 차단됐습니다. 팝업을 허용한 뒤 다시 눌러주세요.';return}win.document.open();win.document.write('<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>상속재산 분할협의서</title><style>@page{size:A4;margin:18mm}body{font-family:Arial,"Malgun Gothic",sans-serif;color:#222;font-size:13px;line-height:1.9}h3{text-align:center;font-size:22px;margin:0 0 26px}p{margin:0 0 17px;white-space:pre-wrap;overflow-wrap:anywhere}@media print{body{margin:0}}</style></head><body>'+paper.innerHTML+'</body></html>');win.document.close();win.focus();win.print()});
 render();
 })();
 </script></body>
