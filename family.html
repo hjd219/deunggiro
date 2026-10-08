@@ -48,12 +48,11 @@
 #dg-divorce-chapter .dg-wizard-heading h2,#dg-divorce-chapter .dg-side .story-qa-title h2{font-size:clamp(30px,3.3vw,42px);font-weight:800;line-height:1.2;letter-spacing:-.035em;margin:0;padding:0;border:0}
 #dg-divorce-chapter .dg-side .story-qa{border:0;padding:0;margin:0}
 #dg-divorce-chapter .dg-side .story-qa-list{margin-top:0}
-#family-docs .simple-docs-grid article{border-left:0;border-right:0}
-#family-docs .simple-docs-grid article{display:flex;flex-direction:column;align-items:stretch}
-#family-docs .simple-docs-grid article>b{position:static;display:inline-flex;align-self:flex-start;margin:0 0 3px}
-#family-docs .simple-docs-grid article>h3{height:32px;min-height:32px;display:flex;align-items:center;justify-content:flex-start;text-align:left;margin:0 0 14px}
-#family-docs .simple-docs-grid article>ul{margin-top:0}
-@media(max-width:800px){#family-docs .simple-docs-grid article>h3{height:auto;min-height:32px}}
+#family-docs .simple-docs-grid article{display:grid;grid-template-columns:18px minmax(0,1fr);grid-template-rows:40px auto;column-gap:8px;align-items:start;border:0}
+#family-docs .simple-docs-grid article>b{position:static;grid-column:1;grid-row:1;display:inline-flex;align-self:center;justify-self:start;margin:0}
+#family-docs .simple-docs-grid article>h3{grid-column:2;grid-row:1;display:flex;align-items:center;justify-content:flex-start;text-align:left;height:40px;min-height:40px;margin:0}
+#family-docs .simple-docs-grid article>ul{grid-column:1/-1;grid-row:2;margin:0}
+@media(max-width:800px){#family-docs .simple-docs-grid article{grid-template-rows:auto auto}#family-docs .simple-docs-grid article>h3{height:auto;min-height:40px}}
 @media(max-width:800px){#dg-divorce-chapter .dg-wizard-heading h2,#dg-divorce-chapter .dg-side .story-qa-title h2{font-size:30px}}
 @media print{body *{visibility:hidden!important}#dg-divorce-chapter .dg-paper,#dg-divorce-chapter .dg-paper *{visibility:visible!important}#dg-divorce-chapter .dg-paper{position:absolute;left:0;top:0;width:100%;max-height:none;border:0;padding:0;overflow:visible}}
 </style></head>
