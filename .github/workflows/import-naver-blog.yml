@@ -68,7 +68,6 @@ jobs:
           timeout 90s python -u scripts/strip_naver_nonnumber_emoji.py
           timeout 90s python -u scripts/strip_naver_consultation_footer.py
           timeout 90s python -u scripts/ensure_section_dividers.py
-          timeout 90s python -u scripts/patch_naver_import_dates.py
           timeout 90s python -u scripts/fix_divorce_categories.py
           timeout 90s python -u scripts/cleanup_duplicate_posts.py
           timeout 90s python -u scripts/site_maintenance.py
