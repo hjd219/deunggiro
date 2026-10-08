@@ -1,11 +1,26 @@
 {
-  "generatedAt": "2026-10-08T05:22:16.808Z",
-  "totalPosts": 385,
-  "ok": 385,
+  "generatedAt": "2026-10-08T06:19:18.613Z",
+  "totalPosts": 388,
+  "ok": 388,
   "warnings": 0,
-  "canonicalFixed": 0,
+  "canonicalFixed": 388,
   "missingFiles": 0,
   "items": [
+    {
+      "slug": "realestate-naver-224434182517",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "slug": "realestate-naver-224434200680",
+      "status": "ok",
+      "issues": []
+    },
+    {
+      "slug": "family-naver-224434219104",
+      "status": "ok",
+      "issues": []
+    },
     {
       "slug": "realestate-naver-224434164221",
       "status": "ok",
