@@ -146,11 +146,11 @@ function updatePaper(){
 const d=data.deceased;const heirs=data.heirs;const assets=data.assets.filter(a=>a.description.trim());let html='<h3>상속재산 분할협의서</h3>';
 html+='<p>피상속인: ____________________________<br>주민등록번호: ____________________________<br>사망일: ____________________________<br>최후 주소: ______________________________________________</p>';
 html+='<p>위 피상속인의 공동상속인 전원은 피상속인의 상속재산에 관하여 다음과 같이 협의하여 분할한다.</p>';
-html+='<p><strong>제1조 (상속인)</strong><br>'+ (heirs.length?heirs.map((h,i)=>(i+1)+'. '+'성명: ____________________ / 주민등록번호: ____________________ / 주소: ______________________________').join('<br>'):'상속인을 입력하세요.')+'</p>';
+
 html+='<p><strong>제2조 (상속재산 및 분할 내용)</strong><br>'+(assets.length?assets.map((a,i)=>(i+1)+'. ['+esc(a.type)+'] '+esc(a.description)+'<br>　귀속: '+esc(a.recipient||'미정')+(a.details?'<br>　특약: '+esc(a.details):'')).join('<br>'):'상속재산을 입력하세요.')+'</p>';
 html+='<p>공동상속인 전원은 위 기재 상속재산의 분할 내용에 합의하고 이를 증명하기 위하여 본 협의서를 작성한다.</p>';
 html+='<p style="text-align:center">'+esc(data.date||'______년 ____월 ____일')+'</p>';
-html+='<p><strong>공동상속인 전원</strong><br>'+ (heirs.length?heirs.map((h,i)=>(i+1)+'. 성명: ____________________　(서명 또는 인)').join('<br>'):'________________ (서명 또는 인)')+'</p>';
+html+='<p><strong>공동상속인 기명 및 인감날인</strong></p>'+ (heirs.length?heirs.map((h,i)=>'<p style="margin:0 0 24px;break-inside:avoid"><strong>상속인 '+(i+1)+'</strong><br>성명: ____________________________　(인감날인)<br>주민등록번호: ____________________________<br>주소: __________________________________________________</p>').join(''):'<p>성명: ____________________　(인감날인)</p>');
 paper.innerHTML=html;
 }
 fields.addEventListener('input',e=>{const el=e.target,g=el.dataset.group;if(!g)return;const obj=g==='deceased'?data.deceased:g==='root'?data:data[g][Number(el.dataset.index)];obj[el.dataset.key]=el.value;updatePaper()});
