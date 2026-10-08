@@ -1,17 +1,7 @@
 name: SEO Auto Enhance
 
+# Disabled automatic SEO rewrites; run manually only when explicitly needed.
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'data/posts.json'
-      - 'posts/**'
-      - 'sitemap.xml'
-      - 'scripts/category-fix.mjs'
-      - 'scripts/seo-canonical-fix.mjs'
-      - 'scripts/rss-auto.mjs'
-      - 'scripts/seo-trigger.txt'
-      - '.github/workflows/seo-auto.yml'
   workflow_dispatch:
 
 permissions:
