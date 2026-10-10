@@ -18,6 +18,7 @@ on:
       - 'scripts/seo-hub-links.mjs'
       - 'scripts/inject_internal_links.py'
       - 'scripts/site_maintenance.py'
+      - 'scripts/generate_post_pagination.py'
       - 'assets/article-v2.js'
       - 'assets/article-v2.css'
       - '.github/workflows/import-naver-blog.yml'
@@ -75,7 +76,7 @@ jobs:
           git restore --worktree -- posts
           echo "EXISTING_POSTS_RESTORED; new untracked posts retain generated SEO"
           git status --short -- posts | head -20 || true
-      - name: Refresh persistent crawlable legal post links
+      - name: Regenerate ten-article crawlable legal pages
         run: |
           python - <<'PY'
           import json
@@ -154,7 +155,7 @@ jobs:
             exit 0
           fi
 
-          git add data/posts.json data/seo-report.json posts posts.html assets/posts assets/naver-images index.html inheritance.html renunciation.html corporate.html realestate.html family.html sitemap.xml rss.xml admin.html
+          git add data/posts.json data/seo-report.json posts posts.html posts-pages assets/posts assets/naver-images index.html inheritance.html renunciation.html corporate.html realestate.html family.html sitemap.xml rss.xml admin.html
           git commit -m "네이버 블로그 미수집 글 자동 반영"
 
           if [ -n "$(git status --porcelain)" ]; then

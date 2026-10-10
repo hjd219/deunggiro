@@ -71,6 +71,12 @@ def main() -> None:
         url_block(BASE + path, git_lastmod(ROOT / ('index.html' if path == '/' else path.lstrip('/'))), freq, priority)
         for path, freq, priority in STATIC
     ]
+    # Pagination documents have real article anchors and self-canonicals.
+    # Use Git history for stable modification dates; never date-stamp unchanged pages.
+    for paginated in sorted((ROOT / 'posts-pages').glob('*.html')):
+        if not re.fullmatch(r'(info|core|case)-[1-9][0-9]*\.html', paginated.name):
+            continue
+        blocks.append(url_block(f'{BASE}/posts-pages/{paginated.name}', git_lastmod(paginated), 'monthly', '0.5'))
     seen = set()
     added = 0
     for post in posts:

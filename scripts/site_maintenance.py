@@ -120,26 +120,10 @@ def card(post: dict) -> str:
 
 
 def rebuild_posts_page(posts):
-    """Refresh the first ten fallback cards and the persistent crawlable article archive."""
-    if not POSTS_PAGE.exists():
-        return False
-    text = POSTS_PAGE.read_text(encoding='utf-8')
-    ordered = sorted(posts, key=lambda p: (str(p.get('date','')), str(p.get('slug',''))), reverse=True)
-    for name, items in (
-        ('SEO_INITIAL_POSTS', ordered[:10]),
-        ('SEO_STATIC_POSTS', ordered),
-    ):
-        block = '\n'.join(card(p) for p in items if p.get('slug'))
-        pattern = re.compile(r'<!-- ' + name + r'_START -->[\s\S]*?<!-- ' + name + r'_END -->', re.M)
-        if not pattern.search(text):
-            raise ValueError('Missing posts.html marker: ' + name)
-        marked = '<!-- ' + name + '_START -->\n' + block + '\n<!-- ' + name + '_END -->'
-        text = pattern.sub(lambda _match: marked, text, count=1)
-    current = POSTS_PAGE.read_text(encoding='utf-8')
-    if text != current:
-        POSTS_PAGE.write_text(text, encoding='utf-8')
-        return True
-    return False
+    """Update the visible ten-card fallback and independently crawlable post pages."""
+    from scripts.generate_post_pagination import rebuild_post_pages
+    return rebuild_post_pages(posts)
+
 
 def main():
     posts=json.loads(POSTS_JSON.read_text(encoding='utf-8')); category_changes=[]; duplicate_id_fixes=0; duplicate_meta_fixes=0; legacy_related_clears=0; legacy_full_guide_clears=0; common_asset_fixes=0
