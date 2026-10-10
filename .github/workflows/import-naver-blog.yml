@@ -19,6 +19,7 @@ on:
       - 'scripts/inject_internal_links.py'
       - 'scripts/site_maintenance.py'
       - 'scripts/generate_post_pagination.py'
+      - 'posts.html'
       - 'assets/article-v2.js'
       - 'assets/article-v2.css'
       - '.github/workflows/import-naver-blog.yml'
