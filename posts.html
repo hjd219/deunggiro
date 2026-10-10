@@ -171,12 +171,46 @@ body.dg-posts-ready>.legal-page-bg{padding-top:150px!important}
  .legal-page-bg .category-tabs{gap:18px!important}
  .legal-page-bg .chip{font-size:12.5px!important;padding:7px 0 9px!important}
 }
-</style></head>
+</style>
+<style id="legal-crawlable-navigation">
+.legal-page-bg .content-mode-tabs a.mode-tab,.legal-page-bg .category-tabs a.chip{text-decoration:none;text-align:center}
+.legal-page-bg .pagination a.page-btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+.legal-page-bg .pagination .page-btn.is-disabled{opacity:.38;cursor:default}
+.legal-page-bg .dg-post-archive{margin:22px 0 0;border-top:1px solid #e1edf2}
+.legal-page-bg .dg-post-archive summary{cursor:pointer;padding:16px 4px;color:#168dca;font-size:13px;font-weight:850;list-style:none}
+.legal-page-bg .dg-post-archive summary::-webkit-details-marker{display:none}
+.legal-page-bg .dg-post-archive summary:after{content:" +";font-weight:900}
+.legal-page-bg .dg-post-archive[open] summary:after{content:" −"}
+.legal-page-bg .dg-archive-grid{display:grid;grid-template-columns:minmax(0,1fr);max-height:380px;overflow:auto;padding:0 4px 10px}
+.legal-page-bg .dg-post-archive .post-card{display:block!important;min-height:0;padding:10px 0!important;border:0!important;border-bottom:1px solid #e5edf1!important;border-radius:0!important;box-shadow:none!important;background:transparent!important}
+.legal-page-bg .dg-post-archive .post-card:hover{transform:none!important}
+.legal-page-bg .dg-post-archive .post-thumb,.legal-page-bg .dg-post-archive .post-card p{display:none!important}
+.legal-page-bg .dg-post-archive .post-card h3{font-size:13px!important;line-height:1.55!important;margin:3px 0 0!important;letter-spacing:-.025em!important}
+.legal-page-bg .dg-post-archive .post-meta{font-size:11px!important}
+</style>
+</head>
 <body class="dg-posts-ready">
 <header><div class="wrap nav"><a class="logo" href="/" style="color:inherit;text-decoration:none">등기로<small>현재두 법무사 사무소 · 인천</small></a><nav class="menu"><a href="/">홈</a><a href="/inheritance.html">상속등기</a><a href="/renunciation.html">상속포기·한정승인</a><a href="/corporate.html">법인등기</a><a href="/realestate.html">부동산등기</a><a href="/family.html">가사</a><a href="/posts.html">법률정보</a></nav></div></header>
 <div class="legal-page-bg"><div class="dg-photo-credit" style="position:absolute;right:10px;bottom:8px;z-index:5;color:rgba(255,255,255,.78);font-size:7px;line-height:1.25;text-shadow:0 1px 3px rgba(0,0,0,.6);white-space:nowrap">사진 출처: IFEZ · 공공누리 제1유형</div>
-<section class="section"><div class="container"><h1 class="title">법률정보</h1><p class="desc" id="legal-desc">인천 상속등기·상속포기·한정승인·법인등기·부동산등기의 법률정보와 실무정보를 안내합니다.</p><div class="content-mode-tabs"><button class="mode-tab active" data-mode="info" onclick="setMode('info',this)">법률정보</button><button class="mode-tab" data-mode="core" onclick="setMode('core',this)">핵심정보</button><button class="mode-tab" data-mode="case" onclick="setMode('case',this)">실제 처리사례</button></div><div class="post-toolbar"><div class="search-wrap"><input id="q" placeholder="제목·내용 검색"><button class="btn btn-primary" onclick="searchPosts()">검색</button></div><div id="cats" class="category-tabs"><button class="chip active">전체</button></div></div>
+<section class="section"><div class="container"><h1 class="title">법률정보</h1><p class="desc" id="legal-desc">인천 상속등기·상속포기·한정승인·법인등기·부동산등기의 법률정보와 실무정보를 안내합니다.</p><div class="content-mode-tabs"><a class="mode-tab active" data-mode="info" href="/posts.html?tab=info" onclick="setMode('info',this);return false">법률정보</a><a class="mode-tab" data-mode="core" href="/posts.html?tab=core" onclick="setMode('core',this);return false">핵심정보</a><a class="mode-tab" data-mode="case" href="/posts.html?tab=case" onclick="setMode('case',this);return false">실제 처리사례</a></div><div class="post-toolbar"><div class="search-wrap"><input id="q" placeholder="제목·내용 검색"><button class="btn btn-primary" onclick="searchPosts()">검색</button></div><div id="cats" class="category-tabs"><a class="chip active" href="/posts.html?tab=info">전체</a></div></div>
 <div id="legal-post-list" class="post-grid">
+<!-- SEO_INITIAL_POSTS_START -->
+<a class="post-card" href="/posts/realestate-naver-224434200680.html"><img class="post-thumb" src="/assets/posts/realestate-naver-224434200680-thumbnail.png" alt="[인천 부동산등기] 교회 명칭·주소·대표자 변경등기 해결사례｜대표자 미기재 등기부도 정리 가능" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/favicon.png'"><div class="post-content"><div class="post-meta"><span class="badge">부동산등기</span>2026-10-08</div><h3>[인천 부동산등기] 교회 명칭·주소·대표자 변경등기 해결사례｜대표자 미기재 등기부도 정리 가능</h3><p>교회 명칭·주소·대표자 변경등기 해결사례｜대표자 미기재 등기부도 정리 가능｜부동산등기·취득세·필요서류·주의사항</p></div></a>
+<a class="post-card" href="/posts/realestate-naver-224434182517.html"><img class="post-thumb" src="/assets/posts/realestate-naver-224434182517-thumbnail.png" alt="[인천 종중 부동산등기] 대표자가 30년 전 사망한 종중의 명칭·대표자·주소 변경등기 처리사례" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/favicon.png'"><div class="post-content"><div class="post-meta"><span class="badge">부동산등기</span>2026-10-08</div><h3>[인천 종중 부동산등기] 대표자가 30년 전 사망한 종중의 명칭·대표자·주소 변경등기 처리사례</h3><p>대표자가 30년 전 사망한 종중의 명칭·대표자·주소 변경등기 처리사례｜부동산등기·취득세·필요서류·주의사항</p></div></a>
+<a class="post-card" href="/posts/family-naver-224434219104.html"><img class="post-thumb" src="/assets/posts/family-naver-224434219104-thumbnail.png" alt="[인천 성년후견] 피성년후견인 부동산 담보·처분 시 권한초과행위 허가｜주택연금 신청 사례" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/favicon.png'"><div class="post-content"><div class="post-meta"><span class="badge">가사</span>2026-10-08</div><h3>[인천 성년후견] 피성년후견인 부동산 담보·처분 시 권한초과행위 허가｜주택연금 신청 사례</h3><p>피성년후견인 부동산 담보·처분 시 권한초과행위 허가｜주택연금 신청 사례｜가사절차·필요서류·주의사항</p></div></a>
+<a class="post-card" href="/posts/realestate-naver-224434164221.html"><img class="post-thumb" src="/assets/posts/realestate-naver-224434164221-thumbnail.png" alt="[인천 부동산등기] 종중·교회 명칭·대표자·주소 변경등기 절차와 필요서류" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/favicon.png'"><div class="post-content"><div class="post-meta"><span class="badge">부동산등기</span>2026-10-07</div><h3>[인천 부동산등기] 종중·교회 명칭·대표자·주소 변경등기 절차와 필요서류</h3><p>종중·교회 명칭·대표자·주소 변경등기 절차와 필요서류｜부동산등기·취득세·주의사항</p></div></a>
+<a class="post-card" href="/posts/renunciation-naver-224432746077.html"><img class="post-thumb" src="/assets/posts/renunciation-naver-224432746077-thumbnail.png" alt="상속포기란? 한정승인이란?｜기한과 절차 쉽게 정리" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/favicon.png'"><div class="post-content"><div class="post-meta"><span class="badge">상속포기·한정승인</span>2026-10-06</div><h3>상속포기란? 한정승인이란?｜기한과 절차 쉽게 정리</h3><p>상속포기란? 한정승인이란?｜기한과 절차 쉽게 정리｜상속포기·한정승인·대응방법·주의사항</p></div></a>
+<a class="post-card" href="/posts/corporate-naver-224425670405.html"><img class="post-thumb" src="/assets/posts/corporate-naver-224425670405-thumbnail.png" alt="[인천 법인설립] 주식회사·유한회사 설립비용과 필요서류｜과밀·비과밀 차이 쉽게 정리" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/favicon.png'"><div class="post-content"><div class="post-meta"><span class="badge">법인등기</span>2026-09-29</div><h3>[인천 법인설립] 주식회사·유한회사 설립비용과 필요서류｜과밀·비과밀 차이 쉽게 정리</h3><p>주식회사·유한회사 설립비용과 필요서류｜과밀·비과밀 차이 쉽게 정리｜법인등기·절차</p></div></a>
+<a class="post-card" href="/posts/renunciation-naver-224424514884.html"><img class="post-thumb" src="/assets/posts/renunciation-naver-224424514884-thumbnail.png" alt="[인천 상속] 무연고자 사망 후 상속포기·한정승인과 상속인이 없는 경우의 절차" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/favicon.png'"><div class="post-content"><div class="post-meta"><span class="badge">상속포기·한정승인</span>2026-09-28</div><h3>[인천 상속] 무연고자 사망 후 상속포기·한정승인과 상속인이 없는 경우의 절차</h3><p>무연고자 사망 후 상속포기·한정승인과 상속인이 없는 경우의 절차｜대응방법·주의사항</p></div></a>
+<a class="post-card" href="/posts/renunciation-naver-224424501289.html"><img class="post-thumb" src="/assets/posts/renunciation-naver-224424501289-thumbnail.png" alt="[인천 상속] 부모·배우자 사망 시 사망신고 전 예금인출·장례비·병원비·보험금과 상속포기·한정승인 절차" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/favicon.png'"><div class="post-content"><div class="post-meta"><span class="badge">상속포기·한정승인</span>2026-09-28</div><h3>[인천 상속] 부모·배우자 사망 시 사망신고 전 예금인출·장례비·병원비·보험금과 상속포기·한정승인 절차</h3><p>부모·배우자 사망 시 사망신고 전 예금인출·장례비·병원비·보험금과 상속포기·한정승인 절차｜대응방법·주의사항</p></div></a>
+<a class="post-card" href="/posts/inheritance-naver-224424475718.html"><img class="post-thumb" src="/assets/posts/inheritance-naver-224424475718-thumbnail.png" alt="[인천 상속] 부모·배우자 사망 후 사망신고부터 상속등기·상속포기·한정승인까지 전체 절차" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/favicon.png'"><div class="post-content"><div class="post-meta"><span class="badge">상속등기</span>2026-09-28</div><h3>[인천 상속] 부모·배우자 사망 후 사망신고부터 상속등기·상속포기·한정승인까지 전체 절차</h3><p>부모·배우자 사망 후 사망신고부터 상속등기·상속포기·한정승인까지 전체 절차｜필요서류·주의사항</p></div></a>
+<a class="post-card" href="/posts/naver-221505261465.html"><img class="post-thumb" src="/assets/posts/naver-221505261465-thumbnail.png" alt="이폼작성해보기 완벽 정리 | 처음부터 끝까지 한 번에 끝내는 작성법" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/favicon.png'"><div class="post-content"><div class="post-meta"><span class="badge">기타</span>2026-09-24</div><h3>이폼작성해보기 완벽 정리 | 처음부터 끝까지 한 번에 끝내는 작성법</h3><p>이폼작성해보기 완벽 정리｜처음부터 끝까지 한 번에 끝내는 작성법｜절차·필요서류·주의사항</p></div></a>
+<!-- SEO_INITIAL_POSTS_END -->
+</div>
+<nav id="pagination" class="pagination" aria-label="게시글 페이지"></nav>
+<details class="dg-post-archive" id="all-legal-posts">
+<summary>전체 법률정보 목록 보기</summary>
+<nav class="dg-archive-grid" aria-label="전체 법률정보 글 바로가기">
 <!-- SEO_STATIC_POSTS_START -->
 <a class="post-card" href="/posts/realestate-naver-224434200680.html"><img class="post-thumb" src="/assets/posts/realestate-naver-224434200680-thumbnail.png" alt="[인천 부동산등기] 교회 명칭·주소·대표자 변경등기 해결사례｜대표자 미기재 등기부도 정리 가능" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/favicon.png'"><div class="post-content"><div class="post-meta"><span class="badge">부동산등기</span>2026-10-08</div><h3>[인천 부동산등기] 교회 명칭·주소·대표자 변경등기 해결사례｜대표자 미기재 등기부도 정리 가능</h3><p>교회 명칭·주소·대표자 변경등기 해결사례｜대표자 미기재 등기부도 정리 가능｜부동산등기·취득세·필요서류·주의사항</p></div></a>
 <a class="post-card" href="/posts/realestate-naver-224434182517.html"><img class="post-thumb" src="/assets/posts/realestate-naver-224434182517-thumbnail.png" alt="[인천 종중 부동산등기] 대표자가 30년 전 사망한 종중의 명칭·대표자·주소 변경등기 처리사례" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/favicon.png'"><div class="post-content"><div class="post-meta"><span class="badge">부동산등기</span>2026-10-08</div><h3>[인천 종중 부동산등기] 대표자가 30년 전 사망한 종중의 명칭·대표자·주소 변경등기 처리사례</h3><p>대표자가 30년 전 사망한 종중의 명칭·대표자·주소 변경등기 처리사례｜부동산등기·취득세·필요서류·주의사항</p></div></a>
@@ -567,8 +601,7 @@ body.dg-posts-ready>.legal-page-bg{padding-top:150px!important}
 <a class="post-card" href="/posts/name-change-incheon-procedure-guide-documents-4lfyb2.html"><img class="post-thumb" src="/assets/posts/name-change-incheon-procedure-guide-documents-4lfyb2-thumbnail.png" alt="[인천 개명]이름 개명 허가 절차 총정리 | 개명 신청방법, 필요서류, 허가기준, 개명신고까지" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/favicon.png'"><div class="post-content"><div class="post-meta"><span class="badge">가사</span>2026-08-20</div><h3>[인천 개명]이름 개명 허가 절차 총정리 | 개명 신청방법, 필요서류, 허가기준, 개명신고까지</h3><p>개명 신청방법, 필요서류, 허가기준, 개명신고까지</p></div></a>
 <a class="post-card" href="/posts/inheritance-renunciation-caution-1cgaqh.html"><img class="post-thumb" src="/assets/posts/inheritance-renunciation-caution-1cgaqh-thumbnail.png" alt="[상속포기 전 주의사항] 부모 또는 배우자 사망 시 장례비·병원비·통장예금·사망보험금" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/favicon.png'"><div class="post-content"><div class="post-meta"><span class="badge">상속포기·한정승인</span>2026-08-20</div><h3>[상속포기 전 주의사항] 부모 또는 배우자 사망 시 장례비·병원비·통장예금·사망보험금</h3><p>장례비·병원비·통장예금·사망보험금</p></div></a>
 <!-- SEO_STATIC_POSTS_END -->
-</div>
-<div id="pagination" class="pagination" aria-label="게시글 페이지"></div></div></section></div>
+</nav></details></div></section></div>
 <section class="contact"><div class="container contact-grid"><div><h2>복잡한 등기절차, 현재두 법무사가 직접 상담!</h2><p>상담부터 등기 완료까지, 직접 확인합니다.</p></div><a class="phone" href="tel:0324251500">032-425-1500 상담</a></div></section>
 <footer class="footer"><div class="container footer-route-grid"><div><div class="footer-brand">등기로</div><div class="footer-office">현재두 법무사 사무소</div><div class="footer-info"><div><strong>주소</strong> 인천 미추홀구 경원대로 873, 201호(주안동, 인성빌딩) · 인천가정법원 옆</div><div><strong>전화</strong> <a href="tel:0324251500" style="color:#fff;font-weight:800">032-425-1500</a></div></div><div class="footer-channel-row"><a class="footer-social" href="https://blog.naver.com/hjd21" target="_blank" rel="noopener noreferrer"><span class="footer-social-icon naver-icon">N</span>네이버 블로그</a><span class="footer-social-dot">·</span><a class="footer-social" href="https://youtube.com/channel/UCHs3WtBFAiV8bOsQUB-n-Ew?si=tTUgTZWRKg98bvYa" target="_blank" rel="noopener noreferrer"><span class="footer-social-icon youtube-icon">▶</span>유튜브</a></div></div><div class="footer-route"><div class="footer-route-title">찾아오시는 길</div><div class="footer-route-sub">인천가정법원 옆 · 인성빌딩 2층</div><div class="footer-route-list"><div><span>🚇</span><span><b>1호선</b> 주안역·간석역 1번 출구 도보 이용</span></div><div><span>🚇</span><span><b>인천지하철 2호선</b> 석바위시장역 하차 후 석바위 지하상가 5번 출구 도보 이용</span></div><div><span>⏱</span><span><b>도보시간</b> 간석역 약 15분 · 주안역 약 19분 · 석바위시장역 약 12분</span></div></div><div class="footer-route-actions"><a href="https://map.naver.com/p/search/%EC%9D%B8%EC%B2%9C%20%EB%AF%B8%EC%B6%94%ED%99%80%EA%B5%AC%20%EA%B2%BD%EC%9B%90%EB%8C%80%EB%A1%9C%20873" target="_blank" rel="noopener noreferrer">네이버 지도에서 보기 →</a><a href="tel:0324251500">방문문의 032-425-1500</a></div></div></div></footer>
 <script>
@@ -580,16 +613,75 @@ function isCore(p){return CORE_HUBS.has(p.slug)}
 function inMode(p){return mode==='case'?isCase(p):mode==='core'?isCore(p):(!isCase(p)&&!isCore(p))}
 function modeDesc(){return mode==='core'?'업무별로 먼저 확인하면 좋은 핵심 안내를 모았습니다.':mode==='case'?'실제 진행한 처리사례를 업무 종류별로 확인하세요.':'세부 쟁점과 실무 법률정보를 확인하세요.'}
 function shortCat(c){return ({'상속등기':'상속','법인등기':'법인','부동산등기':'부동산'})[c]||c}
-function setMode(m,btn){mode=m;active='전체';page=1;document.querySelectorAll('.mode-tab').forEach(x=>x.classList.remove('active'));btn.classList.add('active');document.getElementById('legal-desc').textContent=modeDesc();drawCats();render()}
-function drawCats(){const base=all.filter(inMode);const preferred=['전체','상속등기','상속포기·한정승인','법인등기','부동산등기','가사'];const found=[...new Set(base.map(x=>x.category).filter(Boolean))];const cs=[...preferred.filter(c=>c==='전체'||found.includes(c)),...found.filter(c=>!preferred.includes(c))];if(!cs.includes(active))active='전체';document.getElementById('cats').innerHTML=cs.map(c=>'<button class="chip '+(c===active?'active':'')+'" onclick="setCat(\''+esc(c)+'\',this)">'+esc(shortCat(c))+'</button>').join('')}
-async function init(){try{const params=new URLSearchParams(location.search);const requested=params.get('category');const tab=params.get('tab')||'';const query=params.get('q')||'';const r=await fetch('/data/posts.json',{cache:'no-store'});all=await r.json();if(query){const qInput=document.getElementById('q');if(qInput)qInput.value=query;}if(tab.startsWith('case'))mode='case';else if(tab.startsWith('core'))mode='core';else mode='info';if(tab.includes(':'))active=tab.split(':').slice(1).join(':');else if(requested)active=requested;document.querySelectorAll('.mode-tab').forEach(x=>x.classList.toggle('active',x.dataset.mode===mode));document.getElementById('legal-desc').textContent=modeDesc();drawCats();render()}catch(e){console.warn('posts.json load failed; static HTML remains available',e)}}
-function setCat(c,btn){active=c;page=1;document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));btn.classList.add('active');render()}
-function searchPosts(){page=1;render()}
+function viewHref(n=1,m=mode,c=active){
+  const params=new URLSearchParams();
+  params.set('tab',m);
+  if(c&&c!=='전체')params.set('category',c);
+  const q=(document.getElementById('q')?.value||'').trim();
+  if(q)params.set('q',q);
+  if(n>1)params.set('page',String(n));
+  return '/posts.html?'+params.toString()+'#legal-post-list';
+}
+function pushViewUrl(){history.pushState(null,'',viewHref(page))}
+function readViewUrl(){
+  const params=new URLSearchParams(location.search);
+  const requested=params.get('category'),tab=params.get('tab')||'';
+  mode=tab.startsWith('case')?'case':tab.startsWith('core')?'core':'info';
+  active=tab.includes(':')?tab.split(':').slice(1).join(':'):(requested||'전체');
+  page=Math.max(1,Math.min(999,parseInt(params.get('page')||'1',10)||1));
+  document.getElementById('q').value=params.get('q')||'';
+  document.querySelectorAll('.mode-tab').forEach(x=>x.classList.toggle('active',x.dataset.mode===mode));
+  document.getElementById('legal-desc').textContent=modeDesc();
+}
+function setMode(m,btn){
+  mode=m;active='전체';page=1;
+  document.querySelectorAll('.mode-tab').forEach(x=>x.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('legal-desc').textContent=modeDesc();
+  drawCats();pushViewUrl();render();
+}
+function drawCats(){
+  const base=all.filter(inMode),preferred=['전체','상속등기','상속포기·한정승인','법인등기','부동산등기','가사'];
+  const found=[...new Set(base.map(x=>x.category).filter(Boolean))];
+  const cs=[...preferred.filter(c=>c==='전체'||found.includes(c)),...found.filter(c=>!preferred.includes(c))];
+  if(!cs.includes(active))active='전체';
+  document.getElementById('cats').innerHTML=cs.map(c=>`<a class="chip ${c===active?'active':''}" href="${esc(viewHref(1,mode,c))}" ${c===active?'aria-current="true"':''} onclick="setCat('${esc(c)}',this);return false">${esc(shortCat(c))}</a>`).join('');
+}
+async function init(){
+  try{
+    const r=await fetch('/data/posts.json',{cache:'no-store'});all=await r.json();
+    readViewUrl();drawCats();render();
+  }catch(e){console.warn('posts.json load failed; static HTML archive remains available',e)}
+}
+function setCat(c,btn){
+  active=c;page=1;
+  document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
+  btn.classList.add('active');pushViewUrl();render();
+}
+function searchPosts(){page=1;pushViewUrl();render()}
 function filteredPosts(){const q=(document.getElementById('q').value||'').trim().toLowerCase().replace(/\s+/g,'');return all.filter(p=>{if(!q)return inMode(p)&&(active==='전체'||p.category===active);const hay=((p.title||'')+' '+(p.summary||'')+' '+(p.keywords||'')).toLowerCase().replace(/\s+/g,'');return hay.includes(q)})}
-function goPage(n){const total=Math.max(1,Math.ceil(filteredPosts().length/pageSize));page=Math.min(total,Math.max(1,n));render();document.querySelector('.post-toolbar').scrollIntoView({behavior:'smooth',block:'start'})}
+function goPage(n){
+  const total=Math.max(1,Math.ceil(filteredPosts().length/pageSize));
+  page=Math.min(total,Math.max(1,n));pushViewUrl();render();
+  document.querySelector('.post-toolbar').scrollIntoView({behavior:'smooth',block:'start'});
+}
 function pageItems(total,current){const out=[];for(let n=1;n<=total;n++){if(n===1||n===total||Math.abs(n-current)<=2)out.push(n);else if(out[out.length-1]!=='…')out.push('…')}return out}
-function render(){if(!all.length)return;const list=filteredPosts(),total=Math.ceil(list.length/pageSize);if(total&&page>total)page=total;const shown=list.slice((page-1)*pageSize,page*pageSize);document.getElementById('legal-post-list').innerHTML=shown.length?shown.map(p=>`<a class="post-card ${p.thumbnail?'':'no-thumb'}" href="/posts/${p.slug}.html"><div><div class="post-meta"><span class="badge">${esc(p.category)}</span>${esc(p.date)}</div><h3>${esc(p.title)}</h3><p>${esc(p.summary||'')}</p></div></a>`).join(''):'<div>검색 결과가 없습니다.</div>';document.getElementById('pagination').innerHTML=total>1?`<button class="page-btn" onclick="goPage(${page-1})" ${page===1?'disabled':''}>이전</button>`+pageItems(total,page).map(n=>n==='…'?'<span>…</span>':`<button class="page-btn ${n===page?'active':''}" onclick="goPage(${n})">${n}</button>`).join('')+`<button class="page-btn" onclick="goPage(${page+1})" ${page===total?'disabled':''}>다음</button>`:''}
+function render(){
+  if(!all.length)return;
+  const list=filteredPosts(),total=Math.ceil(list.length/pageSize);
+  if(total&&page>total)page=total;
+  const shown=list.slice((page-1)*pageSize,page*pageSize);
+  document.getElementById('legal-post-list').innerHTML=shown.length?shown.map(p=>`<a class="post-card ${p.thumbnail?'':'no-thumb'}" href="/posts/${p.slug}.html"><div><div class="post-meta"><span class="badge">${esc(p.category)}</span>${esc(p.date)}</div><h3>${esc(p.title)}</h3><p>${esc(p.summary||'')}</p></div></a>`).join(''):'<div>검색 결과가 없습니다.</div>';
+  const pagination=document.getElementById('pagination');
+  if(total<=1){pagination.innerHTML='';return}
+  const link=(n,label)=>`<a class="page-btn ${n===page?'active':''}" href="${esc(viewHref(n))}" ${n===page?'aria-current="page"':''} onclick="goPage(${n});return false">${label}</a>`;
+  const disabled=label=>`<span class="page-btn is-disabled" aria-disabled="true">${label}</span>`;
+  pagination.innerHTML=(page>1?link(page-1,'이전'):disabled('이전'))+
+    pageItems(total,page).map(n=>n==='…'?'<span>…</span>':link(n,String(n))).join('')+
+    (page<total?link(page+1,'다음'):disabled('다음'));
+}
 document.getElementById('q').addEventListener('keydown',e=>{if(e.key==='Enter')searchPosts()});init();
+window.addEventListener('popstate',()=>{if(!all.length)return;readViewUrl();drawCats();render()});
 </script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"등기로","alternateName":"현재두 법무사 사무소","url":"https://www.deunggiro.kr/","image":"https://www.deunggiro.kr/images/og-home.jpg","telephone":"032-425-1500","address":{"@type":"PostalAddress","streetAddress":"경원대로 873, 201호(주안동, 인성빌딩)","addressLocality":"미추홀구","addressRegion":"인천광역시","addressCountry":"KR"}}</script>
 <script>document.documentElement.classList.add('dg-home-boot');</script>

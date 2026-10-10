@@ -75,6 +75,15 @@ jobs:
           git restore --worktree -- posts
           echo "EXISTING_POSTS_RESTORED; new untracked posts retain generated SEO"
           git status --short -- posts | head -20 || true
+      - name: Refresh persistent crawlable legal post links
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from scripts.site_maintenance import rebuild_posts_page
+          posts = json.loads(Path('data/posts.json').read_text(encoding='utf-8'))
+          print('LEGAL_POSTS_INDEX_UPDATED', rebuild_posts_page(posts))
+          PY
       - name: Generate new thumbnails, sitemap and RSS (no legacy HTML rewrites)
         run: |
           timeout 150s python -u scripts/generate_thumbnails.py
