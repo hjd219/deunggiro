@@ -1,8 +1,15 @@
 {
-  "totalPosts": 388,
-  "ok": 388,
+  "totalPosts": 389,
+  "ok": 389,
   "warnings": 0,
   "items": [
+    {
+      "slug": "inheritance-naver-224440231991",
+      "status": "ok",
+      "issues": [],
+      "modified": "2026-10-13",
+      "related": []
+    },
     {
       "slug": "realestate-naver-224434182517",
       "status": "ok",
