@@ -173,6 +173,10 @@ def rebuild_post_pages(posts: list[dict]) -> bool:
                 current = re.sub(pattern, lambda m: m.group(1)+html.escape(text, quote=True)+m.group(2), current, count=1)
             current = re.sub(r'(<link rel="canonical" href=")[^"]*(")', lambda m: m.group(1)+loc+m.group(2), current, count=1)
             current = fix_page_schemas(current, loc, title, summary)
+            # Reject accidental reuse of the posts.html identity on archive pages.
+            if (f'"@id":"{loc}#webpage"' not in current
+                    or f'"@id":"{loc}#breadcrumb"' not in current):
+                raise ValueError(f'Archive JSON-LD identifiers were not updated: {loc}')
             current = re.sub(r'(<p class="desc" id="legal-desc">)[\s\S]*?(</p>)', lambda m: m.group(1)+INTRO[mode]+m.group(2), current, count=1)
             current = re.sub(r'(<a class="mode-tab)(?: active)?(" data-mode="(info|core|case)")', lambda m: m.group(1)+(' active' if m.group(3)==mode else '')+m.group(2), current)
             changed += int(write_if_changed(path, current))
