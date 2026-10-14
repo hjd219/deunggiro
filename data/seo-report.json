@@ -1,8 +1,22 @@
 {
-  "totalPosts": 389,
-  "ok": 389,
+  "totalPosts": 391,
+  "ok": 391,
   "warnings": 0,
   "items": [
+    {
+      "slug": "renunciation-naver-224441307964",
+      "status": "ok",
+      "issues": [],
+      "modified": "2026-10-14",
+      "related": []
+    },
+    {
+      "slug": "renunciation-naver-224441320334",
+      "status": "ok",
+      "issues": [],
+      "modified": "2026-10-14",
+      "related": []
+    },
     {
       "slug": "inheritance-naver-224440231991",
       "status": "ok",
