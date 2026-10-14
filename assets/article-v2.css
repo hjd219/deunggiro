@@ -24,6 +24,11 @@ body.article-v2 .dg-post-breadcrumb a:hover,body.article-v2 .dg-post-breadcrumb 
 body.article-v2 .dg-post-breadcrumb span{color:#9ab6c5;font-weight:500}
 @media(max-width:700px){body.article-v2 .dg-post-breadcrumb{margin:0 0 8px;padding:0 15px;font-size:12px;gap:6px}}
 
-/* Author byline: subtle but visible across desktop and mobile. */
-body.article-v2 .article>.dg-author-byline{font-size:13px!important;line-height:1.5!important;color:#64748b!important;margin:-2px 0 18px!important;font-weight:400!important;letter-spacing:0!important}
-body.article-v2 .article>.dg-author-byline span{font-weight:700!important;color:#334155!important}
+/* Right-aligned author beside the original publication date. */
+body.article-v2 .article .post-meta{display:block!important;line-height:1.7!important}
+body.article-v2 .article .post-meta::after{content:"";display:block;clear:both}
+body.article-v2 .article .post-meta .dg-author-byline{float:right!important;display:inline-block!important;margin-left:10px!important;font-size:12px!important;line-height:1.7!important;font-weight:700!important;color:#536477!important;white-space:nowrap!important;letter-spacing:0!important}
+@media(max-width:500px){body.article-v2 .article .post-meta .dg-author-byline{font-size:11px!important;margin-left:4px!important}}
+body.article-v2 .seo-calculator-inline{margin:12px 0 22px!important}
+body.article-v2 .seo-calculator-inline a{display:inline-flex;align-items:center;gap:6px;color:#168dca!important;font-size:15px;font-weight:700;line-height:1.5;text-decoration:underline;text-underline-offset:4px}
+body.article-v2 .seo-calculator-inline a:hover,body.article-v2 .seo-calculator-inline a:focus-visible{color:#076d9e!important}
