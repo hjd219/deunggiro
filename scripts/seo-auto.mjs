@@ -68,12 +68,12 @@ function coreScore(p){const text=`${p.title||''} ${p.keywords||''} ${p.summary||
 function buildCoreSlugs(){const core=new Set();for(const [category,quota] of Object.entries(CORE_QUOTAS)){posts.filter(p=>String(p.category||'').trim()===category).sort((a,b)=>coreScore(b)-coreScore(a)||String(b.date||'').localeCompare(String(a.date||''))).slice(0,quota).forEach(p=>core.add(String(p.slug||'').replace(/\\.html$/,'')))}return core}
 const CORE_SLUGS=buildCoreSlugs();
 function relatedPosts(p){return []}
+// Freeze article dates at their original publication date, even after edits.
+// Never substitute website_date, today's date, or a Git file timestamp.
 function contentModifiedDate(p){
-  for(const v of [p.website_date,p.date]){
-    const value=clean(v);
-    if(/^\d{4}-\d{2}-\d{2}$/.test(value))return value;
-  }
-  throw new Error(`게시글 날짜 누락: ${p.slug}`);
+  const published=clean(p.date);
+  if(/^\d{4}-\d{2}-\d{2}$/.test(published))return published;
+  throw new Error(`게시글 원작성일 누락: ${p.slug}`);
 }
 function plainTextFromArticle(html){const m=html.match(/<div class="article-body">([\s\S]*?)<\/div>\s*<!-- SEO_RELATED_POSTS_START -->/i)||html.match(/<div class="article-body">([\s\S]*?)<\/div>\s*<div class="related">/i);if(!m)return '';return m[1].replace(/<script[\s\S]*?<\/script>/gi,' ').replace(/<style[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&nbsp;/gi,' ').replace(/&amp;/gi,'&').replace(/\s+/g,' ').trim()}
 function optimizedDescription(p,html){const summary=clean(p.summary);if(summary.length>=50&&summary.length<=165)return summary;const source=plainTextFromArticle(html)||summary||p.title;const out=source.slice(0,160).trim();return out.length<30?`${p.title} 관련 절차와 핵심 내용을 정리한 등기로 법률정보입니다.`.slice(0,160):out}
