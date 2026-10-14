@@ -17,6 +17,7 @@ on:
       - 'scripts/seo_quality_gate.py'
       - 'scripts/seo-auto.mjs'
       - 'scripts/ensure_article_author.py'
+      - 'scripts/ensure_cost_calculator_links.py'
       - 'scripts/seo-hub-links.mjs'
       - 'scripts/inject_internal_links.py'
       - 'scripts/site_maintenance.py'
@@ -81,6 +82,8 @@ jobs:
           git status --short -- posts | head -20 || true
       - name: Preserve author bylines on existing and newly imported posts
         run: python -u scripts/ensure_article_author.py
+      - name: Link cost-related passages to relevant calculators
+        run: python -u scripts/ensure_cost_calculator_links.py
       - name: Regenerate ten-article crawlable legal pages
         run: |
           python - <<'PY'
@@ -144,7 +147,7 @@ jobs:
           if bad:
               print('POSTPROCESS_BAD_LIST',','.join(bad)); raise SystemExit(1)
           PY
-          python -m py_compile scripts/category_rules.py scripts/import_naver_blog.py scripts/import_naver_blog_clean.py scripts/ensure_article_author.py scripts/refresh_naver_format.py scripts/strip_naver_nonnumber_emoji.py scripts/strip_naver_consultation_footer.py scripts/ensure_section_dividers.py scripts/fix_divorce_categories.py scripts/cleanup_duplicate_posts.py scripts/seo_quality_gate.py
+          python -m py_compile scripts/category_rules.py scripts/import_naver_blog.py scripts/import_naver_blog_clean.py scripts/ensure_article_author.py scripts/ensure_cost_calculator_links.py scripts/refresh_naver_format.py scripts/strip_naver_nonnumber_emoji.py scripts/strip_naver_consultation_footer.py scripts/ensure_section_dividers.py scripts/fix_divorce_categories.py scripts/cleanup_duplicate_posts.py scripts/seo_quality_gate.py
           git diff --check
       - name: Commit and push safely
         shell: bash
