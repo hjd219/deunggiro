@@ -30,11 +30,18 @@ body.article-v2 .article .post-meta::after{content:none!important;display:none!i
 body.article-v2 .article .post-meta .badge{margin-right:0!important;justify-self:start!important}
 body.article-v2 .article .post-meta .dg-post-date{display:inline-block!important;white-space:nowrap!important;font-variant-numeric:tabular-nums!important}
 body.article-v2 .article .post-meta .dg-author-byline{float:none!important;display:inline-block!important;justify-self:end!important;margin:0!important;font-size:12px!important;line-height:1.7!important;font-weight:700!important;color:#536477!important;white-space:nowrap!important;letter-spacing:0!important}
+/* Keep practice badge, publication date and author on ONE row at all widths. */
 @media(max-width:530px){
-body.article-v2 .article .post-meta{grid-template-columns:minmax(0,1fr) max-content!important}
-body.article-v2 .article .post-meta .badge{grid-column:1/-1!important;grid-row:1!important}
-body.article-v2 .article .post-meta .dg-post-date{grid-column:1!important;grid-row:2!important}
-body.article-v2 .article .post-meta .dg-author-byline{grid-column:2!important;grid-row:2!important;font-size:11px!important}
+body.article-v2 .article .post-meta{display:grid!important;grid-template-columns:max-content max-content minmax(0,1fr)!important;align-items:center!important;column-gap:5px!important;row-gap:0!important;white-space:nowrap!important}
+body.article-v2 .article .post-meta .badge{grid-column:1!important;grid-row:1!important;white-space:nowrap!important;padding:4px 7px!important;font-size:10px!important}
+body.article-v2 .article .post-meta .dg-post-date{grid-column:2!important;grid-row:1!important;white-space:nowrap!important;font-size:11px!important}
+body.article-v2 .article .post-meta .dg-author-byline{grid-column:3!important;grid-row:1!important;justify-self:end!important;font-size:10px!important;margin:0!important;white-space:nowrap!important}
+}
+@media(max-width:380px){
+body.article-v2 .article .post-meta{column-gap:3px!important}
+body.article-v2 .article .post-meta .badge{padding:3px 5px!important;font-size:9px!important;letter-spacing:-.35px!important}
+body.article-v2 .article .post-meta .dg-post-date{font-size:10px!important;letter-spacing:-.3px!important}
+body.article-v2 .article .post-meta .dg-author-byline{font-size:9px!important;letter-spacing:-.3px!important}
 }
 body.article-v2 .seo-calculator-inline{margin:12px 0 22px!important}
 body.article-v2 .seo-calculator-inline a{display:inline-flex;align-items:center;gap:6px;color:#168dca!important;font-size:15px;font-weight:700;line-height:1.5;text-decoration:underline;text-underline-offset:4px}
