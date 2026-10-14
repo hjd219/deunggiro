@@ -44,6 +44,9 @@ function replaceMarked(html,name,block,before){
 
 /* Preserve manual JSON-LD; only the marked generated block is replaced. */
 function sanitizeSeoArtifacts(html){
+  // The importer can supply an additional standalone Article JSON-LD.
+  // Keep only the generated marked Article while retaining BreadcrumbList.
+  html=html.replace(/<script\b(?=[^>]*\bid=["']dg-article-schema["'])[^>]*>[\s\S]*?<\/script>\s*/gi,'');
   html=html.replace(/<nav\b(?=[^>]*\bdg-post-breadcrumb\b)[^>]*>[\s\S]*?<\/nav>\s*/gi,'');
   return html;
 }
