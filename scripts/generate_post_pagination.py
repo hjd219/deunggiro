@@ -78,6 +78,48 @@ def pagination(mode: str, current: int, total: int) -> str:
     ))
 
 
+def fix_page_schemas(document: str, loc: str, title: str, summary: str) -> str:
+    """Give each generated archive page its own JSON-LD identity.
+
+    Only update CollectionPage and BreadcrumbList; leave site Organization
+    and WebSite identifiers untouched. The posts.html root is unchanged.
+    """
+    def replace_schema(match: re.Match[str]) -> str:
+        try:
+            data = json.loads(match.group(2))
+        except json.JSONDecodeError:
+            return match.group(0)
+        if not isinstance(data, dict):
+            return match.group(0)
+        kind = data.get('@type')
+        if kind == 'CollectionPage':
+            data['@id'] = loc + '#webpage'
+            data['url'] = loc
+            data['name'] = title
+            data['description'] = summary
+            data['breadcrumb'] = {'@id': loc + '#breadcrumb'}
+        elif kind == 'BreadcrumbList':
+            data['@id'] = loc + '#breadcrumb'
+            data['itemListElement'] = [
+                {'@type': 'ListItem', 'position': 1,
+                 'name': '홈', 'item': BASE + '/'},
+                {'@type': 'ListItem', 'position': 2,
+                 'name': '법률정보', 'item': BASE + '/posts.html'},
+                {'@type': 'ListItem', 'position': 3,
+                 'name': title, 'item': loc},
+            ]
+        else:
+            return match.group(0)
+        return match.group(1) + json.dumps(data, ensure_ascii=False, separators=(',', ':')) + match.group(3)
+
+    return re.sub(
+        r'(<script\\b[^>]*\\btype=["\\\']application/ld\\+json["\\\'][^>]*>)([\\s\\S]*?)(</script>)',
+        replace_schema,
+        document,
+        flags=re.I,
+    )
+
+
 def write_if_changed(path: Path, value: str) -> bool:
     path.parent.mkdir(parents=True, exist_ok=True)
     if path.exists() and path.read_text(encoding='utf-8') == value:
@@ -130,7 +172,7 @@ def rebuild_post_pages(posts: list[dict]) -> bool:
                 pattern = r'(<meta property="' + re.escape(tag) + r'" content=")[^"]*(")'
                 current = re.sub(pattern, lambda m: m.group(1)+html.escape(text, quote=True)+m.group(2), current, count=1)
             current = re.sub(r'(<link rel="canonical" href=")[^"]*(")', lambda m: m.group(1)+loc+m.group(2), current, count=1)
-            current = current.replace('"url":"https://www.deunggiro.kr/posts.html"', '"url":"' + loc + '"')
+            current = fix_page_schemas(current, loc, title, summary)
             current = re.sub(r'(<p class="desc" id="legal-desc">)[\s\S]*?(</p>)', lambda m: m.group(1)+INTRO[mode]+m.group(2), current, count=1)
             current = re.sub(r'(<a class="mode-tab)(?: active)?(" data-mode="(info|core|case)")', lambda m: m.group(1)+(' active' if m.group(3)==mode else '')+m.group(2), current)
             changed += int(write_if_changed(path, current))
