@@ -137,13 +137,17 @@ for(const p of posts){
   html=replaceMarked(html,'SEO_STRUCTURED_DATA',ldBlock,'\n</head>');
   html=dedupeCurrentArticleJsonLd(html,url);
 
-  // Put an explicit author immediately below the post title, once only.
-  if(!/class\s*=\s*["'][^"']*\bdg-author-byline\b/i.test(html)){
-    const articleStart=html.search(/<article\b/i);
-    const heading=articleStart>=0?html.slice(articleStart).match(/<h1\b[^>]*>[\s\S]*?<\/h1>/i):null;
-    if(heading){
-      const at=articleStart+heading.index+heading[0].length;
-      html=html.slice(0,at)+'\n<p class="dg-author-byline">작성자 <span>현재두 법무사</span></p>'+html.slice(at);
+  // Keep one visible author label on the publication-date row.
+  // The scheduled import normalizer also handles legacy under-title bylines.
+  const authorTag='<span class="dg-author-byline">작성자: 현재두 법무사</span>';
+  html=html.replace(/\s*<p\b[^>]*class=["'][^"']*\bdg-author-byline\b[^"']*["'][^>]*>[\s\S]*?<\/p>/gi,'');
+  html=html.replace(/<span\b[^>]*class=["'][^"']*\bdg-author-byline\b[^"']*["'][^>]*>[\s\S]*?<\/span>/gi,'');
+  const articleStart=html.search(/<article\b/i);
+  if(articleStart>=0){
+    const meta=html.slice(articleStart).match(/<div\b[^>]*class=["'][^"']*\bpost-meta\b[^"']*["'][^>]*>[\s\S]*?<\/div>/i);
+    if(meta){
+      const at=articleStart+meta.index+meta[0].length-'</div>'.length;
+      html=html.slice(0,at)+authorTag+html.slice(at);
     }
   }
   // 화면에는 현재 글 제목을 제외한 2단계 breadcrumb만 노출한다.
