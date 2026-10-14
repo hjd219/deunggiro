@@ -24,11 +24,18 @@ body.article-v2 .dg-post-breadcrumb a:hover,body.article-v2 .dg-post-breadcrumb 
 body.article-v2 .dg-post-breadcrumb span{color:#9ab6c5;font-weight:500}
 @media(max-width:700px){body.article-v2 .dg-post-breadcrumb{margin:0 0 8px;padding:0 15px;font-size:12px;gap:6px}}
 
-/* Right-aligned author beside the original publication date. */
-body.article-v2 .article .post-meta{display:block!important;line-height:1.7!important}
-body.article-v2 .article .post-meta::after{content:"";display:block;clear:both}
-body.article-v2 .article .post-meta .dg-author-byline{float:right!important;display:inline-block!important;margin-left:10px!important;font-size:12px!important;line-height:1.7!important;font-weight:700!important;color:#536477!important;white-space:nowrap!important;letter-spacing:0!important}
-@media(max-width:500px){body.article-v2 .article .post-meta .dg-author-byline{font-size:11px!important;margin-left:4px!important}}
+/* Publication date and author: grid alignment, never float/wrap into separate lines. */
+body.article-v2 .article .post-meta{display:grid!important;grid-template-columns:max-content max-content minmax(0,1fr)!important;align-items:center!important;column-gap:8px!important;row-gap:6px!important;line-height:1.7!important}
+body.article-v2 .article .post-meta::after{content:none!important;display:none!important}
+body.article-v2 .article .post-meta .badge{margin-right:0!important;justify-self:start!important}
+body.article-v2 .article .post-meta .dg-post-date{display:inline-block!important;white-space:nowrap!important;font-variant-numeric:tabular-nums!important}
+body.article-v2 .article .post-meta .dg-author-byline{float:none!important;display:inline-block!important;justify-self:end!important;margin:0!important;font-size:12px!important;line-height:1.7!important;font-weight:700!important;color:#536477!important;white-space:nowrap!important;letter-spacing:0!important}
+@media(max-width:530px){
+body.article-v2 .article .post-meta{grid-template-columns:minmax(0,1fr) max-content!important}
+body.article-v2 .article .post-meta .badge{grid-column:1/-1!important;grid-row:1!important}
+body.article-v2 .article .post-meta .dg-post-date{grid-column:1!important;grid-row:2!important}
+body.article-v2 .article .post-meta .dg-author-byline{grid-column:2!important;grid-row:2!important;font-size:11px!important}
+}
 body.article-v2 .seo-calculator-inline{margin:12px 0 22px!important}
 body.article-v2 .seo-calculator-inline a{display:inline-flex;align-items:center;gap:6px;color:#168dca!important;font-size:15px;font-weight:700;line-height:1.5;text-decoration:underline;text-underline-offset:4px}
 body.article-v2 .seo-calculator-inline a:hover,body.article-v2 .seo-calculator-inline a:focus-visible{color:#076d9e!important}
