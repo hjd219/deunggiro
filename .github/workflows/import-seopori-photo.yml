@@ -1,0 +1,42 @@
+name: Import Seopori licensed photo (one time)
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/import-seopori-photo.yml
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download public-sector source photo and make optimized images
+        env:
+          PHOTO_URL: "https://isum.incheon.go.kr/atch/getImg.do?lnkgSn=2407110008&ordr=1&upKey=storeExterior"
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --connect-timeout 20 --max-time 120 --user-agent "Mozilla/5.0" "$PHOTO_URL" -o "$RUNNER_TEMP/seopori.jpg"
+          python3 -m pip install --quiet Pillow
+          python3 - <<'PY'
+          import os
+          from PIL import Image, ImageOps
+          img = Image.open(os.environ["RUNNER_TEMP"] + "/seopori.jpg").convert("RGB")
+          if img.width < 600 or img.height < 400:
+              raise RuntimeError("Unexpected source photo resolution")
+          os.makedirs("images", exist_ok=True)
+          img.save("images/deokjeok-seopori-hero.webp", "WEBP", quality=82, method=6)
+          mobile = ImageOps.fit(img, (800, 920), Image.Resampling.LANCZOS, centering=(0.50, 0.51))
+          mobile.save("images/deokjeok-seopori-hero-mobile.webp", "WEBP", quality=79, method=6)
+          print("Source:", img.size, "mobile:", mobile.size)
+          PY
+      - name: Commit image assets only
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add images/deokjeok-seopori-hero.webp images/deokjeok-seopori-hero-mobile.webp
+          if ! git diff --cached --quiet; then
+            git commit -m "Add licensed Seopori Beach hero images for renunciation pages"
+            git push
+          fi
