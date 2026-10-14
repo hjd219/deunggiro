@@ -45,6 +45,7 @@ jobs:
               meta_start=source.find('<div class="post-meta">')
               meta_end=source.find('</div>',meta_start) if meta_start>=0 else -1
               author_on_date_row=meta_start>=0 and meta_end>meta_start and 'class="dg-author-byline"' in source[meta_start:meta_end]
+              date_on_same_row=meta_start>=0 and meta_end>meta_start and 'class="dg-post-date"' in source[meta_start:meta_end]
               authors=[]
               for raw in re.findall(r'<script\b[^>]*type=["\']application/ld\+json["\'][^>]*>([\s\S]*?)</script>',source,re.I):
                   try: node=json.loads(raw)
@@ -52,7 +53,7 @@ jobs:
                   if isinstance(node,dict) and node.get('@type')=='Article':
                       authors.append(node.get('author'))
               expected={'@type':'Person','name':'현재두','jobTitle':'법무사'}
-              if bylines!=1 or not author_on_date_row or not authors or any(a!=expected for a in authors):
+              if bylines!=1 or not author_on_date_row or not date_on_same_row or not authors or any(a!=expected for a in authors):
                   bad.append(f'{slug}:byline={bylines}:article_schemas={len(authors)}')
               checked+=1
           print('AUTHOR_VALIDATION',checked,'BAD',len(bad))
