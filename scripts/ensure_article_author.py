@@ -14,17 +14,26 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 POSTS_FILE = ROOT / "data" / "posts.json"
 POSTS_DIR = ROOT / "posts"
-BYLINE = '\n<p class="dg-author-byline">작성자 <span>현재두 법무사</span></p>'
+BYLINE = '<span class="dg-author-byline">작성자: 현재두 법무사</span>'
 AUTHOR = {"@type": "Person", "name": "현재두", "jobTitle": "법무사"}
 SCRIPT = re.compile(
-    r'(<script\b[^>]*\btype\s*=\s*["\']application/ld\+json["\'][^>]*>)'
+    r'(<script\b[^>]*\btype\s*=\s*["\x27]application/ld\+json["\x27][^>]*>)'
     r'([\s\S]*?)(</script>)',
     re.IGNORECASE,
 )
-ARTICLE = re.compile(r"<article\b[^>]*>", re.IGNORECASE)
-H1 = re.compile(r"<h1\b[^>]*>[\s\S]*?</h1>", re.IGNORECASE)
-BYLINE_PRESENT = re.compile(r'class\s*=\s*["\'][^"\']*\bdg-author-byline\b', re.IGNORECASE)
-
+ARTICLE = re.compile(r'<article\b[^>]*>', re.IGNORECASE)
+POST_META = re.compile(
+    r'(<div\b[^>]*class\s*=\s*["\x27][^"\x27]*\bpost-meta\b[^"\x27]*["\x27][^>]*>)([\s\S]*?)(</div>)',
+    re.IGNORECASE,
+)
+LEGACY_BYLINE = re.compile(
+    r'\s*<p\b[^>]*class\s*=\s*["\x27][^"\x27]*\bdg-author-byline\b[^"\x27]*["\x27][^>]*>[\s\S]*?</p>',
+    re.IGNORECASE,
+)
+INLINE_BYLINE = re.compile(
+    r'<span\b[^>]*class\s*=\s*["\x27][^"\x27]*\bdg-author-byline\b[^"\x27]*["\x27][^>]*>[\s\S]*?</span>',
+    re.IGNORECASE,
+)
 
 def patch_article_author(markup: str) -> tuple[str, int]:
     updated = 0
@@ -47,15 +56,22 @@ def patch_article_author(markup: str) -> tuple[str, int]:
 
 
 def patch_visible_author(markup: str) -> tuple[str, bool]:
-    if BYLINE_PRESENT.search(markup):
-        return markup, False
+    """Put exactly one author label at the right end of the date row."""
     article = ARTICLE.search(markup)
     if not article:
         return markup, False
-    heading = H1.search(markup, article.end())
-    if not heading:
+
+    # Remove previous author labels under the title and any stale inline copies.
+    cleaned = LEGACY_BYLINE.sub('', markup, count=1)
+    article = ARTICLE.search(cleaned)
+    meta = POST_META.search(cleaned, article.end())
+    if not meta:
         return markup, False
-    return markup[:heading.end()] + BYLINE + markup[heading.end():], True
+
+    content = INLINE_BYLINE.sub('', meta.group(2))
+    new_meta = meta.group(1) + content + BYLINE + meta.group(3)
+    updated = cleaned[:meta.start()] + new_meta + cleaned[meta.end():]
+    return updated, updated != markup
 
 
 def main() -> None:
