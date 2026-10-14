@@ -142,6 +142,12 @@ for(const p of posts){
   const authorTag='<span class="dg-author-byline">작성자: 현재두 법무사</span>';
   html=html.replace(/\s*<p\b[^>]*class=["'][^"']*\bdg-author-byline\b[^"']*["'][^>]*>[\s\S]*?<\/p>/gi,'');
   html=html.replace(/<span\b[^>]*class=["'][^"']*\bdg-author-byline\b[^"']*["'][^>]*>[\s\S]*?<\/span>/gi,'');
+  // Preserve the original date text while wrapping it as a grid cell.
+  html=html.replace(/(<div\b[^>]*class=["'][^"']*\bpost-meta\b[^"']*["'][^>]*>)([\s\S]*?)(<\/div>)/i,(_all,open,body,close)=>{
+    const plain=body.replace(/<span\b[^>]*class=["'][^"']*\bdg-post-date\b[^"']*["'][^>]*>([\s\S]*?)<\/span>/gi,'$1');
+    const wrapped=plain.replace(/(?<!\d)(\d{4}-\d{2}-\d{2})(?!\d)/,'<span class="dg-post-date">$1</span>');
+    return open+wrapped+close;
+  });
   const authorArticleStart=html.search(/<article\b/i);
   if(authorArticleStart>=0){
     const meta=html.slice(authorArticleStart).match(/<div\b[^>]*class=["'][^"']*\bpost-meta\b[^"']*["'][^>]*>[\s\S]*?<\/div>/i);
