@@ -101,6 +101,25 @@ function updateSitemapLastmod(p,modified){
 }
 function writeIfChanged(file,next){const current=fs.readFileSync(file,'utf8');if(current!==next)fs.writeFileSync(file,next)}
 
+/* A newly imported post can already contain manual Article JSON-LD.
+   Keep one Article for the current URL; preserve BreadcrumbList and unrelated schemas. */
+function dedupeCurrentArticleJsonLd(html,url){
+  let found=false;
+  return html.replace(/<script\b[^>]*\btype=["']application\/ld\+json["'][^>]*>[\s\S]*?<\/script>/gi,full=>{
+    const match=full.match(/>([\s\S]*?)<\/script>$/i);
+    if(!match)return full;
+    let node;
+    try{node=JSON.parse(match[1])}catch{return full}
+    if(!node || Array.isArray(node) || node['@type']!=='Article')return full;
+    const entity=node.mainEntityOfPage;
+    const target=typeof entity==='string'?entity:(entity?.['@id']||entity?.url||'');
+    if(target && target!==url)return full;
+    if(!found){found=true;return full}
+    return '';
+  });
+}
+
+
 const audit=[];
 // Existing posts are audited but are not rewritten unless the generated SEO output actually differs.
 for(const p of posts){
@@ -113,6 +132,7 @@ for(const p of posts){
   const breadcrumbLd={'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'홈',item:BASE+'/'},{'@type':'ListItem',position:2,name:hub.name,item:BASE+hub.path},{'@type':'ListItem',position:3,name:p.title,item:url}]};
   const ldBlock=`<script type="application/ld+json">${JSON.stringify(articleLd).replace(/<\//g,'<\\/')}</script>\n<script type="application/ld+json">${JSON.stringify(breadcrumbLd).replace(/<\//g,'<\\/')}</script>`;
   html=replaceMarked(html,'SEO_STRUCTURED_DATA',ldBlock,'\n</head>');
+  html=dedupeCurrentArticleJsonLd(html,url);
   // 화면에는 현재 글 제목을 제외한 2단계 breadcrumb만 노출한다.
   // 홈과 업무명 모두 실제 링크이며, 업무명은 카테고리별 허브로 연결한다.
   const visibleBreadcrumb=`<nav class="dg-post-breadcrumb" aria-label="breadcrumb"><a href="/">홈</a><span aria-hidden="true">›</span><a href="${esc(hub.path)}">${esc(hub.name)}</a></nav>`;
