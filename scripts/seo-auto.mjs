@@ -131,11 +131,21 @@ for(const p of posts){
   let html=sanitizeSeoArtifacts(fs.readFileSync(file,'utf8'));
   const url=`${BASE}/posts/${p.slug}.html`,image=abs(p.thumbnail),modified=contentModifiedDate(p),description=optimizedDescription(p,html),hub=categoryHub(p.category);
   html=replaceMeta(html,'description',description);html=replaceOg(html,'og:description',description);html=replaceOg(html,'og:url',url);html=enhanceImages(html,p);
-  const articleLd={'@context':'https://schema.org','@type':'Article',headline:p.title,description,datePublished:p.date,dateModified:modified,mainEntityOfPage:{'@type':'WebPage','@id':url},author:{'@type':'Person',name:'현재두'},publisher:{'@type':'Organization',name:'현재두 법무사 사무소',url:BASE},...(image?{image:[image]}:{})};
+  const articleLd={'@context':'https://schema.org','@type':'Article',headline:p.title,description,datePublished:p.date,dateModified:modified,mainEntityOfPage:{'@type':'WebPage','@id':url},author:{'@type':'Person',name:'현재두',jobTitle:'법무사'},publisher:{'@type':'Organization',name:'현재두 법무사 사무소',url:BASE},...(image?{image:[image]}:{})};
   const breadcrumbLd={'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'홈',item:BASE+'/'},{'@type':'ListItem',position:2,name:hub.name,item:BASE+hub.path},{'@type':'ListItem',position:3,name:p.title,item:url}]};
   const ldBlock=`<script type="application/ld+json">${JSON.stringify(articleLd).replace(/<\//g,'<\\/')}</script>\n<script type="application/ld+json">${JSON.stringify(breadcrumbLd).replace(/<\//g,'<\\/')}</script>`;
   html=replaceMarked(html,'SEO_STRUCTURED_DATA',ldBlock,'\n</head>');
   html=dedupeCurrentArticleJsonLd(html,url);
+
+  // Put an explicit author immediately below the post title, once only.
+  if(!/class\s*=\s*["'][^"']*\bdg-author-byline\b/i.test(html)){
+    const articleStart=html.search(/<article\b/i);
+    const heading=articleStart>=0?html.slice(articleStart).match(/<h1\b[^>]*>[\s\S]*?<\/h1>/i):null;
+    if(heading){
+      const at=articleStart+heading.index+heading[0].length;
+      html=html.slice(0,at)+'\n<p class="dg-author-byline">작성자 <span>현재두 법무사</span></p>'+html.slice(at);
+    }
+  }
   // 화면에는 현재 글 제목을 제외한 2단계 breadcrumb만 노출한다.
   // 홈과 업무명 모두 실제 링크이며, 업무명은 카테고리별 허브로 연결한다.
   const visibleBreadcrumb=`<nav class="dg-post-breadcrumb" aria-label="breadcrumb"><a href="/">홈</a><span aria-hidden="true">›</span><a href="${esc(hub.path)}">${esc(hub.name)}</a></nav>`;
