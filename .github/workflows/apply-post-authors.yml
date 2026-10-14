@@ -42,8 +42,9 @@ jobs:
                   continue
               source=file.read_text(encoding='utf-8')
               bylines=source.count('class="dg-author-byline"')
-              meta=re.search(r'<div\\b[^>]*class=["\\\']post-meta["\\\'][^>]*>([\\s\\S]*?)</div>',source,re.I)
-              author_on_date_row=bool(meta and 'class="dg-author-byline"' in meta.group(1))
+              meta_start=source.find('<div class="post-meta">')
+              meta_end=source.find('</div>',meta_start) if meta_start>=0 else -1
+              author_on_date_row=meta_start>=0 and meta_end>meta_start and 'class="dg-author-byline"' in source[meta_start:meta_end]
               authors=[]
               for raw in re.findall(r'<script\b[^>]*type=["\']application/ld\+json["\'][^>]*>([\s\S]*?)</script>',source,re.I):
                   try: node=json.loads(raw)
