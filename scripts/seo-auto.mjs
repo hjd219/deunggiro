@@ -142,11 +142,11 @@ for(const p of posts){
   const authorTag='<span class="dg-author-byline">작성자: 현재두 법무사</span>';
   html=html.replace(/\s*<p\b[^>]*class=["'][^"']*\bdg-author-byline\b[^"']*["'][^>]*>[\s\S]*?<\/p>/gi,'');
   html=html.replace(/<span\b[^>]*class=["'][^"']*\bdg-author-byline\b[^"']*["'][^>]*>[\s\S]*?<\/span>/gi,'');
-  const articleStart=html.search(/<article\b/i);
-  if(articleStart>=0){
-    const meta=html.slice(articleStart).match(/<div\b[^>]*class=["'][^"']*\bpost-meta\b[^"']*["'][^>]*>[\s\S]*?<\/div>/i);
+  const authorArticleStart=html.search(/<article\b/i);
+  if(authorArticleStart>=0){
+    const meta=html.slice(authorArticleStart).match(/<div\b[^>]*class=["'][^"']*\bpost-meta\b[^"']*["'][^>]*>[\s\S]*?<\/div>/i);
     if(meta){
-      const at=articleStart+meta.index+meta[0].length-'</div>'.length;
+      const at=authorArticleStart+meta.index+meta[0].length-'</div>'.length;
       html=html.slice(0,at)+authorTag+html.slice(at);
     }
   }
