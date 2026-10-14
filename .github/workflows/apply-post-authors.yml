@@ -23,6 +23,8 @@ jobs:
           fetch-depth: 0
       - name: Apply stable bylines to all existing articles
         run: python -u scripts/ensure_article_author.py
+      - name: Add appropriate calculator links to cost passages
+        run: python -u scripts/ensure_cost_calculator_links.py
       - name: Verify every indexed article has visible and structured author
         run: |
           python - <<'PY'
@@ -40,6 +42,8 @@ jobs:
                   continue
               source=file.read_text(encoding='utf-8')
               bylines=source.count('class="dg-author-byline"')
+              meta=re.search(r'<div\\b[^>]*class=["\\\']post-meta["\\\'][^>]*>([\\s\\S]*?)</div>',source,re.I)
+              author_on_date_row=bool(meta and 'class="dg-author-byline"' in meta.group(1))
               authors=[]
               for raw in re.findall(r'<script\b[^>]*type=["\']application/ld\+json["\'][^>]*>([\s\S]*?)</script>',source,re.I):
                   try: node=json.loads(raw)
@@ -47,7 +51,7 @@ jobs:
                   if isinstance(node,dict) and node.get('@type')=='Article':
                       authors.append(node.get('author'))
               expected={'@type':'Person','name':'현재두','jobTitle':'법무사'}
-              if bylines!=1 or not authors or any(a!=expected for a in authors):
+              if bylines!=1 or not author_on_date_row or not authors or any(a!=expected for a in authors):
                   bad.append(f'{slug}:byline={bylines}:article_schemas={len(authors)}')
               checked+=1
           print('AUTHOR_VALIDATION',checked,'BAD',len(bad))
@@ -55,7 +59,7 @@ jobs:
               print('AUTHOR_VALIDATION_FAILURES',bad[:30])
               raise SystemExit(1)
           PY
-      - name: Commit only author-related article changes
+      - name: Commit author placement and contextual calculator links
         shell: bash
         run: |
           set -euo pipefail
@@ -67,12 +71,12 @@ jobs:
             exit 0
           fi
           git diff --cached --check
-          git commit -m "Show Current Du judicial scrivener as author on all legal posts"
+          git commit -m "Align authors with dates and connect cost passages to calculators"
           for attempt in 1 2 3; do
             git fetch origin main
             if git rebase origin/main; then
               if git push origin HEAD:main; then
-                echo "AUTHOR_MIGRATION_PUBLISHED"
+                echo "AUTHOR_COST_LINKS_PUBLISHED"
                 exit 0
               fi
             else
