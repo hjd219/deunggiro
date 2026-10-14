@@ -1,89 +1,48 @@
-name: Localize family photo
+name: Finalize optimized family photo
 on:
   push:
     paths:
       - .github/workflows/localize-family-photo.yml
-  workflow_dispatch:
 permissions:
   contents: write
-concurrency:
-  group: localize-family-photo
-  cancel-in-progress: false
 jobs:
-  localize:
+  optimize:
     runs-on: ubuntu-latest
-    timeout-minutes: 7
+    timeout-minutes: 4
     steps:
       - uses: actions/checkout@v4
-      - name: Safely fetch photo, verify visual identity and optimize
+      - name: Resize local family hero and fix responsive preload
         shell: bash
         run: |
           set -euo pipefail
-          python -m pip install --quiet Pillow requests
+          python -m pip install --quiet Pillow
           python - <<'PY'
-          import io
-          import pathlib
-          import requests
-          import urllib.parse
           from PIL import Image
-          original = 'https://www.ifez.go.kr/other/attach/process.file.do?TP=img&key=667A3005CB17CB9&sn=79270'
-          candidates = [
-              original,
-              original.replace('www.ifez.go.kr','ifez.go.kr'),
-              'https://wsrv.nl/?url=' + urllib.parse.quote(original, safe=''),
-              'https://images.weserv.nl/?url=' + urllib.parse.quote(original, safe=''),
-          ]
-          reference_hash = 0x0303030b2e332003
-          def dhash(im):
-              small=im.convert('L').resize((9,8), Image.Resampling.LANCZOS)
-              pixels=list(small.getdata())
-              return int(''.join('1' if pixels[y*9+x]>pixels[y*9+x+1] else '0' for y in range(8) for x in range(8)),2)
-          photo=None
-          for url in candidates:
-              try:
-                  response=requests.get(url,timeout=(10,25),headers={'User-Agent':'Mozilla/5.0','Referer':'https://www.ifez.go.kr/'})
-                  print('Image candidate',url.split('/')[2],response.status_code,len(response.content),flush=True)
-                  response.raise_for_status()
-                  if len(response.content)<10000: raise ValueError('Not a photograph')
-                  im=Image.open(io.BytesIO(response.content)).convert('RGB')
-                  hash_distance=(dhash(im)^reference_hash).bit_count()
-                  print('Dimensions',im.size,'hash distance',hash_distance,flush=True)
-                  if im.width<800 or im.height<500 or hash_distance>6:
-                      raise ValueError('Image does not match the original user-uploaded IFEZ bridge photograph')
-                  photo=im
-                  break
-              except Exception as e:
-                  print(type(e).__name__,str(e)[:200],flush=True)
-          if photo is None:
-              raise RuntimeError('The original photo was not reachable or no image was verified. No changes made.')
-          root=pathlib.Path('images')
-          root.mkdir(exist_ok=True)
-          photo.save(root/'family-bridge-hero.webp','WEBP',quality=72,method=6)
-          mobile=photo.copy()
-          mobile.thumbnail((800,800),Image.Resampling.LANCZOS)
-          mobile.save(root/'family-bridge-hero-mobile.webp','WEBP',quality=67,method=6)
-          page=pathlib.Path('family.html')
-          html=page.read_text('utf-8')
-          old='https://www.ifez.go.kr/other/attach/process.file.do?TP=img&amp;key=667A3005CB17CB9&amp;sn=79270'
-          if html.count(old)!=2:
-              raise RuntimeError('Family page changed since inspection, aborting to avoid unintended edits')
-          html=html.replace(old,'/images/family-bridge-hero.webp')
-          html=html.replace('<link rel="preconnect" href="https://www.ifez.go.kr"><link rel="dns-prefetch" href="//www.ifez.go.kr">','')
-          source='<img class="dg-family-bridge" src="/images/family-bridge-hero.webp"'
-          if html.count(source)!=1: raise RuntimeError('Cannot locate exact photo markup')
-          html=html.replace(source, '<img class="dg-family-bridge" src="/images/family-bridge-hero.webp" srcset="/images/family-bridge-hero-mobile.webp 800w, /images/family-bridge-hero.webp 1536w" sizes="100vw"',1)
-          page.write_text(html,'utf-8')
-          print('WebP sizes:',(root/'family-bridge-hero.webp').stat().st_size,(root/'family-bridge-hero-mobile.webp').stat().st_size)
+          from pathlib import Path
+          pc=Path('images/family-bridge-hero.webp')
+          mobile=Path('images/family-bridge-hero-mobile.webp')
+          if not pc.exists() or not mobile.exists(): raise RuntimeError('Missing verified local source photos')
+          im=Image.open(pc).convert('RGB')
+          if im.width<1536 or im.height<900: raise RuntimeError('Source image is unexpected resolution')
+          im.thumbnail((1536,1536),Image.Resampling.LANCZOS)
+          if im.width!=1536: raise RuntimeError('Wrong thumbnail width')
+          im.save(pc,format='WEBP',quality=72,method=6)
+          html_path=Path('family.html')
+          html=html_path.read_text('utf-8')
+          old='<link rel="preload" as="image" href="/images/family-bridge-hero.webp" fetchpriority="high">'
+          new='<link rel="preload" as="image" imagesrcset="/images/family-bridge-hero-mobile.webp 800w, /images/family-bridge-hero.webp 1536w" imagesizes="100vw" fetchpriority="high">'
+          if html.count(old)!=1: raise RuntimeError('Unexpected page preload markup')
+          html=html.replace(old,new,1)
+          html_path.write_text(html,'utf-8')
+          print('Optimized desktop',im.size,pc.stat().st_size,'mobile',mobile.stat().st_size)
           PY
-      - name: Commit verified family photo
+      - name: Publish updated local photo
         shell: bash
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add images/family-bridge-hero.webp images/family-bridge-hero-mobile.webp family.html
-          if ! git diff --cached --quiet; then
-            git commit -m 'Use optimized local IFEZ family hero photos'
-            git pull --rebase origin main
-            git push origin HEAD:main
-          fi
+          git add images/family-bridge-hero.webp family.html
+          git commit -m 'Resize family bridge hero and preload responsive image'
+          git pull --rebase origin main
+          git push origin HEAD:main
