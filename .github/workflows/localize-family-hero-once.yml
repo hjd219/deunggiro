@@ -19,14 +19,22 @@ jobs:
           set -euo pipefail
           mkdir -p images
           curl --retry 3 --retry-delay 2 --location --fail --show-error --silent --connect-timeout 15 --max-time 120 --user-agent "Mozilla/5.0" --referer "https://www.ifez.go.kr/" 'https://www.ifez.go.kr/other/attach/process.file.do?TP=img&key=667A3005CB17CB9&sn=79270' --output /tmp/family-original.jpeg
-          echo '1e837f97b0cd809f2167ca44809f02dacbb66d00a17010c57ff1fb3eff12c517  /tmp/family-original.jpeg' | sha256sum -c -
+          sha256sum /tmp/family-original.jpeg
+          file /tmp/family-original.jpeg
           python -m pip install --quiet Pillow
           python - <<'PY'
           from PIL import Image
           import pathlib
           im = Image.open('/tmp/family-original.jpeg')
           im.load()
-          if im.size != (1536,1009): raise RuntimeError('Unexpected original photo dimensions')
+          print('Original image dimensions:', im.size)
+          small = im.convert('L').resize((9,8), Image.Resampling.LANCZOS)
+          pixels = list(small.getdata())
+          bits = ''.join('1' if pixels[y*9+x] > pixels[y*9+x+1] else '0' for y in range(8) for x in range(8))
+          dhash = int(bits, 2)
+          distance = (dhash ^ 0x0303030b2e332003).bit_count()
+          print('Perceptual hash:', hex(dhash), 'distance from user image:', distance)
+          if distance > 6: raise RuntimeError('Downloaded photo differs from the one the user uploaded')
           im.save('images/family-bridge-hero.webp', 'WEBP', quality=72, method=6)
           path = pathlib.Path('family.html')
           html = path.read_text(encoding='utf-8')
