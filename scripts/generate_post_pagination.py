@@ -113,7 +113,7 @@ def fix_page_schemas(document: str, loc: str, title: str, summary: str) -> str:
         return match.group(1) + json.dumps(data, ensure_ascii=False, separators=(',', ':')) + match.group(3)
 
     return re.sub(
-        r'(<script\\b[^>]*\\btype=["\\\']application/ld\\+json["\\\'][^>]*>)([\\s\\S]*?)(</script>)',
+        r'(<script\b[^>]*application/ld\+json[^>]*>)([\s\S]*?)(</script>)',
         replace_schema,
         document,
         flags=re.I,
