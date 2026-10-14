@@ -71,12 +71,12 @@ def patch_visible_author(markup: str) -> tuple[str, bool]:
     content = INLINE_BYLINE.sub('', meta.group(2))
     # Keep the publication date value unchanged; only wrap it for stable alignment.
     content = re.sub(
-        r'<span\\b[^>]*class=["\\x27][^"\\x27]*\\bdg-post-date\\b[^"\\x27]*["\\x27][^>]*>([\\s\\S]*?)</span>',
+        r'<span\b[^>]*class=["\x27][^"\x27]*\bdg-post-date\b[^"\x27]*["\x27][^>]*>([\s\S]*?)</span>',
         lambda match: match.group(1),
         content,
         flags=re.IGNORECASE,
     )
-    date = re.search(r'(?<!\\d)(\\d{4}-\\d{2}-\\d{2})(?!\\d)', content)
+    date = re.search(r'(?<!\d)(\d{4}-\d{2}-\d{2})(?!\d)', content)
     if not date:
         return markup, False
     content = content[:date.start()] + '<span class="dg-post-date">' + date.group(1) + '</span>' + content[date.end():]
