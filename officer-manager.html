@@ -396,7 +396,7 @@ const LEDGER_PAGE_SIZE=10;
 // 알림이력은 관리자 전용 GET /officers 의 emailAlerts 필드로만 확인합니다.
 // 서버에서 이력을 받지 못하면 임의로 발송완료/미발송이라고 판단하지 않습니다.
 function mailAlertDue(expiry, type){
- if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(String(expiry||"")))return null;
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(String(expiry||"")))return null;
  const d=new Date(expiry+"T00:00:00");
  if(!Number.isFinite(d.getTime()))return null;
  if(type==="week"){d.setDate(d.getDate()-7);return d;}
