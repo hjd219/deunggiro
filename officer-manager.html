@@ -21,7 +21,7 @@ body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;color:var(--ink);backg
 .apply{display:none;margin-top:24px;padding-top:22px;border-top:1px solid #e1e9ed}.contact{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.contact input{padding:12px;border:1px solid var(--line);border-radius:8px}.checks{display:flex;gap:16px;flex-wrap:wrap;margin-top:13px;font-size:13px}.privacy{margin-top:12px;border:1px solid var(--line);border-radius:8px;padding:12px 14px;font-size:12px;color:#536b75}.privacy summary{cursor:pointer;font-weight:800;color:var(--ink)}.privacy div{margin-top:10px;line-height:1.75}.notice{margin:10px 0 0;color:var(--muted);font-size:12px;line-height:1.6}.pdf-emphasis{color:var(--blue);font-weight:800}.register-actions{display:flex;gap:8px;margin-top:14px}.register-note{margin:10px 0 0;font-size:12px;font-weight:700;color:var(--blue)}
 .ledger{margin-top:0}.ledger-head{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-bottom:20px;border-bottom:1px solid #e7eef2}.ledger-head h3{margin:0 0 5px;font-size:20px}.ledger-head p{margin:0;color:var(--muted);font-size:12px}.ledger-head-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}.ledger-toolbar{display:grid;grid-template-columns:minmax(0,1fr) 110px;gap:8px;margin:18px 0 12px}.ledger-toolbar input,.ledger-toolbar select{width:100%;height:42px;padding:0 12px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}.ledger .table{margin:0}.row-actions{display:flex;gap:6px;white-space:nowrap}.row-btn{padding:7px 10px;border:1px solid #c8e8f7;border-radius:7px;background:#fff;color:var(--blue);font-size:11px;font-weight:800;cursor:pointer}.row-btn.delete{border-color:#efd0d0;color:#b84b4b}
 .ledger .table table{min-width:990px}
-.mail-track{position:relative;min-width:118px;font-size:11px;line-height:1.55}
+.mail-sent-time{display:block;margin-top:3px;font-size:10px;color:#597681;white-space:normal;line-height:1.35}\n.mail-track{position:relative;min-width:118px;font-size:11px;line-height:1.55}
 .mail-track summary{cursor:pointer;list-style:none}
 .mail-track summary::-webkit-details-marker{display:none}
 .mail-track summary:after{content:"상세 ▾";font-size:10px;color:#557985}
@@ -135,7 +135,7 @@ body.customer-apply #status{text-align:left;margin:14px 0 0 18px;color:#596f78}
           </div>
         </div>
         <div class="ledger-toolbar"><input id="ledgerSearch" type="search" placeholder="상호 · 임원명 검색"><select id="ledgerFilter"><option value="all">전체</option><option value="month">1개월 이내</option><option value="week">1주일 이내</option><option value="expired">만료</option><option value="customer">고객신청</option><option value="admin">기존고객</option></select></div>
-        <div class="table"><table><thead><tr><th>상호</th><th>법인등록번호</th><th>임원</th><th>직위</th><th>예상 만료</th><th>메일 발송현황</th><th>D-day</th><th>연락처</th><th>등록경로</th><th>관리</th></tr></thead><tbody id="ledgerBody"><tr><td colspan="10">등록된 관리대장이 없습니다.</td></tr></tbody></table></div><div class="ledger-pagination" id="ledgerPagination" hidden><button class="pick" id="ledgerPrev" type="button">이전</button><span id="ledgerPageInfo">1 / 1</span><button class="pick" id="ledgerNext" type="button">다음</button></div>
+        <div class="table"><table><thead><tr><th>상호</th><th>법인등록번호</th><th>임원</th><th>직위</th><th>예상 만료</th><th>1개월 안내메일</th><th>D-day</th><th>연락처</th><th>등록경로</th><th>관리</th></tr></thead><tbody id="ledgerBody"><tr><td colspan="10">등록된 관리대장이 없습니다.</td></tr></tbody></table></div><div class="ledger-pagination" id="ledgerPagination" hidden><button class="pick" id="ledgerPrev" type="button">이전</button><span id="ledgerPageInfo">1 / 1</span><button class="pick" id="ledgerNext" type="button">다음</button></div>
         </section>
 </main>
 <script>
@@ -426,11 +426,13 @@ function mailAlertStatus(x,type){
  return {state:"missing",label:"기록없음",detail:"예정일이 지났으나 저장된 발송 기록이 없습니다. 실제 발송 여부는 Resend에서도 확인하세요."};
 }
 function renderMailStatus(x){
- const month=mailAlertStatus(x,"month"),week=mailAlertStatus(x,"week");
- return '<details class="mail-track"><summary title="눌러서 발송 일시와 상세정보 확인">'+
- '<span class="mail-row">1개월 <b class="mail-state '+month.state+'">'+esc(month.label)+'</b></span>'+
- '<span class="mail-row">1주일 <b class="mail-state '+week.state+'">'+esc(week.label)+'</b></span>'+
- '</summary><div class="mail-detail"><p><b>1개월:</b> '+esc(month.detail)+'</p><p><b>1주일:</b> '+esc(week.detail)+'</p></div></details>';
+ const month=mailAlertStatus(x,"month");
+ const alert=x.emailAlerts&&x.emailAlerts.month;
+ const sentDate=month.state==="sent"&&alert&&alert.sentAt?mailTime(alert.sentAt):"";
+ return '<details class="mail-track"><summary title="눌러서 1개월 안내메일 발송 이력 확인">'+
+ '<span class="mail-row"><b class="mail-state '+month.state+'">'+esc(month.label)+'</b></span>'+
+ (sentDate?'<small class="mail-sent-time">'+esc(sentDate)+'</small>':'')+
+ '</summary><div class="mail-detail"><p><b>1개월 안내메일:</b> '+esc(month.detail)+'</p></div></details>';
 }
 function renderLedger(resetPage=false){
  const q=$("ledgerSearch").value.trim().toLowerCase();
