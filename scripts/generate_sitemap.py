@@ -5,6 +5,7 @@ import re
 import subprocess
 from datetime import date
 from pathlib import Path
+from xml.etree import ElementTree as ET
 from xml.sax.saxutils import escape
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -65,6 +66,61 @@ def url_block(loc: str, lastmod: str, changefreq: str, priority: str) -> str:
     )
 
 
+def save_new_urls_only(blocks: list[str]) -> int:
+    """Preserve every existing sitemap entry; append only genuinely new URLs."""
+    if not SITEMAP.exists():
+        xml = (
+            '<?xml version="1.0" encoding="UTF-8"?>\n'
+            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+            + '\n'.join(blocks) + '\n</urlset>\n'
+        )
+        SITEMAP.write_text(xml, encoding='utf-8')
+        print(f'sitemap created: urls={len(blocks)}')
+        return len(blocks)
+
+    original = SITEMAP.read_text(encoding='utf-8')
+    root = ET.fromstring(original)  # Fail rather than silently replace a broken sitemap.
+    ns = '{http://www.sitemaps.org/schemas/sitemap/0.9}'
+    if root.tag != ns + 'urlset':
+        raise ValueError('Unexpected sitemap XML root/namespace')
+
+    known = set()
+    for entry in root.findall(ns + 'url'):
+        loc = entry.findtext(ns + 'loc')
+        if not loc:
+            raise ValueError('Existing sitemap entry without loc')
+        if loc in known:
+            raise ValueError(f'Duplicate URL in existing sitemap: {loc}')
+        known.add(loc)
+
+    additions = []
+    for block in blocks:
+        loc = ET.fromstring(block).findtext('loc')
+        if not loc:
+            raise ValueError('Generated sitemap entry without loc')
+        if loc not in known:
+            additions.append(block)
+            known.add(loc)
+
+    if not additions:
+        print(f'sitemap unchanged: existing_urls={len(known)} new_urls=0')
+        return 0
+
+    closing = re.search(r'</urlset>\s*\Z', original)
+    if not closing:
+        raise ValueError('Missing closing urlset tag in existing sitemap')
+    # Insert before the closing element; never reformat/rewrite existing <url> blocks.
+    updated = (
+        original[:closing.start()]
+        + ''.join(block + '\n' for block in additions)
+        + original[closing.start():]
+    )
+    ET.fromstring(updated)
+    SITEMAP.write_text(updated, encoding='utf-8')
+    print(f'sitemap appended: existing_urls={len(known) - len(additions)} new_urls={len(additions)} total={len(known)}')
+    return len(additions)
+
+
 def main() -> None:
     posts = json.loads(POSTS_JSON.read_text(encoding='utf-8'))
     blocks = [
@@ -94,9 +150,8 @@ def main() -> None:
             raise ValueError(f'Original publication date missing for post: {slug}')
         blocks.append(url_block(f'{BASE}/posts/{slug}.html', lastmod, 'monthly', '0.7'))
         added += 1
-    xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + '\n'.join(blocks) + '\n</urlset>\n'
-    SITEMAP.write_text(xml, encoding='utf-8')
-    print(f'sitemap generated: static={len(STATIC)}, posts={added}, total={len(STATIC)+added}')
+    save_new_urls_only(blocks)
+
 
 
 if __name__ == '__main__':
