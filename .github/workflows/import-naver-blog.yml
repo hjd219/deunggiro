@@ -97,7 +97,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if git diff --quiet -- data/posts.json && [ -z "$(git ls-files --others --exclude-standard -- posts/)" ]; then
+          if [ -z "$(git ls-files --others --exclude-standard -- posts/)" ]; then
             echo "NO_NEW_POSTS; preserving existing archive pages"
           else
             python - <<'PY'
