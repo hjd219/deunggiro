@@ -69,33 +69,43 @@ jobs:
           exit $status
       - name: Preserve Naver body formatting
         run: timeout 420s python -u scripts/refresh_naver_format.py
-      - name: Build SEO for new posts only
+      - name: Generate SEO for imported posts
         shell: bash
         run: |
           set -euo pipefail
-          # Process generated SEO on new articles; existing tracked articles are restored afterward.
-          # Existing article HTML must not be rewritten by scheduled imports.
+          # All HTML processors finish before old tracked pages are restored.
+          # New untracked posts keep their generated metadata, bylines and links.
           timeout 90s python -u scripts/inject_internal_links.py
           timeout 60s node scripts/seo-hub-links.mjs
           timeout 90s node scripts/seo-auto.mjs
-          git restore --worktree -- posts
-          echo "EXISTING_POSTS_RESTORED; new untracked posts retain generated SEO"
-          git status --short -- posts | head -20 || true
-      - name: Remove only duplicate legacy hub cards from legal posts
-        run: python -u scripts/cleanup_duplicate_hub_links.py
-      - name: Preserve author bylines on existing and newly imported posts
-        run: python -u scripts/ensure_article_author.py
-      - name: Link cost-related passages to relevant calculators
-        run: python -u scripts/ensure_cost_calculator_links.py
-      - name: Regenerate ten-article crawlable legal pages
+          python -u scripts/cleanup_duplicate_hub_links.py
+          python -u scripts/ensure_article_author.py
+          python -u scripts/ensure_cost_calculator_links.py
+      - name: Preserve existing posts and business pages
+        shell: bash
         run: |
-          python - <<'PY'
+          set -euo pipefail
+          # Only newly imported untracked posts may remain modified.
+          # Also roll back generated sitemap changes; the append-only generator runs later.
+          git restore --worktree -- posts index.html inheritance.html renunciation.html corporate.html realestate.html family.html sitemap.xml
+          git diff --exit-code -- posts index.html inheritance.html renunciation.html corporate.html realestate.html family.html
+          echo "EXISTING_PAGES_UNCHANGED; new untracked posts retain their SEO"
+          git status --short -- posts | head -20 || true
+      - name: Regenerate ten-article crawlable legal pages only after imports
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- data/posts.json && [ -z "$(git ls-files --others --exclude-standard -- posts/)" ]; then
+            echo "NO_NEW_POSTS; preserving existing archive pages"
+          else
+            python - <<'PY'
           import json
           from pathlib import Path
           from scripts.site_maintenance import rebuild_posts_page
           posts = json.loads(Path('data/posts.json').read_text(encoding='utf-8'))
           print('LEGAL_POSTS_INDEX_UPDATED', rebuild_posts_page(posts))
           PY
+          fi
       - name: Generate new thumbnails, sitemap and RSS (no legacy HTML rewrites)
         run: |
           timeout 150s python -u scripts/generate_thumbnails.py
@@ -152,6 +162,12 @@ jobs:
           PY
           python -m py_compile scripts/category_rules.py scripts/import_naver_blog.py scripts/import_naver_blog_clean.py scripts/ensure_article_author.py scripts/ensure_cost_calculator_links.py scripts/cleanup_duplicate_hub_links.py scripts/refresh_naver_format.py scripts/strip_naver_nonnumber_emoji.py scripts/strip_naver_consultation_footer.py scripts/ensure_section_dividers.py scripts/fix_divorce_categories.py scripts/cleanup_duplicate_posts.py scripts/seo_quality_gate.py
           git diff --check
+          # Never publish automatic edits to tracked legal posts or core service pages.
+          if ! git diff --quiet -- posts index.html inheritance.html renunciation.html corporate.html realestate.html family.html; then
+            echo "ERROR: scheduled import altered an existing page"
+            git diff --name-only -- posts index.html inheritance.html renunciation.html corporate.html realestate.html family.html
+            exit 1
+          fi
       - name: Commit and push safely
         shell: bash
         run: |
