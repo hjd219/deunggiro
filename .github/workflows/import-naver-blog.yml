@@ -90,6 +90,8 @@ jobs:
           git restore --worktree -- posts index.html inheritance.html renunciation.html corporate.html realestate.html family.html sitemap.xml
           git diff --exit-code -- posts index.html inheritance.html renunciation.html corporate.html realestate.html family.html
           echo "EXISTING_PAGES_UNCHANGED; new untracked posts retain their SEO"
+          # Record only new post URLs before the commit makes them tracked.
+          git ls-files --others --exclude-standard -- posts/ > /tmp/deunggiro-new-posts.txt
           git status --short -- posts | head -20 || true
       - name: Regenerate ten-article crawlable legal pages only after imports
         shell: bash
@@ -209,5 +211,9 @@ jobs:
 
           echo "Push failed after 3 attempts"
           exit 1
+      - name: Notify Naver IndexNow only for newly published posts
+        if: success()
+        continue-on-error: true
+        run: python -u scripts/ping_naver_indexnow.py /tmp/deunggiro-new-posts.txt
 
 # Fixed 2026-09-10: restore temporary MAX_IMPORT edit before commit/rebase
