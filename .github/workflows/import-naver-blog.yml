@@ -162,7 +162,7 @@ jobs:
           if bad:
               print('POSTPROCESS_BAD_LIST',','.join(bad)); raise SystemExit(1)
           PY
-          python -m py_compile scripts/category_rules.py scripts/import_naver_blog.py scripts/import_naver_blog_clean.py scripts/ensure_article_author.py scripts/ensure_cost_calculator_links.py scripts/cleanup_duplicate_hub_links.py scripts/refresh_naver_format.py scripts/strip_naver_nonnumber_emoji.py scripts/strip_naver_consultation_footer.py scripts/ensure_section_dividers.py scripts/fix_divorce_categories.py scripts/cleanup_duplicate_posts.py scripts/seo_quality_gate.py
+          python -m py_compile scripts/category_rules.py scripts/import_naver_blog.py scripts/import_naver_blog_clean.py scripts/ensure_article_author.py scripts/ensure_cost_calculator_links.py scripts/cleanup_duplicate_hub_links.py scripts/refresh_naver_format.py scripts/strip_naver_nonnumber_emoji.py scripts/strip_naver_consultation_footer.py scripts/ensure_section_dividers.py scripts/fix_divorce_categories.py scripts/cleanup_duplicate_posts.py scripts/seo_quality_gate.py scripts/ping_naver_indexnow.py
           git diff --check
           # Never publish automatic edits to tracked legal posts or core service pages.
           if ! git diff --quiet -- posts index.html inheritance.html renunciation.html corporate.html realestate.html family.html; then
