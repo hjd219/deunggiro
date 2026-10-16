@@ -7,6 +7,7 @@ IndexNow requests do not guarantee crawling or indexing.
 import json
 import re
 import sys
+import time
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -39,6 +40,31 @@ def main() -> int:
         return 0
 
     urls = [f"https://{DOMAIN}/{path}" for path in sorted(slugs)]
+
+    # GitHub Pages deployment is asynchronous after the Git push. Do not
+    # notify Naver until at least the first new page is publicly reachable.
+    # A URL reported before deployment could still return HTTP 404.
+    first_url = urls[0]
+    deployed = False
+    for attempt in range(9):
+        try:
+            check = urllib.request.Request(
+                first_url,
+                headers={"Cache-Control": "no-cache", "User-Agent": "Deunggiro-PublicationCheck/1.0"},
+                method="HEAD",
+            )
+            with urllib.request.urlopen(check, timeout=8) as response:
+                deployed = response.status == 200
+        except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError, OSError):
+            deployed = False
+        if deployed:
+            break
+        if attempt < 8:
+            time.sleep(10)
+    if not deployed:
+        print(f"INDEXNOW_SKIP new page not publicly deployed yet: {first_url}")
+        return 1
+
     data = json.dumps({
         "host": DOMAIN,
         "key": KEY,
