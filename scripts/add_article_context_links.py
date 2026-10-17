@@ -65,13 +65,68 @@ EXISTING_CONTEXT = re.compile(
 )
 
 
+
+CALCULATOR_BASES = (
+    "/acquisition-calculator.html",
+    "/corporate-calculator.html",
+    "/renunciation-calculator.html",
+)
+SHORT_GENERATED_CALC_WORDS = {
+    "상속 취득세", "상속등기 비용", "취득세", "부동산등기 비용",
+    "법인설립 비용", "법인등기 비용", "등록면허세", "설립비용",
+    "상속포기 비용", "한정승인 비용", "법무사 보수",
+}
+BODY_LINK = re.compile(r'<a href="([^"]+)">([^<>]+)</a>', re.I)
+
+
+def repair_body(post, body):
+    """Remove an accidental same-page link and duplicate new calculator anchors."""
+    own_href = "/posts/" + str(post.get("slug", "")).removesuffix(".html") + ".html"
+    def unwrap_self(match):
+        return match.group(2) if match.group(1) == own_href else match.group(0)
+    body = BODY_LINK.sub(unwrap_self, body)
+
+    inline = re.findall(
+        r'<p\b[^>]*class=["\x27][^"\x27]*\bseo-calculator-inline\b[^"\x27]*["\x27][^>]*>(.*?)</p>',
+        body, re.I | re.S
+    )
+    originals = [
+        href.split("?", 1)[0]
+        for fragment in inline
+        for href in re.findall(r'<a\b[^>]*href=["\x27]([^"\x27]+)', fragment, re.I)
+    ]
+    if originals:
+        def unwrap_duplicate(match):
+            href, phrase = match.group(1), match.group(2)
+            if (href.split("?", 1)[0] in originals
+                    and phrase.strip() in SHORT_GENERATED_CALC_WORDS):
+                return phrase
+            return match.group(0)
+        body = BODY_LINK.sub(unwrap_duplicate, body)
+    return body
+
+
+def already_has_generated_calculator(body):
+    return any(
+        match.group(1).split("?", 1)[0] in CALCULATOR_BASES
+        and match.group(2).strip() in SHORT_GENERATED_CALC_WORDS
+        for match in BODY_LINK.finditer(body)
+    )
+
 def choose(post, body):
     title = str(post.get("title") or "")
     category = str(post.get("category") or "")
     rules = RULES.get(category, [])
     paragraphs = list(PARAGRAPH.finditer(body))
+    own_href = "/posts/" + str(post.get("slug") or "").removesuffix(".html") + ".html"
     for title_regex, phrase_regex, href in rules:
+        if href == own_href:
+            continue
         if not re.search(title_regex, title, re.I):
+            continue
+        # A calculator already linked from a cost section needs no duplicate link.
+        if (href.split("?", 1)[0] in CALCULATOR_BASES
+                and re.search(r'<a\b[^>]*href=["\x27]' + re.escape(href.split("?", 1)[0]), body, re.I)):
             continue
         # Avoid broken links: destinations must exist in the checked-out repo.
         if not (ROOT / href.lstrip("/").split("?", 1)[0].split("#", 1)[0]).is_file():
@@ -103,19 +158,24 @@ def patch(post, source):
     if not end:
         return source, "no-end"
     start_offset, end_offset = match.end(), end.start()
-    body = source[start_offset:end_offset]
-    if EXISTING_CONTEXT.search(body):
-        return source, "existing-context"
+    old_body = source[start_offset:end_offset]
+    body = repair_body(post, old_body)
+
+    def assemble(value):
+        return source[:start_offset] + value + source[end_offset:]
+
+    if EXISTING_CONTEXT.search(body) or already_has_generated_calculator(body):
+        return assemble(body), "repaired-overlap" if body != old_body else "existing-context"
     selected = choose(post, body)
     if selected is None:
-        return source, "no-relevant-phrase"
+        return assemble(body), "repaired-overlap" if body != old_body else "no-relevant-phrase"
     paragraph, phrase, href = selected
     raw = paragraph.group(1)
     linked = raw[:phrase.start()] + '<a href="' + html.escape(href, quote=True) + '">' + raw[phrase.start():phrase.end()] + '</a>' + raw[phrase.end():]
-    # The visible text must stay byte-for-byte unchanged.
+    # Visible content remains byte-for-byte unchanged.
     assert linked.replace('<a href="' + html.escape(href, quote=True) + '">', '', 1).replace('</a>', '', 1) == raw
     new_body = body[:paragraph.start(1)] + linked + body[paragraph.end(1):]
-    updated = source[:start_offset] + new_body + source[end_offset:]
+    updated = assemble(new_body)
     assert updated[:start_offset] == source[:start_offset]
     assert updated.endswith(source[end_offset:])
     return updated, href
