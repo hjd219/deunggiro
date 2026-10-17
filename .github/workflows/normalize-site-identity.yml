@@ -12,7 +12,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: deunggiro-content-main
+  group: deunggiro-brand-head-only
   cancel-in-progress: false
 
 jobs:
