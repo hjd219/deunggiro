@@ -83,6 +83,8 @@ jobs:
           python -u scripts/ensure_cost_calculator_links.py
           # Apply brand metadata only to untracked, newly imported articles.
           python -u scripts/normalize_brand_head.py --new-only
+          # Search titles for newly imported posts only; keep original H1 and publication date.
+          python -u scripts/optimize_post_titles.py --new-only
       - name: Preserve existing posts and business pages
         shell: bash
         run: |
