@@ -81,6 +81,8 @@ jobs:
           python -u scripts/cleanup_duplicate_hub_links.py
           python -u scripts/ensure_article_author.py
           python -u scripts/ensure_cost_calculator_links.py
+          # Apply brand metadata only to untracked, newly imported articles.
+          python -u scripts/normalize_brand_head.py --new-only
       - name: Preserve existing posts and business pages
         shell: bash
         run: |

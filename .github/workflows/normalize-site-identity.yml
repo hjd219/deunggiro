@@ -1,0 +1,59 @@
+name: Normalize Site Identity (One Time)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/normalize_brand_head.py'
+      - '.github/workflows/normalize-site-identity.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: deunggiro-content-main
+  cancel-in-progress: false
+
+jobs:
+  normalize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Dry run before touching existing pages
+        run: python scripts/normalize_brand_head.py --dry-run
+      - name: Apply metadata-only normalization
+        run: python scripts/normalize_brand_head.py
+      - name: Verify idempotency and restrict changed file paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --check
+          python scripts/normalize_brand_head.py --dry-run | tee /tmp/identity-idempotence.txt
+          grep -q '"changed": 0' /tmp/identity-idempotence.txt
+          if git diff --name-only | grep -v -E '^((posts/|posts-pages/)[^/]+\.html|[^/]+\.html)$'; then
+            echo "Unexpected modification of scripts/sitemap/data" >&2
+            exit 1
+          fi
+      - name: Commit only changed HTML heads
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet; then
+            echo "Already normalized"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- '*.html' 'posts/*.html' 'posts-pages/*.html'
+          git commit -m "SEO: unify Naver favicon and organization publisher identity in HTML heads only"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
