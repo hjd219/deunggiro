@@ -27,7 +27,7 @@ BOILERPLATE = re.compile(
 )
 
 # Preserve the twenty expert-edited, search-performance-prioritized titles.
-from scripts.apply_search_titles_author import NEW_TITLES as PRIOR_TITLES
+from apply_search_titles_author import NEW_TITLES as PRIOR_TITLES
 
 # Manually written alternatives where mechanical clipping would drop the outcome.
 MANUAL = {
