@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 POSTS_FILE = ROOT / "data" / "posts.json"
 POSTS_DIR = ROOT / "posts"
 BYLINE = '<span class="dg-author-byline">작성자: 현재두 법무사</span>'
-AUTHOR = {"@type": "Person", "name": "현재두", "jobTitle": "법무사"}
+AUTHOR = {"@type": "Person", "name": "현재두", "jobTitle": "법무사", "@id": "https://www.deunggiro.kr/#author-current-doo", "url": "https://www.deunggiro.kr/"}
 SCRIPT = re.compile(
     r'(<script\b[^>]*\btype\s*=\s*["\x27]application/ld\+json["\x27][^>]*>)'
     r'([\s\S]*?)(</script>)',
