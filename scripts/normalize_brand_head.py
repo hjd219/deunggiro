@@ -127,9 +127,20 @@ def fix(source: str, post: bool):
             changed.append("publisher_" + str(count))
     result = head + suffix
     assert result.endswith(suffix), "non-head content must be byte-for-byte preserved"
-    for marker in ('"datePublished"', '"dateModified"', 'name="dg-date"', 'name="description"'):
-        if marker in source:
-            assert source.split(marker, 1)[1].split("<", 1)[0] == result.split(marker, 1)[1].split("<", 1)[0], "protected metadata changed: " + marker
+    # Compare the field values, not the entire JSON substring following them:
+    # publisher normalization can legitimately change later fields in the JSON.
+    for key in ("datePublished", "dateModified"):
+        pattern = r'"' + key + r'"\\s*:\\s*"([^"]+)"'
+        assert re.findall(pattern, source) == re.findall(pattern, result), "date field changed: " + key
+    for key in ("dg-date", "description"):
+        date_meta = re.compile(r'<meta\\b[^>]*>', re.I)
+        def protected_meta(markup):
+            return sorted(
+                (attributes(tag.group(0)).get("name"), attributes(tag.group(0)).get("content"))
+                for tag in date_meta.finditer(markup)
+                if attributes(tag.group(0)).get("name") == key
+            )
+        assert protected_meta(source) == protected_meta(result), "protected meta changed: " + key
     return result, changed
 
 
