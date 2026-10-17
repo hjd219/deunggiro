@@ -39,14 +39,14 @@ NEW_TITLES = {
     "naver-224300088135": "사망 후 은행예금 찾기｜상속인 연락두절 시 | 등기로",
     "naver-224338890579": "법인 상호변경 등기 절차·비용·상호검색 | 등기로",
 }
-TITLE_RE = re.compile(r"(<title\\b[^>]*>)([\\s\\S]*?)(</title>)", re.I)
+TITLE_RE = re.compile(r"(<title\b[^>]*>)([\s\S]*?)(</title>)", re.I)
 SCHEMA_RE = re.compile(
-    r'(<script\\b[^>]*\\btype=["\\x27]application/ld\\+json["\\x27][^>]*>)([\\s\\S]*?)(</script>)',
+    r'(<script\b[^>]*\btype=["\x27]application/ld\+json["\x27][^>]*>)([\s\S]*?)(</script>)',
     re.I
 )
-AUTHOR_RE = re.compile(r'("author"\\s*:\\s*)(\\{[^{}]*\\})')
-HEAD_CLOSE = re.compile(r"</head\\s*>", re.I)
-DATE_RE = re.compile(r'"(?:datePublished|dateModified)"\\s*:\\s*"([^"]+)"')
+AUTHOR_RE = re.compile(r'("author"\s*:\s*)(\{[^{}]*\})')
+HEAD_CLOSE = re.compile(r"</head\s*>", re.I)
+DATE_RE = re.compile(r'"(?:datePublished|dateModified)"\s*:\s*"([^"]+)"')
 
 
 def profile(schema: dict) -> dict:
