@@ -1,0 +1,54 @@
+name: Full-site SEO one-time audit and repair
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/full_site_seo_repair.py'
+      - '.github/workflows/full-site-seo-repair.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: deunggiro-content-main
+  cancel-in-progress: false
+jobs:
+  audit-and-fix:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate and repair all HTML head tags
+        run: |
+          python -m py_compile scripts/full_site_seo_repair.py
+          python scripts/full_site_seo_repair.py
+          python scripts/full_site_seo_repair.py --check
+          python scripts/check_core_seo.py
+          git diff --check
+      - name: Upload full audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deunggiro-full-seo-audit
+          path: seo-full-audit-report.json
+          if-no-files-found: warn
+      - name: Commit only audited corrections, never posts body or old sitemap dates
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- '*.html' 'posts/*.html' 'posts-pages/*.html' 'backups/*.html' sitemap.xml
+          if git diff --cached --quiet; then
+            echo "No site SEO changes necessary"
+            exit 0
+          fi
+          git commit -m "SEO: full-site head-only audit corrections (preserve article dates)"
+          git fetch origin main
+          git rebase origin/main
+          git push origin HEAD:main
