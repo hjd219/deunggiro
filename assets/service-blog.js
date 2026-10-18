@@ -90,7 +90,15 @@
   next.addEventListener('click',function(){track.scrollBy({left:Math.max(track.clientWidth*.8,180),behavior:'smooth'})});
   track.addEventListener('scroll',updateArrows,{passive:true});
   window.addEventListener('resize',updateArrows,{passive:true});
-  if(loaded)render();else updateArrows();
+  if(loaded){
+   // Server HTML already contains the complete article set. Keep these nodes intact
+   // on first load to prevent horizontal scroll jumps and needless image reloads.
+   var initialLinks=Array.prototype.map.call(track.querySelectorAll(':scope > a.dg-blog-card[href]'),function(a){return a.getAttribute('href')});
+   var currentLinks=data.map(function(p){return '/posts/'+encodeURIComponent(p.slug)+'.html'});
+   var same=initialLinks.length===currentLinks.length&&initialLinks.every(function(href,i){return href===currentLinks[i]});
+   if(same){status.textContent=data.length+'개 글';requestAnimationFrame(updateArrows)}
+   else render();
+  }else updateArrows();
  }
  function init(){
   var roots=[].slice.call(document.querySelectorAll('.dg-service-blog[data-dg-blog]'));
