@@ -98,24 +98,39 @@
    }else render();
   })});
   search.addEventListener('input',function(){query=search.value.trim().toLowerCase();render()});
-  // On mobile, each arrow advances exactly two complete cards, not 80% of the viewport.
-  function moveCards(direction){
-   if(window.matchMedia('(max-width:800px)').matches){
-    var cards=Array.prototype.slice.call(track.querySelectorAll(':scope > a.dg-blog-card'));
-    if(!cards.length)return;
-    var first=cards[0].offsetLeft,max=Math.max(0,track.scrollWidth-track.clientWidth);
-    var at=track.scrollLeft,index=0,closest=Infinity;
-    cards.forEach(function(card,i){
-     var difference=Math.abs(card.offsetLeft-first-at);
-     if(difference<closest){closest=difference;index=i}
-    });
-    var nextIndex=Math.max(0,Math.min(cards.length-1,index+direction*2));
-    var destination=Math.max(0,Math.min(max,cards[nextIndex].offsetLeft-first));
-    track.scrollTo({left:destination,behavior:'smooth'});
-   }else{
-    track.scrollBy({left:direction*Math.max(track.clientWidth*.8,180),behavior:'smooth'});
-   }
+  // Move by a full, responsive set of cards, always landing on a card boundary.
+  // CSS shows 2 cards on mobile, 4 on tablet, and 6 on desktop.
+  var pendingArrowIndex=null;
+  function cardsPerPage(){
+   if(window.matchMedia('(max-width:800px)').matches)return 2;
+   if(window.matchMedia('(max-width:1150px)').matches)return 4;
+   return 6;
   }
+  function resetArrowPosition(){pendingArrowIndex=null}
+  function moveCards(direction){
+   var cards=Array.prototype.slice.call(track.querySelectorAll(':scope > a.dg-blog-card'));
+   if(!cards.length)return;
+   var pageSize=cardsPerPage();
+   var lastStart=Math.max(0,cards.length-pageSize);
+   var first=cards[0].offsetLeft;
+   var max=Math.max(0,track.scrollWidth-track.clientWidth);
+   var nearest=0,closest=Infinity;
+   if(pendingArrowIndex===null){
+    cards.forEach(function(card,i){
+     if(i>lastStart)return;
+     var offset=Math.max(0,Math.min(max,card.offsetLeft-first));
+     var diff=Math.abs(offset-track.scrollLeft);
+     if(diff<closest){closest=diff;nearest=i}
+    });
+   }else nearest=Math.min(lastStart,pendingArrowIndex);
+   var target=Math.max(0,Math.min(lastStart,nearest+direction*pageSize));
+   pendingArrowIndex=target;
+   var destination=Math.max(0,Math.min(max,cards[target].offsetLeft-first));
+   track.scrollTo({left:destination,behavior:'smooth'});
+  }
+  track.addEventListener('touchstart',resetArrowPosition,{passive:true});
+  track.addEventListener('wheel',resetArrowPosition,{passive:true});
+  track.addEventListener('pointerdown',resetArrowPosition,{passive:true});
   prev.addEventListener('click',function(){moveCards(-1)});
   next.addEventListener('click',function(){moveCards(1)});
   track.addEventListener('scroll',updateArrows,{passive:true});
