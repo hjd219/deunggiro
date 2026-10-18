@@ -14,7 +14,7 @@
     if(oldHeader && !document.querySelector('header.dg-shell-header')){
       const shell=document.createElement('header');
       shell.className='dg-shell-header';
-      shell.innerHTML=`<div class="dg-shell-inner"><a class="dg-shell-logo" href="/">등기로<small>현재두 법무사 사무소</small></a><nav class="dg-shell-nav" aria-label="주요 메뉴"><a href="/">홈</a><a href="/inheritance.html">상속등기</a><a href="/renunciation.html">상속포기·한정승인</a><a href="/corporate.html">법인등기</a><a href="/realestate.html">부동산등기</a><a href="/family.html">가사</a><a href="/posts.html">법률정보</a></nav><button class="dg-shell-mobile-menu-btn" id="dg-shell-menu-btn" type="button" aria-expanded="false">☰ 메뉴</button></div><div class="dg-shell-mobile-panel" id="dg-shell-mobile-panel" aria-hidden="true"></div>`;
+      shell.innerHTML=`<div class="dg-shell-inner"><a class="dg-shell-logo" href="/">등기로<small>현재두 법무사 사무소</small></a><nav class="dg-shell-nav" aria-label="주요 메뉴"><a href="/">홈</a><a href="/inheritance.html">상속등기</a><a href="/renunciation.html">상속포기·한정승인</a><a href="/corporate.html">법인등기</a><a href="/realestate.html">부동산등기</a><a href="/family.html">가사</a><a href="/posts.html">블로그</a></nav><button class="dg-shell-mobile-menu-btn" id="dg-shell-menu-btn" type="button" aria-expanded="false">☰ 메뉴</button></div><div class="dg-shell-mobile-panel" id="dg-shell-mobile-panel" aria-hidden="true"></div>`;
       oldHeader.replaceWith(shell);
     }
   }
@@ -57,7 +57,7 @@
     {kind:'corp',label:'법인등기',desc:'설립 · 변경 · 증자 · 회사계속',href:'/corporate.html',active:activePath==='/corporate.html'},
     {kind:'real',label:'부동산등기',desc:'매매 · 증여 · 재산분할 · 담보',href:'/realestate.html',active:activePath==='/realestate.html'},
     {kind:'family',label:'가사',desc:'이혼 · 후견 · 개명 · 친생자관계',href:'/family.html',active:activePath==='/family.html'},
-    {kind:'info',label:'법률정보',desc:'최신정보 · 판례 · 실무가이드',href:'/posts.html',active:activePath==='/posts.html'}
+    {kind:'info',label:'블로그',desc:'최신글 · 법률정보 · 처리사례',href:'/posts.html',active:activePath==='/posts.html'}
   ];
 
   panel.setAttribute('role','dialog');panel.setAttribute('aria-modal','true');panel.setAttribute('aria-label','메뉴');
