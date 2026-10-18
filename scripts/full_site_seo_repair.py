@@ -183,6 +183,7 @@ def repair_head(path, raw, indexed):
         else:
             schema = {"@context":"https://schema.org","@type":"WebPage","name":title,"url":canonical}
         head += json_tag(schema)
+        types.add(schema["@type"])
         COUNT["schema_added"]+=1
     if path in ("privacy.html","disclaimer.html","officer-manager.html") and "WebPage" not in types and "WebApplication" not in types:
         head += json_tag({"@context":"https://schema.org","@type":"WebPage","name":title,"url":canonical})
