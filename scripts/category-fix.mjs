@@ -6,6 +6,7 @@ const posts = JSON.parse(fs.readFileSync(file, 'utf8'));
 // 제목/URL/본문은 건드리지 않고, 검토가 끝난 명확한 오분류만 교정합니다.
 const fixes = new Map([
   ['naver-224258681142', '부동산등기'],
+  ['naver-224408270820', '상속포기·한정승인'],
 ]);
 
 let changed = 0;
