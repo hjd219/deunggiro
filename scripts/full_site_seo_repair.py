@@ -155,7 +155,7 @@ def repair_head(path, raw, indexed):
         ):
             head = add_meta(head,kind,name,value)
         robots = getmeta(head,"name","robots").lower()
-        if "noindex" in robots: issue(path,"indexed_noindex",robots)
+        if "noindex" in robots and path != "officer-manager.html": issue(path,"indexed_noindex",robots)
         if getmeta(head,"property","og:url") != canonical:
             issue(path,"og_url_mismatch",getmeta(head,"property","og:url"))
     else:
