@@ -98,8 +98,26 @@
    }else render();
   })});
   search.addEventListener('input',function(){query=search.value.trim().toLowerCase();render()});
-  prev.addEventListener('click',function(){track.scrollBy({left:-Math.max(track.clientWidth*.8,180),behavior:'smooth'})});
-  next.addEventListener('click',function(){track.scrollBy({left:Math.max(track.clientWidth*.8,180),behavior:'smooth'})});
+  // On mobile, each arrow advances exactly two complete cards, not 80% of the viewport.
+  function moveCards(direction){
+   if(window.matchMedia('(max-width:800px)').matches){
+    var cards=Array.prototype.slice.call(track.querySelectorAll(':scope > a.dg-blog-card'));
+    if(!cards.length)return;
+    var first=cards[0].offsetLeft,max=Math.max(0,track.scrollWidth-track.clientWidth);
+    var at=track.scrollLeft,index=0,closest=Infinity;
+    cards.forEach(function(card,i){
+     var difference=Math.abs(card.offsetLeft-first-at);
+     if(difference<closest){closest=difference;index=i}
+    });
+    var nextIndex=Math.max(0,Math.min(cards.length-1,index+direction*2));
+    var destination=Math.max(0,Math.min(max,cards[nextIndex].offsetLeft-first));
+    track.scrollTo({left:destination,behavior:'smooth'});
+   }else{
+    track.scrollBy({left:direction*Math.max(track.clientWidth*.8,180),behavior:'smooth'});
+   }
+  }
+  prev.addEventListener('click',function(){moveCards(-1)});
+  next.addEventListener('click',function(){moveCards(1)});
   track.addEventListener('scroll',updateArrows,{passive:true});
   window.addEventListener('resize',updateArrows,{passive:true});
   if(loaded){
