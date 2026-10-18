@@ -85,6 +85,7 @@
    var n=list.length;status.textContent=n+'개 글';
    var measured=mode==='popular'&&data.some(function(p){return order&&Number(order[p.slug])>0});
    note.textContent=mode==='popular'?(rankingPending?'조회수 확인 중 · 추천글 먼저 표시':measured?'최근 30일 조회수 우선 · 그 외 추천글':'조회수 미집계 · 추천글 임시 표시'):'';
+   pendingArrowIndex=null;
    track.scrollLeft=0;
    requestAnimationFrame(updateArrows);
   }
@@ -126,7 +127,9 @@
    var target=Math.max(0,Math.min(lastStart,nearest+direction*pageSize));
    pendingArrowIndex=target;
    var destination=Math.max(0,Math.min(max,cards[target].offsetLeft-first));
-   track.scrollTo({left:destination,behavior:'smooth'});
+   // An immediate, exact offset prevents partial-card stops on iOS Safari
+   // and overlapping smooth animations after fast repeated arrow taps.
+   track.scrollLeft=destination;
   }
   track.addEventListener('touchstart',resetArrowPosition,{passive:true});
   track.addEventListener('wheel',resetArrowPosition,{passive:true});
@@ -134,7 +137,7 @@
   prev.addEventListener('click',function(){moveCards(-1)});
   next.addEventListener('click',function(){moveCards(1)});
   track.addEventListener('scroll',updateArrows,{passive:true});
-  window.addEventListener('resize',updateArrows,{passive:true});
+  window.addEventListener('resize',function(){resetArrowPosition();updateArrows()},{passive:true});
   if(loaded){
    // Server HTML already contains the complete article set. Keep these nodes intact
    // on first load to prevent horizontal scroll jumps and needless image reloads.
