@@ -171,6 +171,10 @@ def rebuild_post_pages(posts: list[dict]) -> bool:
             for tag, text in (('og:title',title), ('og:description',summary), ('og:url',loc)):
                 pattern = r'(<meta property="' + re.escape(tag) + r'" content=")[^"]*(")'
                 current = re.sub(pattern, lambda m: m.group(1)+html.escape(text, quote=True)+m.group(2), current, count=1)
+            # Generated archive pages must carry their own social-preview metadata.
+            for name, value in (('twitter:title', title), ('twitter:description', summary)):
+                pattern = r'(<meta name="' + re.escape(name) + r'" content=")[^"]*(")'
+                current = re.sub(pattern, lambda m: m.group(1)+html.escape(value, quote=True)+m.group(2), current, count=1)
             current = re.sub(r'(<link rel="canonical" href=")[^"]*(")', lambda m: m.group(1)+loc+m.group(2), current, count=1)
             current = fix_page_schemas(current, loc, title, summary)
             # Reject accidental reuse of the posts.html identity on archive pages.
