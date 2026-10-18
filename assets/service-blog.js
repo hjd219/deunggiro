@@ -10,7 +10,7 @@
  };
  var id='project-b08e5f3c-fa49-4ae6-933',api='AIzaSyAlXYOrj7V-XtDrK13Cbxw6hWzbfhGf_do';
  var base='https://firestore.googleapis.com/v1/projects/'+id+'/databases/(default)/documents/';
- var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','"':'&#39;'}[c]})};
+ var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
  var isCase=function(p){return /(?:^\s*\[?처리사례\]?|처리사례|해결사례|진행사례|등기 사례|선임 사례)/.test(p.title||'')};
  var localDay=function(d){var ps=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(d),a={};ps.forEach(function(x){a[x.type]=x.value});return 'd'+a.year+a.month+a.day};
  var days=Array.from({length:30},function(_,i){return localDay(new Date(Date.now()-i*86400000))});
@@ -71,6 +71,9 @@
    tabs.forEach(function(t){t.setAttribute('aria-selected',String(t===button))});
    if(mode==='popular'&&order===null){
      note.textContent='최근 30일 인기글 불러오는 중';
+     track.innerHTML='<div class="dg-blog-message">조회수 집계를 확인하고 있습니다.</div>';
+     status.textContent='불러오는 중';
+     updateArrows();
      getRankings(key).then(function(r){order=r;if(mode==='popular')render()}).catch(function(){order={};if(mode==='popular')render()});
    }else render();
   })});
