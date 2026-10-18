@@ -1,0 +1,55 @@
+/* DG_MOBILE_CHAPTER_HEADINGS_V1
+   Only section H2 headings on the five business pages; PC styling unchanged.
+   Reduce mobile typography without truncating chapter titles.
+*/
+@media screen and (max-width: 800px) {
+  .story :is(
+    .story-cover-copy > h2,
+    .story-aftercare > h2,
+    .simple-docs > h2,
+    .simple-docs > .story-qa-title > h2,
+    .story-qa > .story-qa-title > h2,
+    .inheritance-tools-section > h2.inheritance-tools-title,
+    #dg-inherit-agreement > h2,
+    #dg-divorce-chapter .dg-wizard-heading > h2,
+    .term-alert-title > h2,
+    .dg-service-blog .dg-blog-head > h2
+  ) {
+    box-sizing: border-box;
+    max-width: 100%;
+    min-width: 0;
+    margin-left: 0;
+    margin-right: 0;
+    font-size: clamp(16px, 5.5vw, 26px) !important;
+    line-height: 1.25 !important;
+    letter-spacing: -.065em !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    text-overflow: clip;
+  }
+  /* The blog link may move below the heading; the heading must not be clipped. */
+  .story .dg-service-blog .dg-blog-head {
+    flex-wrap: wrap;
+    column-gap: 8px;
+    row-gap: 3px;
+  }
+  .story .dg-service-blog .dg-blog-head > h2 {
+    flex: 0 1 auto;
+  }
+}
+@media screen and (max-width: 350px) {
+  .story :is(
+    .story-cover-copy > h2,
+    .story-aftercare > h2,
+    .simple-docs > h2,
+    .simple-docs > .story-qa-title > h2,
+    .story-qa > .story-qa-title > h2,
+    .inheritance-tools-section > h2.inheritance-tools-title,
+    #dg-inherit-agreement > h2,
+    #dg-divorce-chapter .dg-wizard-heading > h2,
+    .term-alert-title > h2,
+    .dg-service-blog .dg-blog-head > h2
+  ) {
+    font-size: clamp(14px, 5vw, 17px) !important;
+  }
+}
