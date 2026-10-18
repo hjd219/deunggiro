@@ -124,6 +124,9 @@ def url_for(path):
 def repair_head(path, raw, indexed):
     end = HEAD_CLOSE.search(raw)
     if not end:
+        if re.fullmatch(r"naver[a-f0-9]{32}\.html",path):
+            COUNT["site_verification_skipped"] += 1
+            return raw
         issue(path,"missing_head")
         return raw
     head = raw[:end.start()]
