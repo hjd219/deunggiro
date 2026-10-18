@@ -57,7 +57,7 @@
     {kind:'corp',label:'법인등기',desc:'설립 · 변경 · 증자 · 회사계속',href:'/corporate.html',active:activePath==='/corporate.html'},
     {kind:'real',label:'부동산등기',desc:'매매 · 증여 · 재산분할 · 담보',href:'/realestate.html',active:activePath==='/realestate.html'},
     {kind:'family',label:'가사',desc:'이혼 · 후견 · 개명 · 친생자관계',href:'/family.html',active:activePath==='/family.html'},
-    {kind:'info',label:'블로그',desc:'최신글 · 법률정보 · 처리사례',href:'/posts.html',active:activePath==='/posts.html'}
+    {kind:'info',label:'블로그',desc:'최신글 · 실무안내 · 처리사례',href:'/posts.html',active:activePath==='/posts.html'}
   ];
 
   panel.setAttribute('role','dialog');panel.setAttribute('aria-modal','true');panel.setAttribute('aria-label','메뉴');

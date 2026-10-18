@@ -35,10 +35,18 @@
   })();
   return cache[key];
  }
+ function shortTitle(raw){
+ var s=String(raw||'').replace(/^\s*(?:\[[^\]]{1,45}\]\s*)+/g,'').replace(/^\s*\(처리사례\)\s*/,'').replace(/\s+/g,' ').trim();
+ var part=s.split(/\s*[｜|]\s*/)[0].trim();if(part.length>=7)s=part;
+ s=s.replace(/^인천\s+(?=\S)/,'').replace(/\s*(?:쉽게\s*정리|완벽\s*정리|핵심\s*정리|총정리|완벽하게\s*정리)\s*$/,'').trim();
+ if(s.length<=24)return s;
+ var cut=s.slice(0,24),last=cut.lastIndexOf(' ');if(last>=15)cut=cut.slice(0,last);else cut=s.slice(0,22);
+ return cut.replace(/[\s,，·]+$/,'')+'…';
+ }
  function card(p){
   var href='/posts/'+encodeURIComponent(p.slug)+'.html';
   var image=p.thumbnail||'/favicon.png';
-  return '<a class="dg-blog-card" href="'+esc(href)+'"><img class="dg-blog-thumb" loading="lazy" decoding="async" src="'+esc(image)+'" alt="" onerror="this.onerror=null;this.src=\'/favicon.png\'"><div class="dg-blog-card-content"><time datetime="'+esc(p.date)+'">'+esc(p.date||'')+'</time><h3>'+esc(p.title)+'</h3></div></a>';
+  return '<a class="dg-blog-card" href="'+esc(href)+'" aria-label="'+esc(p.title)+'"><img class="dg-blog-thumb" loading="lazy" decoding="async" src="'+esc(image)+'" alt="" onerror="this.onerror=null;this.src=\'/favicon.png\'"><div class="dg-blog-card-content"><time datetime="'+esc(p.date)+'">'+esc(p.date||'')+'</time><h3 title="'+esc(p.title)+'">'+esc(shortTitle(p.title))+'</h3></div></a>';
  }
  function setup(root,all){
   var key=root.getAttribute('data-dg-blog');

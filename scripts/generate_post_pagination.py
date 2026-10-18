@@ -23,11 +23,11 @@ FIRST_RE = re.compile(r'<!-- SEO_INITIAL_POSTS_START -->[\s\S]*?<!-- SEO_INITIAL
 NAV_RE = re.compile(r'(<nav id="pagination" class="pagination" aria-label="게시글 페이지">)[\s\S]*?(</nav>)')
 CORE_RE = re.compile(r'const CORE_HUBS=new Set\((\[[^\n]*?\])\);')
 INTRO = {
-    'info': '인천 상속등기·상속포기·한정승인·법인등기·부동산등기의 법률정보와 실무정보를 안내합니다.',
+    'info': '인천 상속등기·상속포기·한정승인·법인등기·부동산등기의 블로그와 실무정보를 안내합니다.',
     'core': '업무별로 먼저 확인하면 좋은 핵심 안내를 모았습니다.',
     'case': '실제 진행한 처리사례를 업무 종류별로 확인하세요.',
 }
-MODE_TITLE = {'info': '법률정보', 'core': '핵심정보', 'case': '실제 처리사례'}
+MODE_TITLE = {'info': '등기로 블로그', 'core': '핵심정보', 'case': '실제 처리사례'}
 BASE = 'https://www.deunggiro.kr'
 
 
@@ -45,7 +45,7 @@ def card(post: dict) -> str:
         f'<img class="post-thumb" src="{esc(thumb)}" alt="{esc(post.get("title"))}" loading="lazy" decoding="async" '
         'onerror="this.onerror=null;this.src=\'/favicon.png\'">'
         '<div class="post-content"><div class="post-meta">'
-        f'<span class="badge">{esc(post.get("category") or "법률정보")}</span>{esc(post.get("date"))}</div>'
+        f'<span class="badge">{esc(post.get("category") or "블로그")}</span>{esc(post.get("date"))}</div>'
         f'<h3>{esc(post.get("title"))}</h3><p>{esc(post.get("summary"))}</p></div></a>'
     )
 
@@ -104,7 +104,7 @@ def fix_page_schemas(document: str, loc: str, title: str, summary: str) -> str:
                 {'@type': 'ListItem', 'position': 1,
                  'name': '홈', 'item': BASE + '/'},
                 {'@type': 'ListItem', 'position': 2,
-                 'name': '법률정보', 'item': BASE + '/posts.html'},
+                 'name': '등기로 블로그', 'item': BASE + '/posts.html'},
                 {'@type': 'ListItem', 'position': 3,
                  'name': title, 'item': loc},
             ]
@@ -165,7 +165,7 @@ def rebuild_post_pages(posts: list[dict]) -> bool:
             current = NAV_RE.sub(lambda m: m.group(1) + pagination(mode, number, counts[mode]) + m.group(2), current, count=1)
             loc = BASE + page_path(mode, number)
             title = f'{MODE_TITLE[mode]} {number}페이지 | 등기로'
-            summary = f'{MODE_TITLE[mode]} {number}페이지. 인천 법무사 현재두 사무소의 실제 법률정보와 사건 처리 안내 글을 모았습니다.'
+            summary = f'{MODE_TITLE[mode]} {number}페이지. 인천 법무사 현재두 사무소의 실무정보와 실제 사건 처리 글을 모았습니다.'
             current = re.sub(r'<title>[\s\S]*?</title>', '<title>' + html.escape(title, quote=True) + '</title>', current, count=1)
             current = re.sub(r'(<meta name="description" content=")[^"]*(")', lambda m: m.group(1)+html.escape(summary, quote=True)+m.group(2), current, count=1)
             for tag, text in (('og:title',title), ('og:description',summary), ('og:url',loc)):
