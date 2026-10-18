@@ -82,7 +82,23 @@ body>#dg-agr-print-paper p{margin:0 0 17px;white-space:pre-wrap;overflow-wrap:an
   }
 }
 </style>
-<link rel="stylesheet" href="/assets/service-blog.css?v=20261018-3"><link rel="stylesheet" href="/assets/mobile-chapter-headings.css?v=20261018-1"></head>
+<link rel="stylesheet" href="/assets/service-blog.css?v=20261018-3"><link rel="stylesheet" href="/assets/mobile-chapter-headings.css?v=20261018-1"><style>
+/* Inheritance situation links: reuse the existing FAQ list geometry and typography. */
+.story-qa.story-inheritance-cases .story-qa-case-link{
+ display:grid;grid-template-columns:32px minmax(0,1fr) 20px;gap:10px;align-items:center;
+ padding:22px 0;border-bottom:1px solid #d9e5ea;color:#173b4a;
+ font-size:15px;font-weight:850;line-height:1.4;text-decoration:none;
+}
+.story-qa.story-inheritance-cases .story-qa-case-link i{
+ display:flex;align-items:center;justify-content:center;
+ width:14px;height:14px;border:1.2px solid #2aa9df;border-radius:50%;
+ color:#2aa9df;font-size:7px;font-weight:900;font-style:normal;line-height:14px;
+}
+.story-qa.story-inheritance-cases .story-qa-case-link b{color:#37aee4;font-size:18px;font-weight:500;}
+.story-qa.story-inheritance-cases .story-qa-case-link:is(:hover,:focus-visible){color:#168dca;background:#f6fbfe;}
+.story-qa.story-inheritance-cases .story-qa-case-link:focus-visible{outline:2px solid #168dca;outline-offset:2px;}
+</style>
+</head>
 <body>
 <header><div class="wrap nav"><a class="logo" href="/" style="color:inherit;text-decoration:none">등기로<small>현재두 법무사 사무소 · 인천</small></a><nav class="menu"><a href="/">홈</a><a href="/inheritance.html">상속등기</a><a href="/renunciation.html">상속포기·한정승인</a><a href="/corporate.html">법인등기</a><a href="/realestate.html">부동산등기</a><a href="/family.html">가사</a><a href="/posts.html">블로그</a></nav></div></header>
 <section class="hero"><div class="dg-photo-credit" style="position:absolute;right:10px;bottom:8px;z-index:5;color:rgba(255,255,255,.78);font-size:7px;line-height:1.25;text-shadow:0 1px 3px rgba(0,0,0,.6);white-space:nowrap">사진 출처: IFEZ · 공공누리 제1유형</div><picture><source media="(max-width:800px)" srcset="/images/songdo-hero-mobile.webp"><source media="(min-width:801px)" srcset="/images/songdo-hero.webp"><img src="/images/songdo-hero.webp" alt="송도국제도시 전경" fetchpriority="high" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center"></picture><div class="shade"></div><div class="wrap heroin"><div class="hero-copy-v22"><h1>상속등기는 <span>등기로</span></h1><p>상속등기 절차 · 비용 · 필요서류부터 협의분할, 연락두절 · 해외거주 · 미성년자 등 복잡한 상속까지<br>실제 처리사례를 바탕으로 안내합니다.</p><p style="display:block;margin-top:10px;color:#fff;font-size:14px;font-weight:700;line-height:1.6;text-shadow:0 1px 3px rgba(0,0,0,.45)">강화군·옹진군(백령도·대청도 등) 도서지역 상속등기도 진행합니다.</p></div><div class="hero-ai inheritance-finder-inline"><div class="hero-ai-label">어떤 상속등기 업무가 궁금하세요?</div><div class="hero-ai-box"><span class="hero-ai-icon">⌕</span><div class="inheritance-combo"><input id="inheritance-query" class="inheritance-query" type="search" placeholder="검색하거나 화살표를 눌러 선택하세요" autocomplete="off" aria-controls="inheritance-results" aria-expanded="false"><span id="inheritance-toggle" class="inheritance-toggle" role="button" tabindex="0" aria-label="선택항 펼치기">▼</span><ul id="inheritance-results" class="inheritance-results"></ul></div><button id="inheritance-search-button" type="button">찾아보기</button></div><div class="inheritance-search-status" aria-live="polite"></div></div></div><a class="hero-scroll" href="#dg-intro" aria-label="아래 내용 보기"><span class="hero-scroll-mouse"></span><span class="hero-scroll-arrow" aria-hidden="true">↓</span></a></section>
@@ -118,14 +134,15 @@ body>#dg-agr-print-paper p{margin:0 0 17px;white-space:pre-wrap;overflow-wrap:an
  <a class="inheritance-tool-card" href="/posts/naver-224377212131.html#inheritance-home-tax-relief" data-link-role="inheritance-tax-relief">
   <div><h2>무주택 상속인 취득세 감면 <i>→</i></h2><p><strong>적용기준</strong><br>피상속인의 <strong>사망일(상속개시일) 현재</strong>를 기준으로 무주택 여부와 세대관계를 확인합니다.<br><br><strong>적용세율</strong><br>상속(농지 외) <strong>표준세율 2.8%</strong>에서 <strong>2.0%를 차감</strong>하여 취득세율 <strong>0.8%</strong>를 적용합니다.<br><br><strong>공동상속</strong><br>공동상속은 상속지분과 주택 소유자 판단기준을 함께 확인해야 합니다.<br><br><strong>관련 글에서 적용요건과 사례를 자세히 확인할 수 있습니다.</strong></p></div>
  </a>
- <div class="story-qa" style="margin:0;padding:0;border:0">
- <div class="story-qa-title"><h2>상속등기 자주 묻는 질문</h2></div>
- <div class="story-qa-list">
-  <details><summary><i>1</i>상속등기는 언제까지 해야 하나요?<b>＋</b></summary><p>상속등기 자체에는 신청기한이 없습니다. 다만 취득세는 원칙적으로 <strong>상속개시일이 속하는 달의 말일부터 6개월 이내</strong> 신고·납부해야 하며, 넘기면 가산세가 부과될 수 있습니다.</p></details>
-  <details><summary><i>2</i>상속인이 연락이 안 되거나 협조하지 않으면?<b>＋</b></summary><p>한 명이라도 협의가 안 되면 협의분할등기는 어렵습니다. <strong>법정지분 상속등기 또는 상속재산분할심판</strong>을 검토할 수 있습니다.</p></details>
-  <details><summary><i>3</i>협의분할 후 재협의분할이 가능한가요?<b>＋</b></summary><p>가능합니다. 다만 <strong>상속개시 후 6개월 이내</strong> 재협의분할하는 경우에는 재취득으로 보지 않지만, <strong>6개월이 지난 후</strong> 재협의분할하면 새로 취득한 것으로 보아 취득세가 발생할 수 있고 증여세 문제도 함께 검토해야 합니다.</p></details>
-  <details><summary><i>4</i>미등기 건물도 상속등기가 가능한가요?<b>＋</b></summary><p><strong>무허가 건물은 등기가 불가능</strong>합니다. 다만 건축물대장에 등재된 <strong>최초 소유자의 승계인은 소유권보존등기가 가능합니다.</strong></p></details>
- </div>
+ <div class="story-qa story-inheritance-cases" id="inheritance-situations" style="margin:0;padding:0;border:0">
+ <div class="story-qa-title"><h2>상황별 상속등기 안내</h2></div>
+ <nav class="story-qa-list" aria-label="상황별 상속등기 세부페이지">
+  <a class="story-qa-case-link" href="/inheritance-missing-heir.html"><i aria-hidden="true">1</i><span>연락두절·행방불명 상속인</span><b aria-hidden="true">↗</b></a>
+  <a class="story-qa-case-link" href="/inheritance-minor-heir.html"><i aria-hidden="true">2</i><span>미성년 상속인</span><b aria-hidden="true">↗</b></a>
+  <a class="story-qa-case-link" href="/inheritance-overseas-heir.html"><i aria-hidden="true">3</i><span>해외거주·외국국적 상속인</span><b aria-hidden="true">↗</b></a>
+  <a class="story-qa-case-link" href="/inheritance-substitute-succession.html"><i aria-hidden="true">4</i><span>대습상속</span><b aria-hidden="true">↗</b></a>
+  <a class="story-qa-case-link" href="/inheritance-division.html"><i aria-hidden="true">5</i><span>상속재산분할심판</span><b aria-hidden="true">↗</b></a>
+ </nav>
  </div>
 </div></section>
 <section class="story-cases dg-services dg-service-blog" data-dg-blog="inheritance" aria-label="상속등기 블로그"><div class="dg-blog-head"><h2>상속등기 블로그</h2><a href="/posts.html">전체 블로그 보기 ↗</a></div><p class="dg-blog-desc">상속등기 관련 전문정보와 실제 처리사례를 확인하세요.</p><div class="dg-blog-bar"><div class="dg-blog-tabs" role="tablist" aria-label="상속등기 블로그 분류"><button class="dg-blog-tab" type="button" data-mode="all" aria-selected="true">전체</button><button class="dg-blog-tab" type="button" data-mode="popular" aria-selected="false">인기글</button><button class="dg-blog-tab" type="button" data-mode="case" aria-selected="false">처리사례</button></div><label class="dg-blog-search"><input type="search" aria-label="블로그 글 검색" placeholder="상속등기 블로그 검색"></label></div><div class="dg-blog-controls"><span class="dg-blog-status" aria-live="polite">82개 글</span><button class="dg-blog-arrow" type="button" data-dg-prev aria-label="이전 게시글">‹</button><button class="dg-blog-arrow" type="button" data-dg-next aria-label="다음 게시글">›</button></div><div class="dg-blog-track" aria-label="상속등기 게시글 목록"><a class="dg-blog-card" href="/posts/inheritance-naver-224442456428.html" aria-label="[공지] 상속재산분할협의서·협의이혼합의서 자동작성｜재산분할·친권자·양육비 포함 PDF 다운로드"><img class="dg-blog-thumb" loading="lazy" decoding="async" src="/assets/posts/inheritance-naver-224442456428-thumbnail.png" alt=""><div class="dg-blog-card-content"><time datetime="2026-10-15">2026-10-15</time><h3 title="[공지] 상속재산분할협의서·협의이혼합의서 자동작성｜재산분할·친권자·양육비 포함 PDF 다운로드">상속재산분할협의서·협의이혼합의서 자동작성</h3></div></a>
