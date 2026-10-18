@@ -16,12 +16,12 @@
     var v={};parts.forEach(function(p){v[p.type]=p.value});return 'd'+v.year+v.month+v.day;
   }
   var id='project-b08e5f3c-fa49-4ae6-933',api='AIzaSyAlXYOrj7V-XtDrK13Cbxw6hWzbfhGf_do';
-  var path='projects/'+id+'/databases/(default)/documents/blog_views_'+key+'/'+slug;
+  var path='projects/'+id+'/databases/default/documents/blog_views_'+key+'/'+slug;
   var body={writes:[{transform:{document:path,fieldTransforms:[
     {fieldPath:'total',increment:{integerValue:'1'}},
     {fieldPath:dayKey(),increment:{integerValue:'1'}}
   ]}}]};
-  fetch('https://firestore.googleapis.com/v1/projects/'+id+'/databases/(default)/documents:commit?key='+encodeURIComponent(api),{
+  fetch('https://firestore.googleapis.com/v1/projects/'+id+'/databases/default/documents:commit?key='+encodeURIComponent(api),{
     method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),keepalive:true
   }).then(function(r){if(!r.ok)throw Error('View tracking unavailable')}).catch(function(){
     try{sessionStorage.removeItem(storageKey)}catch(e){}
