@@ -1,3 +1,4 @@
+# Final audit rerun after correcting the renunciation-case breadcrumb and core link.
 #!/usr/bin/env python3
 """One-time conservative full-repository SEO audit and head-only repair.
 
