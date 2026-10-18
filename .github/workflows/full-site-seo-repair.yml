@@ -29,13 +29,18 @@ jobs:
           python scripts/full_site_seo_repair.py
           python scripts/full_site_seo_repair.py --check
           python scripts/check_core_seo.py
+          python scripts/site_audit.py
+          python -m pip install --quiet beautifulsoup4
+          python scripts/seo_quality_gate.py
           git diff --check
       - name: Upload full audit report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: deunggiro-full-seo-audit
-          path: seo-full-audit-report.json
+          path: |
+            seo-full-audit-report.json
+            seo-audit-report.json
           if-no-files-found: warn
       - name: Commit only audited corrections, never posts body or old sitemap dates
         shell: bash
