@@ -23,7 +23,7 @@ FIRST_RE = re.compile(r'<!-- SEO_INITIAL_POSTS_START -->[\s\S]*?<!-- SEO_INITIAL
 NAV_RE = re.compile(r'(<nav id="pagination" class="pagination" aria-label="게시글 페이지">)[\s\S]*?(</nav>)')
 CORE_RE = re.compile(r'const CORE_HUBS=new Set\((\[[^\n]*?\])\);')
 INTRO = {
-    'info': '인천 상속등기·상속포기·한정승인·법인등기·부동산등기의 블로그와 실무정보를 안내합니다.',
+    'info': '인천 상속등기·상속포기·한정승인·법인등기·부동산등기의 전문 글과 실무정보를 안내합니다.',
     'core': '업무별로 먼저 확인하면 좋은 핵심 안내를 모았습니다.',
     'case': '실제 진행한 처리사례를 업무 종류별로 확인하세요.',
 }
