@@ -50,6 +50,17 @@ jobs:
                       continue
                   if '/'+p not in corpus and p not in corpus:
                       duplicate_unreferenced.append((p,size))
+          unused_scripts=[]
+          for p in sorted(x for x in files if x.startswith('scripts/') and x.endswith(('.py','.mjs','.js'))):
+              base=p.rsplit('/',1)[-1]
+              if not any(src!=p and (p in c or base in c) for src,c in texts.items()):
+                  unused_scripts.append(p)
+          unreferenced_with_referenced_counterpart=[]
+          for group in duplicate_groups:
+              known=[x for x,size in group if '/'+x in corpus or x in corpus]
+              for p,size in group:
+                  if known and p not in known and p.startswith(('assets/','images/')):
+                      unreferenced_with_referenced_counterpart.append([p,size,known[0]])
           missing=[]
           pattern=re.compile(r'(?:src|href|poster)=["\x27](/[^"\x27?#\s]+)')
           for src,body in texts.items():
@@ -64,6 +75,8 @@ jobs:
           report={
               'tracked_files':len(tracked),'text_files':len(texts),'total_asset_scripts_styles':len(asset_candidates),
               'unreferenced_css_js':unused_assets,
+              'unreferenced_scripts':unused_scripts,
+              'duplicate_unused_with_referenced_counterpart':unreferenced_with_referenced_counterpart,
               'duplicate_groups':len(duplicate_groups),
               'unreferenced_exact_duplicate_images':duplicate_unreferenced[:250],
               'unreferenced_exact_duplicate_images_count':len(duplicate_unreferenced),
@@ -75,6 +88,7 @@ jobs:
           Path('temporary-audit-report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
           print('DG_AUDIT_SUMMARY',json.dumps({k:v for k,v in report.items() if k not in ('unreferenced_exact_duplicate_images','missing_internal_file_refs')},ensure_ascii=False))
           print('DG_AUDIT_MISSING',json.dumps(report['missing_internal_file_refs'][:30],ensure_ascii=False))
+          print('DG_AUDIT_REFDUP',json.dumps(report['duplicate_unused_with_referenced_counterpart'][:100],ensure_ascii=False))
           PY
       - uses: actions/upload-artifact@v4
         with:
