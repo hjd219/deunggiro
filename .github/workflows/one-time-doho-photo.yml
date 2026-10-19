@@ -1,0 +1,46 @@
+name: Install inheritance background photo once
+on:
+  push:
+    paths:
+      - .github/workflows/one-time-doho-photo.yml
+permissions:
+  contents: write
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download and optimize public-license photo
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p images
+          curl --fail --location --retry 3 --retry-delay 2 --user-agent 'Mozilla/5.0' \
+            'https://www.ito.or.kr/main/bbs/bbsMsgFileDown.do?bcd=galleryko&fileno=1&msg_seq=496' \
+            --output /tmp/doho-source.jpg
+          python -m pip install --quiet pillow
+          python - <<'PY'
+          from PIL import Image, ImageOps
+          img = Image.open('/tmp/doho-source.jpg').convert('RGB')
+          if img.width < 1400 or img.height < 850:
+              raise SystemExit(f'Unexpected source size {img.size}')
+          desktop = img.copy()
+          desktop.thumbnail((1920, 1920), Image.Resampling.LANCZOS)
+          desktop.save('images/inheritance-doho-hero.webp', 'WEBP', quality=78, method=6)
+          side = min(img.width, int(img.height * 0.74))
+          left = (img.width - side)//2
+          mobile = img.crop((left, 0, left+side, img.height))
+          mobile.thumbnail((900, 1350), Image.Resampling.LANCZOS)
+          mobile.save('images/inheritance-doho-hero-mobile.webp', 'WEBP', quality=76, method=6)
+          print('Created background images from', img.size, 'desktop', desktop.size, 'mobile', mobile.size)
+          PY
+      - name: Commit photo assets and remove temporary installer
+        run: |
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git config user.name 'github-actions[bot]'
+          git add images/inheritance-doho-hero.webp images/inheritance-doho-hero-mobile.webp
+          git rm -f .github/workflows/one-time-doho-photo.yml
+          git commit -m 'Add licensed Incheon Dohobu Gwana backgrounds'
+          git push origin HEAD:main
