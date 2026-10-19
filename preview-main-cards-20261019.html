@@ -23,9 +23,9 @@ h1{font-size:clamp(23px,2.9vw,32px);letter-spacing:-1.2px;margin:0 0 10px}
 .text{padding:13px 15px 17px}
 .minor{font-size:11px;color:#3783d0;font-weight:700}
 .name{font-size:17px;font-weight:750;margin-top:5px;letter-spacing:-.4px;word-break:keep-all}
-.source{color:#647f9d;font-size:11px;margin-top:7px}
+.credit{position:absolute;right:5px;bottom:5px;font-size:8px;line-height:1.2;color:white;text-shadow:0 1px 3px #132a45,0 0 3px #132a45;background:rgba(0,20,40,.36);padding:3px 5px;border-radius:3px;max-width:calc(100% - 10px);text-align:right}
 .foot{font-size:12px;line-height:1.8;color:#58738e;margin-top:25px}
-@media(max-width:750px){main{padding:24px 12px 46px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.visual{aspect-ratio:1}.text{padding:11px 10px 14px}.name{font-size:15px}.source{font-size:10px}.desc{font-size:13px}}
+@media(max-width:750px){main{padding:24px 12px 46px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.visual{aspect-ratio:1}.text{padding:11px 10px 14px}.name{font-size:15px}.credit{font-size:7px}.desc{font-size:13px}}
 </style>
 </head>
 <body><main>
@@ -33,14 +33,14 @@ h1{font-size:clamp(23px,2.9vw,32px);letter-spacing:-1.2px;margin:0 0 10px}
 <p class="desc">현재 업무페이지 배경사진 5개 + 기존 계산기 썸네일 3개</p>
 <div class="notice">실제 등기로 사이트에 있는 기존 이미지 원본을 사용합니다. AI 이미지는 사용하지 않았으며 홈페이지 디자인과 캐러셀 설정은 변경하지 않았습니다. 검토용 페이지로 검색엔진 색인을 제한했습니다.</div>
 <section class="grid" aria-label="기존 이미지 8개">
-<article class="card"><div class="visual"><img src="/images/inheritance-doho-hero.webp" alt="인천도호부관아 상속등기 배경사진"></div><div class="text"><span class="minor">업무 01</span><div class="name">상속등기</div><div class="source">인천도호부관아 · 인천관광공사</div></div></article>
-<article class="card"><div class="visual"><img src="/images/deokjeok-seopori-hero.webp" alt="덕적도 상속포기 배경사진"></div><div class="text"><span class="minor">업무 02</span><div class="name">상속포기·한정승인</div><div class="source">덕적도 서포리 · ITO</div></div></article>
-<article class="card"><div class="visual"><img src="/images/songdo-hero.webp" alt="송도 법인등기 배경사진"></div><div class="text"><span class="minor">업무 03</span><div class="name">법인등기</div><div class="source">송도국제도시 · IFEZ</div></div></article>
-<article class="card"><div class="visual"><img src="/images/cheongna-realestate-hero.webp" alt="청라 부동산등기 배경사진"></div><div class="text"><span class="minor">업무 04</span><div class="name">부동산등기</div><div class="source">청라국제도시 · IFEZ</div></div></article>
-<article class="card"><div class="visual"><img src="/images/family-bridge-hero.webp" alt="인천대교 가사 배경사진"></div><div class="text"><span class="minor">업무 05</span><div class="name">가사</div><div class="source">인천대교 · IFEZ</div></div></article>
-<article class="card calc"><div class="visual"><img src="/images/realestate-new.jpg" alt="부동산 취득세 계산기 기존 썸네일"></div><div class="text"><span class="minor">계산기 01</span><div class="name">부동산 취득세 계산기</div><div class="source">기존 계산기 썸네일</div></div></article>
-<article class="card calc"><div class="visual"><img src="/images/corporate-new.jpg" alt="법인등기 비용 계산기 기존 썸네일"></div><div class="text"><span class="minor">계산기 02</span><div class="name">법인등기 비용 계산기</div><div class="source">기존 계산기 썸네일</div></div></article>
-<article class="card calc"><div class="visual"><img src="/images/상속포기·한정승인 비용 계산기.png" alt="상속포기·한정승인 계산기 기존 썸네일"></div><div class="text"><span class="minor">계산기 03</span><div class="name">상속포기·한정승인 계산기</div><div class="source">기존 계산기 썸네일</div></div></article>
+<article class="card"><div class="visual"><img src="/images/inheritance-doho-hero.webp" alt="인천도호부관아 상속등기 배경사진"><small class="credit">사진 출처: 인천관광공사 · 공공누리 제1유형</small></div><div class="text"><span class="minor">업무 01</span><div class="name">상속등기</div></div></article>
+<article class="card"><div class="visual"><img src="/images/deokjeok-seopori-hero.webp" alt="덕적도 상속포기 배경사진"><small class="credit">사진 출처: ITO · 공공누리 제1유형</small></div><div class="text"><span class="minor">업무 02</span><div class="name">상속포기·한정승인</div></div></article>
+<article class="card"><div class="visual"><img src="/images/songdo-hero.webp" alt="송도 법인등기 배경사진"><small class="credit">사진 출처: IFEZ · 공공누리 제1유형</small></div><div class="text"><span class="minor">업무 03</span><div class="name">법인등기</div></div></article>
+<article class="card"><div class="visual"><img src="/images/cheongna-realestate-hero.webp" alt="청라 부동산등기 배경사진"><small class="credit">사진 출처: IFEZ · 공공누리 제1유형</small></div><div class="text"><span class="minor">업무 04</span><div class="name">부동산등기</div></div></article>
+<article class="card"><div class="visual"><img src="/images/family-bridge-hero.webp" alt="인천대교 가사 배경사진"><small class="credit">사진 출처: IFEZ · 공공누리 제1유형</small></div><div class="text"><span class="minor">업무 05</span><div class="name">가사</div></div></article>
+<article class="card calc"><div class="visual"><img src="/images/realestate-new.jpg" alt="부동산 취득세 계산기 기존 썸네일"></div><div class="text"><span class="minor">계산기 01</span><div class="name">부동산 취득세 계산기</div></div></article>
+<article class="card calc"><div class="visual"><img src="/images/corporate-new.jpg" alt="법인등기 비용 계산기 기존 썸네일"></div><div class="text"><span class="minor">계산기 02</span><div class="name">법인등기 비용 계산기</div></div></article>
+<article class="card calc"><div class="visual"><img src="/images/상속포기·한정승인 비용 계산기.png" alt="상속포기·한정승인 계산기 기존 썸네일"></div><div class="text"><span class="minor">계산기 03</span><div class="name">상속포기·한정승인 계산기</div></div></article>
 </section>
 <p class="foot">검토용 페이지입니다. 원본 이미지나 기존 메인·업무페이지의 HTML, 대표이미지, 배경사진, 날짜·사이트맵은 변경하지 않았습니다. 이미지 제공기관 표기는 각 업무페이지에 기재된 출처를 따랐습니다.</p>
 </main></body></html>
