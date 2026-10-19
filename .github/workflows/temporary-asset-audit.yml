@@ -1,0 +1,82 @@
+name: Temporary Read-only Asset and Reference Audit
+on:
+  push:
+    paths:
+      - '.github/workflows/temporary-asset-audit.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Scan all committed text, page links, duplicate blobs and unreferenced resources
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json, re, subprocess
+          from pathlib import Path
+          from urllib.parse import unquote
+          tracked=subprocess.check_output(['git','ls-files','-z']).decode().split('\0')
+          tracked=[x for x in tracked if x]
+          files=set(tracked)
+          suffixes=('.html','.css','.js','.mjs','.json','.xml','.yml','.yaml','.py','.md','.txt')
+          texts={}
+          for p in tracked:
+              if p.endswith(suffixes):
+                  try: texts[p]=Path(p).read_text(encoding='utf-8')
+                  except (UnicodeError,OSError): pass
+          corpus='\n'.join(texts.values())
+          asset_candidates=[p for p in files if p.startswith('assets/') and p.endswith(('.css','.js'))]
+          unused_assets=[]
+          for p in sorted(asset_candidates):
+              name=p.rsplit('/',1)[-1]
+              references=[src for src,c in texts.items() if src!=p and (('/'+p) in c or p in c or name in c)]
+              if not references: unused_assets.append(p)
+          sha_groups={}
+          listing=subprocess.check_output(['git','ls-tree','-rl','HEAD','--']).decode()
+          for line in listing.splitlines():
+              m=re.match(r'^\d+ blob ([0-9a-f]{40})\s+(\d+)\t(.+)$',line)
+              if m:
+                  sha,size,p=m.groups()
+                  sha_groups.setdefault(sha,[]).append((p,int(size)))
+          duplicate_groups=[g for g in sha_groups.values() if len(g)>1]
+          duplicate_unreferenced=[]
+          for group in duplicate_groups:
+              for p,size in group:
+                  if not p.startswith(('assets/','images/')) or not p.lower().endswith(('.png','.jpg','.jpeg','.webp','.svg','.mp4','.mov')):
+                      continue
+                  if '/'+p not in corpus and p not in corpus:
+                      duplicate_unreferenced.append((p,size))
+          missing=[]
+          pattern=re.compile(r'(?:src|href|poster)=["\x27](/[^"\x27?#\s]+)')
+          for src,body in texts.items():
+              if not src.endswith('.html'):continue
+              for link in pattern.findall(body):
+                  p=unquote(link).lstrip('/')
+                  if ('.' in Path(p).name and p not in files and not p.startswith(('api/','.well-known/'))):
+                      missing.append((src,p))
+          sm=Path('sitemap.xml').read_text()
+          urls=re.findall(r'<loc>https?://[^<]+/([^<]*)</loc>',sm)
+          absent_sitemap=[p for p in urls if (p or 'index.html') not in files and p!='']
+          report={
+              'tracked_files':len(tracked),'text_files':len(texts),'total_asset_scripts_styles':len(asset_candidates),
+              'unreferenced_css_js':unused_assets,
+              'duplicate_groups':len(duplicate_groups),
+              'unreferenced_exact_duplicate_images':duplicate_unreferenced[:250],
+              'unreferenced_exact_duplicate_images_count':len(duplicate_unreferenced),
+              'unreferenced_exact_duplicate_images_bytes':sum(x[1] for x in duplicate_unreferenced),
+              'missing_internal_file_refs':sorted(set(missing))[:120],
+              'missing_internal_file_refs_total':len(set(missing)),
+              'sitemap_missing_files':absent_sitemap,
+          }
+          Path('temporary-audit-report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
+          print('DG_AUDIT_SUMMARY',json.dumps({k:v for k,v in report.items() if k not in ('unreferenced_exact_duplicate_images','missing_internal_file_refs')},ensure_ascii=False))
+          print('DG_AUDIT_MISSING',json.dumps(report['missing_internal_file_refs'][:30],ensure_ascii=False))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: temporary-asset-audit
+          path: temporary-audit-report.json
