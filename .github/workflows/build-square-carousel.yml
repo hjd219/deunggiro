@@ -1,0 +1,36 @@
+name: Create 1-to-1 carousel thumbnails
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/build-square-carousel.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  square-images:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out site
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install image tooling
+        run: python -m pip install "Pillow==11.3.0"
+      - name: Generate images and replace ItemList image URLs
+        run: python scripts/build_square_carousel.py
+      - name: Commit only square thumbnails and six carousel pages
+        shell: bash
+        run: |
+          git add -- index.html inheritance.html renunciation.html corporate.html realestate.html family.html
+          git add -- images/*-carousel-square.jpg
+          if git diff --cached --quiet; then
+            echo "Already up to date."
+            exit 0
+          fi
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "Use 1200x1200 thumbnails for six carousel ItemLists"
+          git push origin HEAD:main
