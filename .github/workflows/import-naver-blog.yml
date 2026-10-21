@@ -23,6 +23,7 @@ on:
       - 'scripts/seo-hub-links.mjs'
       - 'scripts/inject_internal_links.py'
       - 'scripts/site_maintenance.py'
+      - 'scripts/sync_service_blog_cards.mjs'
       - 'scripts/generate_post_pagination.py'
       - 'posts.html'
       - 'assets/article-v2.js'
@@ -176,6 +177,12 @@ jobs:
             git diff --name-only -- posts index.html inheritance.html renunciation.html corporate.html realestate.html family.html
             exit 1
           fi
+      - name: Refresh static practice article links only
+        run: |
+          # All preceding quality gates protect existing legal content.
+          # The synchronizer edits only the five existing article tracks and their counts.
+          node scripts/sync_service_blog_cards.mjs
+          git diff --check
       - name: Commit and push safely
         shell: bash
         run: |
