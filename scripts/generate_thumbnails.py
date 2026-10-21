@@ -59,7 +59,7 @@ def draw_logo(img,d,category):
   except:pass
  d.text((202,68),'등기로',font=font(56,True),fill=BLUE);d.text((204,136),category or '법률정보',font=font(30,True),fill=INK)
 def draw_case_badge(d,raw_title,is_case=False):
- if not (is_case or re.match(r'^\s*\[처리사례\]', raw_title or '') or re.search(r'사례\s*[.!?。…]*
+ if not (is_case or re.match(r'^\s*\[처리사례\]', raw_title or '') or (raw_title or '').strip().endswith('사례')):return
  label='처리사례';f=font(40,True);box=d.textbbox((0,0),label,font=f);tw=box[2]-box[0];th=box[3]-box[1]
  pad_x=28;pad_y=17;right=1018;top=72;left=right-(tw+pad_x*2);bottom=top+th+pad_y*2
  d.rounded_rectangle((left,top,right,bottom),radius=30,fill=BLUE)
