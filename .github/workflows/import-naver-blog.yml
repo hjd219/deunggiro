@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'scripts/import_naver_blog.py'
+      - 'scripts/optimize_post_titles.py'
       - 'scripts/generate_thumbnails.py'
       - 'scripts/generate_sitemap.py'
       - 'scripts/rss-auto.mjs'
