@@ -1,0 +1,91 @@
+name: Refresh corrected case thumbnails
+on:
+  push:
+    paths:
+      - '.github/workflows/refresh-case-thumbnails.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: deunggiro-content-main
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Fonts and Pillow
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk
+          python -m pip install pillow
+      - name: Regenerate four case classification thumbnails
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from scripts.generate_thumbnails import create_thumbnail
+          posts = json.loads(Path('data/posts.json').read_text(encoding='utf-8'))
+          by_slug = {p['slug']: p for p in posts}
+          targets = (
+              'inheritance-naver-224448667537',
+              'realestate-naver-224434182517',
+              'realestate-naver-224434200680',
+              'family-naver-224434219104',
+          )
+          for slug in targets:
+              post = by_slug[slug]
+              assert post.get('is_case') is True, (slug, 'case flag missing')
+              if slug == 'inheritance-naver-224448667537':
+                  assert post['category'] == '상속포기·한정승인'
+              thumbnail = Path('assets/posts') / (slug + '-thumbnail.png')
+              assert thumbnail.exists(), f'Missing prior image: {thumbnail}'
+              create_thumbnail(post,thumbnail)
+              from PIL import Image
+              with Image.open(thumbnail) as image:
+                  assert image.size == (1080,1080)
+              print('REFRESHED_CASE_THUMBNAIL',slug,post['category'],thumbnail)
+          PY
+          git diff --check
+          # Do not touch title, article, page, dates, sitemap, or unrelated images.
+          python - <<'PY'
+          import subprocess
+          expected = {
+              'assets/posts/inheritance-naver-224448667537-thumbnail.png',
+              'assets/posts/realestate-naver-224434182517-thumbnail.png',
+              'assets/posts/realestate-naver-224434200680-thumbnail.png',
+              'assets/posts/family-naver-224434219104-thumbnail.png',
+          }
+          changed=set(subprocess.check_output(['git','diff','--name-only'],text=True).splitlines())
+          assert changed <= expected, f'Unexpected file modification: {changed - expected}'
+          assert 'assets/posts/inheritance-naver-224448667537-thumbnail.png' in changed
+          print('CHANGED_THUMBNAILS', sorted(changed))
+          PY
+      - name: Commit and publish images
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/posts/inheritance-naver-224448667537-thumbnail.png assets/posts/realestate-naver-224434182517-thumbnail.png assets/posts/realestate-naver-224434200680-thumbnail.png assets/posts/family-naver-224434219104-thumbnail.png
+          if git diff --cached --quiet; then
+            echo "Already correct"
+            exit 0
+          fi
+          git commit -m "Correct case badges and renunciation category on four thumbnails"
+          for attempt in 1 2 3; do
+            git fetch origin main
+            if git rebase origin/main && git push origin HEAD:main; then
+              echo "THUMBNAIL_CATEGORY_REFRESH_PUSHED"
+              exit 0
+            fi
+            git rebase --abort || true
+            sleep $((attempt * 4))
+          done
+          exit 1
