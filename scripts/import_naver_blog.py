@@ -182,7 +182,8 @@ def main() -> None:
             if n in existing_ids:
                 continue
 
-            title, date = fetch_metadata(n)
+            source_title, date = fetch_metadata(n)
+            title = core.strip_case_prefix(source_title)
             if not title:
                 print('SKIP_NO_TITLE', n, file=sys.stderr)
                 continue
@@ -203,6 +204,7 @@ def main() -> None:
                 summary = core.seo_summary(title)
                 post = {
                     'title': title,
+                    **({'is_case': True} if core.is_case_title(source_title) else {}),
                     'category': core.category(title),
                     'date': date,
                     'slug': slug,

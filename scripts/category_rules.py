@@ -107,6 +107,9 @@ def classify_title_with_reason(title: str, current: str = '') -> tuple[str, str]
     if inheritance_overview:
         return CATEGORY_INHERITANCE, 'inheritance-overview'
 
+    if '상속포기한사례' in re.sub(r'\s+', '', t):
+        return CATEGORY_RENUNCIATION, 'renunciation-case-explicit'
+
     # 기존 상속포기·한정승인 글은 해당 핵심어가 있으면 불필요하게 다른 상속 카테고리로 옮기지 않는다.
     if current == CATEGORY_RENUNCIATION and _has_any(t, RENUNCIATION_WORDS):
         return current, 'keep-renunciation-supported'

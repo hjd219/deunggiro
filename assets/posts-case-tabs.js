@@ -1,12 +1,12 @@
 (()=>{
   if(!document.querySelector('link[href*="posts-case-tabs.css"]')){const l=document.createElement('link');l.rel='stylesheet';l.href='/assets/posts-case-tabs.css?v=20260917-4';document.head.appendChild(l)}
-  const CASE_RE=/^\s*\[?처리사례\]?/;
+  const CASE_RE=/사례\s*[.!?。…]*$/;
   const TAB_DEFS=[['전체','all'],['상속등기 사례','case:상속등기'],['상속포기·한정승인 사례','case:상속포기·한정승인'],['법인등기 사례','case:법인등기'],['부동산등기 사례','case:부동산등기'],['가사 사례','case:가사'],['블로그 글','info']];
   const PAGE_SIZE=20;
   const esc=s=>String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#039;'}[m]));
   const requestedTab=new URLSearchParams(location.search).get('tab');
   let data=[],mode=TAB_DEFS.some(x=>x[1]===requestedTab)?requestedTab:'all',query='',page=1;
-  const isCase=p=>CASE_RE.test(String(p.title||''));
+  const isCase=p=>p.is_case===true||CASE_RE.test(String(p.title||'').trim());
   function matches(p){if(mode==='info'&&isCase(p))return false;if(mode.startsWith('case:')){const cat=mode.slice(5);if(!isCase(p)||p.category!==cat)return false}if(query){const hay=(p.title+' '+(p.summary||'')+' '+(p.keywords||'')).toLowerCase();if(!hay.includes(query))return false}return true}
   function card(p){return `<a class="post-card dg-legal-card" href="/posts/${esc(p.slug)}.html"><div class="post-content"><div class="post-meta"><span class="badge">${esc(p.category)}</span>${isCase(p)?'<span class="case-badge">처리사례</span>':''}</div><h3>${esc(p.title)}</h3><p>${esc(p.summary||'')}</p><div class="dg-card-footer"><span class="dg-card-more">자세히 보기 →</span><time class="dg-card-date">${esc(p.date)}</time></div></div></a>`}
   function pager(totalPages){if(totalPages<=1)return'';const nums=[];if(totalPages<=7){for(let i=1;i<=totalPages;i++)nums.push(i)}else{nums.push(1);let start=Math.max(2,page-1),end=Math.min(totalPages-1,page+1);if(page<=3){start=2;end=4}if(page>=totalPages-2){start=totalPages-3;end=totalPages-1}if(start>2)nums.push('…');for(let i=start;i<=end;i++)nums.push(i);if(end<totalPages-1)nums.push('…');nums.push(totalPages)}return `<button class="page-btn page-nav" type="button" data-page="${Math.max(1,page-1)}" ${page===1?'disabled':''}>‹ 이전</button>${nums.map(n=>n==='…'?'<span class="page-ellipsis">…</span>':`<button class="page-btn ${n===page?'active':''}" type="button" data-page="${n}">${n}</button>`).join('')}<button class="page-btn page-nav" type="button" data-page="${Math.min(totalPages,page+1)}" ${page===totalPages?'disabled':''}>다음 ›</button>`}

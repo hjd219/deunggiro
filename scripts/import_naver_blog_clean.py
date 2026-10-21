@@ -22,6 +22,10 @@ UA={'User-Agent':'Mozilla/5.0 (compatible; DeunggiroBlogImporter/4.1; +https://w
 MOJIBAKE=('êµ','ë“','ë¡','ì§','ì—','ì›','ë¹','ê³','ë°','ì„','ìƒ','ìž','í•','ì‹','ìš','ìœ','ì•','ë¶','ì¶','ì ','ì²')
 def get(url):
  r=requests.get(url,headers=UA,timeout=25); r.raise_for_status(); r.encoding='utf-8'; return r
+def strip_case_prefix(title):
+ return re.sub(r'^\s*\[처리사례\]\s*', '', str(title or '')).strip()
+def is_case_title(title):
+ return bool(re.match(r'^\s*\[처리사례\]', str(title or '')) or re.search(r'사례\s*[.!?。…]*$', strip_case_prefix(title)))
 def norm(v): return re.sub(r'[^0-9A-Za-z가-힣]+','',html.unescape(v or '')).lower()
 def category(title):
  return classify_title(title)

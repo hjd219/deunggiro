@@ -18,7 +18,7 @@ INDEX = ROOT / 'posts.html'
 OUT = ROOT / 'posts-pages'
 MODES = ('info', 'core', 'case')
 PAGE_SIZE = 10
-CASE_RE = re.compile(r'처리사례|실제사례|실제 사례|허가 사례|선임 사례|등기 사례|신청 사례|경정 사례')
+CASE_RE = re.compile(r'사례\s*[.!?。…]*$')
 FIRST_RE = re.compile(r'<!-- SEO_INITIAL_POSTS_START -->[\s\S]*?<!-- SEO_INITIAL_POSTS_END -->')
 NAV_RE = re.compile(r'(<nav id="pagination" class="pagination" aria-label="게시글 페이지">)[\s\S]*?(</nav>)')
 CORE_RE = re.compile(r'const CORE_HUBS=new Set\((\[[^\n]*?\])\);')
@@ -135,7 +135,7 @@ def rebuild_post_pages(posts: list[dict]) -> bool:
         raise ValueError('Crawlable pagination template or CORE_HUBS missing')
     core = set(json.loads(core_match.group(1)))
     def is_case(p):
-        return bool(CASE_RE.search(str(p.get('title', '')) + ' ' + str(p.get('summary', ''))))
+        return p.get('is_case') is True or bool(CASE_RE.search(str(p.get('title', '')).strip()))
     modes = {
         'info': [p for p in posts if not is_case(p) and p.get('slug') not in core],
         'core': [p for p in posts if p.get('slug') in core],
