@@ -58,8 +58,74 @@ def draw_logo(img,d,category):
    icon=Image.open(fav).convert('RGBA');icon.thumbnail((126,126),Image.Resampling.LANCZOS);img.paste(icon,(58,58),icon)
   except:pass
  d.text((202,68),'등기로',font=font(56,True),fill=BLUE);d.text((204,136),category or '법률정보',font=font(30,True),fill=INK)
-def draw_case_badge(d,raw_title):
- if not re.match(r'^\s*\[처리사례\]', raw_title or ''):return
+def draw_case_badge(d,raw_title,is_case=False):
+ if not (is_case or re.match(r'^\s*\[처리사례\]', raw_title or '') or re.search(r'사례\s*[.!?。…]*
+ label='처리사례';f=font(40,True);box=d.textbbox((0,0),label,font=f);tw=box[2]-box[0];th=box[3]-box[1]
+ pad_x=28;pad_y=17;right=1018;top=72;left=right-(tw+pad_x*2);bottom=top+th+pad_y*2
+ d.rounded_rectangle((left,top,right,bottom),radius=30,fill=BLUE)
+ d.text((left+pad_x,top+pad_y-5),label,font=f,fill=WHITE)
+def highlighted(d,line,f,y,point):
+ total=d.textbbox((0,0),line,font=f)[2];x=(SIZE-total)//2
+ if point and point in line:
+  before,after=line.split(point,1);d.text((x,y),before,font=f,fill=INK);bw=d.textbbox((0,0),before,font=f)[2];d.text((x+bw,y),point,font=f,fill=BLUE);pw=d.textbbox((0,0),point,font=f)[2];d.text((x+bw+pw,y),after,font=f,fill=INK)
+ else:d.text((x,y),line,font=f,fill=INK)
+def create_thumbnail(post,path):
+ img=Image.new('RGBA',(SIZE,SIZE),WHITE);d=ImageDraw.Draw(img);d.rounded_rectangle((18,18,SIZE-18,SIZE-18),radius=34,fill=WHITE,outline=SKY,width=12);draw_logo(img,d,post.get('category',''));draw_case_badge(d,post.get('title',''),post.get('is_case') is True);title=short_title(post.get('title',''));point=pick_point(title,post.get('category',''));tf,lines=fit_title(d,title,900,4);lh=int(tf.size*1.2);block=lh*len(lines);sy=max(275,(SIZE-block)//2+45)
+ for i,line in enumerate(lines):highlighted(d,line,tf,sy+i*lh,point)
+ img.convert('RGB').save(path,'PNG',optimize=True)
+def patch_article(post,thumb):
+ slug=post.get('slug');p=ROOT/'posts'/f'{slug}.html'
+ if not p.exists():return
+ s=p.read_text(encoding='utf-8');rel='/'+thumb.as_posix().lstrip('/');absu='https://www.deunggiro.kr'+rel;pageu=f'https://www.deunggiro.kr/posts/{slug}.html';title=post.get('title','').strip();summary=post.get('summary','').strip();date=post.get('date','').strip()
+ if re.search(r'<meta\s+name=["\']dg-thumbnail["\']',s,re.I):s=re.sub(r'<meta\s+name=["\']dg-thumbnail["\']\s+content=["\'][^"\']*["\']\s*/?>',f'<meta name="dg-thumbnail" content="{rel}">',s,flags=re.I)
+ else:s=s.replace('</head>',f'<meta name="dg-thumbnail" content="{rel}">\n</head>',1)
+ meta_tags=[('property','og:image',absu),('property','og:image:secure_url',absu),('property','og:image:width','1080'),('property','og:image:height','1080'),('property','og:image:type','image/png'),('name','twitter:image',absu),('name','twitter:card','summary_large_image')]
+ for attr,key,val in meta_tags:
+  pat=rf'<meta\s+{attr}=["\']{re.escape(key)}["\']\s+content=["\'][^"\']*["\']\s*/?>';tag=f'<meta {attr}="{key}" content="{val}">'
+  if re.search(pat,s,re.I):s=re.sub(pat,tag,s,flags=re.I)
+  else:s=s.replace('</head>',tag+'\n</head>',1)
+ if re.search(r'<meta\s+name=["\']robots["\']',s,re.I):
+  def add_large(m):
+   tag=m.group(0);cm=re.search(r'content=["\']([^"\']*)',tag,re.I);content=cm.group(1) if cm else ''
+   if 'max-image-preview:' in content:return tag
+   new=(content+', max-image-preview:large').strip(' ,');return re.sub(r'content=["\'][^"\']*["\']',f'content="{new}"',tag,flags=re.I) if cm else tag
+  s=re.sub(r'<meta\s+name=["\']robots["\'][^>]*>',add_large,s,count=1,flags=re.I)
+ else:s=s.replace('</head>','<meta name="robots" content="index,follow,max-image-preview:large">\n</head>',1)
+ schema={"@context":"https://schema.org","@type":"Article","mainEntityOfPage":{"@type":"WebPage","@id":pageu},"headline":title,"description":summary or title,"image":{"@type":"ImageObject","url":absu,"width":1080,"height":1080},"datePublished":date,"dateModified":date,"author":{"@type":"Organization","name":"현재두 법무사 사무소"},"publisher":{"@type":"Organization","name":"등기로","url":"https://www.deunggiro.kr/"}}
+ schema_tag='<script type="application/ld+json" id="dg-article-schema">'+json.dumps(schema,ensure_ascii=False,separators=(',',':'))+'</script>'
+ if re.search(r'<script[^>]+id=["\']dg-article-schema["\'][^>]*>.*?</script>',s,re.I|re.S):s=re.sub(r'<script[^>]+id=["\']dg-article-schema["\'][^>]*>.*?</script>',schema_tag,s,count=1,flags=re.I|re.S)
+ else:s=s.replace('</head>',schema_tag+'\n</head>',1)
+ hero=f'<figure id="dg-post-hero-image" class="dg-post-hero-image"><img src="{rel}" alt="{title.replace("&","&amp;").replace(chr(34),"&quot;")}" width="1080" height="1080" loading="eager" fetchpriority="high" decoding="async"></figure>'
+ # 내부 대표 썸네일은 목록/검색용 메타와 별개로 개별글 제목 아래에 항상 1개 표시한다.
+ hero_style='<style id="dg-post-hero-style">.dg-post-hero-image{display:block!important;width:100%;max-width:550px;margin:24px auto 32px}.dg-post-hero-image img{display:block!important;width:100%;height:auto;border-radius:18px}@media(max-width:600px){.dg-post-hero-image{display:block!important;max-width:100%;margin:18px auto 26px}}</style>'
+ if re.search(r'<style[^>]+id=["\']dg-post-hero-style["\'][^>]*>.*?</style>',s,re.I|re.S):s=re.sub(r'<style[^>]+id=["\']dg-post-hero-style["\'][^>]*>.*?</style>',hero_style,s,count=1,flags=re.I|re.S)
+ else:s=s.replace('</head>',hero_style+'\n</head>',1)
+ if re.search(r'<figure[^>]+id=["\']dg-post-hero-image["\'][^>]*>.*?</figure>',s,re.I|re.S):s=re.sub(r'<figure[^>]+id=["\']dg-post-hero-image["\'][^>]*>.*?</figure>',hero,s,count=1,flags=re.I|re.S)
+ else:
+  m=re.search(r'</h1>',s,re.I)
+  if m:s=s[:m.end()]+hero+s[m.end():]
+ p.write_text(s,encoding='utf-8')
+def main():
+ posts=json.loads(POSTS_JSON.read_text(encoding='utf-8'))
+ created=0
+ changed=False
+ for post in posts:
+  slug=post.get('slug')
+  if not slug:continue
+  out=OUT_DIR/f'{slug}-thumbnail.png'
+  # Existing thumbnails and articles are immutable during routine imports.
+  if out.exists():continue
+  create_thumbnail(post,out)
+  rel='/assets/posts/'+out.name
+  if post.get('thumbnail')!=rel:
+   post['thumbnail']=rel
+   changed=True
+  patch_article(post,out.relative_to(ROOT))
+  created+=1
+ if changed:
+  POSTS_JSON.write_text(json.dumps(posts,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+ print('new thumbnails generated:',created,'existing posts skipped')
+if __name__=='__main__':main(),raw_title or '')):return
  label='처리사례';f=font(40,True);box=d.textbbox((0,0),label,font=f);tw=box[2]-box[0];th=box[3]-box[1]
  pad_x=28;pad_y=17;right=1018;top=72;left=right-(tw+pad_x*2);bottom=top+th+pad_y*2
  d.rounded_rectangle((left,top,right,bottom),radius=30,fill=BLUE)
