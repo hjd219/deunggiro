@@ -28,6 +28,7 @@ jobs:
       - name: Regenerate four case classification thumbnails
         run: |
           set -euo pipefail
+          # First validate the generator, then render only the four affected PNG files.
           python -m py_compile scripts/generate_thumbnails.py
           python - <<'PY'
           import json
