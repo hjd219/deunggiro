@@ -1,0 +1,69 @@
+name: Normalize case article titles
+on:
+  push:
+    paths:
+      - '.github/workflows/normalize-case-titles.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: deunggiro-content-main
+  cancel-in-progress: false
+
+jobs:
+  normalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Sync main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+          git reset --hard origin/main
+      - name: Remove title labels and rebuild archives
+        run: |
+          set -euo pipefail
+          python -m py_compile scripts/normalize_case_titles.py
+          python -u scripts/normalize_case_titles.py
+          git diff --check
+          python - <<'PY'
+          import json,re
+          from pathlib import Path
+          posts=json.loads(Path('data/posts.json').read_text())
+          assert len(posts)>=397
+          assert not any('[처리사례]' in p['title'] for p in posts)
+          cases=[p for p in posts if p.get('is_case') is True or re.search(r'사례\s*[.!?。…]*$',p['title'])]
+          assert len(cases)>=38
+          for post in posts:
+              if post.get('is_case'):
+                  f=Path('posts')/(post['slug']+'.html')
+                  assert f.is_file()
+          for path in ('posts.html','posts-pages/case-1.html','renunciation.html','inheritance.html'):
+              assert Path(path).is_file()
+          print('VERIFIED_POSTS',len(posts),'CASES',len(cases))
+          PY
+      - name: Commit case title changes
+        run: |
+          set -euo pipefail
+          git add data/posts.json posts posts.html posts-pages rss.xml inheritance.html renunciation.html corporate.html realestate.html family.html assets/service-blog.js assets/posts-case-tabs.js scripts/generate_post_pagination.py scripts/optimize_post_titles.py scripts/import_naver_blog.py scripts/import_naver_blog_clean.py scripts/category_rules.py
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "Remove article case title labels and synchronize case archives"
+          for attempt in 1 2 3; do
+            git fetch origin main
+            if git rebase origin/main && git push origin HEAD:main; then
+              echo "Title and case cleanup deployed"
+              exit 0
+            fi
+            git rebase --abort || true
+            sleep $((attempt * 3))
+          done
+          exit 1
