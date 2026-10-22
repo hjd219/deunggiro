@@ -1,8 +1,15 @@
 {
-  "totalPosts": 397,
-  "ok": 397,
+  "totalPosts": 398,
+  "ok": 398,
   "warnings": 0,
   "items": [
+    {
+      "slug": "corporate-naver-224449819176",
+      "status": "ok",
+      "issues": [],
+      "modified": "2026-10-22",
+      "related": []
+    },
     {
       "slug": "inheritance-naver-224446575607",
       "status": "ok",
