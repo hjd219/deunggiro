@@ -17,17 +17,6 @@ document.addEventListener('DOMContentLoaded',()=>{
     });
   };
 
-  const detailPaths=new Set([
-    '/inheritance-missing-heir.html','/inheritance-overseas-heir.html','/inheritance-minor-heir.html','/inheritance-substitute-succession.html','/inheritance-division.html',
-    '/renunciation-after.html','/limited-acceptance-liquidation.html'
-  ]);
-
-  const normalizeDetailNavigation=()=>{
-    if(!detailPaths.has(current))return;
-    document.querySelectorAll('.subhero-copy .buttons a,.subhero-copy .buttons button,.hero .buttons a,.hero .buttons button,.hero .actions a,.hero .actions button').forEach(el=>{if((el.textContent||'').includes('법률정보'))el.remove();});
-    document.querySelectorAll('header.dg-shell-header nav a[href="/posts.html"],.dg-shell-mobile-panel a[href="/posts.html"]').forEach(a=>a.remove());
-  };
-
   const isIndividualPost=current.startsWith('/posts/');
   if(isIndividualPost){
     document.querySelectorAll('header.header,header.dg-shell-header').forEach(el=>el.remove());
@@ -35,13 +24,12 @@ document.addEventListener('DOMContentLoaded',()=>{
   const coreModules=isIndividualPost
     ? ['/assets/site-footer.js?v=20260917-horizontal3']
     : ['/assets/site-header.js?v=20260917-clean2','/assets/site-footer.js?v=20260917-horizontal3'];
-  Promise.all(coreModules.map(loadScript)).then(()=>{normalizePhoneCtas();normalizeDetailNavigation();}).catch(()=>{normalizePhoneCtas();normalizeDetailNavigation();});
-  normalizeDetailNavigation();
+  Promise.all(coreModules.map(loadScript)).then(normalizePhoneCtas).catch(normalizePhoneCtas);
 
-  const inheritanceDetailPaths=new Set(['/inheritance-missing-heir.html','/inheritance-overseas-heir.html','/inheritance-minor-heir.html','/inheritance-substitute-succession.html','/inheritance-division.html']);
-  if(inheritanceDetailPaths.has(current)||current.startsWith('/posts/'))loadScript('/assets/analytics.js?v=20261018-1').catch(()=>{});
-  if(current.startsWith('/posts/'))loadScript('/assets/blog-view-tracker.js?v=20261018-1').catch(()=>{});
-  if(current==='/corporate.html')loadScript('/assets/corporate-extra.js?v=20260911-1').catch(()=>{});
-  if(current==='/realestate.html')loadScript('/assets/realestate-case-cards.js?v=20260917-1').catch(()=>{});
-  if(current==='/posts.html')loadScript('/assets/posts-case-tabs.js?v=20260917-1').catch(()=>{});
+  // Current article pages are the only callers of this shared shell that
+  // need analytics and visit tracking. Service hubs use their own assets.
+  if(isIndividualPost){
+    loadScript('/assets/analytics.js?v=20261018-1').catch(()=>{});
+    loadScript('/assets/blog-view-tracker.js?v=20261018-1').catch(()=>{});
+  }
 });
