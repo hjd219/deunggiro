@@ -91,10 +91,43 @@ def patch_article(post,thumb):
    new=(content+', max-image-preview:large').strip(' ,');return re.sub(r'content=["\'][^"\']*["\']',f'content="{new}"',tag,flags=re.I) if cm else tag
   s=re.sub(r'<meta\s+name=["\']robots["\'][^>]*>',add_large,s,count=1,flags=re.I)
  else:s=s.replace('</head>','<meta name="robots" content="index,follow,max-image-preview:large">\n</head>',1)
- schema={"@context":"https://schema.org","@type":"Article","mainEntityOfPage":{"@type":"WebPage","@id":pageu},"headline":title,"description":summary or title,"image":{"@type":"ImageObject","url":absu,"width":1080,"height":1080},"datePublished":date,"dateModified":date,"author":{"@type":"Organization","name":"현재두 법무사 사무소"},"publisher":{"@type":"Organization","name":"등기로","url":"https://www.deunggiro.kr/"}}
- schema_tag='<script type="application/ld+json" id="dg-article-schema">'+json.dumps(schema,ensure_ascii=False,separators=(',',':'))+'</script>'
- if re.search(r'<script[^>]+id=["\']dg-article-schema["\'][^>]*>.*?</script>',s,re.I|re.S):s=re.sub(r'<script[^>]+id=["\']dg-article-schema["\'][^>]*>.*?</script>',schema_tag,s,count=1,flags=re.I|re.S)
- else:s=s.replace('</head>',schema_tag+'\n</head>',1)
+ # Only one Article JSON-LD should describe a post. The SEO importer
+ # generates it first; enrich that existing entry instead of injecting a second.
+ image_obj={"@type":"ImageObject","url":absu,"width":1080,"height":1080}
+ ld_re=re.compile(r'(<script\b[^>]*\btype=["\']application/ld\+json["\'][^>]*>)([\s\S]*?)(</script>)',re.I)
+ legacy_re=re.compile(r'<script\b(?=[^>]*\bid=["\']dg-article-schema["\'])[^>]*>[\s\S]*?</script>\s*',re.I)
+ def has_article(obj):
+  nodes=obj.get('@graph',[]) if isinstance(obj,dict) and isinstance(obj.get('@graph'),list) else [obj]
+  return any(isinstance(n,dict) and ('Article' in (n.get('@type') if isinstance(n.get('@type'),list) else [n.get('@type')])) for n in nodes)
+ def decode_schema(raw):
+  try:return json.loads(raw)
+  except (ValueError,TypeError):return None
+ # Preserve the marked SEO Article (Person author) over the older thumbnail tag.
+ existing=any(
+  has_article(obj)
+  for m in ld_re.finditer(s)
+  if 'dg-article-schema' not in m.group(1)
+  for obj in [decode_schema(m.group(2))]
+  if isinstance(obj,dict)
+ )
+ if existing:s=legacy_re.sub('',s)
+ patched=[False]
+ def add_thumbnail_to_article(m):
+  if patched[0]:return m.group(0)
+  obj=decode_schema(m.group(2))
+  if not isinstance(obj,dict):return m.group(0)
+  nodes=obj.get('@graph',[]) if isinstance(obj.get('@graph'),list) else [obj]
+  for node in nodes:
+   if isinstance(node,dict) and 'Article' in (node.get('@type') if isinstance(node.get('@type'),list) else [node.get('@type')]):
+    node['image']=image_obj
+    patched[0]=True
+    return m.group(1)+json.dumps(obj,ensure_ascii=False,separators=(',',':'))+m.group(3)
+  return m.group(0)
+ s=ld_re.sub(add_thumbnail_to_article,s)
+ if not patched[0]:
+  schema={"@context":"https://schema.org","@type":"Article","mainEntityOfPage":{"@type":"WebPage","@id":pageu},"headline":title,"description":summary or title,"image":image_obj,"datePublished":date,"dateModified":date,"author":{"@type":"Person","name":"현재두","jobTitle":"법무사","@id":"https://www.deunggiro.kr/#author-current-doo"},"publisher":{"@type":"Organization","name":"등기로","url":"https://www.deunggiro.kr/","@id":"https://www.deunggiro.kr/#organization"}}
+  schema_tag='<script type="application/ld+json">'+json.dumps(schema,ensure_ascii=False,separators=(',',':'))+'</script>'
+  s=s.replace('</head>',schema_tag+'\n</head>',1)
  hero=f'<figure id="dg-post-hero-image" class="dg-post-hero-image"><img src="{rel}" alt="{title.replace("&","&amp;").replace(chr(34),"&quot;")}" width="1080" height="1080" loading="eager" fetchpriority="high" decoding="async"></figure>'
  # 내부 대표 썸네일은 목록/검색용 메타와 별개로 개별글 제목 아래에 항상 1개 표시한다.
  hero_style='<style id="dg-post-hero-style">.dg-post-hero-image{display:block!important;width:100%;max-width:550px;margin:24px auto 32px}.dg-post-hero-image img{display:block!important;width:100%;height:auto;border-radius:18px}@media(max-width:600px){.dg-post-hero-image{display:block!important;max-width:100%;margin:18px auto 26px}}</style>'
