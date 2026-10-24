@@ -72,7 +72,13 @@
  const clean=s=>String(s||'').toLowerCase().replace(/\s+/g,'');
  const open=()=>{list.classList.add('is-open');document.body.classList.add('dg-search-open');input.setAttribute('aria-expanded','true');toggle.textContent='▲'};
  const close=()=>{list.classList.remove('is-open');document.body.classList.remove('dg-search-open');input.setAttribute('aria-expanded','false');toggle.textContent='▼'};
- const base=()=>[...(cfg.hub&&!onHub?[cfg.hub]:[]),...cfg.fixed,...posts];
+ const relatedCategory=cfg.categories[0];
+ const archiveLinks=[
+  {title:cfg.label+' 전체글 보기',href:'/posts.html?category='+encodeURIComponent(relatedCategory)+'#legal-post-list',type:'글 목록'},
+  {title:cfg.label+' 핵심정보 보기',href:'/posts-pages/core-1.html?category='+encodeURIComponent(relatedCategory)+'#legal-post-list',type:'글 목록'},
+  {title:cfg.label+' 처리사례 보기',href:'/posts-pages/case-1.html?category='+encodeURIComponent(relatedCategory)+'#legal-post-list',type:'글 목록'}
+ ];
+ const base=()=>[...archiveLinks,...(cfg.hub&&!onHub?[cfg.hub]:[]),...cfg.fixed,...posts];
  function score(x,key){if(!key)return 0;const t=clean(x.title),k=clean(x.keywords),s=clean(x.summary);let n=0;if(t===key)n+=120;else if(t.startsWith(key))n+=90;else if(t.includes(key))n+=70;if(k.includes(key))n+=35;if(s.includes(key))n+=15;if(x.type==='핵심안내')n+=20;return n}
  function render(query=''){
   const key=clean(query);let items=base();
