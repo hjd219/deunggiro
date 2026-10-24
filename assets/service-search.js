@@ -72,25 +72,67 @@
  const clean=s=>String(s||'').toLowerCase().replace(/\s+/g,'');
  const open=()=>{list.classList.add('is-open');document.body.classList.add('dg-search-open');input.setAttribute('aria-expanded','true');toggle.textContent='▲'};
  const close=()=>{list.classList.remove('is-open');document.body.classList.remove('dg-search-open');input.setAttribute('aria-expanded','false');toggle.textContent='▼'};
- const relatedCategory=cfg.categories[0];
- const archiveLinks=[
-  {title:cfg.label+' 전체글 보기',href:'/posts.html?category='+encodeURIComponent(relatedCategory)+'#legal-post-list',type:'글 목록'},
-  {title:cfg.label+' 핵심정보 보기',href:'/posts-pages/core-1.html?category='+encodeURIComponent(relatedCategory)+'#legal-post-list',type:'글 목록'},
-  {title:cfg.label+' 처리사례 보기',href:'/posts-pages/case-1.html?category='+encodeURIComponent(relatedCategory)+'#legal-post-list',type:'글 목록'}
+ // Keep the same editorial "핵심정보" classification as the blog archive.
+ const coreHubs=new Set(["inheritance-registration-acquisition-tax-incheon-procedure-doc-v9aban","naver-224283775649","naver-224345975183","inheritance-renunciation-incheon-procedure-documents-1ifftk","naver-224239766795","naver-224296496196","naver-224239702465","corporate-incheon-documents-1-158nty","naver-224238290942","naver-224230217554","naver-224235350490","sale-real-estate-guide-bvcdri","naver-224251796514","naver-222799458489","name-change-incheon-procedure-guide-documents-4lfyb2","naver-224254351514","naver-224252957670","inheritance-partition-registration-guide-documents-cwfz1z","naver-224370002913","renunciation-naver-224441320334","naver-221988345481","naver-224337817397","naver-224334201752","naver-224334189167","naver-224242416419","naver-224374856351","naver-224373920248","naver-224373658569","naver-224377212131","inheritance-incheon-29s7ds","naver-224398163756","naver-224399413497","inheritance-naver-224440231991"]);
+ const isCase=p=>p.is_case===true||/사례\s*[.!?。…]*$/.test(String(p.title||'').trim());
+ const pinned=()=>[...(cfg.hub&&!onHub?[cfg.hub]:[]),...cfg.fixed];
+ // On opening the dropdown, show a mix of core guides, cases and recent articles.
+ // A typed search instead checks every article in the chosen practice category.
+ const featuredPosts=()=>[
+  ...posts.filter(p=>p.type==='핵심정보').slice(0,3),
+  ...posts.filter(p=>p.type==='처리사례').slice(0,3),
+  ...posts.filter(p=>p.type==='법률정보')
  ];
- const base=()=>[...archiveLinks,...(cfg.hub&&!onHub?[cfg.hub]:[]),...cfg.fixed,...posts];
- function score(x,key){if(!key)return 0;const t=clean(x.title),k=clean(x.keywords),s=clean(x.summary);let n=0;if(t===key)n+=120;else if(t.startsWith(key))n+=90;else if(t.includes(key))n+=70;if(k.includes(key))n+=35;if(s.includes(key))n+=15;if(x.type==='핵심안내')n+=20;return n}
+ const base=query=>query?[...pinned(),...posts]:[...pinned(),...featuredPosts()];
+ function score(x,key,terms){
+  const title=clean(x.title),words=clean(x.keywords),summary=clean(x.summary);
+  let n=0;
+  if(title===key)n+=160;else if(title.startsWith(key))n+=115;else if(title.includes(key))n+=95;
+  for(const term of terms){
+   if(title.includes(term))n+=45;
+   if(words.includes(term))n+=20;
+   if(summary.includes(term))n+=10;
+  }
+  if(x.type==='핵심정보'||x.type==='핵심안내')n+=8;
+  return n;
+ }
  function render(query=''){
-  const key=clean(query);let items=base();
-  if(key)items=items.filter(x=>clean(x.title+' '+(x.summary||'')+' '+(x.keywords||'')).includes(key)).map((x,i)=>({...x,_score:score(x,key),_order:i})).sort((a,b)=>b._score-a._score||a._order-b._order);
+  const key=clean(query),terms=String(query||'').toLowerCase().trim().split(/\s+/).map(clean).filter(Boolean);
+  let items=base(key);
+  if(key)items=items.filter(x=>{
+   const hay=clean(x.title+' '+(x.summary||'')+' '+(x.keywords||''));
+   return hay.includes(key)||terms.every(term=>hay.includes(term));
+  }).map((x,i)=>({...x,_score:score(x,key,terms),_order:i})).sort((a,b)=>b._score-a._score||a._order-b._order);
+  const total=items.length;
   items=items.slice(0,18);list.innerHTML='';
-  status.textContent=key?'검색 결과 '+items.length+'개':cfg.label+' 관련 항목 '+items.length+'개';status.classList.add('is-active');
+  status.textContent=key?'검색 결과 '+total+'개':cfg.label+' 관련 항목 '+total+'개';status.classList.add('is-active');
   if(!items.length){const li=document.createElement('li');li.className='inheritance-empty';li.textContent=cfg.label+' 관련 검색 결과가 없습니다.';list.appendChild(li);open();return}
-  items.forEach(x=>{const li=document.createElement('li'),a=document.createElement('a'),tag=document.createElement('span');a.href=x.href;tag.className='result-type';tag.textContent=x.type||'관련 법률정보';a.appendChild(tag);a.appendChild(document.createTextNode(x.title));li.appendChild(a);list.appendChild(li)});open()
+  let lastGroup='';
+  items.forEach(x=>{
+   const group=x.fromPost?'posts':'fixed';
+   if(group==='posts'&&lastGroup!=='posts'){
+    const heading=document.createElement('li');
+    heading.textContent='관련 법률정보';
+    heading.setAttribute('role','presentation');
+    heading.style.cssText='padding:8px 12px 3px;color:#667982;font-size:12px;font-weight:800;border-top:1px solid #e6eef2';
+    list.appendChild(heading);
+   }
+   lastGroup=group;
+   const li=document.createElement('li'),a=document.createElement('a'),tag=document.createElement('span');
+   a.href=x.href;tag.className='result-type';tag.textContent=x.type||'법률정보';
+   a.appendChild(tag);a.appendChild(document.createTextNode(x.title));
+   li.appendChild(a);list.appendChild(li);
+  });
+  open();
  }
  fetch('/data/posts.json?v='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():[]).then(data=>{
-  posts=(Array.isArray(data)?data:[]).filter(p=>p&&p.slug&&cfg.categories.includes(p.category)).map(p=>({title:p.title,summary:p.summary,keywords:p.keywords,href:'/posts/'+encodeURIComponent(String(p.slug).replace('.html',''))+'.html',type:'관련 법률정보'})).filter(p=>!fixedHrefs.has(p.href));
-  if(document.activeElement===input||input.value)render(input.value)
+  const seen=new Set();
+  posts=(Array.isArray(data)?data:[]).filter(p=>p&&p.slug&&cfg.categories.includes(p.category)).map(p=>{
+   const slug=String(p.slug).replace(/\.html$/,'');
+   const type=coreHubs.has(slug)?'핵심정보':isCase(p)?'처리사례':'법률정보';
+   return {title:p.title,summary:p.summary,keywords:p.keywords,href:'/posts/'+encodeURIComponent(slug)+'.html',type,fromPost:true};
+  }).filter(p=>{if(fixedHrefs.has(p.href)||seen.has(p.href))return false;seen.add(p.href);return true});
+  if(document.activeElement===input||input.value||list.classList.contains('is-open'))render(input.value);
  }).catch(()=>{});
  toggle.addEventListener('click',e=>{e.stopPropagation();list.classList.contains('is-open')?close():render(input.value)});
  input.addEventListener('focus',()=>render(input.value));input.addEventListener('click',()=>render(input.value));input.addEventListener('input',()=>render(input.value));
