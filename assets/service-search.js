@@ -99,13 +99,17 @@
  function render(query=''){
   const key=clean(query),terms=String(query||'').toLowerCase().trim().split(/\s+/).map(clean).filter(Boolean);
   let items=base(key);
-  if(key)items=items.filter(x=>{
-   const hay=clean(x.title+' '+(x.summary||'')+' '+(x.keywords||''));
-   return hay.includes(key)||terms.every(term=>hay.includes(term));
-  }).map((x,i)=>({...x,_score:score(x,key,terms),_order:i})).sort((a,b)=>b._score-a._score||a._order-b._order);
+  if(key){
+   const hay=x=>clean(x.title+' '+(x.summary||'')+' '+(x.keywords||''));
+   let matches=items.filter(x=>hay(x).includes(key)||terms.every(term=>hay(x).includes(term)));
+   // For multiword searches with no exact all-term match, show related matches.
+   if(!matches.length&&terms.length>1)matches=items.filter(x=>terms.some(term=>hay(x).includes(term)));
+   items=matches.map((x,i)=>({...x,_score:score(x,key,terms),_order:i}))
+    .sort((a,b)=>Number(!!a.fromPost)-Number(!!b.fromPost)||b._score-a._score||a._order-b._order);
+  }
   const total=items.length;
   items=items.slice(0,18);list.innerHTML='';
-  status.textContent=key?'검색 결과 '+total+'개':cfg.label+' 관련 항목 '+total+'개';status.classList.add('is-active');
+  status.textContent=(key?'검색 결과 ':cfg.label+' 관련 항목 ')+total+'개'+(total>18?' · 상위 18개 표시':'');status.classList.add('is-active');
   if(!items.length){const li=document.createElement('li');li.className='inheritance-empty';li.textContent=cfg.label+' 관련 검색 결과가 없습니다.';list.appendChild(li);open();return}
   let lastGroup='';
   items.forEach(x=>{
