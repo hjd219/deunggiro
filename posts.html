@@ -158,6 +158,8 @@ body.dg-posts-ready>.legal-page-bg{padding-top:150px!important}
 </style><style id="legal-content-mode-tabs">
 .legal-page-bg .category-tabs{display:flex!important;gap:24px!important;width:100%;margin:0 0 14px;padding:0;border-bottom:1px solid #dce7ec;flex-wrap:nowrap!important;overflow-x:auto!important;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .legal-page-bg .category-tabs::-webkit-scrollbar{display:none}
+.legal-page-bg #cats{scroll-margin-top:110px}
+@media(max-width:800px){.legal-page-bg #cats{scroll-margin-top:92px}}
 .legal-page-bg .category-tabs .chip{position:relative;flex:0 0 auto!important;padding:11px 1px 13px!important;border:0!important;border-radius:0!important;background:transparent!important;color:#667982!important;font-size:15px!important;font-weight:800!important;white-space:nowrap}
 .legal-page-bg .category-tabs .chip.active,.legal-page-bg .category-tabs .chip:hover{color:#168dca!important}
 .legal-page-bg .category-tabs .chip.active:after{content:"";position:absolute;bottom:-1px;left:0;right:0;height:3px;background:#168dca}
@@ -248,7 +250,14 @@ function setMode(m,btn){
 function drawCats(){
   const cs=['상속등기','상속포기·한정승인','법인등기','부동산등기','가사','기타'];
   if(!cs.includes(active))active='전체';
-  document.getElementById('cats').innerHTML=cs.map(c=>`<a class="chip ${c===active?'active':''}" href="${esc(viewHref(1,mode,c))}" ${c===active?'aria-current="true"':''} onclick="setCat('${esc(c)}',this);return false">${esc(shortCat(c))}</a>`).join('');
+  const cats=document.getElementById('cats');
+  cats.innerHTML=cs.map(c=>`<a class="chip ${c===active?'active':''}" href="${esc(viewHref(1,mode,c))}" ${c===active?'aria-current="true"':''} onclick="setCat('${esc(c)}',this);return false">${esc(shortCat(c))}</a>`).join('');
+  // Keep the selected practice tab visible on narrow mobile screens.
+  const selected=cats.querySelector('.chip.active');
+  if(selected&&cats.scrollWidth>cats.clientWidth){
+    const left=selected.getBoundingClientRect().left-cats.getBoundingClientRect().left+cats.scrollLeft;
+    cats.scrollLeft=Math.max(0,left-(cats.clientWidth-selected.offsetWidth)/2);
+  }
 }
 async function init(){
   try{
