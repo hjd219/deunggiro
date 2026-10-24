@@ -225,7 +225,7 @@ function viewHref(n=1,m=mode,c=active){
   }
   return path+(params.toString()?'?'+params.toString():'')+'#legal-post-list';
 }
-function pushViewUrl(){history.pushState(null,'',viewHref(page))}
+function pushViewUrl(){history.pushState(null,'',viewHref(page).split('#')[0])}
 function readViewUrl(){
   const params=new URLSearchParams(location.search);
   const match=location.pathname.match(/^\/posts-pages\/(info|core|case)-([1-9]\d*)\.html$/);
@@ -238,8 +238,6 @@ function readViewUrl(){
   document.getElementById('legal-desc').textContent=modeDesc();
 }
 function setMode(m,btn){
-  const target=viewHref(1,m,active);
-  if(new URL(target,location.href).pathname!==location.pathname){location.assign(target);return}
   mode=m;page=1;
   document.querySelectorAll('.mode-tab').forEach(x=>x.classList.toggle('active',x.dataset.mode===m));
   document.getElementById('legal-desc').textContent=modeDesc();
@@ -257,8 +255,6 @@ async function init(){
   }catch(e){console.warn('posts.json load failed; static HTML archive remains available',e)}
 }
 function setCat(c,btn){
-  const target=viewHref(1,'info',c);
-  if(new URL(target,location.href).pathname!==location.pathname){location.assign(target);return}
   active=c;mode='info';page=1;
   document.getElementById('q').value='';
   document.querySelectorAll('.mode-tab').forEach(x=>x.classList.toggle('active',x.dataset.mode==='info'));
