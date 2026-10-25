@@ -13,3 +13,10 @@ html.dg-scroll-fallback header{position:absolute!important;transform:none!import
 html.dg-scroll-fallback .v53-stage{height:auto!important;pointer-events:auto!important}
 html.dg-scroll-fallback .v53-window{position:relative!important;inset:auto!important;height:auto!important;overflow:visible!important;transform:none!important;pointer-events:auto!important}
 html.dg-scroll-fallback .v53-track{position:relative!important;inset:auto!important;transform:none!important;pointer-events:auto!important}
+
+/* DG_PROGRESSIVE_SCROLL_20261025: Natural DOM flow until the scroll controller initializes; preserves animation when active. */
+html.dg-scroll-layout:not(.dg-scroll-active) .hero{position:relative!important;transform:none!important}
+html.dg-scroll-layout:not(.dg-scroll-active) header{position:absolute!important;transform:none!important}
+html.dg-scroll-layout:not(.dg-scroll-active) .v53-stage{height:auto!important;pointer-events:auto!important}
+html.dg-scroll-layout:not(.dg-scroll-active) .v53-window{position:relative!important;inset:auto!important;height:auto!important;overflow:visible!important;transform:none!important;pointer-events:auto!important}
+html.dg-scroll-layout:not(.dg-scroll-active) .v53-track{position:relative!important;inset:auto!important;transform:none!important;pointer-events:auto!important}
