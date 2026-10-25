@@ -31,5 +31,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(isIndividualPost){
     loadScript('/assets/analytics.js?v=20261018-1').catch(()=>{});
     loadScript('/assets/blog-view-tracker.js?v=20261018-1').catch(()=>{});
+    loadScript('/assets/feedback-v1.js?v=20261025-1').catch(error=>console.warn('[DGFeedback] script unavailable',error));
   }
 });
