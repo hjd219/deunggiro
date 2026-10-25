@@ -15,7 +15,7 @@
     if (document.querySelector('link[data-dg-feedback-style]')) return;
     var link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = '/assets/feedback-v1.css?v=20261025-1';
+    link.href = '/assets/feedback-v1.css?v=20261025-2';
     link.setAttribute('data-dg-feedback-style', '1');
     document.head.appendChild(link);
   }
@@ -119,6 +119,7 @@
     box.appendChild(choices);
     box.appendChild(status);
     paint(existing);
+    if (!existing) status.textContent = '서비스 개선을 위한 간단한 평가입니다.';
     return box;
   }
   function onArticle() {
@@ -132,9 +133,14 @@
     var id = voteId('post', slug);
     if (!id) return false;
     var box = widget('post', id, '이 글이 도움이 되셨나요?');
-    var related = article.querySelector('.dg-topic-cta,.seo-related-posts,.related');
-    if (related && related.parentNode) related.parentNode.insertBefore(box, related);
-    else article.appendChild(box);
+    // Place directly after the legal article text, before core links, related posts or consultation CTAs.
+    var articleBody = article.querySelector('.article-body');
+    if (articleBody && articleBody.parentNode) articleBody.insertAdjacentElement('afterend', box);
+    else {
+      var related = article.querySelector('.seo-core-link,.dg-topic-cta,.seo-related-posts,.related');
+      if (related && related.parentNode) related.parentNode.insertBefore(box, related);
+      else article.appendChild(box);
+    }
     return true;
   }
   function onCalculator() {
