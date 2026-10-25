@@ -1,15 +1,15 @@
-/* DG_FEEDBACK_V1: compact private-count helpfulness ratings */
-.dg-feedback{box-sizing:border-box;width:100%;max-width:100%;margin:22px 0 8px;padding:18px 18px 14px;border:1px solid #d5e6ee;border-left:3px solid #36a9e1;border-radius:10px;background:#f8fcfe;color:#173b4a;box-shadow:none;line-height:1.5;clear:both}
-.dg-feedback *{box-sizing:border-box}
-.dg-feedback-title{margin:0 0 11px!important;font-size:15px!important;line-height:1.55!important;font-weight:850!important;letter-spacing:-.015em!important;color:#173b4a!important;text-align:left!important}
-.dg-feedback-choices{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:9px}
-.dg-feedback .dg-feedback-btn,#dg-inherit-agreement .dg-feedback .dg-feedback-btn,#dg-divorce-chapter .dg-feedback .dg-feedback-btn{display:flex!important;gap:7px;align-items:center;justify-content:center;width:100%;min-width:0;min-height:42px;padding:9px 5px!important;border:1px solid #bcdbe8!important;border-radius:8px!important;background:#fff!important;color:#23617b!important;font-family:inherit!important;font-size:13px!important;font-weight:800!important;line-height:1.3!important;text-align:center;cursor:pointer;transition:background .15s ease,border-color .15s ease}
-.dg-feedback .dg-feedback-btn:hover,.dg-feedback .dg-feedback-btn:focus-visible{background:#e9f6fc!important;border-color:#36a9e1!important}
-.dg-feedback .dg-feedback-btn:disabled{cursor:default;opacity:.72}
-.dg-feedback .dg-feedback-btn[aria-pressed="true"]{border-color:#1693d3!important;background:#e2f5ff!important;color:#105985!important;opacity:1}
-.dg-feedback-note{min-height:0;margin:8px 0 0!important;font-size:11px!important;color:#607886!important;line-height:1.45!important}
-.dg-feedback-note:empty{display:none}
-.dg-feedback[data-dg-feedback-kind="post"]{margin:26px 0 20px}
+/* DG_FEEDBACK_V2: compact preview-style rating card for articles, calculators and writers. */
+.dg-feedback{display:block!important;box-sizing:border-box;width:100%;max-width:100%;margin:18px 0 12px;padding:19px 20px 15px;border:1px solid #d9e5ec;border-radius:14px;background:#fff;color:#173b4a;box-shadow:none;line-height:1.5;clear:both}
 .dg-feedback[hidden]{display:none!important}
-@media(max-width:600px){.dg-feedback{margin:18px 0 9px;padding:14px 12px 12px}.dg-feedback-title{font-size:14px!important}.dg-feedback .dg-feedback-btn,#dg-inherit-agreement .dg-feedback .dg-feedback-btn,#dg-divorce-chapter .dg-feedback .dg-feedback-btn{font-size:12px!important;min-height:44px;padding:9px 3px!important}}
+.dg-feedback *{box-sizing:border-box}
+.dg-feedback-title{margin:0 0 13px!important;color:#173b4a!important;font:800 15px/1.5 -apple-system,BlinkMacSystemFont,"Noto Sans KR","Malgun Gothic",sans-serif!important;letter-spacing:-.018em!important;text-align:center!important;word-break:keep-all}
+.dg-feedback-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.dg-feedback .dg-feedback-btn,#dg-inherit-agreement .dg-feedback .dg-feedback-btn,#dg-divorce-chapter .dg-feedback .dg-feedback-btn{display:flex!important;justify-content:center;align-items:center;gap:7px;min-width:0;width:100%;min-height:44px;padding:9px 7px!important;border:1px solid #cbdde6!important;border-radius:9px!important;background:#fff!important;box-shadow:none!important;color:#23617b!important;font:750 13px/1.35 -apple-system,BlinkMacSystemFont,"Noto Sans KR","Malgun Gothic",sans-serif!important;white-space:normal;text-align:center;word-break:keep-all;cursor:pointer;transition:border-color .15s ease,background .15s ease}
+.dg-feedback .dg-feedback-btn:hover,.dg-feedback .dg-feedback-btn:focus-visible{border-color:#36a9e1!important;background:#f1faff!important;outline-offset:2px}
+.dg-feedback .dg-feedback-btn:disabled{cursor:default;opacity:.7}
+.dg-feedback .dg-feedback-btn[aria-pressed="true"]{border-color:#36a9e1!important;background:#e8f7ff!important;color:#106595!important;opacity:1}
+.dg-feedback-note{min-height:0;margin:10px 0 0!important;color:#697e89!important;font:400 11.5px/1.5 -apple-system,BlinkMacSystemFont,"Noto Sans KR","Malgun Gothic",sans-serif!important;text-align:center!important;word-break:keep-all}
+.dg-feedback-note:empty{display:none}
+.dg-feedback[data-dg-feedback-kind="post"]{margin:16px 0 18px!important}
+@media(max-width:600px){.dg-feedback{margin:16px 0 12px;padding:16px 12px 13px;border-radius:12px}.dg-feedback-title{margin-bottom:11px!important;font-size:14px!important}.dg-feedback-choices{gap:8px}.dg-feedback .dg-feedback-btn,#dg-inherit-agreement .dg-feedback .dg-feedback-btn,#dg-divorce-chapter .dg-feedback .dg-feedback-btn{padding:8px 3px!important;font-size:12px!important;min-height:44px}.dg-feedback[data-dg-feedback-kind="post"]{margin:14px 0 16px!important}}
 @media print{.dg-feedback{display:none!important}}
