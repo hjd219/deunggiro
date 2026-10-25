@@ -77,11 +77,16 @@
     status.setAttribute('role', 'status');
     status.setAttribute('aria-live', 'polite');
     var buttons = {};
-    [['yes', '👍 도움됐어요'], ['no', '👎 아쉬워요']].forEach(function (item) {
+    // Small outlined icons instead of emoji; match the rest of the site's clean blue design.
+    var icons = {
+      yes: '<path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H5a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 3a3.13 3.13 0 0 1 3 2.88Z"/>',
+      no: '<path d="M17 14V2"/><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H19a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 21a3.13 3.13 0 0 1-3-2.88Z"/>'
+    };
+    [['yes', '도움됐어요'], ['no', '아쉬워요']].forEach(function (item) {
       var btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'dg-feedback-btn';
-      btn.textContent = item[1];
+      btn.innerHTML = '<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:block;flex:none">' + icons[item[0]] + '</svg><span>' + item[1] + '</span>';
       btn.setAttribute('aria-pressed', 'false');
       btn.setAttribute('aria-label', item[1]);
       buttons[item[0]] = btn;
