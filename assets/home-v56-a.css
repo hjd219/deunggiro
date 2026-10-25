@@ -8,7 +8,7 @@
 
 /* DG_TEXT_CLARITY_20261025: Improve low-contrast muted text without changing layout, accents or hero copy. */
 :root{--mut:#445864}
-.intro p,.person-copy p{color:#445864!important}
+.person-copy p{color:#445864!important}
 .story-note,.story-cases .cases-head>p,.story-cases .cases-list p,
 .simple-docs li,.story-qa details p,.inheritance-tool-card p,
 .aftercare-lead,.aftercare-card p,.ren-calculator-body>p,
