@@ -46,3 +46,9 @@ body.article-v2 .article .post-meta .dg-author-byline{font-size:9px!important;le
 body.article-v2 .seo-calculator-inline{margin:12px 0 22px!important}
 body.article-v2 .seo-calculator-inline a{display:inline-flex;align-items:center;gap:6px;color:#168dca!important;font-size:15px;font-weight:700;line-height:1.5;text-decoration:underline;text-underline-offset:4px}
 body.article-v2 .seo-calculator-inline a:hover,body.article-v2 .seo-calculator-inline a:focus-visible{color:#076d9e!important}
+
+/* DG_TEXT_CLARITY_20261025: High-contrast article dates, summaries and muted author information. */
+body.article-v2 .post-meta{color:#536470!important}
+body.article-v2 .article>.desc{color:#445864!important}
+body.article-v2 .article .post-meta .dg-author-byline{color:#445864!important}
+body.article-v2 .dg-post-breadcrumb span{color:#536470!important}
