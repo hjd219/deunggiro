@@ -5,3 +5,25 @@
 
 /* Keep mobile poster and video on the exact same first-paint geometry. */
 @media(max-width:800px){html.dg-mobile-firstpaint .hero video{object-fit:cover;object-position:center center}}
+
+/* DG_TEXT_CLARITY_20261025: Improve low-contrast muted text without changing layout, accents or hero copy. */
+:root{--mut:#445864}
+.intro p,.person-copy p{color:#445864!important}
+.story-note,.story-cases .cases-head>p,.story-cases .cases-list p,
+.simple-docs li,.story-qa details p,.inheritance-tool-card p,
+.aftercare-lead,.aftercare-card p,.ren-calculator-body>p,
+.ren-calculator-item>strong,.ren-calculator-item>p,
+#dg-inherit-agreement .dg-intro,#dg-inherit-agreement .dg-agr-counter,
+#dg-inherit-agreement .dg-agr-note{color:#445864!important}
+.story-index.flow-circled small,
+.dg-service-blog .dg-blog-desc,.dg-service-blog .dg-blog-status,
+.dg-service-blog .dg-blog-note,.dg-service-blog .dg-blog-card time,
+.legal-page-bg .post-meta,.legal-page-bg .post-card p,
+.legal-page-bg .inheritance-empty{color:#536470!important}
+.dg-service-blog .dg-blog-card time{font-size:11.5px!important}
+.dg-service-blog .dg-blog-note{font-size:12px!important}
+@media(max-width:800px){
+ .simple-docs li{font-size:14px!important}
+ .story-note,.story-cases .cases-list p{font-size:12.5px!important}
+ .dg-service-blog .dg-blog-desc{font-size:13px!important}
+}
