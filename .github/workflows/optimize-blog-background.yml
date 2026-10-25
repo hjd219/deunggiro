@@ -1,0 +1,68 @@
+name: Optimize blog background photograph
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/optimize-blog-background.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  optimize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install image encoder
+        run: python -m pip install "Pillow==11.3.0"
+      - name: Compress original Songdo photo and update blog pages
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image, ImageOps
+
+          original = Path('images/(260623)송도국제도시(02).jpg')
+          optimized = Path('images/blog-songdo-background.webp')
+          if not original.is_file():
+              raise SystemExit('Original Songdo blog photo missing')
+          with Image.open(original) as photo:
+              photo = ImageOps.exif_transpose(photo).convert('RGB')
+              if photo.width > 2400:
+                  height = round(photo.height * 2400 / photo.width)
+                  photo = photo.resize((2400, height), Image.Resampling.LANCZOS)
+              photo.save(optimized, 'WEBP', quality=82, method=6)
+          before = original.stat().st_size
+          after = optimized.stat().st_size
+          if after >= before:
+              raise SystemExit('Compressed image was not smaller than original')
+          old_path = '/images/(260623)송도국제도시(02).jpg'
+          new_path = '/images/blog-songdo-background.webp'
+          changed = []
+          for html in [Path('posts.html'), *Path('posts-pages').glob('*.html')]:
+              content = html.read_text('utf-8')
+              if old_path not in content:
+                  continue
+              html.write_text(content.replace(old_path, new_path), encoding='utf-8')
+              changed.append(str(html))
+          if not changed or 'posts.html' not in changed:
+              raise SystemExit('Expected blog pages were not updated')
+          print(f'Blog image: {before:,} -> {after:,} bytes ({(1-after/before)*100:.1f}% smaller)')
+          print('Updated blog HTML pages:', len(changed))
+          PY
+      - name: Commit optimized photo and updated HTML
+        shell: bash
+        run: |
+          git add -- images/blog-songdo-background.webp posts.html posts-pages/
+          if git diff --cached --quiet; then
+            echo "Optimized background already current."
+            exit 0
+          fi
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "Optimize Songdo blog photo from original 15MB JPEG to WebP"
+          git push origin HEAD:main
