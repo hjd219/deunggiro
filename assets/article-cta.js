@@ -44,7 +44,8 @@
     const article=document.querySelector('.article');
     if(!article)return;
     removeLegacyDuplicateActions(article);
-    if(document.querySelector('.dg-topic-cta'))return;
+    if(article.dataset.dgTopicCtaInit==='1'||document.querySelector('.dg-topic-cta'))return;
+    article.dataset.dgTopicCtaInit='1';
     const match=path.match(/\/posts\/([^/]+)\.html$/i);if(!match)return;
     let category='법률정보';
     try{
