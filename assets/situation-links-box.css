@@ -1,0 +1,28 @@
+/* DG_SITUATION_LINK_BOX_20261026
+   Shared thin bordered cards for the situation-navigation links only.
+   Matches the lower blog cards' #d8e7ee / #168dca border palette.
+   No lift, shadow, scale, or layout-shifting hover effects. */
+.dg-situation-links > a{
+  position:relative;
+  border-bottom-color:transparent!important;
+  border-radius:10px;
+  margin-bottom:8px;
+  background:transparent!important;
+  color:#173b4a!important;
+  -webkit-tap-highlight-color:transparent;
+}
+.dg-situation-links > a::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border:1px solid #d8e7ee;
+  border-radius:10px;
+  pointer-events:none;
+  transition:border-color .15s ease;
+}
+.dg-situation-links > a:hover::after,
+.dg-situation-links > a:focus-visible::after,
+.dg-situation-links > a:active::after{
+  border-color:#168dca;
+}
+.dg-situation-links > a:focus-visible{outline:2px solid #168dca;outline-offset:2px}
