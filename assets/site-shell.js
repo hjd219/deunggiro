@@ -32,5 +32,13 @@ document.addEventListener('DOMContentLoaded',()=>{
     loadScript('/assets/analytics.js?v=20261018-1').catch(()=>{});
     loadScript('/assets/blog-view-tracker.js?v=20261018-1').catch(()=>{});
     loadScript('/assets/feedback-v1.js?v=20261025-3').catch(error=>console.warn('[DGFeedback] script unavailable',error));
+    // Some older and newly imported articles omit article-cta.js entirely.
+    // Reuse the script when it is already in the HTML to avoid duplicate boxes.
+    const hasArticleCtaScript=Array.from(document.scripts).some(script=>
+      /(?:^|\/)article-cta\.js(?:[?#]|$)/.test(script.getAttribute('src')||''));
+    if(!hasArticleCtaScript){
+      loadScript('/assets/article-cta.js?v=20261026-all-posts1').catch(error=>
+        console.warn('[DGArticleCTA] script unavailable',error));
+    }
   }
 });
