@@ -26,3 +26,16 @@
   border-color:#168dca;
 }
 .dg-situation-links > a:focus-visible{outline:2px solid #168dca;outline-offset:2px}
+
+/* Consistent inner spacing for numbered situation cards across pages. */
+.dg-situation-links > a{
+  padding-left:16px!important;
+  padding-right:16px!important;
+  column-gap:11px;
+}
+@media(max-width:480px){
+  .dg-situation-links > a{
+    padding-left:14px!important;
+    padding-right:14px!important;
+  }
+}
