@@ -39,3 +39,9 @@
     padding-right:14px!important;
   }
 }
+
+/* Remove only the divider directly above the numbered situation cards. */
+.story-cases.dg-services .cases-list.dg-situation-links,
+.story-inheritance-cases .cases-list.dg-situation-links{
+  border-top:0!important;
+}
