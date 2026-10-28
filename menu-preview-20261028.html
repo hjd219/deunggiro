@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>등기로 | 상단 메뉴 실제 화면 미리보기</title>
+<style>html,body{margin:0;height:100%;font-family:system-ui,"Malgun Gothic",sans-serif}#bar{height:43px;background:#0e3557;color:#fff;display:flex;align-items:center;justify-content:center;gap:18px;font-size:12px;padding:0 12px;box-sizing:border-box}#bar strong{font-weight:800}#bar a{color:#c3e8ff}iframe{width:100%;height:calc(100vh - 43px);border:0;display:block}#state{position:fixed;right:14px;bottom:14px;background:#12334e;color:white;padding:9px 14px;border-radius:10px;font-size:12px;z-index:20}@media(max-width:600px){#bar{font-size:10px;gap:6px;justify-content:space-between}}</style></head><body>
+<div id="bar"><strong>등기로 메뉴 실제 화면 미리보기</strong><span>상단은 가로 · 하위 메뉴는 세로</span><a href="/" target="_blank" rel="noopener">기존 사이트</a></div>
+<iframe id="site" src="/" title="등기로 실제 홈페이지 화면"></iframe><div id="state">미리보기 전용 · 운영 메뉴 변경 없음</div>
+<script>
+(function(){
+ const f=document.getElementById('site'),base='/';
+ const groups=[
+ ['상속등기','/inheritance.html',[
+ ['상속등기 종합안내','/inheritance.html'],['상속재산분할','/inheritance-division.html'],['연락두절 상속인','/inheritance-missing-heir.html'],['해외거주 상속인','/inheritance-overseas-heir.html'],['미성년자 상속인','/inheritance-minor-heir.html'],['대습상속','/inheritance-substitute-succession.html'],['상속재산분할협의서 작성','/inheritance.html#dg-inherit-agreement'],['상속등기비용 계산기','/acquisition-calculator.html?mode=inherit']]],
+ ['상속포기·한정승인','/renunciation.html',[
+ ['상속포기 종합안내','/renunciation.html'],['상속포기와 한정승인','/renunciation.html'],['특별한정승인','/renunciation.html'],['후순위 상속인','/renunciation.html'],['사망보험금·해지환급금','/renunciation-death-insurance.html'],['상속포기 후 절차','/renunciation-after-procedure.html'],['한정승인 후 청산절차','/renunciation-limited-acceptance-liquidation.html'],['상속포기·한정승인 비용 계산기','/renunciation-calculator.html']]],
+ ['법인등기','/corporate.html',[
+ ['법인등기 종합안내','/corporate.html'],['법인설립','/corporate.html'],['임원·대표이사 변경','/corporate.html'],['본점이전','/corporate.html'],['증자등기','/corporate.html'],['회사계속·청산','/corporate.html'],['법인등기 비용 계산기','/corporate-calculator.html']]],
+ ['부동산등기','/realestate.html',[
+ ['부동산등기 종합안내','/realestate.html'],['매매등기','/realestate.html'],['증여등기','/realestate.html'],['근저당권 등기','/realestate.html'],['신탁등기','/realestate.html'],['이혼 재산분할','/realestate.html'],['취득세 계산기','/acquisition-calculator.html']]],
+ ['가사','/family.html',[
+ ['가사 종합안내','/family.html'],['협의이혼','/family.html'],['미성년후견','/family.html'],['개명·성본변경','/family.html'],['친생관계','/family.html'],['이혼합의서 작성','/family.html#dg-divorce-chapter']]],
+ ['편의기능','/posts.html',[
+ ['상속 자가진단','/inheritance-self-check.html'],['상속등기비용 계산기','/acquisition-calculator.html?mode=inherit'],['상속포기·한정승인 비용 계산기','/renunciation-calculator.html'],['법인등기 비용 계산기','/corporate-calculator.html'],['취득세 계산기','/acquisition-calculator.html'],['상속재산분할협의서 작성','/inheritance.html#dg-inherit-agreement'],['이혼합의서 작성','/family.html#dg-divorce-chapter'],['블로그·법률정보','/posts.html']]]
+ ];
+ function mount(){
+  let d;try{d=f.contentDocument;}catch(e){return}
+  if(!d)return;
+  const old=d.querySelector('header .menu');if(!old||d.getElementById('dg-preview-nav'))return;
+  const s=d.createElement('style');s.textContent=`
+   header{position:relative!important;z-index:99999!important;overflow:visible!important}
+   header .nav{overflow:visible!important}
+   #dg-preview-nav{display:flex;gap:4px;align-items:center;flex-wrap:nowrap}
+   #dg-preview-nav a,#dg-preview-nav button{font:700 13px system-ui,"Malgun Gothic",sans-serif;color:#263d53;background:transparent;border:0;text-decoration:none;white-space:nowrap;cursor:pointer;border-radius:7px;padding:10px 8px}
+   #dg-preview-nav button:hover,#dg-preview-nav button[aria-expanded=true],#dg-preview-nav a:hover{background:#e9f5fd;color:#087bb5}
+   .dg-preview-group{position:relative}
+   .dg-preview-panel{position:absolute;left:0;top:100%;width:265px;max-height:70vh;overflow-y:auto;background:#fff;border:1px solid #dce9f1;box-shadow:0 16px 38px #17384c35;border-radius:12px;padding:12px;z-index:999999;display:none}
+   .dg-preview-group[data-open=true] .dg-preview-panel{display:block}
+   .dg-preview-panel .dg-preview-label{font-size:12px;color:#5795b8;font-weight:900;padding:7px 10px}
+   .dg-preview-panel a{display:block!important;font-size:12px!important;line-height:1.5!important;padding:11px 10px!important;border-bottom:1px solid #ecf2f6;border-radius:4px!important;color:#253e50!important}
+   .dg-preview-panel a:hover{background:#f0f9ff!important;color:#087db7!important}
+   #dg-preview-mobile{display:none}
+   @media(max-width:950px){#dg-preview-nav{display:none!important}#dg-preview-mobile{display:block!important;margin-left:auto;position:relative}#dg-preview-mobile > button{padding:9px 12px;background:#edf8ff;border:1px solid #cbe5f6;border-radius:9px;color:#176293;font-weight:850}#dg-preview-mobile .dg-preview-panel{position:absolute;left:auto;right:0;top:calc(100% + 8px);width:min(310px,85vw);max-height:75vh;overflow:auto}#dg-preview-mobile[data-open=true] .dg-preview-panel{display:block}#dg-preview-mobile details{border-bottom:1px solid #e6eef5;padding:8px 0}#dg-preview-mobile summary{font-size:13px;font-weight:800;padding:8px;cursor:pointer}#dg-preview-mobile details a{padding:9px 18px!important;font-size:12px!important}}
+   `;d.head.appendChild(s);
+  const nav=d.createElement('nav');nav.id='dg-preview-nav';nav.setAttribute('aria-label','미리보기 상단 업무 메뉴');
+  const home=d.createElement('a');home.href='/';home.textContent='홈';nav.appendChild(home);
+  function close(){nav.querySelectorAll('.dg-preview-group').forEach(g=>{g.dataset.open='false';g.querySelector('button').setAttribute('aria-expanded','false')})}
+  groups.forEach(([name,url,items])=>{
+    const g=d.createElement('div');g.className='dg-preview-group';g.dataset.open='false';
+    const b=d.createElement('button');b.type='button';b.textContent=name+' ▾';b.setAttribute('aria-expanded','false');
+    const panel=d.createElement('div');panel.className='dg-preview-panel';
+    const h=d.createElement('div');h.className='dg-preview-label';h.textContent=name+' 안내';panel.appendChild(h);
+    items.forEach(([t,u])=>{let a=d.createElement('a');a.href=u;a.textContent=t;panel.appendChild(a)});
+    b.addEventListener('click',e=>{e.stopPropagation();let on=g.dataset.open!=='true';close();g.dataset.open=String(on);b.setAttribute('aria-expanded',String(on))});
+    g.addEventListener('mouseenter',()=>{if(d.defaultView.matchMedia('(hover:hover)').matches){close();g.dataset.open='true';b.setAttribute('aria-expanded','true')}});
+    g.append(b,panel);nav.appendChild(g)
+  });
+  d.addEventListener('click',e=>{if(!nav.contains(e.target))close()});
+  old.replaceWith(nav);
+  const m=d.createElement('div');m.id='dg-preview-mobile';m.dataset.open='false';const toggle=d.createElement('button');toggle.textContent='☰ 메뉴';
+  const mp=d.createElement('div');mp.className='dg-preview-panel';
+  const mh=d.createElement('a');mh.textContent='홈';mh.href='/';mp.appendChild(mh);
+  groups.forEach(([name,url,items])=>{const dt=d.createElement('details'),sm=d.createElement('summary');sm.textContent=name;dt.appendChild(sm);items.forEach(([t,u])=>{const a=d.createElement('a');a.href=u;a.textContent=t;dt.appendChild(a)});mp.appendChild(dt)});
+  toggle.onclick=()=>{m.dataset.open=String(m.dataset.open!=='true')};m.append(toggle,mp);nav.parentNode.appendChild(m);
+ }
+ f.addEventListener('load',()=>{mount();setTimeout(mount,500);setTimeout(mount,1800)});
+})();
+</script></body></html>
