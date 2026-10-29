@@ -27,7 +27,7 @@ body>header .nav{overflow:visible!important}
 .dg-unified-mobile details a{display:block;padding:9px 14px!important;font-size:13px;color:#263c4e;text-decoration:none}
 .dg-unified-mobile details a:hover{background:#eaf6ff;color:#087db7}
 `;document.head.appendChild(style);
-const nav=document.querySelector('body>header nav.menu');if(nav){
+const nav=document.querySelector('body>header nav.menu');if(nav && window.matchMedia('(min-width:951px)').matches){
  const root=document.createElement('nav');root.id='dg-global-nav';root.setAttribute('aria-label','전체 업무 메뉴');
  const home=document.createElement('a');home.className='dg-main';home.href='/';home.textContent='홈';root.appendChild(home);
  const close=()=>root.querySelectorAll('.dg-item.is-open').forEach(e=>e.classList.remove('is-open'));
@@ -43,11 +43,5 @@ const nav=document.querySelector('body>header nav.menu');if(nav){
  window.addEventListener('scroll',close,{passive:true});window.addEventListener('wheel',close,{passive:true});
  nav.replaceWith(root);
 }
-const mobile=document.getElementById('dg-shell-mobile-panel');if(mobile){
- const area=mobile.querySelector('.dg-mm-body');if(area){
- const section=document.createElement('div');section.className='dg-unified-mobile';
- groups.forEach(([label,href,links])=>{const details=document.createElement('details');const summary=document.createElement('summary');summary.textContent=label;details.appendChild(summary);links.forEach(([name,url])=>{let a=document.createElement('a');a.href=url;a.textContent=name;details.appendChild(a)});section.appendChild(details)});
- const old=area.querySelector('.dg-mm-grid');if(old)old.replaceWith(section);else area.prepend(section);
- }
-}
+// Mobile menu remains unchanged.
 })();
