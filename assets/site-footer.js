@@ -18,6 +18,6 @@ document.querySelectorAll('section.contact,section.cta,section.dg-shell-contact,
 
 /* Shared navigation after the existing header and mobile menu have initialized. */
 if(!document.getElementById('dg-unified-nav-loader')){
- const script=document.createElement('script');script.id='dg-unified-nav-loader';script.src='/assets/unified-nav-20261029.js?v=1';document.body.appendChild(script);
+ const script=document.createElement('script');script.id='dg-unified-nav-loader';script.src='/assets/unified-nav-20261029.js?v=2';document.body.appendChild(script);
 }
 })();
