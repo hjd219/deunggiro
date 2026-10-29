@@ -26,7 +26,7 @@
   if(!d)return;
   const old=d.querySelector('header .menu');if(!old||d.getElementById('dg-preview-nav'))return;
   const s=d.createElement('style');s.textContent=`
-   header{position:relative!important;z-index:99999!important;overflow:visible!important}
+   header{position:fixed!important;top:0!important;left:0!important;right:0!important;width:100%!important;z-index:99999!important;overflow:visible!important}
    header .nav{overflow:visible!important}
    #dg-preview-nav{display:flex;gap:4px;align-items:center;flex-wrap:nowrap}
    #dg-preview-nav a,#dg-preview-nav button{font:700 13px system-ui,"Malgun Gothic",sans-serif;color:#fff!important;background:transparent;border:0;text-decoration:none;white-space:nowrap;cursor:pointer;border-radius:7px;padding:10px 8px}
