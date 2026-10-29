@@ -55,6 +55,16 @@
     g.append(b,panel);nav.appendChild(g)
   });
   d.addEventListener('click',e=>{if(!nav.contains(e.target))close()});
+  // Close expanded dropdowns on any scroll, while keeping the header fixed.
+  let previousScroll=d.defaultView.scrollY;
+  d.defaultView.addEventListener('scroll',()=>{
+    const currentScroll=d.defaultView.scrollY;
+    if(Math.abs(currentScroll-previousScroll)>1){
+      close();
+      previousScroll=currentScroll;
+    }
+  },{passive:true});
+  d.addEventListener('wheel',e=>{if(!nav.contains(e.target))close()},{passive:true});
   old.replaceWith(nav);
   const m=d.createElement('div');m.id='dg-preview-mobile';m.dataset.open='false';const toggle=d.createElement('button');toggle.textContent='☰ 메뉴';
   const mp=d.createElement('div');mp.className='dg-preview-panel';
