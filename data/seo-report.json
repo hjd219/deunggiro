@@ -1,8 +1,22 @@
 {
-  "totalPosts": 402,
-  "ok": 402,
+  "totalPosts": 404,
+  "ok": 404,
   "warnings": 0,
   "items": [
+    {
+      "slug": "renunciation-naver-224458730370",
+      "status": "ok",
+      "issues": [],
+      "modified": "2026-10-30",
+      "related": []
+    },
+    {
+      "slug": "renunciation-naver-224458778818",
+      "status": "ok",
+      "issues": [],
+      "modified": "2026-10-30",
+      "related": []
+    },
     {
       "slug": "realestate-naver-224456390213",
       "status": "ok",
