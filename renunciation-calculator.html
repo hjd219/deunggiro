@@ -120,9 +120,9 @@ const mail=limited>0?c*50000*(liq?2:1):0;
 const includedExpenses=stamp+delivery+newspaper;
 const includedServiceGross=Math.max(0,packageTotal-includedExpenses);
 const extraServiceGross=answer+liquidation;
-const vat=Math.round((includedServiceGross+extraServiceGross)/11);
 const basic=includedServiceGross-Math.round(includedServiceGross/11);
 const answerNet=answer-Math.round(answer/11),liquidationNet=liquidation-Math.round(liquidation/11);
+const vat=includedServiceGross+extraServiceGross-basic-answerNet-liquidationNet;
 const legal=basic+answerNet+liquidationNet+vat,pub=includedExpenses+mail,grand=packageTotal+answer+liquidation+mail;
 $('basic').textContent=won(basic);$('answerFee').textContent=won(answerNet);$('liquidationFee').textContent=won(liquidationNet);$('vat').textContent=won(vat);$('legalTotal').textContent=won(legal);$('stamp').textContent=won(stamp);$('delivery').textContent=won(delivery);$('newspaper').textContent=won(newspaper);$('mail').textContent=won(mail);$('publicTotal').textContent=won(pub);$('grand').textContent=won(grand);$('mobileGrand').textContent=won(grand);document.querySelectorAll('.limited-field').forEach(x=>x.style.display=limited>0?'block':'none')}
 async function printEstimate(){if(window.DGCounter) await window.DGCounter.countOnce("pdf");
