@@ -100,8 +100,8 @@
 <div class="field limited-field"><label>임의청산</label><label class="checkline"><input type="checkbox" id="liquidation"> 임의청산 진행</label></div>
 </div></section>
 </div>
-<aside class="result-side" id="resultPanel"><div class="total-label">예상 합계금액</div><div class="total" id="grand">0원</div><div class="caption">법무사 보수·부가가치세·법원비용·실비를 합산한 예상금액</div><div class="breakdown">
-<div class="group"><h3>법무사 보수</h3><div class="row"><span>상속포기·한정승인 보수</span><b id="basic">0원</b></div><div class="row"><span>답변서 제출</span><b id="answerFee">0원</b></div><div class="row"><span>임의청산 보수</span><b id="liquidationFee">0원</b></div><div class="row"><span>부가가치세 10%</span><b id="vat">0원</b></div><div class="subtotal"><span>법무사 보수 합계</span><strong id="legalTotal">0원</strong></div></div>
+<aside class="result-side" id="resultPanel"><div class="total-label">예상 합계금액</div><div class="total" id="grand">0원</div><div class="caption">공과금·신문공고비 포함 총액(내용증명 등 선택 업무 별도)</div><div class="breakdown">
+<div class="group"><h3>법무사 보수</h3><div class="row"><span>상속포기·한정승인 보수(공과금 제외)</span><b id="basic">0원</b></div><div class="row"><span>답변서 제출</span><b id="answerFee">0원</b></div><div class="row"><span>임의청산 보수</span><b id="liquidationFee">0원</b></div><div class="row"><span>부가가치세 10%</span><b id="vat">0원</b></div><div class="subtotal"><span>법무사 보수 합계</span><strong id="legalTotal">0원</strong></div></div>
 <div class="group"><h3>법원비용·실비</h3><div class="row"><span>인지대</span><b id="stamp">0원</b></div><div class="row"><span>송달료</span><b id="delivery">0원</b></div><div class="row"><span>신문공고</span><b id="newspaper">0원</b></div><div class="row"><span>내용증명</span><b id="mail">0원</b></div><div class="subtotal"><span>법원비용·실비 합계</span><strong id="publicTotal">0원</strong></div></div></div>
 <div class="actions"><button class="guide" type="button" id="pdfButton">견적서 PDF</button><a class="consult" href="tel:0324251500">상담하기</a></div></aside></div>
 
@@ -110,9 +110,21 @@
 <script>
 const $=id=>document.getElementById(id), won=n=>Math.round(n).toLocaleString('ko-KR')+'원';
 function calc(){const r=+$('renounce').value,l=+$('limited').value,s=+$('special').value,a=+$('answer').value,c=+$('creditors').value,liq=$('liquidation').checked,limited=l+s,total=r+l+s;
-let basic=0;if(limited>0)basic=500000+Math.max(0,limited-1)*150000+r*150000;else if(r>0)basic=150000+Math.max(0,r-1)*150000;
-const answer=a*200000,liquidation=limited>0&&liq?500000:0,vat=(basic+answer+liquidation)*.1,stamp=total*5000,delivery=total*33840,newspaper=limited>0?110000:0,mail=limited>0?c*50000*(liq?2:1):0,legal=basic+answer+liquidation+vat,pub=stamp+delivery+newspaper+mail,grand=legal+pub;
-$('basic').textContent=won(basic);$('answerFee').textContent=won(answer);$('liquidationFee').textContent=won(liquidation);$('vat').textContent=won(vat);$('legalTotal').textContent=won(legal);$('stamp').textContent=won(stamp);$('delivery').textContent=won(delivery);$('newspaper').textContent=won(newspaper);$('mail').textContent=won(mail);$('publicTotal').textContent=won(pub);$('grand').textContent=won(grand);$('mobileGrand').textContent=won(grand);document.querySelectorAll('.limited-field').forEach(x=>x.style.display=limited>0?'block':'none')}
+// 안내 금액은 공과금·부가세 포함 총액. 신청유형 중 최고 기본금액에 추가인원당 15만원 적용.
+let packageTotal=0;
+if(total>0)packageTotal=(s>0?800000:l>0?500000:150000)+Math.max(0,total-1)*150000;
+const answer=a*200000,liquidation=limited>0&&liq?700000:0;
+const stamp=total*5000,delivery=total*33840,newspaper=limited>0?50000:0;
+const mail=limited>0?c*50000*(liq?2:1):0;
+// 내용증명은 추가 선택 비용이며, 기본 신청금액에 포함된 공과금·신문공고는 재가산하지 않음.
+const includedExpenses=stamp+delivery+newspaper;
+const includedServiceGross=Math.max(0,packageTotal-includedExpenses);
+const extraServiceGross=answer+liquidation;
+const vat=Math.round((includedServiceGross+extraServiceGross)/11);
+const basic=includedServiceGross-Math.round(includedServiceGross/11);
+const answerNet=answer-Math.round(answer/11),liquidationNet=liquidation-Math.round(liquidation/11);
+const legal=basic+answerNet+liquidationNet+vat,pub=includedExpenses+mail,grand=packageTotal+answer+liquidation+mail;
+$('basic').textContent=won(basic);$('answerFee').textContent=won(answerNet);$('liquidationFee').textContent=won(liquidationNet);$('vat').textContent=won(vat);$('legalTotal').textContent=won(legal);$('stamp').textContent=won(stamp);$('delivery').textContent=won(delivery);$('newspaper').textContent=won(newspaper);$('mail').textContent=won(mail);$('publicTotal').textContent=won(pub);$('grand').textContent=won(grand);$('mobileGrand').textContent=won(grand);document.querySelectorAll('.limited-field').forEach(x=>x.style.display=limited>0?'block':'none')}
 async function printEstimate(){if(window.DGCounter) await window.DGCounter.countOnce("pdf");
  const text=id=>$(id)?.textContent||'0원';
  const r=+$('renounce').value,l=+$('limited').value,s=+$('special').value,a=+$('answer').value,c=+$('creditors').value,liq=$('liquidation').checked;
@@ -126,7 +138,7 @@ async function printEstimate(){if(window.DGCounter) await window.DGCounter.count
  if(liq)criteria.push('임의청산 진행');
  const criteriaText=criteria.length?criteria.join(' · '):'선택한 업무 없음';
  const legalRows=[
-  ['상속포기·한정승인 보수',text('basic')],['답변서 제출',text('answerFee')],['임의청산 보수',text('liquidationFee')],['부가가치세 10%',text('vat')]
+  ['상속포기·한정승인 보수(공과금 제외)',text('basic')],['답변서 제출',text('answerFee')],['임의청산 보수',text('liquidationFee')],['부가가치세 10%',text('vat')]
  ].map(x=>'<div class="cost-row"><span>'+x[0]+'</span><b>'+x[1]+'</b></div>').join('');
  const expenseRows=[
   ['인지대',text('stamp')],['송달료',text('delivery')],['신문공고',text('newspaper')],['내용증명',text('mail')]
