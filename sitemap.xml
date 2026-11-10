@@ -2,61 +2,61 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www.deunggiro.kr/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://www.deunggiro.kr/inheritance.html</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://www.deunggiro.kr/inheritance-division.html</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.deunggiro.kr/inheritance-minor-heir.html</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.deunggiro.kr/inheritance-missing-heir.html</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.deunggiro.kr/inheritance-overseas-heir.html</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.deunggiro.kr/inheritance-substitute-succession.html</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.deunggiro.kr/corporate.html</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://www.deunggiro.kr/realestate.html</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://www.deunggiro.kr/renunciation.html</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-11-09</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -86,31 +86,31 @@
   </url>
   <url>
     <loc>https://www.deunggiro.kr/family.html</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://www.deunggiro.kr/acquisition-calculator.html</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-11-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.deunggiro.kr/corporate-calculator.html</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.deunggiro.kr/renunciation-calculator.html</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.deunggiro.kr/posts.html</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-11-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -2744,7 +2744,7 @@
     <priority>0.7</priority>
   </url>
 
-  <url><loc>https://www.deunggiro.kr/inheritance-self-check.html</loc></url>
+  <url><loc>https://www.deunggiro.kr/inheritance-self-check.html</loc><lastmod>2026-10-27</lastmod></url>
   <url>
     <loc>https://www.deunggiro.kr/posts/renunciation-naver-224455032928.html</loc>
     <lastmod>2026-10-27</lastmod>
