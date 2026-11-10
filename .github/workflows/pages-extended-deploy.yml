@@ -3,8 +3,12 @@ name: Pages extended-timeout deploy
 on:
   workflow_dispatch:
   push:
-    paths:
-      - '.github/workflows/pages-extended-deploy.yml'
+    branches:
+      - main
+
+concurrency:
+  group: pages-extended-deploy
+  cancel-in-progress: true
 
 permissions:
   contents: read
