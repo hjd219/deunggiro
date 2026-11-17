@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ko" class="dg-scroll-layout">
+<html lang="ko" class="dg-scroll-layout dg-about-scroll-page">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -61,6 +61,25 @@ header .menu a:hover,header .menu a[aria-current="page"]{opacity:.78}
 }
 @media(max-width:420px){.about-greeting{grid-template-columns:minmax(0,1fr);gap:22px}.about-portrait{width:min(240px,72vw)}.about-portrait img{height:auto;max-height:320px}.about-intro h2{font-size:29px}}
 @media(prefers-reduced-motion:reduce){.about-rise-init{opacity:1;transform:none;transition:none}}
+
+/* 소개 전용: 문구와 인물사진 동일 너비, 사진 하단 공백 방지 */
+@media (min-width:801px){
+ .intro.about-intro{padding:clamp(28px,3.7vw,52px) clamp(24px,4vw,60px) clamp(24px,3.5vw,42px)!important}
+ .about-greeting{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,3.3vw,46px);align-items:stretch}
+ .about-copy{display:flex;flex-direction:column;justify-content:center;min-width:0}
+ .about-portrait{position:relative;align-self:stretch;max-width:none;width:100%;min-width:0;margin:0;overflow:hidden;border-radius:5px}
+ .about-portrait img{position:absolute;inset:0;display:block;width:100%;height:100%;min-height:100%;max-height:none;aspect-ratio:auto;object-fit:cover;object-position:center}
+}
+.about-portrait figcaption{display:none!important}
+.about-side-index{position:fixed;z-index:205;right:clamp(12px,2vw,30px);top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:8px;transition:opacity .22s ease,visibility .22s ease}
+.about-side-index.is-past{opacity:0;visibility:hidden;pointer-events:none}
+.about-side-index button{appearance:none;display:flex;align-items:center;gap:9px;width:124px;min-height:40px;padding:9px 11px;border:1px solid rgba(255,255,255,.2);border-radius:5px;background:rgba(12,42,60,.8);color:#fff;box-shadow:0 3px 14px rgba(12,27,35,.11);backdrop-filter:blur(7px);cursor:pointer;font:700 12px/1.2 system-ui,-apple-system,"Malgun Gothic",sans-serif;text-align:left;transition:background .2s,border-color .2s,transform .2s}
+.about-side-index button .n{font-variant-numeric:tabular-nums;color:#afddec;font-size:12px;min-width:21px}
+.about-side-index button[aria-current="step"]{background:#126489;border-color:#6ac0df;transform:translateX(-3px)}
+.about-side-index button:hover{background:#1b6f90}
+.about-side-index button:focus-visible{outline:3px solid #84d5f1;outline-offset:2px}
+@media(max-width:800px){.about-side-index{display:none}.about-portrait img{position:static;min-height:0;object-fit:contain}}
+@media(prefers-reduced-motion:reduce){.about-side-index,.about-side-index button{transition:none!important}}
 </style>
 </head>
 <body>
@@ -74,6 +93,11 @@ header .menu a:hover,header .menu a[aria-current="page"]{opacity:.78}
 </div></div>
 <a class="hero-scroll" href="#greeting" aria-label="인사말로 이동"><span class="hero-scroll-mouse"></span><span class="hero-scroll-arrow" aria-hidden="true">↓</span></a>
 </section>
+<nav class="about-side-index" aria-label="소개 페이지 구간 이동">
+<button type="button" data-target="about-hero" aria-current="step"><span class="n">01</span><span>소개</span></button>
+<button type="button" data-target="greeting"><span class="n">02</span><span>인사말</span></button>
+<button type="button" data-target="directions"><span class="n">03</span><span>오시는 길</span></button>
+</nav>
 <div class="v53-stage" id="about-scroll-stage"><div class="v53-window"><main class="v53-track">
 <section class="intro about-intro" id="greeting"><div class="about-greeting">
 <div class="about-copy">
@@ -86,14 +110,14 @@ header .menu a:hover,header .menu a[aria-current="page"]{opacity:.78}
 <div class="about-career about-rise">제22회 법무사시험 합격(2017년) · 경력 10년 차</div>
 <div class="about-name about-rise">현재두 법무사 드림</div>
 </div>
-<figure class="about-portrait about-rise"><img src="/assets/deunggiro-profile.png?v=20260917-2" alt="현재두 법무사 사진" loading="lazy" decoding="async" width="390" height="488"><figcaption>현재두 법무사</figcaption></figure>
+<figure class="about-portrait about-rise"><img src="/assets/deunggiro-profile.png?v=20260917-2" alt="현재두 법무사 사진" loading="lazy" decoding="async" width="390" height="488"></figure>
 </div></section>
 <section class="dg-services about-location" id="directions"><div class="about-location-head about-rise"><h2>오시는 길</h2><p>인천가정법원 옆 · 자세한 주소와 연락처는 하단 공통 안내에서 확인하실 수 있습니다.</p></div><div class="about-map about-rise">
 <iframe title="등기로 현재두 법무사 사무소 구글지도" src="https://www.google.com/maps?q=%EC%9D%B8%EC%B2%9C%EA%B4%91%EC%97%AD%EC%8B%9C%20%EB%AF%B8%EC%B6%94%ED%99%80%EA%B5%AC%20%EA%B2%BD%EC%9B%90%EB%8C%80%EB%A1%9C%20873%2C%20201%ED%98%B8%20%28%EC%A3%BC%EC%95%88%EB%8F%99%2C%20%EC%9D%B8%EC%84%B1%EB%B9%8C%EB%94%A9%29&amp;hl=ko&amp;gl=KR&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
 </div></section>
 </main></div></div>
 <script src="/assets/home-mobile-menu.js?v=20260917-1"></script>
-<script src="/assets/home-v56-exact.js?v=20261025-mobileend2"></script>
+<script src="/assets/home-v56-exact.js?v=20261117-about-footer"></script>
 <script src="/assets/site-footer.js?v=20260917-v6" defer></script>
 <script>
 (function(){
@@ -103,6 +127,58 @@ const items=[...document.querySelectorAll('.about-rise')];
 if(matchMedia('(prefers-reduced-motion: reduce)').matches||!('IntersectionObserver' in window)){items.forEach(el=>el.classList.add('about-rise-visible'));return}
 const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('about-rise-visible');obs.unobserve(e.target)}}),{threshold:.12});
 items.forEach((el,i)=>{el.classList.add('about-rise-init');el.style.transitionDelay=(i%3)*85+'ms';obs.observe(el)});
+})();
+</script>
+
+<script>
+/* 고정 스크롤 트랙의 구간 위치를 계산해 실제로 이동시키는 오른쪽 섹션 메뉴 */
+(function(){
+  const nav=document.querySelector('.about-side-index');
+  const stage=document.getElementById('about-scroll-stage');
+  const win=document.querySelector('.v53-window');
+  const track=document.querySelector('.v53-track');
+  const directions=document.getElementById('directions');
+  if(!nav||!stage||!win||!track||!directions)return;
+  const buttons=[...nav.querySelectorAll('button[data-target]')];
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+  function position(){
+    const wh=win.clientHeight||innerHeight;
+    const mobile=matchMedia('(max-width:800px)').matches;
+    const top=directions.getBoundingClientRect().top-track.getBoundingClientRect().top;
+    const height=directions.offsetHeight;
+    const desiredTop=Math.max(16,Math.min(64,wh-height-16));
+    const stop=mobile?top+height+20:wh+top-desiredTop;
+    return {
+      hero:0,
+      greeting:stage.offsetTop+Math.max(0,wh-54),
+      directions:stage.offsetTop+Math.max(0,stop),
+      stageTop:stage.offsetTop,wh,stop
+    };
+  }
+  function update(){
+    const p=position(),y=scrollY||0;
+    const selected=y<p.stageTop+p.wh*.4?0:y<p.stageTop+(p.wh+p.stop)*.52?1:2;
+    buttons.forEach((b,i)=>{
+      if(i===selected)b.setAttribute('aria-current','step');
+      else b.removeAttribute('aria-current');
+    });
+    nav.classList.toggle('is-past',y>p.stageTop+p.stop+p.wh*.45);
+  }
+  nav.addEventListener('click',function(event){
+    const b=event.target.closest('button[data-target]');
+    if(!b)return;
+    const p=position(),id=b.getAttribute('data-target');
+    const y=id==='about-hero'?p.hero:id==='greeting'?p.greeting:p.directions;
+    window.scrollTo({top:Math.max(0,y),behavior:reduced.matches?'auto':'smooth'});
+  });
+  let scheduled=false;
+  addEventListener('scroll',function(){
+    if(scheduled)return;scheduled=true;
+    requestAnimationFrame(()=>{scheduled=false;update()});
+  },{passive:true});
+  addEventListener('resize',update,{passive:true});
+  requestAnimationFrame(()=>requestAnimationFrame(update));
+  addEventListener('load',update,{once:true});
 })();
 </script>
 </body></html>
