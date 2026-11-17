@@ -18,7 +18,7 @@ document.querySelectorAll('section.contact,section.cta,section.dg-shell-contact,
 
 /* Shared navigation after the existing header and mobile menu have initialized. */
 if(!document.getElementById('dg-unified-nav-loader')){
- const script=document.createElement('script');script.id='dg-unified-nav-loader';script.src='/assets/unified-nav-20261029.js?v=2';document.body.appendChild(script);
+ const script=document.createElement('script');script.id='dg-unified-nav-loader';script.src='/assets/unified-nav-20261029.js?v=20261117-about';document.body.appendChild(script);
 }
 /* Contextual right-side section navigation on scroll-layout landing and detail pages. */
 if(document.querySelector('.v53-stage')&&!document.querySelector('.about-side-index')&&!document.getElementById('dg-page-section-index-loader')){
@@ -26,7 +26,7 @@ if(document.querySelector('.v53-stage')&&!document.querySelector('.about-side-in
  if(!/(?:calculator|self-check|preview)\.html$/.test(p)&&!/^\/posts?(?:[\/.]|$)/.test(p)){
   const script=document.createElement('script');
   script.id='dg-page-section-index-loader';
-  script.src='/assets/section-index-20261117.js?v=1';
+  script.src='/assets/section-index-20261117.js?v=20261117-compact';
   document.body.appendChild(script);
  }
 }
