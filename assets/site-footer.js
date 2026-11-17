@@ -26,7 +26,7 @@ if(document.querySelector('.v53-stage')&&!document.querySelector('.about-side-in
  if(!/(?:calculator|self-check|preview)\.html$/.test(p)&&!/^\/posts?(?:[\/.]|$)/.test(p)){
   const script=document.createElement('script');
   script.id='dg-page-section-index-loader';
-  script.src='/assets/section-index-20261117.js?v=20261117-compact';
+  script.src='/assets/section-index-20261117.js?v=20261117-chapterfix1';
   document.body.appendChild(script);
  }
 }
