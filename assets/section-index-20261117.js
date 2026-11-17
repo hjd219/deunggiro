@@ -21,14 +21,43 @@
     if(s===hero)return '소개';
     const cl=s.classList;
     if(cl.contains('person'))return '법무사';
-    if(cl.contains('intro'))return '등기로 소개';
+    if(cl.contains('intro'))return '등기로';
     if(cl.contains('story-case-detail'))return '처리사례';
-    if(cl.contains('story-cases'))return '관련 안내';
-    if(cl.contains('dg-services')&&!s.querySelector('h2'))return '업무 안내';
-    let h=s.querySelector('h2')||s.querySelector('h3');
-    let str=(h?.textContent||'상세 안내').replace(/\s+/g,' ').trim().replace(/\s*→\s*/g,'');
-    str=str.replace(/자주 묻는 질문$/,'FAQ').replace(/필요서류$/,'필요서류');
-    return str.length>14 ? str.slice(0,13)+'…' : str;
+    if(cl.contains('story-cases'))return '관련글';
+    if(cl.contains('dg-services')&&!s.querySelector('h2'))return '업무안내';
+    const h=s.querySelector('h2')||s.querySelector('h3');
+    const title=(h?.textContent||'상세 안내').replace(/\s+/g,' ').trim();
+    const shortNames=[
+      [/협의이혼.*합의서|이혼.*합의서.*작성/, '합의서작성'],
+      [/상속재산.*분할협의서|협의서.*자동작성/, '협의서작성'],
+      [/임원.*임기|임기.*자동관리/, '임기관리'],
+      [/과태료/, '과태료'],
+      [/관할법원|신청기한/, '기한·관할'],
+      [/임의청산|법정청산/, '청산방법'],
+      [/후속절차|후.*진행 순서/, '후속절차'],
+      [/신탁등기/, '신탁등기'],
+      [/근저당/, '근저당'],
+      [/자주 묻는 질문|FAQ/, '질문답변'],
+      [/진행순서|진행 순서/, '진행순서'],
+      [/해결 흐름/, '해결흐름'],
+      [/실제 처리사례|처리사례/, '처리사례'],
+      [/필요서류/, '필요서류'],
+      [/취득세.*감면/, '취득세감면'],
+      [/비용.*계산/, '비용계산'],
+      [/비용.*주의|주의사항/, '주의사항'],
+      [/청산절차|청산/, '청산절차'],
+      [/신청기한|기한/, '신청기한'],
+      [/비용/, '비용안내'],
+      [/주요 업무|한눈에 보기/, '업무안내'],
+      [/상황별|관련 안내/, '관련업무'],
+      [/서류/, '서류안내']
+    ];
+    const match=shortNames.find(([pattern])=>pattern.test(title));
+    if(match)return match[1];
+    // 상세페이지의 질문형 긴 제목도 짧은 구간명으로 표시
+    if(/[?？]|어떻게|있다면/.test(title))return '핵심안내';
+    const cleaned=title.replace(/(상속등기|법인등기|부동산등기|상속포기·한정승인|상속포기|한정승인|가사)\s*/g,'').replace(/\s*(안내|서비스|소개)$/,'').trim();
+    return (cleaned||'상세안내').replace(/\s+/g,'').slice(0,6);
   };
   const landmarks=[{el:hero,label:'소개'},...sections.map(s=>({el:s,label:label(s)}))];
   if(landmarks.length<3) return;
@@ -39,7 +68,7 @@
   .dg-page-index::-webkit-scrollbar{display:none}
   .dg-page-index::before{content:"";position:absolute;left:9px;top:20px;bottom:20px;width:2px;background:rgba(255,255,255,.95);box-shadow:0 1px 3px #071b27,0 0 7px rgba(0,0,0,.82);pointer-events:none}
   .dg-page-index.is-past{opacity:0;visibility:hidden;pointer-events:none}
-  .dg-page-index button{appearance:none;position:relative;display:flex;align-items:center;gap:7px;min-width:136px;min-height:40px;margin:0;padding:7px 0;border:0;background:transparent;color:#fff!important;text-shadow:-1px -1px 2px rgba(0,0,0,.95),1px 1px 2px rgba(0,0,0,.95),0 2px 7px rgba(0,0,0,.95);cursor:pointer;font:750 12px/1.4 system-ui,-apple-system,"Malgun Gothic",sans-serif;text-align:left;white-space:nowrap;transition:font-size .2s ease}
+  .dg-page-index button{appearance:none;position:relative;display:flex;align-items:center;gap:7px;min-width:104px;min-height:40px;margin:0;padding:7px 0;border:0;background:transparent;color:#fff!important;text-shadow:-1px -1px 2px rgba(0,0,0,.95),1px 1px 2px rgba(0,0,0,.95),0 2px 7px rgba(0,0,0,.95);cursor:pointer;font:750 12px/1.4 system-ui,-apple-system,"Malgun Gothic",sans-serif;text-align:left;white-space:nowrap;transition:font-size .2s ease}
   .dg-page-index button::before{content:"";position:absolute;left:-13px;top:50%;transform:translate(-50%,-50%);width:10px;height:10px;box-sizing:border-box;border:2px solid #fff;border-radius:50%;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.6),0 1px 7px rgba(0,0,0,.85)}
   .dg-page-index button .n{min-width:22px;color:inherit;font-size:inherit;font-variant-numeric:tabular-nums;letter-spacing:.02em}
   .dg-page-index button[aria-current="step"]{font-size:15px;font-weight:900}
