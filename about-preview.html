@@ -71,7 +71,7 @@ header .menu a:hover,header .menu a[aria-current="page"]{opacity:.78}
  .about-portrait img{position:absolute;inset:0;display:block;width:100%;height:100%;min-height:100%;max-height:none;aspect-ratio:auto;object-fit:cover;object-position:center}
 }
 .about-portrait figcaption{display:none!important}
-/* 오른쪽 구간 이동 - 1안: 배경 박스 없는 선명한 흰색 타임라인 */
+/* 오른쪽 구간 이동: 영상·밝은 영역 모두 흰색 유지, 현재 구간은 크기로 강조 */
 .about-side-index{
   position:fixed;z-index:205;right:clamp(16px,2.4vw,38px);top:50%;
   transform:translateY(-50%);display:flex;flex-direction:column;align-items:stretch;
@@ -80,53 +80,37 @@ header .menu a:hover,header .menu a[aria-current="page"]{opacity:.78}
 }
 .about-side-index::before{
   content:"";position:absolute;left:8px;top:24px;bottom:24px;width:2px;
-  background:rgba(255,255,255,.86);
-  box-shadow:0 0 7px rgba(0,0,0,.62);
-  transition:background .22s ease,box-shadow .22s ease
+  background:rgba(255,255,255,.9);
+  box-shadow:0 1px 3px #071b27,0 0 8px rgba(0,0,0,.8)
 }
 .about-side-index.is-past{opacity:0;visibility:hidden;pointer-events:none}
 .about-side-index button{
   appearance:none;position:relative;display:flex;align-items:center;justify-content:flex-start;
   gap:9px;width:auto;min-width:135px;min-height:48px;padding:10px 0;
   border:0;border-radius:0;background:transparent;box-shadow:none;backdrop-filter:none;
-  color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.95),0 0 10px rgba(0,0,0,.75);
-  cursor:pointer;font:700 14px/1.35 system-ui,-apple-system,"Malgun Gothic",sans-serif;
-  text-align:left;white-space:nowrap;transition:color .2s ease
+  color:#fff!important;
+  text-shadow:-1px -1px 2px rgba(0,0,0,.95),1px 1px 2px rgba(0,0,0,.95),0 2px 7px rgba(0,0,0,.95);
+  cursor:pointer;font:700 13px/1.35 system-ui,-apple-system,"Malgun Gothic",sans-serif;
+  text-align:left;white-space:nowrap;
+  transition:font-size .2s ease,transform .2s ease
 }
 .about-side-index button::before{
   content:"";position:absolute;left:-13px;top:50%;
-  transform:translate(-50%,-50%);width:11px;height:11px;
+  transform:translate(-50%,-50%);width:10px;height:10px;
   box-sizing:border-box;border-radius:50%;border:2px solid #fff;
-  background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.45),0 1px 7px rgba(0,0,0,.7);
-  transition:background .2s ease,box-shadow .2s ease,border-color .2s ease
+  background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.6),0 1px 7px rgba(0,0,0,.85);
+  transition:width .2s ease,height .2s ease
 }
 .about-side-index button .n{
-  font-variant-numeric:tabular-nums;color:inherit;min-width:22px;
-  font-size:13px;letter-spacing:.05em
+  font-variant-numeric:tabular-nums;color:inherit!important;min-width:22px;
+  font-size:inherit;letter-spacing:.05em
 }
-.about-side-index button[aria-current="step"]{color:#fff;font-weight:850}
-.about-side-index button[aria-current="step"] .n{color:#8be3ff}
-.about-side-index button[aria-current="step"]::before{
-  background:#64ceff;border-color:#fff;
-  box-shadow:0 0 0 3px rgba(100,206,255,.32),0 1px 7px rgba(0,0,0,.7)
+.about-side-index button[aria-current="step"]{
+  color:#fff!important;font-size:17px;font-weight:850
 }
-.about-side-index button:hover{color:#fff}
-.about-side-index button:hover::before{border-color:#fff}
-.about-side-index button:focus-visible{outline:2px solid #6bc1e3;outline-offset:4px}
-/* 흰 배경 구간에서는 같은 타임라인 구조를 유지하되 짙은 색으로 대비 확보 */
-.about-side-index.on-light::before{background:rgba(22,67,90,.72);box-shadow:none}
-.about-side-index.on-light button{color:#173f55;text-shadow:none}
-.about-side-index.on-light button::before{
-  background:#477f99;border-color:#fff;
-  box-shadow:0 0 0 1px rgba(23,63,85,.42)
-}
-.about-side-index.on-light button[aria-current="step"],
-.about-side-index.on-light button:hover{color:#103b53}
-.about-side-index.on-light button[aria-current="step"] .n{color:#007fae}
-.about-side-index.on-light button[aria-current="step"]::before{
-  background:#048fbe;border-color:#fff;
-  box-shadow:0 0 0 3px rgba(4,143,190,.20)
-}
+.about-side-index button[aria-current="step"]::before{width:13px;height:13px}
+.about-side-index button:hover{color:#fff!important}
+.about-side-index button:focus-visible{outline:2px solid #fff;outline-offset:4px}
 @media(max-width:800px){.about-side-index{display:none}.about-portrait img{position:static;min-height:0;object-fit:contain}}
 @media(prefers-reduced-motion:reduce){.about-side-index,.about-side-index button,.about-side-index::before,.about-side-index button::before{transition:none!important}}
 </style>
@@ -211,7 +195,6 @@ items.forEach((el,i)=>{el.classList.add('about-rise-init');el.style.transitionDe
       if(i===selected)b.setAttribute('aria-current','step');
       else b.removeAttribute('aria-current');
     });
-    nav.classList.toggle('on-light',y>=p.stageTop+Math.max(0,p.wh*.48));
     nav.classList.toggle('is-past',y>p.stageTop+p.stop+p.wh*.45);
   }
   nav.addEventListener('click',function(event){
