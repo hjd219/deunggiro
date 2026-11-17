@@ -4,7 +4,7 @@
   const path=location.pathname.toLowerCase();
   if(/\/(?:posts?|blog)(?:[\/.-]|$)/.test(path)||/(?:calculator|self-check|privacy|disclaimer|email-policy|preview)\.html$/.test(path)) return;
   if(document.documentElement.classList.contains('dg-calculator-page')) return;
-  if(document.querySelector('.about-side-index')) return;
+  if(document.querySelector('.about-side-index, .home-side-index')) return;
   const stage=document.querySelector('.v53-stage');
   const win=document.querySelector('.v53-window');
   const track=document.querySelector('.v53-track');
