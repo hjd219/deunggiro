@@ -13,7 +13,9 @@
   window.__dgSectionIndex=true;
   // Most service/detail pages put all chapters inside one .person > .story.
   // Index the actual chapter sections rather than the single outer wrapper.
-  const directSections=[...track.querySelectorAll(':scope > section')];
+  const directSections=[...track.querySelectorAll(':scope > section')].filter(s=>
+    s.getAttribute('aria-hidden')!=='true'&&!s.hasAttribute('data-scroll-sentinel')&&!s.classList.contains('dg-spacer')
+  );
   let sectionCandidates=directSections;
   if(directSections.length===1&&directSections[0].classList.contains('person')){
     const story=directSections[0].querySelector(':scope > .story');
