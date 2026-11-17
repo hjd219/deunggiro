@@ -11,7 +11,22 @@
   const hero=document.querySelector('body > .hero, body > section.hero');
   if(!stage||!win||!track||!hero) return;
   window.__dgSectionIndex=true;
-  const sections=[...track.querySelectorAll(':scope > section')].filter(s=>{
+  // Most service/detail pages put all chapters inside one .person > .story.
+  // Index the actual chapter sections rather than the single outer wrapper.
+  const directSections=[...track.querySelectorAll(':scope > section')];
+  let sectionCandidates=directSections;
+  if(directSections.length===1&&directSections[0].classList.contains('person')){
+    const story=directSections[0].querySelector(':scope > .story');
+    if(story){
+      const chapters=[...story.children].flatMap(el=>{
+        if(el.matches('section')&&!el.classList.contains('corporate-support-row'))return [el];
+        if(el.classList.contains('corporate-support-row'))return [...el.querySelectorAll(':scope > section')];
+        return [];
+      });
+      if(chapters.length>0)sectionCandidates=chapters;
+    }
+  }
+  const sections=sectionCandidates.filter(s=>{
     if(s.getAttribute('aria-hidden')==='true') return false;
     if(s.hasAttribute('data-scroll-sentinel')) return false;
     if(s.classList.contains('dg-spacer')) return false;
