@@ -25,6 +25,7 @@
   document.body.appendChild(panel);
 
   const icons={
+    about:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c.5-5.1 3.2-8 8-8s7.5 2.9 8 8"/></svg>',
     home:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>',
     inherit:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l3 3v15H6z"/><path d="M15 3v4h4"/><path d="M9 11h6M9 15h4"/></svg>',
     renounce:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5.5 5.5v5.8c0 4.1 2.7 7.5 6.5 9.7 3.8-2.2 6.5-5.6 6.5-9.7V5.5z"/><path d="m9 12 2 2 4-4"/></svg>',
@@ -35,6 +36,7 @@
   };
   const items=[
     ['home','홈','등기로 메인으로 이동','/'],
+    ['about','법무사소개','현재두 법무사 · 인사말 · 오시는 길','/about.html'],
     ['inherit','상속등기','단독상속 · 공동상속 · 유증','/inheritance.html'],
     ['renounce','상속포기·한정승인','기한 · 절차 · 필요서류 · 청산','/renunciation.html'],
     ['corp','법인등기','설립 · 변경 · 증자 · 회사계속','/corporate.html'],
