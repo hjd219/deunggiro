@@ -14,6 +14,7 @@ body>header{position:fixed!important;top:0!important;left:0!important;right:0!im
 body>header .nav{overflow:visible!important}
 #dg-global-nav{display:flex;align-items:center;gap:3px}
 #dg-global-nav .dg-item{position:relative}
+#dg-global-nav>.dg-main[aria-current='page']{background:rgba(26,124,184,.8)!important}
 #dg-global-nav .dg-main{display:inline-flex;align-items:center;padding:10px 7px;border:0;background:transparent;color:#fff!important;text-decoration:none;font:800 13px/1.4 -apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif;border-radius:7px;white-space:nowrap;cursor:pointer}
 #dg-global-nav .dg-item:hover>.dg-main,#dg-global-nav .dg-item:focus-within>.dg-main,#dg-global-nav .dg-item.is-open>.dg-main{background:rgba(26,124,184,.80)!important}
 #dg-global-nav .dg-dropdown{display:none;position:absolute;left:0;top:100%;width:280px;max-height:70vh;overflow-y:auto;background:#fff!important;border:1px solid #dce9f1;border-radius:10px;padding:10px;box-shadow:0 15px 35px rgba(12,35,51,.24);z-index:2000}
@@ -30,6 +31,7 @@ body>header .nav{overflow:visible!important}
 const nav=document.querySelector('body>header nav.menu');if(nav && window.matchMedia('(min-width:951px)').matches){
  const root=document.createElement('nav');root.id='dg-global-nav';root.setAttribute('aria-label','전체 업무 메뉴');
  const home=document.createElement('a');home.className='dg-main';home.href='/';home.textContent='홈';root.appendChild(home);
+ const about=document.createElement('a');about.className='dg-main';about.href='/about.html';about.textContent='법무사소개';if(location.pathname==='/about.html')about.setAttribute('aria-current','page');root.appendChild(about);
  const close=()=>root.querySelectorAll('.dg-item.is-open').forEach(e=>e.classList.remove('is-open'));
  groups.forEach(([label,href,links])=>{
  const item=document.createElement('div');item.className='dg-item';
