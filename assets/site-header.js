@@ -14,7 +14,7 @@
     if(oldHeader && !document.querySelector('header.dg-shell-header')){
       const shell=document.createElement('header');
       shell.className='dg-shell-header';
-      shell.innerHTML=`<div class="dg-shell-inner"><a class="dg-shell-logo" href="/">등기로<small>현재두 법무사 사무소</small></a><nav class="dg-shell-nav" aria-label="주요 메뉴"><a href="/">홈</a><a href="/inheritance.html">상속등기</a><a href="/renunciation.html">상속포기·한정승인</a><a href="/corporate.html">법인등기</a><a href="/realestate.html">부동산등기</a><a href="/family.html">가사</a><a href="/posts.html">블로그</a></nav><button class="dg-shell-mobile-menu-btn" id="dg-shell-menu-btn" type="button" aria-expanded="false">☰ 메뉴</button></div><div class="dg-shell-mobile-panel" id="dg-shell-mobile-panel" aria-hidden="true"></div>`;
+      shell.innerHTML=`<div class="dg-shell-inner"><a class="dg-shell-logo" href="/">등기로<small>현재두 법무사 사무소</small></a><nav class="dg-shell-nav" aria-label="주요 메뉴"><a href="/">홈</a><a href="/about.html">법무사소개</a><a href="/inheritance.html">상속등기</a><a href="/renunciation.html">상속포기·한정승인</a><a href="/corporate.html">법인등기</a><a href="/realestate.html">부동산등기</a><a href="/family.html">가사</a><a href="/posts.html">블로그</a></nav><button class="dg-shell-mobile-menu-btn" id="dg-shell-menu-btn" type="button" aria-expanded="false">☰ 메뉴</button></div><div class="dg-shell-mobile-panel" id="dg-shell-mobile-panel" aria-hidden="true"></div>`;
       oldHeader.replaceWith(shell);
     }
   }
@@ -42,6 +42,7 @@
   if(!btn||!panel)return;
 
   const icons={
+    about:'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c.5-5.1 3.2-8 8-8s7.5 2.9 8 8"/></svg>',
     home:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>',
     inherit:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l3 3v15H6z"/><path d="M15 3v4h4"/><path d="M9 11h6M9 15h4"/></svg>',
     renounce:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5.5 5.5v5.8c0 4.1 2.7 7.5 6.5 9.7 3.8-2.2 6.5-5.6 6.5-9.7V5.5z"/><path d="m9 12 2 2 4-4"/></svg>',
@@ -52,6 +53,7 @@
   };
   const items=[
     {kind:'home',label:'홈',desc:'등기로 메인으로 이동',href:'/',active:activePath==='/'||activePath==='/index.html'},
+    {kind:'about',label:'법무사소개',desc:'현재두 법무사 · 인사말 · 오시는 길',href:'/about.html',active:activePath==='/about.html'},
     {kind:'inherit',label:'상속등기',desc:'단독상속 · 공동상속 · 유증',href:'/inheritance.html',active:activePath==='/inheritance.html'},
     {kind:'renounce',label:'상속포기·한정승인',desc:'기한 · 절차 · 필요서류 · 청산',href:'/renunciation.html',active:activePath==='/renunciation.html'},
     {kind:'corp',label:'법인등기',desc:'설립 · 변경 · 증자 · 회사계속',href:'/corporate.html',active:activePath==='/corporate.html'},
