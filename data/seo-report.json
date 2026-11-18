@@ -1,8 +1,36 @@
 {
-  "totalPosts": 405,
-  "ok": 405,
+  "totalPosts": 409,
+  "ok": 409,
   "warnings": 0,
   "items": [
+    {
+      "slug": "inheritance-naver-224481572221",
+      "status": "ok",
+      "issues": [],
+      "modified": "2026-11-18",
+      "related": []
+    },
+    {
+      "slug": "renunciation-naver-224481590091",
+      "status": "ok",
+      "issues": [],
+      "modified": "2026-11-18",
+      "related": []
+    },
+    {
+      "slug": "corporate-naver-224481611333",
+      "status": "ok",
+      "issues": [],
+      "modified": "2026-11-18",
+      "related": []
+    },
+    {
+      "slug": "corporate-naver-224481624541",
+      "status": "ok",
+      "issues": [],
+      "modified": "2026-11-18",
+      "related": []
+    },
     {
       "slug": "renunciation-naver-224470187700",
       "status": "ok",
