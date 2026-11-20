@@ -87,6 +87,13 @@ def classify_title_with_reason(title: str, current: str = '') -> tuple[str, str]
     if _has_any(t, PARTITION_WORDS):
         return CATEGORY_PARTITION, 'inheritance-partition-explicit'
 
+    # 보존등기 자체는 부동산등기. 다만 상속을 주제로 한 보존등기는
+    # 기존 상속등기 분류를 유지해 상속 관련 글이 이동하지 않도록 한다.
+    if _has_any(t, ('소유권보존등기', '보존등기')) and not _has_any(
+        t, INHERITANCE_STRONG_WORDS + INHERITANCE_CONTEXT_WORDS + DEATH_WORDS
+    ):
+        return CATEGORY_REAL_ESTATE, 'real-estate-preservation'
+
     if _has_any(t, REAL_ESTATE_TRANSFER_WORDS):
         return CATEGORY_REAL_ESTATE, 'real-estate-transfer-explicit'
 
