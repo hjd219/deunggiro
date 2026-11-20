@@ -33,7 +33,11 @@ jobs:
         run: |
           python -u scripts/strip_naver_trailing_media.py
           git diff --check
-          git diff --name-only | grep -v '^posts/' && exit 1 || true
+          unexpected="$(git diff --name-only | grep -v '^posts/' || true)"
+          if [ -n "$unexpected" ]; then
+            echo "Unexpected changed files: $unexpected"
+            exit 1
+          fi
       - name: Commit cleaned articles
         shell: bash
         run: |
