@@ -117,7 +117,7 @@ def extract(u,slug):
  promo_start=len(comps)
  for i,c in enumerate(comps):
   if getattr(c,'select_one',None) and promo_start_text(txt(c)): promo_start=i; break
- out=[]; imgno=0; seen=set(); seen_imgs=set()
+ out=[]; imgno=0; seen=set(); seen_imgs=set(); closing_credits_seen=False
  for i,c in enumerate(comps):
   if i>=promo_start: break
   if not getattr(c,'select_one',None): continue
@@ -142,9 +142,12 @@ def extract(u,slug):
     v=txt(n); k=re.sub(r'\W+','',v)
     if len(k)<2 or k in seen: continue
     seen.add(k); out.append(styled_text(n))
+    if re.match(r'^\s*(?:작성\s*[:：]\s*(?:등기로|현재두)|법령\s*검토\s*기준\s*[:：]|관련\s*법령\s*[:：])',v): closing_credits_seen=True
    continue
   image_node=c.select_one('.se-module-image') or c.select_one('[data-linktype="img"]') or c.select_one('img') or c.select_one('[data-linkdata]')
   if image_node:
+   # Preview/map thumbnails placed after the closing credits are not article illustrations.
+   if closing_credits_seen: continue
    candidates=image_candidates(image_node)
    key='|'.join(candidates)
    if not candidates or key in seen_imgs: continue
