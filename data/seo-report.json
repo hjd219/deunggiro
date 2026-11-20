@@ -1,8 +1,15 @@
 {
-  "totalPosts": 413,
-  "ok": 413,
+  "totalPosts": 414,
+  "ok": 414,
   "warnings": 0,
   "items": [
+    {
+      "slug": "renunciation-naver-224484408311",
+      "status": "ok",
+      "issues": [],
+      "modified": "2026-11-20",
+      "related": []
+    },
     {
       "slug": "renunciation-naver-224484352922",
       "status": "ok",
