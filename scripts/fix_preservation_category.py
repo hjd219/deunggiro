@@ -34,12 +34,12 @@ def verify_rule() -> None:
 
 def patch_article(path: Path) -> bool:
     raw = path.read_text(encoding="utf-8")
-    meta = re.search(r'<meta\\b(?=[^>]*\\bname=["\\\']dg-category["\\\'])[^>]*>', raw, re.I)
+    meta = re.search(r'<meta\b(?=[^>]*\bname="dg-category")[^>]*>', raw, re.I)
     if not meta:
         raise RuntimeError("Article category meta not found")
     old_meta = meta.group(0)
     new_meta, changed = re.subn(
-        r'\\bcontent=(["\\\'])(?:기타|부동산등기)\\1',
+        r'\bcontent="(?:기타|부동산등기)"',
         'content="부동산등기"', old_meta, count=1
     )
     if changed != 1:
