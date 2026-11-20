@@ -71,6 +71,8 @@ jobs:
           exit $status
       - name: Preserve Naver body formatting
         run: timeout 420s python -u scripts/refresh_naver_format.py
+      - name: Strip trailing map and preview media from newly imported posts
+        run: python -u scripts/strip_naver_trailing_media.py --new-only
       - name: Generate SEO for imported posts
         shell: bash
         run: |
