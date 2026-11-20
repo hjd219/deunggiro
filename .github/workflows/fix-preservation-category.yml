@@ -1,0 +1,65 @@
+name: Fix preservation registration blog category
+
+on:
+  push:
+    paths:
+      - 'scripts/fix_preservation_category.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: deunggiro-content-main
+  cancel-in-progress: false
+
+jobs:
+  fix-category:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Install
+        run: python -m pip install beautifulsoup4
+      - name: Sync latest main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+          git reset --hard origin/main
+      - name: Correct post category and regenerate blog archives
+        run: |
+          set -euo pipefail
+          python -m scripts.fix_preservation_category
+          node scripts/sync_service_blog_cards.mjs
+          git diff --check
+          # This single-category correction may only edit its record,
+          # article, generated archives, and real estate service cards.
+          while IFS= read -r path; do
+            case "$path" in
+              data/posts.json|posts/legal-naver-224484378524.html|posts.html|posts-pages/*|realestate.html) ;;
+              *) echo "Unexpected modified file: $path"; exit 1 ;;
+            esac
+          done < <(git diff --name-only)
+      - name: Commit category correction
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet; then
+            echo "Already classified correctly"
+            exit 0
+          fi
+          git add -- data/posts.json posts/legal-naver-224484378524.html posts.html posts-pages realestate.html
+          git commit -m "Categorize ownership preservation registration as real estate"
+          for attempt in 1 2 3; do
+            git fetch origin main
+            if git rebase origin/main && git push origin HEAD:main; then
+              echo "PRESERVATION_CATEGORY_PUBLISHED"
+              exit 0
+            fi
+            sleep $((attempt * 3))
+          done
+          echo "Could not publish category correction"
+          exit 1
